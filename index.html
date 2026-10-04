@@ -61,6 +61,17 @@
   .hicon.on{background:var(--grey-800);border-color:var(--grey-800);color:var(--grey-50);}
   .hicon svg{width:17px;height:17px;}
   .hicon[hidden]{display:none;}
+  .tmenu{display:none;position:relative;}
+  .tmenu-list{position:absolute;top:calc(100% + 8px);right:0;z-index:30;min-width:210px;padding:6px;display:flex;flex-direction:column;background:#fff;border:1px solid var(--grey-200);border-radius:12px;box-shadow:2px 4px 16px rgba(0,0,0,.12);
+    opacity:0;visibility:hidden;transform:translateY(-4px) scale(.98);transform-origin:top right;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1),visibility 0s .2s;}
+  .tmenu.open .tmenu-list{opacity:1;visibility:visible;transform:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1),visibility 0s;}
+  .tmenu-list a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:8px;font-size:15px;font-weight:500;color:var(--grey-700);transition:background .2s ease;}
+  .tmenu-list a:hover{background:var(--grey-100);}
+  .tmenu-list a.on{color:var(--grey-800);font-weight:600;background:var(--grey-100);}
+  .tmenu-list svg{width:18px;height:18px;flex-shrink:0;}
+  .tmenu-list .badge-n{margin-left:auto;}
+  .tmenu-list .badge-n[hidden]{display:none;}
+  #tmenu-dot{top:4px;right:4px;}
   .hicon .dot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:100px;background:var(--pink-500);border:1.5px solid #fff;}
   .top-av{display:block;width:32px;height:32px;border-radius:100px;object-fit:cover;border:1px solid var(--grey-200);transition:transform .2s cubic-bezier(.16,1,.3,1);}
   .top-av:active{transform:scale(.94);}
@@ -676,10 +687,12 @@
     /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
     .adm-budget .kv b,.adm-budget .pct,.btiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}
     :root{--gutter:12px;}
-    .topbar{grid-template-columns:auto auto minmax(0,1fr);gap:6px;}
+    .topbar{grid-template-columns:auto minmax(0,1fr);gap:6px;}
     .brand svg{height:16px;}
-    .tnav{gap:0;}
-    .tnav a{width:30px;}
+    /* Campaigns and Notifications live in the menu at the top right; search sits to its left */
+    .tnav,#bell-btn{display:none;}
+    .top-right{grid-column:2;}
+    .tmenu{display:block;}
     .top-right{gap:6px;}
     .top-av{display:none;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
@@ -709,6 +722,11 @@
   <div class="top-right">
     <button class="hicon" id="search-btn" data-search aria-label="Search" aria-expanded="false"></button>
     <a class="hicon" id="bell-btn" href="#/notifications" aria-label="Notifications"><span id="bell-ic"></span><i class="dot" id="bell-dot"></i></a>
+    <!-- Phones: Campaigns and Notifications move into this menu -->
+    <div class="tmenu" id="tmenu">
+      <button class="hicon" id="tmenu-btn" data-tmenu aria-label="Menu" aria-expanded="false" aria-controls="tmenu-list"><span id="tmenu-ic"></span><i class="dot" id="tmenu-dot"></i></button>
+      <nav class="tmenu-list" id="tmenu-list" aria-label="Main menu"></nav>
+    </div>
     <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="uberLogo" data-label="Ub" alt="Uber"></a>
   </div>
 </header>
@@ -927,6 +945,9 @@ function updateBell(){
   const n=notifications.filter(x=>!x.read).length;
   document.getElementById('bell-dot').hidden=!n;
   document.getElementById('bell-btn').setAttribute('aria-label',n?`Notifications, ${n} unread`:'Notifications');
+  document.getElementById('tmenu-dot').hidden=!n;
+  document.getElementById('tmenu-btn').setAttribute('aria-label',n?`Menu, ${n} unread notifications`:'Menu');
+  const c=document.getElementById('tmenu-n');c.textContent=n;c.hidden=!n;
 }
 function renderFeed(){
   const f=document.getElementById('feed'); if(!f) return;
@@ -1520,6 +1541,15 @@ function renderTopNav(){
   document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
   document.getElementById('search-btn').innerHTML=MICON.search;
   document.getElementById('bell-ic').innerHTML=MICON.bell;
+  document.getElementById('tmenu-ic').innerHTML=MENUIC;
+  document.getElementById('tmenu-list').innerHTML=`<a href="#/active" data-root="campaigns">${ICON.explore}<span>Campaigns</span></a><a href="#/notifications" data-root="notifications">${MICON.bell}<span>Notifications</span><span class="badge-n" id="tmenu-n"></span></a>`;
+}
+function setTopMenu(open){
+  const m=document.getElementById('tmenu'),was=m.classList.contains('open');
+  m.classList.toggle('open',open);
+  const btn=document.getElementById('tmenu-btn');btn.setAttribute('aria-expanded',open);
+  if(open) m.querySelector('.tmenu-list a').focus({preventScroll:true});
+  else if(was&&m.contains(document.activeElement)) btn.focus({preventScroll:true});
 }
 
 /* Search lives under the Campaigns heading; the header icon opens and closes it */
@@ -1598,6 +1628,8 @@ function route(){
   else if(state.searchOpen) setSearch(true);
   document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':TABS[state.tab])+' — UGC Platform for Brands';
   document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',!notifs&&n.dataset.root==='campaigns'));
+  setTopMenu(false);
+  document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=a.dataset.root===(notifs?'notifications':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   const bell=document.getElementById('bell-btn');bell.classList.toggle('on',notifs);if(notifs)bell.setAttribute('aria-current','page');else bell.removeAttribute('aria-current');
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
 }
@@ -1622,6 +1654,8 @@ document.addEventListener('click',e=>{
   const t=e.target;
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
+  if(t.closest('[data-tmenu]')){setTopMenu(!document.getElementById('tmenu').classList.contains('open'));return;}
+  if(!t.closest('#tmenu')) setTopMenu(false);
   const side=t.closest('[data-side]');
   if(side){setSide(side.dataset.side==='open');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
@@ -1703,6 +1737,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length].focus();return;}
     if(e.key==='Tab') anMenu(pm,false);
   }
+  if(e.key==='Escape'&&document.getElementById('tmenu').classList.contains('open')){setTopMenu(false);return;}
   if(e.key==='Escape'&&document.body.classList.contains('side-open')){setSide(false);return;}
   if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
 });
