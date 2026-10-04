@@ -345,8 +345,8 @@
   .dsh.pend{grid-template-columns:288px minmax(0,1fr);gap:0;margin:-24px 0 -60px;padding-top:0;}
   .dsh.pend>.dsh-side{align-self:start;margin:24px 24px 48px 0;}
   /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
-  html:has(.pfeed){scroll-snap-type:y proximity;}
-  .pitem{display:grid;grid-template-columns:auto minmax(0,1fr);min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  html:has(.pfeed){scroll-snap-type:y mandatory;}
+  .pitem{display:grid;grid-template-columns:auto minmax(0,1fr);min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
   .pitem+.pitem .adm-center{border-top:1px solid var(--grey-200);}
   .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
   .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
@@ -576,6 +576,7 @@
     .dsh-menu a.on{border-bottom-color:var(--blue-500);}
     .dsh-foot{display:none;}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+    html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .dsh.pend>.dsh-side{margin:0;}
     .pitem{grid-template-columns:minmax(0,1fr);gap:18px;min-height:0;padding-bottom:18px;}
@@ -947,6 +948,38 @@ const SUB={
     caption:'Shakira at City of Dreams. In Colombo. I’m still not over it 💃 Who’s getting tickets? #ShakiraColombo #HiruTV',
     bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
 };
+/* Every other post uploaded to the campaign; the admin view scrolls through SUB[id] first, then these */
+const N={name:'Nethmi Perera',handle:'@nethmi.eats',av:'av1',followers:[['insta','31K'],['tiktok','14.2K']],bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'};
+const K={name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],bio:'Coffee, cafés and slow mornings. Rating every new seasonal drink in Sri Lanka, one sip at a time.'};
+const D={name:'Dilan Fernando',handle:'@dilan.bites',av:'av3',followers:[['tiktok','41K'],['insta','9.8K']],bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'};
+const S={name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',followers:[['insta','26.5K'],['facebook','12K']],bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'};
+const MORE={
+  uber:[
+    {...N,posted:'4 hrs ago',media:{type:'carousel',items:['card1','card2']},caption:'Book festival day out, sorted by Uber Moto 🏍️📚 Swipe for the haul. #UberMoto #ColomboBookFestival #ad'},
+    {...D,posted:'Yesterday',media:{type:'reel',items:['card1'],length:'0:18'},caption:'Galle Face to the Book Festival in under 15 minutes. Uber Moto, you legend 🏍️ #UberMoto #ad'}],
+  eats:[
+    {...S,posted:'June 25',media:{type:'image',items:['card2']},caption:'Reading break, Uber Eats edition 🍕📖 #UberEatsLK #ColomboBookFestival'},
+    {...D,posted:'June 24',media:{type:'reel',items:['card2'],length:'0:20'},caption:'Rating festival food delivered straight to the queue 🍔 #UberEatsLK'}],
+  starbucks:[
+    {...S,posted:'Yesterday',media:{type:'image',items:['sbHero']},caption:'Holiday cups are back and so am I ☕✨ #StarbucksLK #ChristmasMocha'},
+    {...N,posted:'2 d ago',media:{type:'reel',items:['sbContent1'],length:'0:16'},caption:'Christmas Mocha taste test, honest review in 15 seconds 🎄 #StarbucksLK'}],
+  burgerking:[
+    {...K,posted:'2 d ago',media:{type:'image',items:['burgerPhoto']},caption:'Whopper and a coffee? Don’t judge me 🍔☕ #WhopperWednesday #BurgerKingLK'},
+    {...N,posted:'3 d ago',media:{type:'reel',items:['burgerPhoto'],length:'0:17'},caption:'Whopper Wednesday, ranked bite by bite 🍔 #WhopperWednesday'}],
+  dominos:[
+    {...D,posted:'4 d ago',media:{type:'reel',items:['grid3'],length:'0:24'},caption:'Polos Pizza in one bite? Watch till the end 🍕 #DominosLK #PolosPizza'},
+    {...K,posted:'5 d ago',media:{type:'image',items:['grid3']},caption:'Movie night menu: Polos Pizza, no notes 🍕🎬 #DominosLK'}],
+  kfc:[
+    {...S,posted:'June 29',media:{type:'reel',items:['grid2'],length:'0:19'},caption:'Hot & Crispy with the girls, who cried first? 🔥 #KFCSriLanka #HotAndCrispy'},
+    {...D,posted:'June 28',media:{type:'image',items:['grid2']},caption:'Spice level: yes 🔥 #KFCSriLanka'}],
+  hiru:[
+    {...S,posted:'Scheduled',media:{type:'image',items:['card3']},caption:'Outfit ready for Akon at Port City 🎤 #AkonColombo #HiruTV'},
+    {...N,posted:'Scheduled',media:{type:'carousel',items:['card3','grid6']},caption:'Akon week on the podcast, swipe for the episode → #AkonColombo #HiruTV'}],
+  shakira:[
+    {...K,posted:'Scheduled',media:{type:'reel',items:['grid6'],length:'0:21'},caption:'Shakira in Colombo. Hips don’t lie and neither do I: I’m going 💃 #ShakiraColombo #HiruTV'},
+    {...N,posted:'Scheduled',media:{type:'image',items:['grid6']},caption:'Pre-show dinner plans for Shakira night ✨ #ShakiraColombo'}],
+};
+const POSTS=id=>[SUB[id],...(MORE[id]||[])];
 const PLAYIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.1-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>';
 const PAUSEIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
 const MUTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
@@ -972,15 +1005,9 @@ const DASH={};
 function dash(id){
   if(DASH[id]) return DASH[id];
   const c=C[id], s=SUB[id], r=rng(id);
-  const tag='#'+c.brand.replace(/[^A-Za-z]/g,'');
   const others=POOL.filter(p=>p.name!==s.name);
   const pics=[c.img,...PICS.filter(p=>p!==c.img)];
-  const caps=[`Gave this a proper try so you don’t have to ✨ Full thoughts on camera. ${tag} #ad`,
-    `Weekend plans, sorted 🙌 Swipe to see how it went. ${tag} #ad`];
-  const pending=c.status==='completed'?[]:[
-    {...s,submitted:s.posted==='Scheduled'?'1 hr ago':s.posted},
-    {...others[0],media:{type:'image',items:[pics[1]]},caption:caps[0],submitted:'40 min ago'},
-    {...others[1],media:{type:'carousel',items:[pics[2],pics[3]]},caption:caps[1],submitted:'3 hrs ago'}];
+  const pending=c.status==='completed'?[]:POSTS(id).map((p,i)=>({...p,submitted:p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted}));
   const kinds=['Reel','Post','Carousel'];
   const approved=c.status==='upcoming'?[]:Array.from({length:c.status==='completed'?8:6},(_,i)=>{
     const p=POOL[(i+2)%POOL.length];

@@ -19,7 +19,7 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
     budget and the campaign brief.
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
-    bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll down for the next submission; reels play only while on screen.
+    bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
   - **Approved content** (`/admin/approved`) — grid of live posts with views; newly approved posts appear first.
   - **Analytics** (`/admin/analytics`) — headline tiles, views per day (hover a bar), views by platform, top creators.
   - **Inbox** (`/admin/inbox`) — conversations with creators; send replies in the open thread.
