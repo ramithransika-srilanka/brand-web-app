@@ -344,21 +344,17 @@
   .dbudget .cp-list{padding:0;}
 
   /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
-  .dsh.pend{grid-template-columns:288px auto minmax(0,1fr);gap:0;align-items:stretch;margin:-24px 0 -60px;min-height:calc(100dvh - var(--header) - var(--subbar));padding-top:0;}
+  .dsh.pend{grid-template-columns:288px minmax(0,1fr);gap:0;margin:-24px 0 -60px;padding-top:0;}
   .dsh.pend>.dsh-side{align-self:start;margin:24px 24px 48px 0;}
+  /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
+  html:has(.pfeed){scroll-snap-type:y proximity;}
+  .pitem{display:grid;grid-template-columns:auto minmax(0,1fr);min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .pitem+.pitem .adm-center{border-top:1px solid var(--grey-200);}
   .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
-  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;position:sticky;top:calc(var(--header) + var(--subbar));overflow:hidden;background:#000;}
+  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
   .adm-col{padding:30px 0 48px 24px;}
   .adm-right{min-width:0;}
   .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);display:flex;flex-direction:column;gap:18px;max-width:320px;}
-  .pn{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .pn div{display:flex;gap:6px;}
-  .pn button{width:30px;height:30px;border-radius:100px;display:flex;align-items:center;justify-content:center;border:1px solid var(--grey-200);background:#fff;color:var(--grey-800);transition:border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .pn button svg{width:18px;height:18px;}
-  .pn button.next svg{transform:scaleX(-1);}
-  .pn button:hover{border-color:var(--grey-400);}
-  .pn button:active{transform:scale(.94);}
-  .pn button[disabled]{opacity:.4;pointer-events:none;}
   .rv-actions{display:flex;flex-wrap:wrap;gap:9px;padding-top:18px;border-top:1px solid var(--line);}
   .rv-actions .btn{flex:1;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 18px;border-radius:100px;font-size:14px;font-weight:600;white-space:nowrap;transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
@@ -579,9 +575,11 @@
     .dsh-menu a.on{border-bottom-color:var(--blue-500);}
     .dsh-foot{display:none;}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;min-height:0;}
+    .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .dsh.pend>.dsh-side{margin:0;}
-    .adm-center{border:0;}
+    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;min-height:0;padding-bottom:18px;}
+    .pitem+.pitem{padding-top:18px;border-top:1px solid var(--grey-200);}
+    .adm-center,.pitem+.pitem .adm-center{border:0;}
     .adm-phone{position:static;width:min(100%,400px);border-radius:14px;}
     .adm-col{padding:0 0 12px;}
     .adm-side{position:static;max-width:none;}
@@ -991,7 +989,7 @@ function dash(id){
     {who:s,unread:true,time:'12 min',msgs:[['them','Hi! Just submitted my post for review 🙌'],['them','Let me know if you want a different caption or a shorter cut.']]},
     {who:others[0],unread:true,time:'1 hr',msgs:[['me','Thanks for joining the campaign!'],['them','Excited for this one. Is it okay to film indoors?']]},
     {who:others[2]||others[1],unread:false,time:'2 d',msgs:[['them','When do approved posts get paid?'],['me','Within 3 working days of the post going live.'],['them','Perfect, thank you!']]}];
-  return DASH[id]={pending,approved,threads,pick:0,thread:0,dismissed:new Set()};
+  return DASH[id]={pending,approved,threads,thread:0,dismissed:new Set()};
 }
 const unreadN=d=>d.threads.filter(t=>t.unread).length;
 
@@ -1049,41 +1047,41 @@ function secDetails(id){
 
 function mediaHTML(s){
   const m=s.media, kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
-  if(m.type==='reel') return `<div class="adm-screen" id="reel" data-len="${m.length}">
+  if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
       <span class="adm-kind">${kind}</span>
-      <span class="reel-icon" id="reel-icon">${PAUSEIC}</span>
-      <div class="reel-progress"><i id="reel-bar"></i></div>
-      <button class="reel-mute" type="button" id="reel-mute" aria-label="Unmute">${MUTEIC}</button></div>`;
-  if(m.type==='carousel') return `<div class="adm-screen" id="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
-      <div class="car-track" id="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
-      <span class="adm-kind">${kind}</span><span class="adm-count" id="car-count">1/${m.items.length}</span>
+      <span class="reel-icon">${PAUSEIC}</span>
+      <div class="reel-progress"><i></i></div>
+      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button></div>`;
+  if(m.type==='carousel') return `<div class="adm-screen" data-media="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
+      <div class="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
+      <span class="adm-kind">${kind}</span><span class="adm-count">1/${m.items.length}</span>
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
-      <div class="car-dots" id="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
+      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
   return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">${kind}</span></div>`;
 }
 
 function secPending(id){
   const d=dash(id);
   if(!d.pending.length) return null;
-  d.pick=Math.min(d.pick,d.pending.length-1);
-  const s=d.pending[d.pick], n=d.pending.length;
-  const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-  const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
-  return `<div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
-    <div class="adm-col adm-right"><div class="adm-side">
-      <div class="pn"><span class="adm-eyebrow">Pending approval · ${d.pick+1} of ${n}</span>${n>1?`<div><button type="button" data-pick="${d.pick-1}" aria-label="Previous submission"${d.pick?'':' disabled'}>${CPICON.chevL}</button><button class="next" type="button" data-pick="${d.pick+1}" aria-label="Next submission"${d.pick<n-1?'':' disabled'}>${CPICON.chevL}</button></div>`:''}</div>
-      <div class="adm-sec">
-        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-        <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
-      </div>
-      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
-      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
-      <div class="rv-actions"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-sec" type="button" data-act="changes">Request changes</button></div>
-    </div></div>`;
+  return `<div class="pfeed">${d.pending.map((s,i)=>{
+    const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
+    const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
+    return `<article class="pitem" data-i="${i}" aria-label="Submission by ${s.name}">
+      <div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
+      <div class="adm-col adm-right"><div class="adm-side">
+        <div class="adm-sec">
+          <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
+          <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
+          <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
+        </div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
+        <div class="rv-actions"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-sec" type="button" data-act="changes">Request changes</button></div>
+      </div></div>
+    </article>`;}).join('')}</div>`;
 }
 
 function secApproved(id){
@@ -1155,13 +1153,13 @@ function viewAdmin(id,sec){
 }
 
 /* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
-let media=null;
-function stopMedia(){if(media){media.stop();media=null;}}
+let media=[];
+function stopMedia(){media.forEach(m=>m.stop());media=[];}
 function mountReel(el){
-  const bar=el.querySelector('#reel-bar'), icon=el.querySelector('#reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('#reel-mute');
+  const bar=el.querySelector('.reel-progress i'), icon=el.querySelector('.reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('.reel-mute');
   const [mm,ss]=el.dataset.len.split(':').map(Number), dur=(mm*60+ss)*1000;
   let t=0,last=performance.now(),playing=true,raf,flashT;
-  const tick=now=>{if(playing){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
+  const tick=now=>{if(playing&&el.dataset.vis!=='0'){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
   raf=requestAnimationFrame(tick);
   /* Feedback on press, not release */
   hit.addEventListener('pointerdown',()=>{
@@ -1179,7 +1177,7 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 function rubberband(over,dim,k=0.55){return (over*dim*k)/(dim+k*Math.abs(over));}
 function project(v,d=0.998){return (v/1000)*d/(1-d);}
 function mountCarousel(el){
-  const track=el.querySelector('#car-track'), n=track.children.length, dots=[...el.querySelectorAll('#car-dots i')], count=el.querySelector('#car-count');
+  const track=el.querySelector('.car-track'), n=track.children.length, dots=[...el.querySelectorAll('.car-dots i')], count=el.querySelector('.adm-count');
   const prev=el.querySelector('.car-nav.prev'), next=el.querySelector('.car-nav.next');
   let x=0, v=0, idx=0, raf=null, drag=null;
   const W=()=>el.clientWidth;
@@ -1265,7 +1263,13 @@ const parseHash=()=>{
   const campaign=root==='campaign'&&C[id]?id:null;
   return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details'};
 };
-function mountMedia(){const r=document.getElementById('reel'),k=document.getElementById('car');media=r?mountReel(r):k?mountCarousel(k):null;}
+function mountMedia(){
+  const els=[...view.querySelectorAll('[data-media]')];
+  media=els.map(el=>el.dataset.media==='reel'?mountReel(el):mountCarousel(el));
+  /* In the pending feed, a reel only plays while it is on screen */
+  const io=new IntersectionObserver(es=>es.forEach(e=>e.target.dataset.vis=e.isIntersecting?'1':'0'),{threshold:.6});
+  els.forEach(el=>io.observe(el));media.push({stop:()=>io.disconnect()});
+}
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
@@ -1329,8 +1333,6 @@ document.addEventListener('click',e=>{
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
-  const pick=t.closest('[data-pick]');
-  if(pick){dash(parseHash().id).pick=+pick.dataset.pick;return rerender();}
   const th=t.closest('[data-thread]');
   if(th){dash(parseHash().id).thread=+th.dataset.thread;rerender();return document.getElementById('ib-input').focus({preventScroll:true});}
   const go=t.closest('[data-go]');
@@ -1341,7 +1343,7 @@ function doAct(a,el){
   const h=parseHash(), d=h.admin&&dash(h.id);
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
   if(d&&(a==='approve'||a==='changes')){
-    const [s]=d.pending.splice(d.pick,1);
+    const [s]=d.pending.splice(+el.closest('[data-i]').dataset.i,1);
     if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.followers[0][0],views:0,eng:0,posted:'Just now',isNew:true});
     rerender();
     return toast(a==='approve'?`Approved · ${s.name} has been notified`:`Change request sent to ${s.name}`);
