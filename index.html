@@ -287,9 +287,7 @@
   .dsh-side{position:sticky;top:calc(var(--header) + var(--subbar) + 24px);overflow:hidden;}
   .dsh-cover{position:relative;height:92px;background:var(--grey-200);}
   .dsh-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
-  .dsh-logo{position:absolute;left:18px;bottom:-26px;width:58px;height:58px;border-radius:14px;border:3px solid #fff;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);}
-  .dsh-logo img{width:100%;height:100%;object-fit:cover;}
-  .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:38px 18px 18px;}
+  .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;}
   .dsh-title{font-size:18px;font-weight:600;line-height:23px;letter-spacing:-.015em;color:var(--grey-800);text-wrap:balance;}
   .dsh-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
   .dsh-status{padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;background:var(--blue-100);color:var(--blue-700);text-transform:capitalize;}
@@ -355,8 +353,6 @@
   .adm-col{padding:30px 0 48px 24px;}
   .adm-right{min-width:0;}
   .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);display:flex;flex-direction:column;gap:18px;max-width:320px;}
-  .rv-actions{display:flex;flex-wrap:wrap;gap:9px;padding-top:18px;border-top:1px solid var(--line);}
-  .rv-actions .btn{flex:1;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 18px;border-radius:100px;font-size:14px;font-weight:600;white-space:nowrap;transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .btn svg{width:17px;height:17px;}
   .btn:active{transform:scale(.96);}
@@ -479,8 +475,13 @@
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
-  .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
-  .adm-kind{position:absolute;top:12px;left:0;right:0;z-index:3;text-align:center;font-size:14px;font-weight:600;line-height:20px;letter-spacing:-.01em;color:#fff;pointer-events:none;}
+  .adm-screen[data-media=car]::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
+  /* Approve / Reject sit on the post, over a bottom scrim; reel controls and carousel dots ride above them */
+  .adm-screen::after{content:"";position:absolute;inset:auto 0 0;height:140px;z-index:2;pointer-events:none;background:linear-gradient(transparent,rgba(0,0,0,.55));}
+  .adm-act{position:absolute;left:12px;right:12px;bottom:14px;z-index:4;display:flex;gap:8px;}
+  .adm-act .btn{flex:1;height:42px;}
+  .btn-glass{color:#fff;background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
+  .btn-glass:hover{background:rgba(18,18,18,.6);}
   .adm-count{position:absolute;top:11px;right:11px;z-index:3;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);font-variant-numeric:tabular-nums;}
 
   /* Reel */
@@ -494,18 +495,18 @@
   .reel-icon svg{width:24px;height:24px;}
   .adm-screen.paused .reel-icon{opacity:1;transform:scale(1);}
   .adm-screen.flash .reel-icon{opacity:1;transform:scale(1);}
-  .reel-mute{position:absolute;right:11px;bottom:14px;z-index:3;width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
+  .reel-mute{position:absolute;right:11px;bottom:68px;z-index:3;width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
     background:rgba(18,18,18,.4);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .1s ease-out;}
   .reel-mute svg{width:15px;height:15px;}
   .reel-mute:active{transform:scale(.9);}
-  .reel-progress{position:absolute;left:11px;right:48px;bottom:27px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
+  .reel-progress{position:absolute;left:11px;right:48px;bottom:81px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
   .reel-progress i{display:block;height:100%;width:100%;background:#fff;transform-origin:left;transform:scaleX(0);}
 
   /* Carousel */
   .car-track{position:absolute;inset:0;display:flex;will-change:transform;cursor:grab;}
   .car-track.dragging{cursor:grabbing;}
   .car-slide{flex:0 0 100%;height:100%;}
-  .car-dots{position:absolute;left:0;right:0;bottom:12px;z-index:3;display:flex;justify-content:center;gap:5px;pointer-events:none;}
+  .car-dots{position:absolute;left:0;right:0;bottom:70px;z-index:3;display:flex;justify-content:center;gap:5px;pointer-events:none;}
   .car-dots i{width:5px;height:5px;border-radius:100px;background:rgba(255,255,255,.5);transition:background .25s ease,width .35s cubic-bezier(.2,.9,.3,1);}
   .car-dots i.on{width:14px;background:#fff;}
   .car-nav{position:absolute;top:50%;z-index:3;width:28px;height:28px;margin-top:-14px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-800);
@@ -538,7 +539,7 @@
     .reel-icon,.car-dots i{transition:opacity .2s ease;}
   }
   @media(prefers-reduced-transparency:reduce){
-    .adm-count,.reel-icon,.reel-mute{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .adm-count,.reel-icon,.reel-mute,.btn-glass{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
     .car-nav{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
   }
 
@@ -997,7 +998,7 @@ function sideHTML(id,sec){
   const c=C[id], d=dash(id);
   const badge={pending:d.pending.length,inbox:unreadN(d)};
   return `<aside class="dcard dsh-side">
-    <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""><div class="dsh-logo"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div></div>
+    <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
     <div class="dsh-id">
       <h1 class="dsh-title">${c.title}</h1>
       <div class="dsh-meta"><span class="dsh-status ${c.status}">${c.status}</span><span>${c.right||c.time}</span></div>
@@ -1046,21 +1047,21 @@ function secDetails(id){
 }
 
 function mediaHTML(s){
-  const m=s.media, kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
+  const m=s.media;
+  const actions=`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-glass" type="button" data-act="reject">${XIC}Reject</button></div>`;
   if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
-      <span class="adm-kind">${kind}</span>
       <span class="reel-icon">${PAUSEIC}</span>
       <div class="reel-progress"><i></i></div>
-      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button></div>`;
+      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button>${actions}</div>`;
   if(m.type==='carousel') return `<div class="adm-screen" data-media="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
       <div class="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
-      <span class="adm-kind">${kind}</span><span class="adm-count">1/${m.items.length}</span>
+      <span class="adm-count">1/${m.items.length}</span>
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
-      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
-  return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">${kind}</span></div>`;
+      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div>${actions}</div>`;
+  return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}">${actions}</div>`;
 }
 
 function secPending(id){
@@ -1079,7 +1080,6 @@ function secPending(id){
         </div>
         <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
         <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
-        <div class="rv-actions"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-sec" type="button" data-act="changes">Request changes</button></div>
       </div></div>
     </article>`;}).join('')}</div>`;
 }
@@ -1199,7 +1199,7 @@ function mountCarousel(el){
   }
   const go=(i,vel=0)=>{setIdx(Math.max(0,Math.min(n-1,i)));springTo(-idx*W(),vel);};
   el.addEventListener('pointerdown',e=>{
-    if(e.button!==0||e.target.closest('.car-nav')) return;
+    if(e.button!==0||e.target.closest('.car-nav,.adm-act')) return;
     cancelAnimationFrame(raf);raf=null;                      /* grab it mid-flight: keep the on-screen x */
     drag={id:e.pointerId,startX:e.clientX,baseX:x,hist:[[e.clientX,e.timeStamp]],locked:false};
   });
@@ -1342,11 +1342,11 @@ function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
   const h=parseHash(), d=h.admin&&dash(h.id);
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
-  if(d&&(a==='approve'||a==='changes')){
+  if(d&&(a==='approve'||a==='reject')){
     const [s]=d.pending.splice(+el.closest('[data-i]').dataset.i,1);
     if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.followers[0][0],views:0,eng:0,posted:'Just now',isNew:true});
     rerender();
-    return toast(a==='approve'?`Approved · ${s.name} has been notified`:`Change request sent to ${s.name}`);
+    return toast(a==='approve'?`Approved · ${s.name} has been notified`:`Rejected · ${s.name} has been notified`);
   }
   if(a==='share') return toast('Link copied');
   if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
