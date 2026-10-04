@@ -642,6 +642,8 @@
     .adm-center,.pitem+.pitem .adm-center{border:0;align-items:center;}
     .adm-phone{position:static;width:min(100%,400px);flex:none;border-radius:12px;}
     .adm-col{padding:0 0 12px;}
+    /* Pending approvals: creator details first, then the reel to approve or reject */
+    .pitem[data-on] .adm-right{order:-1;}
     .adm-side{position:static;max-width:none;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
