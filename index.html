@@ -68,6 +68,10 @@
   /* On a campaign page the status bar becomes a blue notice */
   .viewbar{display:none;position:sticky;top:var(--header);z-index:19;min-height:48px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:0 max(var(--gutter),calc((100% - var(--page)) / 2));background:var(--blue-500);font-size:14px;font-weight:500;line-height:20px;color:#fff;text-align:center;}
   .viewbar .msg{grid-column:2;}
+  .viewbar-back{grid-column:1;justify-self:start;display:flex;align-items:center;gap:4px;height:32px;padding:0 12px 0 6px;margin-left:-6px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .viewbar-back svg{width:20px;height:20px;}
+  .viewbar-back:hover{background:rgba(255,255,255,.14);}
+  .viewbar-back:active{transform:scale(.96);}
   .viewbar-btn{grid-column:3;justify-self:end;height:32px;padding:0 14px;border:1px solid #fff;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .viewbar-btn:hover{background:#fff;color:var(--blue-500);}
   .viewbar-btn:active{transform:scale(.96);}
@@ -303,9 +307,11 @@
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .pop{left:var(--gutter);width:auto;}
     .cp-hero{height:320px;}
-    .viewbar{grid-template-columns:minmax(0,1fr) auto;padding-top:8px;padding-bottom:8px;text-align:left;}
-    .viewbar .msg{grid-column:1;}
-    .viewbar-btn{grid-column:2;}
+    .viewbar{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding-top:8px;padding-bottom:8px;text-align:left;}
+    .viewbar .msg{grid-column:2;}
+    .viewbar-back .lbl{display:none;}
+    .viewbar-back{padding:0 6px;}
+    .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
 </style>
@@ -325,7 +331,7 @@
   <a href="#/completed" data-tab="completed">Completed</a>
   <a href="#/upcoming" data-tab="upcoming">Upcoming</a>
 </nav>
-<div class="viewbar"><span class="msg" role="status">You are viewing this page as a creator</span><button class="viewbar-btn" data-act="soon">Switch to admin</button></div>
+<div class="viewbar"><a class="viewbar-back" id="viewbar-back" href="#/active" aria-label="Back to campaigns"><span id="viewbar-back-ic"></span><span class="lbl">Back to campaigns</span></a><span class="msg" role="status">You are viewing this page as a creator</span><button class="viewbar-btn" data-act="soon">Switch to admin</button></div>
 <main class="content" id="view"></main>
 
 <div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
@@ -598,6 +604,7 @@ function renderTopNav(){
   document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
   document.getElementById('search-btn').innerHTML=MICON.search;
   document.getElementById('bell-ic').innerHTML=MICON.bell;
+  document.getElementById('viewbar-back-ic').innerHTML=CPICON.chevL;
 }
 
 /* Search lives under the Campaigns heading; the header icon opens and closes it */
@@ -625,6 +632,7 @@ function route(){
   if(!campaign) state.tab=TABS[root]?root:'active';
   view.innerHTML=campaign?viewCampaign(id):viewExplore();
   document.body.classList.toggle('viewing',!!campaign);
+  if(campaign) document.getElementById('viewbar-back').href='#/'+C[id].status;
   bindAssets(view);
   view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
   renderFeed();
