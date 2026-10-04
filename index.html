@@ -1276,7 +1276,7 @@ function secAnalytics(id){
   const cur=AN_PLATS.find(p=>p[0]===d.plat)||AN_PLATS[0];
   const pick=`<div class="an-plat" id="an-plat"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
     <div class="an-plat-menu" role="menu" aria-label="Platform">${AN_PLATS.map(([k,l])=>`<button type="button" role="menuitemradio" aria-checked="${k===cur[0]}" data-plat="${k}">${PLAT[k]||''}${l}</button>`).join('')}</div></div>`;
-  return `<section class="dcard">${dhead('Analytics','Last 14 days',pick)}
+  return `<section class="dcard">${dhead('Analytics','Since the campaign started',pick)}
       <div class="tiles" id="an-tiles">${anTiles(id)}</div></section>
     <section class="dcard">${dhead('Views per day','Across every live post')}
       <div class="chart">
