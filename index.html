@@ -343,19 +343,24 @@
   .dbudget{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:18px;}
   .dbudget .cp-list{padding:0;}
 
-  /* Pending approvals: queue + review */
-  .pq{display:flex;gap:8px;margin:18px -24px 0;padding:0 24px 2px;overflow-x:auto;scrollbar-width:none;}
-  .pq::-webkit-scrollbar{display:none;}
-  .pq button{display:flex;align-items:center;gap:9px;flex-shrink:0;padding:5px 14px 5px 5px;border:1px solid var(--line);border-radius:100px;text-align:left;transition:border-color .2s ease,background .2s ease;}
-  .pq button:hover{border-color:var(--grey-400);}
-  .pq button.on{border-color:var(--grey-800);background:var(--grey-100);}
-  .pq img{width:32px;height:32px;border-radius:100px;object-fit:cover;}
-  .pq b{display:block;font-size:14px;font-weight:600;line-height:18px;color:var(--grey-800);}
-  .pq small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .rv{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:24px;align-items:start;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);}
-  .rv .adm-phone{border-radius:14px;overflow:hidden;background:#000;}
-  .rv-info{display:flex;flex-direction:column;gap:18px;}
+  /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
+  .dsh.pend{grid-template-columns:288px auto minmax(0,1fr);gap:0;align-items:stretch;margin:-24px 0 -60px;min-height:calc(100dvh - var(--header) - var(--subbar));padding-top:0;}
+  .dsh.pend>.dsh-side{align-self:start;margin:24px 24px 48px 0;}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
+  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;position:sticky;top:calc(var(--header) + var(--subbar));overflow:hidden;background:#000;}
+  .adm-col{padding:30px 0 48px 24px;}
+  .adm-right{min-width:0;}
+  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);display:flex;flex-direction:column;gap:18px;max-width:320px;}
+  .pn{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .pn div{display:flex;gap:6px;}
+  .pn button{width:30px;height:30px;border-radius:100px;display:flex;align-items:center;justify-content:center;border:1px solid var(--grey-200);background:#fff;color:var(--grey-800);transition:border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .pn button svg{width:18px;height:18px;}
+  .pn button.next svg{transform:scaleX(-1);}
+  .pn button:hover{border-color:var(--grey-400);}
+  .pn button:active{transform:scale(.94);}
+  .pn button[disabled]{opacity:.4;pointer-events:none;}
   .rv-actions{display:flex;flex-wrap:wrap;gap:9px;padding-top:18px;border-top:1px solid var(--line);}
+  .rv-actions .btn{flex:1;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 18px;border-radius:100px;font-size:14px;font-weight:600;white-space:nowrap;transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .btn svg{width:17px;height:17px;}
   .btn:active{transform:scale(.96);}
@@ -363,8 +368,6 @@
   .btn-pri:hover{background:var(--blue-600);}
   .btn-sec{border:1px solid var(--grey-400);color:var(--grey-800);}
   .btn-sec:hover{border-color:var(--grey-800);background:var(--grey-100);}
-  .rv-plat{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--grey-600);}
-  .rv-plat svg{width:15px;height:15px;color:var(--grey-800);}
 
   /* Approved content grid */
   .apg{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:18px 12px;margin-top:18px;}
@@ -450,7 +453,7 @@
   .dempty span{max-width:320px;font-size:14px;line-height:20px;color:var(--grey-600);}
 
   .dsh>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
-  .dsh>:nth-child(2){animation-delay:60ms;}
+  .dsh>:nth-child(2){animation-delay:60ms;} .dsh>:nth-child(3){animation-delay:120ms;}
   @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
 
   /* Shared pieces from the original admin view (post, creator, caption, budget) */
@@ -576,6 +579,12 @@
     .dsh-menu a.on{border-bottom-color:var(--blue-500);}
     .dsh-foot{display:none;}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;min-height:0;}
+    .dsh.pend>.dsh-side{margin:0;}
+    .adm-center{border:0;}
+    .adm-phone{position:static;width:min(100%,400px);border-radius:14px;}
+    .adm-col{padding:0 0 12px;}
+    .adm-side{position:static;max-width:none;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
   }
@@ -599,9 +608,7 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
-    .pq{margin:18px -18px 0;padding:0 18px 2px;}
-    .rv,.dbudget,.an-two{grid-template-columns:minmax(0,1fr);}
-    .rv .adm-phone{max-width:300px;width:100%;margin:0 auto;}
+    .dbudget,.an-two{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
     .ib-list{border-right:0;border-bottom:1px solid var(--line);}
@@ -1060,26 +1067,23 @@ function mediaHTML(s){
 
 function secPending(id){
   const d=dash(id);
-  if(!d.pending.length) return `<section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section>`;
+  if(!d.pending.length) return null;
   d.pick=Math.min(d.pick,d.pending.length-1);
-  const s=d.pending[d.pick];
+  const s=d.pending[d.pick], n=d.pending.length;
   const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
   const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
-  return `<section class="dcard">${dhead('Pending approvals','Review each post before it goes live',`<span class="count">${d.pending.length} waiting</span>`)}
-    <div class="pq" role="tablist" aria-label="Submissions">${d.pending.map((p,i)=>`<button type="button" role="tab" aria-selected="${i===d.pick}" class="${i===d.pick?'on':''}" data-pick="${i}"><img data-a="${p.av}" data-label="${p.name}" alt=""><span><b>${p.name}</b><small>${p.submitted}</small></span></button>`).join('')}</div>
-    <div class="rv">
-      <div class="adm-phone">${mediaHTML(s)}</div>
-      <div class="rv-info">
-        <div class="adm-sec">
-          <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-          <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-          <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
-        </div>
-        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted} · for ${PLATNAME[s.followers[0][0]]}</span></div>
-        <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
-        <div class="rv-actions"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-sec" type="button" data-act="changes">Request changes</button></div>
+  return `<div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
+    <div class="adm-col adm-right"><div class="adm-side">
+      <div class="pn"><span class="adm-eyebrow">Pending approval · ${d.pick+1} of ${n}</span>${n>1?`<div><button type="button" data-pick="${d.pick-1}" aria-label="Previous submission"${d.pick?'':' disabled'}>${CPICON.chevL}</button><button class="next" type="button" data-pick="${d.pick+1}" aria-label="Next submission"${d.pick<n-1?'':' disabled'}>${CPICON.chevL}</button></div>`:''}</div>
+      <div class="adm-sec">
+        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
+        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
+        <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
       </div>
-    </div></section>`;
+      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
+      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
+      <div class="rv-actions"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-sec" type="button" data-act="changes">Request changes</button></div>
+    </div></div>`;
 }
 
 function secApproved(id){
@@ -1141,7 +1145,12 @@ function secInbox(id){
 }
 
 function viewAdmin(id,sec){
-  const body={details:secDetails,pending:secPending,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  if(sec==='pending'){
+    const review=secPending(id);
+    return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
+      :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
+  }
+  const body={details:secDetails,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
