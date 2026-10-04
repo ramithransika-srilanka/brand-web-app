@@ -319,8 +319,6 @@
   .brief p{font-size:14px;line-height:21px;color:var(--grey-800);max-width:620px;}
   .brief .cp-tags{justify-content:flex-start;}
   .brief .cp-tag{background:var(--grey-100);}
-  .dbudget{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:18px;}
-  .dbudget .cp-list{padding:0;}
 
   /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
   /* Three columns with equal outer tracks so the post sits in the middle of the page */
@@ -444,15 +442,16 @@
   .adm-joined{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--grey-800);}
   .adm-joined .cp-avatars img{border-color:#fff;}
   .adm-joined b{font-weight:600;}
-  .adm-budget{display:flex;flex-direction:column;gap:8px;}
-  .adm-budget .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
-  .adm-budget .spent{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .adm-budget .of{font-size:14px;font-weight:500;color:var(--grey-600);font-variant-numeric:tabular-nums;}
-  .adm-budget .pct{font-size:14px;font-weight:600;color:var(--blue-600);font-variant-numeric:tabular-nums;}
+  /* Budget: spent and total over the bar, percent and remaining under it; figures match the stat tile numbers */
+  .adm-budget{display:flex;flex-direction:column;gap:8px;margin-top:18px;font-variant-numeric:tabular-nums;}
+  .adm-budget .row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;}
+  .adm-budget .row>:last-child{margin-left:auto;}
+  .adm-budget .kv{display:flex;align-items:baseline;gap:8px;white-space:nowrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .adm-budget .kv b,.adm-budget .pct{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);}
+  .adm-budget .pct{color:var(--blue-500);}
   .adm-bar{height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
   .adm-bar i{display:block;height:100%;width:var(--p);border-radius:inherit;background:var(--blue-500);transform-origin:left;animation:barIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
   @keyframes barIn{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-  .adm-budget .foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
 
   /* Centre: the post, framed like a phone */
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
@@ -583,6 +582,8 @@
     .cp-cmetrics,.cp-questions{padding-left:18px;}
   }
   @media (max-width:767px){
+    /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
+    .adm-budget .kv b,.adm-budget .pct,.btiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}
     :root{--gutter:12px;}
     .topbar{grid-template-columns:auto auto minmax(0,1fr);gap:6px;}
     .brand svg{height:16px;}
@@ -599,7 +600,7 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
-    .dbudget,.an-two{grid-template-columns:minmax(0,1fr);}
+    .an-two{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
     .ib-list{border-right:0;border-bottom:1px solid var(--line);}
@@ -1053,6 +1054,11 @@ function secDetails(id){
   const c=C[id], d=dash(id), base=`#/campaign/${id}/admin/`;
   const spent=num(c.spent), pct=Math.min(100,Math.round(spent/c.budgetN*100));
   const views=d.approved.reduce((a,p)=>a+p.views,0);
+  /* Budget figures from the posts: payout = base price + performance rate per 1K views, capped at the max earning */
+  const subs=d.pending.length+d.approved.length, engs=Math.round(d.approved.reduce((a,p)=>a+p.views*p.eng/100,0));
+  const [basePay,capPay,perfPay]=c.list.map(r=>num(String(r[1]).split('/')[0]));
+  const maxPaid=d.approved.reduce((m,p)=>Math.max(m,Math.min(capPay,basePay+Math.round(p.views/1000*perfPay))),0);
+  const rs=n=>'Rs. '+n.toLocaleString('en-US');
   const att=[
     d.pending.length&&['review',`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,`Creators are waiting on you. <a class="dlink" href="${base}pending">Review now</a>`],
     unreadN(d)&&['inbox',`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,`Quick replies keep your response time badge. <a class="dlink" href="${base}inbox">Open inbox</a>`],
@@ -1066,14 +1072,17 @@ function secDetails(id){
         <a class="tile" href="${base}approved"><span class="n">${d.approved.length}</span><span class="l">Approved content</span><span class="d">${d.approved.length?'Live on '+new Set(d.approved.map(p=>p.platform)).size+' platforms':'Nothing live yet'}</span></a>
         <a class="tile" href="${base}analytics"><span class="n">${fmtN(views)}</span><span class="l">Total views</span><span class="d">${views?'<span class="up">▲ 32%</span> last 7 days':'N/A'}</span></a>
       </div></section>
-    <section class="dcard">${dhead('Budget','',`<span class="count">${pct}% spent</span>`)}
-      <div class="dbudget">
-        <div class="adm-budget">
-          <div class="row"><span class="spent">${c.spent}</span><span class="of">of ${c.budget}</span></div>
-          <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
-          <div class="foot"><span>Spent</span><span>${c.available} available</span></div>
-        </div>
-        <div class="cp-list">${c.list.slice(0,3).map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+    <section class="dcard">${dhead('Budget')}
+      <div class="adm-budget">
+        <div class="row"><span class="kv"><b>${c.spent}</b>Spent</span><span class="kv">Total<b>${c.budget}</b></span></div>
+        <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
+        <div class="row"><span class="pct">${pct}%</span><span class="kv">Remaining<b>${rs(Math.max(0,c.budgetN-spent))}</b></span></div>
+      </div>
+      <div class="tiles btiles">
+        <div class="tile"><span class="n">${subs?rs(Math.round(spent/subs)):'N/A'}</span><span class="l">Avg per content</span><span class="d">${subs} submission${subs===1?'':'s'}</span></div>
+        <div class="tile"><span class="n">${views?rs(Math.round(spent/views*1000)):'N/A'}</span><span class="l">Per 1000 reach</span><span class="d">Avg on all platforms</span></div>
+        <div class="tile"><span class="n">${engs?rs(Math.round(spent/engs)):'N/A'}</span><span class="l">Cost per engagement</span><span class="d">Avg on all platforms</span></div>
+        <div class="tile"><span class="n">${maxPaid?rs(maxPaid):'N/A'}</span><span class="l">Max paid for content</span><span class="d">${maxPaid?`<a class="dlink" href="${base}approved">View content</a>`:'Nothing live yet'}</span></div>
       </div></section>
     <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign')}
       <div class="brief">
