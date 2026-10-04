@@ -276,8 +276,11 @@
   .dsh-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
   .dsh-when{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;}
   .dsh-when i{width:3px;height:3px;border-radius:100px;background:currentColor;}
-  .dsh-status{padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;background:var(--blue-100);color:var(--blue-700);text-transform:capitalize;}
-  .dsh-status.completed{background:var(--grey-100);color:var(--grey-700);}
+  /* Status as coloured text with a matching dot, no pill */
+  .dsh-status{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);text-transform:capitalize;}
+  .dsh-status::before{content:"";width:8px;height:8px;border-radius:100px;background:currentColor;}
+  .dsh-status.active{color:var(--good);}
+  .dsh-status.completed{color:var(--grey-600);}
   .dsh-viewas{display:inline-flex;align-items:center;gap:7px;height:34px;margin-top:6px;padding:0 15px 0 12px;border:1px solid var(--grey-800);border-radius:100px;font-size:14px;font-weight:600;color:var(--grey-800);transition:background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .dsh-viewas svg{width:17px;height:17px;}
   .dsh-viewas:hover{background:var(--grey-100);}
