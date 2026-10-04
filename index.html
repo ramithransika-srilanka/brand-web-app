@@ -115,10 +115,6 @@
   .cardwrap{padding:9px;}
   .card-img{position:relative;height:180px;border-radius:15px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
   .card-img>.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-  .card-logobar{position:relative;display:flex;align-items:center;justify-content:space-between;padding:12px;}
-  .card-logobar .logo{width:27px;height:27px;border-radius:75px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
-  .heart{width:24px;height:24px;color:#fff;}
-  .heart path{fill:rgba(18,18,18,.6);}
   .overlaybar{position:absolute;bottom:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 17px;}
   .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:15px;z-index:0;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
   .overlaybar>*{position:relative;z-index:1;}
@@ -281,7 +277,8 @@
   .cp-questions{padding:6px 18px 0 6px;}
 
   /* ================= Admin dashboard: campaign card + sub menu on the left, section on the right ================= */
-  body.dash{background:var(--page-bg);}
+  body.dash{background:var(--page-bg);--subbar:0px;}
+  body.dash .subnav{display:none;}
   .dsh{display:grid;grid-template-columns:264px minmax(0,1fr);gap:24px;align-items:start;padding-top:6px;}
   .dcard{background:#fff;border:1px solid var(--line);border-radius:12px;}
   .dsh-side{position:sticky;top:calc(var(--header) + var(--subbar) + 24px);overflow:hidden;}
@@ -301,9 +298,6 @@
   .dsh-menu a:hover{background:var(--page-bg);color:var(--grey-800);}
   .dsh-menu a.on{border-left-color:var(--blue-500);color:var(--blue-600);font-weight:600;}
   .badge-n{min-width:20px;height:20px;padding:0 6px;border-radius:100px;display:inline-flex;align-items:center;justify-content:center;background:var(--pink-500);color:#fff;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;}
-  .dsh-foot{padding:12px 18px 16px;border-top:1px solid var(--line);}
-  .dsh-foot a{font-size:14px;font-weight:600;color:var(--grey-600);transition:color .2s ease;}
-  .dsh-foot a:hover{color:var(--grey-800);}
 
   .dsh-main{display:flex;flex-direction:column;gap:18px;min-width:0;}
   .dsh-main>.dcard{padding:24px;}
@@ -574,7 +568,6 @@
     .dsh-menu::-webkit-scrollbar{display:none;}
     .dsh-menu a{border-left:0;border-bottom:3px solid transparent;padding:0 12px;min-height:46px;}
     .dsh-menu a.on{border-bottom-color:var(--blue-500);}
-    .dsh-foot{display:none;}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
     html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
@@ -624,7 +617,7 @@
   <div class="top-right">
     <button class="hicon" id="search-btn" data-search aria-label="Search" aria-expanded="false"></button>
     <button class="hicon" data-pop="notifs" aria-label="Notifications"><span id="bell-ic"></span><i class="dot"></i></button>
-    <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="pfAvatar" data-label="B" alt=""></a>
+    <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="uberLogo" data-label="Ub" alt="Uber"></a>
   </div>
 </header>
 <nav class="subnav" id="subnav" aria-label="Campaign status">
@@ -793,13 +786,12 @@ const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span
 
 function cardHTML(id){
   const c=C[id];
-  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}">
+  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/details">
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
-      <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
     </div>
     <div class="card-content">
-      <div class="ctitle" data-go="#/campaign/${id}">${c.title}</div>${timeHTML(c)}
+      <div class="ctitle" data-go="#/campaign/${id}/admin/details">${c.title}</div>${timeHTML(c)}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
     </div></div>`;
@@ -1032,7 +1024,6 @@ function sideHTML(id,sec){
       <a class="dsh-viewas" href="#/campaign/${id}">${EYEIC}View as creator</a>
     </div>
     <nav class="dsh-menu" aria-label="Campaign admin">${SECTIONS.map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
-    <div class="dsh-foot"><a data-act="soon">Edit campaign</a></div>
   </aside>`;
 }
 const empty=(t,m)=>`<div class="dempty"><b>${t}</b><span>${m}</span></div>`;
