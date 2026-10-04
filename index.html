@@ -790,13 +790,13 @@ const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span
 
 function cardHTML(id){
   const c=C[id];
-  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/pending">
+  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/details">
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
       <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
     </div>
     <div class="card-content">
-      <div class="ctitle" data-go="#/campaign/${id}/admin/pending">${c.title}</div>${timeHTML(c)}
+      <div class="ctitle" data-go="#/campaign/${id}/admin/details">${c.title}</div>${timeHTML(c)}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
     </div></div>`;
