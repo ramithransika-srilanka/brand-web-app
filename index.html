@@ -74,10 +74,6 @@
   /* On a campaign page the status bar becomes a blue notice */
   .viewbar{display:none;position:sticky;top:var(--header);z-index:19;min-height:var(--subbar);grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;padding:0 max(var(--gutter),calc((100% - var(--shell)) / 2));background:var(--blue-500);font-size:14px;font-weight:500;line-height:20px;color:#fff;text-align:center;}
   .viewbar .msg{grid-column:2;}
-  .viewbar-back{grid-column:1;justify-self:start;display:flex;align-items:center;gap:3px;height:26px;padding:0 9px 0 5px;margin-left:-5px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .viewbar-back svg{width:17px;height:17px;}
-  .viewbar-back:hover{background:rgba(255,255,255,.14);}
-  .viewbar-back:active{transform:scale(.96);}
   .viewbar-btn{grid-column:3;justify-self:end;display:inline-flex;align-items:center;height:26px;padding:0 11px;border:1px solid #fff;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .viewbar-btn:hover{background:#fff;color:var(--blue-500);}
   .viewbar-btn:active{transform:scale(.96);}
@@ -181,23 +177,12 @@
 
   .cp{display:grid;grid-template-columns:minmax(0,555px);justify-content:center;align-items:start;margin:-18px auto -60px;}
   /* Main column sits between two full-height divider lines */
-  .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
-  .cp-main{display:flex;flex-direction:column;min-width:0;padding-bottom:60px;}
+  .cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
+  .cp-main{display:flex;flex-direction:column;min-width:0;padding-top:18px;padding-bottom:60px;}
   .cp-hero{position:relative;height:225px;border-radius:15px 15px 0 0;background:var(--grey-200);}
   .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-27px;width:54px;height:54px;border-radius:75px;border:3px solid #fff;overflow:hidden;background:#fff;}
   .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
-  /* Top bar above the main image: back link on the left, like + share on the right */
-  .cp-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;padding-bottom:12px;}
-  .cp-back{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 0;font-size:14px;font-weight:500;line-height:19px;color:var(--grey-600);transition:color .2s ease;}
-  .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
-  .cp-back:hover{color:var(--grey-800);}
-  .cp-back:hover svg{transform:translateX(-2px);}
-  .cp-actions{display:flex;gap:9px;align-items:center;}
-  .cp-round{width:30px;height:30px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .cp-round svg{width:20px;height:20px;}
-  .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
-  .cp-round:active{transform:scale(.94);}
   .cp-details{display:flex;flex-direction:column;gap:9px;padding:39px 0 18px;}
   .cp-title{font-size:22px;font-weight:600;line-height:26px;letter-spacing:-.02em;color:var(--grey-800);}
   .cp-details>.cp-list{margin-top:9px;padding:6px 0 0;border-radius:0;}
@@ -336,11 +321,13 @@
   .dbudget .cp-list{padding:0;}
 
   /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
-  .dsh.pend{grid-template-columns:288px minmax(0,1fr);gap:0;margin:-24px 0 -60px;padding-top:0;}
-  .dsh.pend>.dsh-side{align-self:start;margin:24px 24px 48px 0;}
+  /* Three columns with equal outer tracks so the post sits in the middle of the page */
+  .dsh.pend{grid-template-columns:minmax(288px,1fr) auto minmax(0,1fr);gap:0;margin:-24px 0 -60px;padding-top:0;}
+  .dsh.pend>.dsh-side{align-self:start;width:264px;margin:24px 24px 48px 0;}
+  .pfeed{grid-column:2/4;display:grid;grid-template-columns:subgrid;}
   /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
   html:has(.pfeed){scroll-snap-type:y mandatory;}
-  .pitem{display:grid;grid-template-columns:auto minmax(0,1fr);min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .pitem{grid-column:1/-1;display:grid;grid-template-columns:subgrid;min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
   .pitem+.pitem .adm-center{border-top:1px solid var(--grey-200);}
   .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
   .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
@@ -571,7 +558,8 @@
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
     html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
-    .dsh.pend>.dsh-side{margin:0;}
+    .dsh.pend>.dsh-side{width:auto;margin:0;}
+    .pfeed{grid-column:auto;display:block;}
     .pitem{grid-template-columns:minmax(0,1fr);gap:18px;min-height:0;padding-bottom:18px;}
     .pitem+.pitem{padding-top:18px;border-top:1px solid var(--grey-200);}
     .adm-center,.pitem+.pitem .adm-center{border:0;}
@@ -596,8 +584,6 @@
     .cp-main{padding-bottom:24px;}
     .viewbar{grid-template-columns:auto minmax(0,1fr) auto;gap:6px;padding-top:6px;padding-bottom:6px;text-align:left;}
     .viewbar .msg{grid-column:2;}
-    .viewbar-back .lbl{display:none;}
-    .viewbar-back{padding:0 5px;}
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
@@ -625,7 +611,7 @@
   <a href="#/completed" data-tab="completed">Completed</a>
   <a href="#/upcoming" data-tab="upcoming">Upcoming</a>
 </nav>
-<div class="viewbar"><a class="viewbar-back" id="viewbar-back" href="#/active" aria-label="Back to campaigns"><span id="viewbar-back-ic"></span><span class="lbl">Back to campaigns</span></a><span class="msg" role="status" id="viewbar-msg">You are viewing this page as a creator</span><a class="viewbar-btn" id="viewbar-switch" href="#/active">Switch to admin</a></div>
+<div class="viewbar"><span class="msg" role="status" id="viewbar-msg">You are viewing this page as a creator</span><a class="viewbar-btn" id="viewbar-switch" href="#/active">Switch to admin</a></div>
 <main class="content" id="view"></main>
 
 <div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
@@ -828,7 +814,6 @@ function renderFeed(){
 
 /* ---------- Campaign page (middle column of the creator campaign page) ---------- */
 const CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
 function viewCampaign(id){
   const c=C[id];
   const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
@@ -847,10 +832,6 @@ function viewCampaign(id){
       </div></div>`
     : '';
   return `<div class="cp">
-    <div class="cp-top">
-      <a class="cp-back" href="#/${c.status}" aria-label="Back to Campaigns">${BACKARROW}<span>Campaigns</span></a>
-      <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
-    </div>
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
         <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
@@ -1254,7 +1235,6 @@ function renderTopNav(){
   document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
   document.getElementById('search-btn').innerHTML=MICON.search;
   document.getElementById('bell-ic').innerHTML=MICON.bell;
-  document.getElementById('viewbar-back-ic').innerHTML=CPICON.chevL;
 }
 
 /* Search lives under the Campaigns heading; the header icon opens and closes it */
@@ -1296,6 +1276,7 @@ function rerender(){
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;
   /* On narrow screens the sub menu is a scrolling row: keep the open section in view */
   const n=document.querySelector('.dsh-menu'),a=n&&n.querySelector('a.on');if(a&&n.scrollWidth>n.clientWidth) n.scrollLeft=a.offsetLeft-(n.clientWidth-a.offsetWidth)/2;}
+let lastDash=null;
 function route(){
   const {root,id,admin,sec}=parseHash();
   const campaign=!!id;
@@ -1307,7 +1288,6 @@ function route(){
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin);
   if(campaign&&!admin){
-    document.getElementById('viewbar-back').href='#/'+C[id].status;
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
     const sw=document.getElementById('viewbar-switch');
     sw.textContent=admin?'Switch to creator':'Switch to admin';
@@ -1315,7 +1295,11 @@ function route(){
   }
   bindAssets(view);
   if(admin){mountMedia();scrollThread();}
-  view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
+  /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
+  const inDash=admin&&lastDash===id;lastDash=admin?id:null;
+  const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side)')]:[view];
+  view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
+  window.scrollTo({top:0,behavior:'instant'});
   renderFeed();
   if(campaign) document.getElementById('search-btn').classList.remove('on');
   else if(state.searchOpen) setSearch(true);
