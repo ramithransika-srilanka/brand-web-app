@@ -8,6 +8,10 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser â
   campaigns (`#/active`, `#/completed`, `#/upcoming`). Each tab is the explore page recreated from the creator web app's desktop explore page: category filters
   (All / Price / Mobility / Food / Entertainment / Lifestyle), header search (`/` to open, `Esc` to close),
   loading skeletons, empty state and the notifications popover.
+- **Campaign page** â€” click any campaign (`#/campaign/<id>`). The status bar turns into a blue
+  "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
+  web app's campaign page: hero, title, best-suited-for tags, budget (or event details), requirements and
+  "Campaign created by".
 
 ## Assets
 
