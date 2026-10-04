@@ -4,7 +4,8 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
 
 ## Pages
 
-- **Campaigns (explore)** — recreated from the creator web app's desktop explore page: category filters
+- **Campaigns** — a dark secondary bar under the top menu switches between Active, Completed and Upcoming
+  campaigns (`#/active`, `#/completed`, `#/upcoming`). Each tab is the explore page recreated from the creator web app's desktop explore page: category filters
   (All / Price / Mobility / Food / Entertainment / Lifestyle), header search (`/` to open, `Esc` to close),
   loading skeletons, empty state and the notifications popover.
 

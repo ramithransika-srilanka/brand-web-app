@@ -36,7 +36,7 @@ const ctx = {};
 vm.runInNewContext(`${block('const A = {')}\n${block('const ICON = {')}\nthis.A=A;this.ICON=ICON;`, ctx);
 
 const A = pick(ctx.A, [
-  'card1', 'card2', 'card3', 'sbHero', 'burgerPhoto', 'grid3',          // campaign photos
+  'card1', 'card2', 'card3', 'sbHero', 'burgerPhoto', 'grid2', 'grid3', 'grid6', // campaign photos
   'logo1', 'logo2', 'logo3', 'starbucks', 'burgerking', 'dominos',      // brand logos
   'avatar', 'pfAvatar', 'pickmeLogo', 'uberLogo', 'legoLogo', 'pepsi',  // header + notifications
 ], 'A');
