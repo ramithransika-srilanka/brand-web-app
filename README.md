@@ -10,8 +10,8 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser â
   loading skeletons, empty state and the notifications popover.
 - **Campaign page** â€” click any campaign (`#/campaign/<id>`). The status bar turns into a blue
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
-  web app's campaign page: hero, title, best-suited-for tags, budget (or event details), requirements and
-  "Campaign created by".
+  web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,
+  best-suited-for tags, event details for events, requirements, "Campaign created by" and Join Campaign.
 
 ## Assets
 
