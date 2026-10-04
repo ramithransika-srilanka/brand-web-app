@@ -364,8 +364,9 @@
   .ap-media::after{content:"";position:absolute;inset:auto 0 0;height:64px;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
   .ap-kind{position:absolute;top:8px;left:8px;z-index:1;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
   .ap-kind.new{background:var(--blue-500);}
-  .ap-views{position:absolute;left:10px;bottom:9px;z-index:1;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;line-height:16px;color:#fff;font-variant-numeric:tabular-nums;}
-  .ap-views svg{width:13px;height:13px;}
+  .ap-views{position:absolute;left:10px;bottom:9px;z-index:1;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:#fff;font-variant-numeric:tabular-nums;}
+  /* The eye only fills the middle of its 24px box, so 14px draws it at the height of the 12px numerals */
+  .ap-views svg{width:14px;height:14px;}
   .ap-by{display:flex;align-items:center;gap:8px;min-width:0;}
   .ap-by img{width:24px;height:24px;border-radius:100px;object-fit:cover;flex-shrink:0;}
   .ap-by div{min-width:0;}
