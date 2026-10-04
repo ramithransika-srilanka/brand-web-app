@@ -397,11 +397,12 @@
   .chart-col:hover::before,.chart-col:focus-visible::before{opacity:1;}
   .chart-col:hover i,.chart-col:focus-visible i{opacity:1;transform:none;}
   .chart-tip{position:absolute;bottom:calc(var(--h) + 12px);left:50%;z-index:2;transform:translate(-50%,4px);padding:6px 10px;border-radius:8px;background:var(--grey-800);color:#fff;font-size:12px;line-height:16px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .chart-col.l .chart-tip{left:0;transform:translate(0,4px);}
-  .chart-col.r .chart-tip{left:auto;right:0;transform:translate(0,4px);}
+  /* Tooltips near either end anchor to that side so they never stick out past the card on narrow screens */
+  .chart-col.tl .chart-tip{left:0;transform:translate(0,4px);}
+  .chart-col.tr .chart-tip{left:auto;right:0;transform:translate(0,4px);}
   .chart-tip b{font-weight:600;font-variant-numeric:tabular-nums;}
   .chart-col:hover .chart-tip,.chart-col:focus-visible .chart-tip{opacity:1;transform:translate(-50%,0);}
-  .chart-col.l:hover .chart-tip,.chart-col.l:focus-visible .chart-tip,.chart-col.r:hover .chart-tip,.chart-col.r:focus-visible .chart-tip{transform:none;}
+  .chart-col.tl:hover .chart-tip,.chart-col.tl:focus-visible .chart-tip,.chart-col.tr:hover .chart-tip,.chart-col.tr:focus-visible .chart-tip{transform:none;}
   .ch-picks{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
   .ch-picks .an-plat:first-child .an-plat-menu{left:0;right:auto;}
   .chart-x{grid-column:2;display:flex;justify-content:space-between;margin-top:8px;font-size:12px;line-height:16px;color:var(--grey-600);}
@@ -658,15 +659,15 @@
     .dsh-toggle svg{width:20px;height:20px;}
     .dsh-toggle:active{transform:scale(.96);}
     .dsh-scrim{display:block;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s ease;animation:none;}
-    .dsh-side,.dsh.pend>.dsh-side{position:fixed;z-index:41;top:0;bottom:0;left:0;width:min(320px,86vw);margin:0;display:block;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:0 16px 16px 0;
+    .dsh-side,.dsh.pend>.dsh-side{position:fixed;z-index:41;top:0;bottom:0;left:0;align-self:stretch;width:min(320px,86vw);margin:0;display:block;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:0 16px 16px 0;
       transform:translateX(-100%);visibility:hidden;animation:none;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s .4s;}
     body.side-open{overflow:hidden;}
     body.side-open .dsh-scrim{opacity:1;pointer-events:auto;}
-    body.side-open .dsh-side{transform:none;visibility:visible;box-shadow:4px 0 24px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
+    body.side-open .dsh-side,body.side-open .dsh.pend>.dsh-side{transform:none;visibility:visible;box-shadow:4px 0 24px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
     .dsh-close{display:flex;align-items:center;justify-content:center;position:absolute;z-index:2;top:12px;right:12px;width:32px;height:32px;border-radius:100px;background:#fff;color:var(--grey-800);}
     .dsh-close svg{width:18px;height:18px;}
     .dsh-side .dsh-menu a{min-height:48px;}
-    @media(prefers-reduced-motion:reduce){.dsh-side,body.side-open .dsh-side{transition:none;}}
+    @media(prefers-reduced-motion:reduce){.dsh-side,.dsh.pend>.dsh-side,body.side-open .dsh-side,body.side-open .dsh.pend>.dsh-side{transition:none;}}
     /* Inbox fills the screen below the menu button (54px bar + 12px gap) with an 18px margin under it */
     .dsh-main>.ib{height:calc(100dvh - var(--header) - 84px);min-height:420px;}
     .content:has(.ib){padding-bottom:18px;}
@@ -1380,7 +1381,7 @@ function chartBody(id){
         <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <defs><linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue-500)" stop-opacity=".16"/><stop offset="1" stop-color="var(--blue-500)" stop-opacity="0"/></linearGradient></defs>
           <path class="ar" d="${line} L${pt[13][0]} 100 L${pt[0][0]} 100Z"/><path class="ln" d="${line}"/></svg>
-        ${vals.map((v,i)=>`<div class="chart-col${i===0?' l':i===13?' r':''}" role="listitem" tabindex="0" style="--h:${(v/top*100).toFixed(1)}%" aria-label="${label(i)}: ${say(v)}"><i></i><span class="chart-tip">${label(i)} · <b>${say(v)}</b></span></div>`).join('')}
+        ${vals.map((v,i)=>`<div class="chart-col${i===13?' r':''}${i<3?' tl':i>10?' tr':''}" role="listitem" tabindex="0" style="--h:${(v/top*100).toFixed(1)}%" aria-label="${label(i)}: ${say(v)}"><i></i><span class="chart-tip">${label(i)} · <b>${say(v)}</b></span></div>`).join('')}
       </div>
       <div class="chart-x" aria-hidden="true"><span>${label(0)}</span><span>${label(7)}</span><span>Today</span></div>
     </div>`;
