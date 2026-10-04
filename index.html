@@ -104,21 +104,21 @@
   .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:shimmer 1.3s infinite;}
   @keyframes shimmer{to{transform:translateX(100%);}}
   .sk-card{display:flex;flex-direction:column;gap:6px;padding:9px;}
-  .sk-card .img{height:180px;border-radius:15px;}
+  .sk-card .img{height:180px;border-radius:12px;}
   .sk-card .l1{height:20px;width:80%;margin:12px 12px 0;}
   .sk-card .l2{height:12px;width:40%;margin:0 12px;}
   .sk-card .l3{height:6px;margin:3px 12px 12px;border-radius:75px;}
 
   /* ================= Campaign card ================= */
   .cardwrap{padding:9px;}
-  .card-img{position:relative;height:180px;border-radius:15px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
+  .card-img{position:relative;height:180px;border-radius:12px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
   .card-img>.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .card-logobar{position:relative;display:flex;align-items:center;justify-content:space-between;padding:12px;}
   .card-logobar .logo{width:27px;height:27px;border-radius:75px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
   .heart{width:24px;height:24px;color:#fff;}
   .heart path{fill:rgba(18,18,18,.6);}
   .overlaybar{position:absolute;bottom:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 17px;}
-  .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:15px;z-index:0;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:12px;z-index:0;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
   .overlaybar>*{position:relative;z-index:1;}
   .details{display:flex;gap:5px;align-items:center;}
   .details svg{width:14px;height:14px;color:#fff;}
