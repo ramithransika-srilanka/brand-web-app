@@ -642,8 +642,9 @@
     .adm-center,.pitem+.pitem .adm-center{border:0;align-items:center;}
     .adm-phone{position:static;width:min(100%,400px);flex:none;border-radius:12px;}
     .adm-col{padding:0 0 12px;}
-    /* Pending approvals: creator details first, then the reel to approve or reject */
-    .pitem[data-on] .adm-right{order:-1;}
+    /* Pending approvals and approved posts: creator details first, then the reel */
+    .pitem .adm-right{order:-1;}
+    .pitem{scroll-margin-top:calc(var(--header) + 54px);}
     .adm-side{position:static;max-width:none;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
@@ -1574,7 +1575,8 @@ function route(){
   view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
   window.scrollTo({top:0,behavior:'instant'});
   /* Opening an approved post lands on it inside the feed */
-  const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) open.scrollIntoView({block:'start',behavior:'instant'});
+  /* When stacked, the post's creator details sit above its reel, so land on the whole item */
+  const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) (matchMedia('(max-width:1023px)').matches?open.closest('.pitem'):open).scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
   /* The search button only belongs on the Explore page */
   const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs;
