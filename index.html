@@ -630,15 +630,9 @@
   @media (max-width:1023px){
     :root{--gutter:18px;}
     .dsh{grid-template-columns:minmax(0,1fr);}
-    .dsh-side{position:static;display:grid;grid-template-columns:minmax(0,1fr);}
-    .dsh-menu{flex-direction:row;overflow-x:auto;padding:0 6px;scrollbar-width:none;}
-    .dsh-menu::-webkit-scrollbar{display:none;}
-    .dsh-menu a{border-left:0;border-bottom:3px solid transparent;padding:0 12px;min-height:46px;}
-    .dsh-menu a.on{border-bottom-color:var(--blue-500);}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
     html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
-    .dsh.pend>.dsh-side{width:auto;margin:0;}
     .pfeed{grid-column:auto;display:block;}
     .pitem{grid-template-columns:minmax(0,1fr);gap:18px;padding-bottom:18px;}
     /* Full-width row, so the reel's size never depends on how far its image has loaded: every reel is the same fixed width */
@@ -651,6 +645,22 @@
     .adm-side{position:static;max-width:none;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
+    /* Left column becomes a drawer, opened from a bar pinned under the top menu */
+    .dsh,.dsh.pend{gap:12px;padding-top:0;}
+    .dsh-bar{display:flex;position:sticky;top:var(--header);z-index:15;margin:-18px calc(var(--gutter) * -1) 0;padding:9px var(--gutter);background:var(--page-bg);animation:none;}
+    .dsh-toggle{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px 0 12px;border-radius:100px;background:var(--grey-800);color:#fff;font-size:15px;font-weight:500;line-height:20px;transition:transform .2s cubic-bezier(.16,1,.3,1);}
+    .dsh-toggle svg{width:20px;height:20px;}
+    .dsh-toggle:active{transform:scale(.96);}
+    .dsh-scrim{display:block;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s ease;animation:none;}
+    .dsh-side,.dsh.pend>.dsh-side{position:fixed;z-index:41;top:0;bottom:0;left:0;width:min(320px,86vw);margin:0;display:block;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:0 16px 16px 0;
+      transform:translateX(-100%);visibility:hidden;animation:none;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s .4s;}
+    body.side-open{overflow:hidden;}
+    body.side-open .dsh-scrim{opacity:1;pointer-events:auto;}
+    body.side-open .dsh-side{transform:none;visibility:visible;box-shadow:4px 0 24px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
+    .dsh-close{display:flex;align-items:center;justify-content:center;position:absolute;z-index:2;top:12px;right:12px;width:32px;height:32px;border-radius:100px;background:#fff;color:var(--grey-800);}
+    .dsh-close svg{width:18px;height:18px;}
+    .dsh-side .dsh-menu a{min-height:48px;}
+    @media(prefers-reduced-motion:reduce){.dsh-side,body.side-open .dsh-side{transition:none;}}
   }
   @media (max-width:767px){
     /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
@@ -671,24 +681,6 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
-    /* Left column becomes a drawer, opened from a bar pinned under the top menu */
-    .dsh,.dsh.pend{gap:12px;padding-top:0;}
-    .dsh-bar{display:flex;position:sticky;top:var(--header);z-index:15;margin:-18px calc(var(--gutter) * -1) 0;padding:9px var(--gutter);background:var(--page-bg);animation:none;}
-    .dsh-toggle{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px 0 12px;border-radius:100px;background:var(--grey-800);color:#fff;font-size:15px;font-weight:500;line-height:20px;transition:transform .2s cubic-bezier(.16,1,.3,1);}
-    .dsh-toggle svg{width:20px;height:20px;}
-    .dsh-toggle:active{transform:scale(.96);}
-    .dsh-scrim{display:block;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s ease;animation:none;}
-    .dsh-side,.dsh.pend>.dsh-side{position:fixed;z-index:41;top:0;bottom:0;left:0;width:min(320px,86vw);margin:0;display:block;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:0 16px 16px 0;
-      transform:translateX(-100%);visibility:hidden;animation:none;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s .4s;}
-    body.side-open{overflow:hidden;}
-    body.side-open .dsh-scrim{opacity:1;pointer-events:auto;}
-    body.side-open .dsh-side{transform:none;visibility:visible;box-shadow:4px 0 24px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
-    .dsh-close{display:flex;align-items:center;justify-content:center;position:absolute;z-index:2;top:12px;right:12px;width:32px;height:32px;border-radius:100px;background:#fff;color:var(--grey-800);}
-    .dsh-close svg{width:18px;height:18px;}
-    .dsh-side .dsh-menu{flex-direction:column;overflow:visible;padding:8px 0;}
-    .dsh-side .dsh-menu a{border-bottom:0;border-left:3px solid transparent;padding:0 18px 0 15px;min-height:48px;}
-    .dsh-side .dsh-menu a.on{border-left-color:var(--blue-500);}
-    @media(prefers-reduced-motion:reduce){.dsh-side,body.side-open .dsh-side{transition:none;}}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
     .ib-list{border-right:0;border-bottom:1px solid var(--line);}
@@ -1552,9 +1544,7 @@ function rerender(){
   const h=parseHash(); if(!h.admin) return;
   stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
 }
-function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;
-  /* On narrow screens the sub menu is a scrolling row: keep the open section in view */
-  const n=document.querySelector('.dsh-menu'),a=n&&n.querySelector('a.on');if(a&&n.scrollWidth>n.clientWidth) n.scrollLeft=a.offsetLeft-(n.clientWidth-a.offsetWidth)/2;}
+function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
   const {root,id,admin,sec,post}=parseHash();
