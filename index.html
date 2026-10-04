@@ -1037,7 +1037,7 @@ function secDetails(id){
         </div>
         <div class="cp-list">${c.list.slice(0,3).map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
       </div></section>
-    <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign',`<a class="dlink" data-act="soon">Edit</a>`)}
+    <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign')}
       <div class="brief">
         <p>${c.reqDesc}</p>
         <h4>Best suited for</h4><div class="cp-tags">${c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('')}</div>
