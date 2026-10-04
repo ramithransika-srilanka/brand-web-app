@@ -287,8 +287,6 @@
   .adm-sec+.adm-sec{padding-top:24px;border-top:1px solid var(--grey-200);}
 
   /* Left: campaign */
-  .adm-brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--grey-600);}
-  .adm-brand img{width:32px;height:32px;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--grey-200);}
   .adm-title{font-size:24px;font-weight:600;line-height:28px;letter-spacing:-.022em;color:var(--grey-800);text-wrap:balance;}
   .adm-meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
   .adm-meta span{display:flex;align-items:center;gap:6px;white-space:nowrap;}
@@ -799,7 +797,6 @@ function viewAdmin(id){
   return `<div class="adm">
     <div class="adm-col adm-left"><div class="adm-side">
       <div class="adm-sec">
-        <div class="adm-brand"><img data-a="${c.logo}" data-label="${c.abbr}" alt="">${c.brand}</div>
         <h1 class="adm-title">${c.title}</h1>
         <div class="adm-meta">
           ${c.event?`<span>${CPICON.calendar}${c.time}</span>`:`<span>${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
