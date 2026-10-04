@@ -327,9 +327,17 @@
   .pfeed{grid-column:2/4;display:grid;grid-template-columns:subgrid;}
   /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
   html:has(.pfeed){scroll-snap-type:y mandatory;}
-  .pitem{grid-column:1/-1;display:grid;grid-template-columns:subgrid;min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
-  .pitem+.pitem .adm-center{border-top:1px solid var(--grey-200);}
-  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
+  .pitem{grid-column:1/-1;display:grid;grid-template-columns:subgrid;}
+  .ppost{min-height:calc(100dvh - var(--header) - var(--subbar));display:flex;justify-content:center;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .pitem+.pitem .adm-center,.ppost+.ppost{border-top:1px solid var(--grey-200);}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;flex-direction:column;}
+  /* A creator's other-platform submission: the panel stays, only the per-platform bits crossfade */
+  /* The hidden version is lifted out of the flow, so the panel takes the height of what is showing */
+  .sw{position:relative;}
+  .sw>*{min-width:0;transition:opacity .3s ease,visibility .3s;}
+  .pitem[data-on="0"] .sw>[data-p="1"],.pitem[data-on="1"] .sw>[data-p="0"]{position:absolute;inset:0 0 auto;opacity:0;visibility:hidden;}
+  .sw-av img.crop{object-position:50% 30%;transform:scale(1.35);}
+  .sw-av>div{width:45px;height:45px;border-radius:100px;overflow:hidden;}
   .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
   .adm-col{padding:30px 0 48px 24px;}
   .adm-right{min-width:0;}
@@ -579,9 +587,11 @@
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .dsh.pend>.dsh-side{width:auto;margin:0;}
     .pfeed{grid-column:auto;display:block;}
-    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;min-height:0;padding-bottom:18px;}
+    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;padding-bottom:18px;}
+    .ppost{min-height:0;}
+    .ppost+.ppost{border-top:0;padding-top:18px;}
     .pitem+.pitem{padding-top:18px;border-top:1px solid var(--grey-200);}
-    .adm-center,.pitem+.pitem .adm-center{border:0;}
+    .adm-center,.pitem+.pitem .adm-center{border:0;align-items:center;}
     .adm-phone{position:static;width:min(100%,400px);border-radius:12px;}
     .adm-col{padding:0 0 12px;}
     .adm-side{position:static;max-width:none;}
@@ -1105,7 +1115,7 @@ function secDetails(id){
 
 function mediaHTML(s){
   const m=s.media;
-  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.part===2?`Same creator · <b>${PLATNAME[s.platform]} submission</b>`:`<b>${PLATNAME[s.platform]} submission</b>${s.parts===2?` · ${PLATNAME[s.other]} next`:''}`}</span></div>`;
+  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.lbl}</span></div>`;
   const actions=label+`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button></div>`;
   if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
@@ -1124,20 +1134,38 @@ function mediaHTML(s){
 
 /* Industry tiers by followers on the platform the content is for */
 const tier=n=>n>=1e6?'Mega':n>=5e5?'Macro':n>=1e5?'Mid':n>=1e4?'Micro':'Nano';
+/* Each platform account has its own handle and photo; the other account's photo is a tighter crop of the same one */
+const ACCOUNTS={
+  'Ramith Hewavithan':{tiktok:'@ramith.hewa'},'Nethmi Perera':{tiktok:'@nethmieats'},
+  'Kavindu Jayasuriya':{tiktok:'@kavindusips',youtube:'@KavinduSips'},'Dilan Fernando':{insta:'@dilanbites_'},
+  'Sachini Wickramasinghe':{facebook:'Sachini W.'}};
+const acct=s=>{const h=(ACCOUNTS[s.name]||{})[s.platform];return {handle:h||s.handle,crop:!!h};};
+/* The second platform's caption: the opening line plus that platform's usual tags */
+const PLATTAGS={tiktok:'#fyp #foryou',youtube:'#shorts',facebook:'',insta:'',linkedin:''};
+const capFor=s=>{if(s.part!==2) return s.caption;
+  const tags=s.caption.match(/#\w+/g)||[], first=s.caption.replace(/#\w+/g,'').trim().split(/(?<=[.!?])\s/)[0];
+  return `${first} ${[...tags,PLATTAGS[s.platform]].filter(Boolean).join(' ')}`;};
+const fN=v=>parseFloat(v)*(/K/i.test(v)?1000:/M/i.test(v)?1e6:1);
 function secPending(id){
   const d=dash(id);
   if(!d.pending.length) return null;
-  return `<div class="pfeed">${d.pending.map((s,i)=>{
-    const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-    const f=s.followers.find(f=>f[0]===s.platform), fN=parseFloat(f[1])*(/K/i.test(f[1])?1000:/M/i.test(f[1])?1e6:1);
-    return `<article class="pitem" data-i="${i}" aria-label="Submission by ${s.name}">
-      <div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
+  /* Consecutive submissions from one creator for different platforms share one creator panel */
+  const groups=[];
+  d.pending.forEach((s,i)=>{const g=groups[groups.length-1];
+    if(g&&s.part===2&&g[0].s.name===s.name&&g[0].s.part===1) g.push({s,i}); else groups.push([{s,i}]);});
+  /* Only what differs per platform swaps: photo, handle, follower line, caption */
+  const sw=(g,fn,c='')=>`<div class="sw${c}">${g.map((x,p)=>`<div data-p="${p}">${fn(x.s)}</div>`).join('')}</div>`;
+  return `<div class="pfeed">${groups.map(g=>{
+    g.forEach((x,p)=>x.s.lbl=p?`Same creator · <b>${PLATNAME[x.s.platform]} submission</b>`:`<b>${PLATNAME[x.s.platform]} submission</b>${g[1]?` · ${PLATNAME[g[1].s.platform]} next`:''}`);
+    const s=g[0].s;
+    return `<article class="pitem${g[1]?' pgroup':''}" data-on="0" aria-label="Submission${g[1]?'s':''} by ${s.name}">
+      <div class="adm-center">${g.map((x,p)=>`<div class="ppost" data-i="${x.i}" data-p="${p}"><div class="adm-phone">${mediaHTML(x.s)}</div></div>`).join('')}</div>
       <div class="adm-col adm-right"><div class="adm-side">
         <div class="adm-sec">
-          <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-          <div class="adm-follow"><span title="${PLATNAME[s.platform]}">${PLAT[s.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN)} creator tier</em></div>
+          <div class="adm-creator">${sw(g,x=>`<img data-a="${x.av}" data-label="${x.name}" alt=""${acct(x).crop?' class="crop"':''}>`,' sw-av')}<div><div class="name">${s.name}</div>${sw(g,x=>`<div class="adm-handle">${acct(x).handle}</div>`)}</div></div>
+          ${sw(g,x=>{const f=x.followers.find(f=>f[0]===x.platform);return `<div class="adm-follow"><span title="${PLATNAME[x.platform]}">${PLAT[x.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN(f[1]))} creator tier</em></div>`;})}
         </div>
-        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span>${sw(g,x=>`<p class="adm-caption">${esc(capFor(x)).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`)}</p>`)}<span class="adm-posted">Submitted ${s.submitted}</span></div>
         <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
       </div></div>
     </article>`;}).join('')}</div>`;
@@ -1327,6 +1355,8 @@ function mountMedia(){
   /* In the pending feed, a reel only plays while it is on screen */
   const io=new IntersectionObserver(es=>es.forEach(e=>e.target.dataset.vis=e.isIntersecting?'1':'0'),{threshold:.6});
   els.forEach(el=>io.observe(el));media.push({stop:()=>io.disconnect()});
+  const po=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) e.target.closest('.pitem').dataset.on=e.target.dataset.p;}),{threshold:.6});
+  view.querySelectorAll('.pgroup .ppost').forEach(el=>po.observe(el));media.push({stop:()=>po.disconnect()});
 }
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
