@@ -787,22 +787,20 @@ function viewAdmin(id){
   const c=C[id], s=SUB[id], m=s.media;
   const num=v=>+String(v).replace(/[^0-9]/g,'');
   const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
-  const kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
-  let screen;
+    let screen;
   if(m.type==='reel') screen=`<div class="adm-screen" id="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
-      <span class="adm-kind">${kind}</span>
       <span class="reel-icon" id="reel-icon">${PAUSEIC}</span>
       <div class="reel-progress"><i id="reel-bar"></i></div>
       <button class="reel-mute" type="button" id="reel-mute" aria-label="Unmute">${MUTEIC}</button></div>`;
   else if(m.type==='carousel') screen=`<div class="adm-screen" id="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
       <div class="car-track" id="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
-      <span class="adm-kind">${kind}</span><span class="adm-count" id="car-count">1/${m.items.length}</span>
+      <span class="adm-count" id="car-count">1/${m.items.length}</span>
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
       <div class="car-dots" id="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
-  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">${kind}</span></div>`;
+  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">Post</span></div>`;
   const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
   const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
   return `<div class="adm">
