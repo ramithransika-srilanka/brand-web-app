@@ -399,7 +399,11 @@
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    /* Tablet: just the post and the creator, side by side */
+    .adm-col{padding-left:24px;padding-right:24px;}
+    .adm-center{padding-left:24px;padding-right:24px;}
+  }
+  /* Tablet portrait: just the post and the creator, side by side (landscape keeps all three columns) */
+  @media (min-width:768px) and (max-width:1279px) and (orientation:portrait){
     .adm{grid-template-columns:auto minmax(0,400px);justify-content:center;}
     .adm-left{display:none;}
     .adm-center{border-left:0;padding:40px 32px 64px 0;}
