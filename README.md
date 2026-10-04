@@ -12,9 +12,16 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
   web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,
   best-suited-for tags, event details for events, requirements and "Campaign created by".
-- **Admin view** — "Switch to admin" on a campaign page (`#/campaign/<id>/admin`). Three columns: the campaign
-  (name, timestamps, creators joined, budget progress), the creator's post in a phone frame (reel, image or
-  swipeable carousel), and the creator (name, photo, followers, caption, short bio). "Switch to creator" goes back.
+- **Admin dashboard** — "Switch to admin" on a campaign page (`#/campaign/<id>/admin`), laid out like a LinkedIn
+  Page admin on a `#f6f6f6` canvas. The left column is a card with the campaign image, brand logo, title, status and a
+  "View as creator" button, followed by the sub menu (badges show pending submissions and unread messages):
+  - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
+    budget and the campaign brief.
+  - **Pending approvals** (`/admin/pending`) — a queue of submissions; the selected one shows the post (reel, image or
+    swipeable carousel), creator, caption and bio, with Approve / Request changes.
+  - **Approved content** (`/admin/approved`) — grid of live posts with views; newly approved posts appear first.
+  - **Analytics** (`/admin/analytics`) — headline tiles, views per day (hover a bar), views by platform, top creators.
+  - **Inbox** (`/admin/inbox`) — conversations with creators; send replies in the open thread.
 
 ## Assets
 
