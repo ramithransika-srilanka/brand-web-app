@@ -622,6 +622,10 @@
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
+  /* Tablet: two wide columns, so the card image grows with the card instead of staying a short 180px strip */
+  @media (min-width:768px) and (max-width:1279px){
+    .feedgrid .card-img,.feedgrid .sk-card .img{height:auto;aspect-ratio:16/10;}
+  }
   @media (max-width:1023px){
     :root{--gutter:18px;}
     .dsh{grid-template-columns:minmax(0,1fr);}
