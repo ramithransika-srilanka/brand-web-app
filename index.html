@@ -291,6 +291,7 @@
   .dsh-menu a.on{border-left-color:var(--blue-500);color:var(--blue-600);font-weight:600;}
   .badge-n{min-width:20px;height:20px;padding:0 6px;border-radius:100px;display:inline-flex;align-items:center;justify-content:center;background:var(--pink-500);color:#fff;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;}
 
+  .dsh-bar,.dsh-scrim,.dsh-close{display:none;}
   .dsh-main{display:flex;flex-direction:column;gap:18px;min-width:0;}
   .dsh-main>.dcard{padding:24px;}
   .dh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
@@ -669,6 +670,24 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
+    /* Left column becomes a drawer, opened from a bar pinned under the top menu */
+    .dsh,.dsh.pend{gap:12px;padding-top:0;}
+    .dsh-bar{display:flex;position:sticky;top:var(--header);z-index:15;margin:-18px calc(var(--gutter) * -1) 0;padding:9px var(--gutter);background:var(--page-bg);animation:none;}
+    .dsh-toggle{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px 0 12px;border-radius:100px;background:var(--grey-800);color:#fff;font-size:15px;font-weight:500;line-height:20px;transition:transform .2s cubic-bezier(.16,1,.3,1);}
+    .dsh-toggle svg{width:20px;height:20px;}
+    .dsh-toggle:active{transform:scale(.96);}
+    .dsh-scrim{display:block;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s ease;animation:none;}
+    .dsh-side,.dsh.pend>.dsh-side{position:fixed;z-index:41;top:0;bottom:0;left:0;width:min(320px,86vw);margin:0;display:block;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:0 16px 16px 0;
+      transform:translateX(-100%);visibility:hidden;animation:none;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s .4s;}
+    body.side-open{overflow:hidden;}
+    body.side-open .dsh-scrim{opacity:1;pointer-events:auto;}
+    body.side-open .dsh-side{transform:none;visibility:visible;box-shadow:4px 0 24px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
+    .dsh-close{display:flex;align-items:center;justify-content:center;position:absolute;z-index:2;top:12px;right:12px;width:32px;height:32px;border-radius:100px;background:#fff;color:var(--grey-800);}
+    .dsh-close svg{width:18px;height:18px;}
+    .dsh-side .dsh-menu{flex-direction:column;overflow:visible;padding:8px 0;}
+    .dsh-side .dsh-menu a{border-bottom:0;border-left:3px solid transparent;padding:0 18px 0 15px;min-height:48px;}
+    .dsh-side .dsh-menu a.on{border-left-color:var(--blue-500);}
+    @media(prefers-reduced-motion:reduce){.dsh-side,body.side-open .dsh-side{transition:none;}}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
     .ib-list{border-right:0;border-bottom:1px solid var(--line);}
@@ -1069,6 +1088,7 @@ const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 
 /* ---------- Admin dashboard: campaign card + sub menu, one section at a time ---------- */
 const EYEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const MENUIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
 const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
@@ -1108,7 +1128,11 @@ const unreadN=d=>d.threads.filter(t=>t.unread).length;
 function sideHTML(id,sec){
   const c=C[id], d=dash(id);
   const badge={pending:d.pending.length,inbox:unreadN(d)};
-  return `<aside class="dcard dsh-side">
+  /* On phones the left column becomes a drawer, opened from this bar under the top menu */
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${SECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
     <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
     <div class="dsh-id">
       <h1 class="dsh-title">${c.title}</h1>
@@ -1525,7 +1549,7 @@ function mountMedia(){
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
-  stopMedia();view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
+  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
 }
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;
   /* On narrow screens the sub menu is a scrolling row: keep the open section in view */
@@ -1537,7 +1561,7 @@ function route(){
   const notifs=!campaign&&root==='notifications';
   if(!campaign&&!notifs) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
-  stopMedia();
+  stopMedia();setSide(false);
   view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
@@ -1553,7 +1577,7 @@ function route(){
   if(admin){mountMedia();scrollThread();}
   /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
   const inDash=admin&&lastDash===id;lastDash=admin?id:null;
-  const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side)')]:[view];
+  const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side,.dsh-bar,.dsh-scrim)')]:[view];
   view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
   window.scrollTo({top:0,behavior:'instant'});
   /* Opening an approved post lands on it inside the feed */
@@ -1569,6 +1593,18 @@ function route(){
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
 }
 window.addEventListener('hashchange',route);
+/* A finished transition keeps filter:blur(0) on #view, which would trap the fixed phone drawer inside it */
+view.addEventListener('animationend',e=>e.target.classList.remove('nav-in'));
+
+/* Phone drawer for the dashboard's left column */
+function setSide(open){
+  const was=document.body.classList.contains('side-open');
+  document.body.classList.toggle('side-open',open);
+  const btn=document.querySelector('.dsh-toggle');if(!btn) return;
+  btn.setAttribute('aria-expanded',open);
+  if(open) document.querySelector('.dsh-menu a.on').focus({preventScroll:true});
+  else if(was) btn.focus({preventScroll:true});
+}
 
 /* ================= Interactions ================= */
 const toastEl=document.getElementById('toast');let toastT;
@@ -1577,6 +1613,8 @@ document.addEventListener('click',e=>{
   const t=e.target;
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
+  const side=t.closest('[data-side]');
+  if(side){setSide(side.dataset.side==='open');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
   const nt=t.closest('[data-nt]');
   if(nt){const n=notifications[nt.dataset.nt];if(!n.read){n.read=true;refreshNotifs();}return;}
@@ -1653,6 +1691,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length].focus();return;}
     if(e.key==='Tab') anMenu(pm,false);
   }
+  if(e.key==='Escape'&&document.body.classList.contains('side-open')){setSide(false);return;}
   if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
 });
 
