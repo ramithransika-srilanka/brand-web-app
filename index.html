@@ -281,10 +281,10 @@
   /* ================= Admin view: campaign · post · creator ================= */
   .adm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin:-18px auto -60px;min-height:calc(100dvh - var(--header) - var(--subbar));}
   .adm-col{padding:30px 24px 48px;}
-  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar));align-self:start;display:flex;flex-direction:column;gap:18px;max-width:320px;}
+  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);align-self:start;display:flex;flex-direction:column;gap:18px;max-width:320px;}
   .adm-left{justify-self:end;width:100%;}
   .adm-right{justify-self:start;width:100%;}
-  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;flex-direction:column;align-items:center;}
   .adm-eyebrow{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
   .adm-sec{display:flex;flex-direction:column;gap:8px;}
   .adm-sec+.adm-sec{padding-top:18px;border-top:1px solid var(--grey-200);}
@@ -309,12 +309,20 @@
 
   /* Centre: the post, framed like a phone */
   /* The post fills the centre column: full height under the bars, square corners, edge to edge between the dividers */
-  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),45vw);align-self:start;position:sticky;top:calc(var(--header) + var(--subbar));overflow:hidden;background:#000;}
+  /* Feed: one post per screen, snapping into place like the apps they were made for */
+  html.adm-snap{scroll-snap-type:y mandatory;}
+  .adm-item{scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .adm-item+.adm-item{border-top:1px solid var(--grey-200);}
+  .adm-inline{display:none;}
+  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),45vw);overflow:hidden;background:#000;}
+  .adm-screen.idle .reel-frame img{animation-play-state:paused;}
+  /* The creator column follows the post in view with a quick cross-fade */
+  #adm-creator{transition:opacity .14s ease,transform .14s ease;}
+  #adm-creator.swap{opacity:0;transform:translateY(4px);}
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
   .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
-  .adm-kind{position:absolute;top:12px;left:0;right:0;z-index:3;text-align:center;font-size:14px;font-weight:600;line-height:20px;letter-spacing:-.01em;color:#fff;pointer-events:none;}
   .adm-count{position:absolute;top:11px;right:11px;z-index:3;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);font-variant-numeric:tabular-nums;}
 
   /* Reel */
@@ -371,6 +379,7 @@
   .adm>:nth-child(2){animation-delay:60ms;} .adm>:nth-child(3){animation-delay:120ms;}
   @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
   @media(prefers-reduced-motion:reduce){
+    #adm-creator{transition:none;}
     .adm>*,.adm-bar i{animation:none;}
     .reel-frame img{animation:none;}
     .reel-icon,.car-dots i{transition:opacity .2s ease;}
@@ -429,11 +438,16 @@
     .pop{left:var(--gutter);width:auto;}
     .adm{grid-template-columns:minmax(0,1fr);margin-bottom:0;}
     .adm-left{display:block;}
-    .adm-center{order:-1;border:0;margin:0 calc(var(--gutter) * -1);}
-    .adm-phone{position:static;width:100%;}
+    .adm-center{border:0;margin:0 calc(var(--gutter) * -1);border-top:1px solid var(--grey-200);}
+    .adm-phone{width:100%;}
     .adm-side{position:static;max-width:420px;margin:0 auto;}
     .adm-col{padding:18px 0;}
-    .adm-right{border-top:1px solid var(--grey-200);}
+    .adm-right{display:none;}
+    /* Phones: no snapping, each post carries its own creator details underneath */
+    html.adm-snap{scroll-snap-type:none;}
+    .adm-item{width:100%;}
+    .adm-item+.adm-item{border-top:0;}
+    .adm-inline{display:flex;flex-direction:column;gap:18px;max-width:420px;margin:0 auto;padding:18px var(--gutter) 30px;}
     .cp-hero{height:180px;}
     .cp{margin-bottom:0;}
     .cp-main{padding-bottom:24px;}
@@ -777,34 +791,76 @@ const SUB={
     caption:'Shakira at City of Dreams. In Colombo. I’m still not over it 💃 Who’s getting tickets? #ShakiraColombo #HiruTV',
     bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
 };
+/* Every other post uploaded to the campaign; the admin view scrolls through SUB[id] first, then these */
+const N={name:'Nethmi Perera',handle:'@nethmi.eats',av:'av1',followers:[['insta','31K'],['tiktok','14.2K']],bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'};
+const K={name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],bio:'Coffee, cafés and slow mornings. Rating every new seasonal drink in Sri Lanka, one sip at a time.'};
+const D={name:'Dilan Fernando',handle:'@dilan.bites',av:'av3',followers:[['tiktok','41K'],['insta','9.8K']],bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'};
+const S={name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',followers:[['insta','26.5K'],['facebook','12K']],bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'};
+const MORE={
+  uber:[
+    {...N,posted:'4 hrs ago',media:{type:'carousel',items:['card1','card2']},caption:'Book festival day out, sorted by Uber Moto 🏍️📚 Swipe for the haul. #UberMoto #ColomboBookFestival #ad'},
+    {...D,posted:'Yesterday',media:{type:'reel',items:['card1'],length:'0:18'},caption:'Galle Face to the Book Festival in under 15 minutes. Uber Moto, you legend 🏍️ #UberMoto #ad'}],
+  eats:[
+    {...S,posted:'June 25',media:{type:'image',items:['card2']},caption:'Reading break, Uber Eats edition 🍕📖 #UberEatsLK #ColomboBookFestival'},
+    {...D,posted:'June 24',media:{type:'reel',items:['card2'],length:'0:20'},caption:'Rating festival food delivered straight to the queue 🍔 #UberEatsLK'}],
+  starbucks:[
+    {...S,posted:'Yesterday',media:{type:'image',items:['sbHero']},caption:'Holiday cups are back and so am I ☕✨ #StarbucksLK #ChristmasMocha'},
+    {...N,posted:'2 d ago',media:{type:'reel',items:['sbContent1'],length:'0:16'},caption:'Christmas Mocha taste test, honest review in 15 seconds 🎄 #StarbucksLK'}],
+  burgerking:[
+    {...K,posted:'2 d ago',media:{type:'image',items:['burgerPhoto']},caption:'Whopper and a coffee? Don’t judge me 🍔☕ #WhopperWednesday #BurgerKingLK'},
+    {...N,posted:'3 d ago',media:{type:'reel',items:['burgerPhoto'],length:'0:17'},caption:'Whopper Wednesday, ranked bite by bite 🍔 #WhopperWednesday'}],
+  dominos:[
+    {...D,posted:'4 d ago',media:{type:'reel',items:['grid3'],length:'0:24'},caption:'Polos Pizza in one bite? Watch till the end 🍕 #DominosLK #PolosPizza'},
+    {...K,posted:'5 d ago',media:{type:'image',items:['grid3']},caption:'Movie night menu: Polos Pizza, no notes 🍕🎬 #DominosLK'}],
+  kfc:[
+    {...S,posted:'June 29',media:{type:'reel',items:['grid2'],length:'0:19'},caption:'Hot & Crispy with the girls, who cried first? 🔥 #KFCSriLanka #HotAndCrispy'},
+    {...D,posted:'June 28',media:{type:'image',items:['grid2']},caption:'Spice level: yes 🔥 #KFCSriLanka'}],
+  hiru:[
+    {...S,posted:'Scheduled',media:{type:'image',items:['card3']},caption:'Outfit ready for Akon at Port City 🎤 #AkonColombo #HiruTV'},
+    {...N,posted:'Scheduled',media:{type:'carousel',items:['card3','grid6']},caption:'Akon week on the podcast, swipe for the episode → #AkonColombo #HiruTV'}],
+  shakira:[
+    {...K,posted:'Scheduled',media:{type:'reel',items:['grid6'],length:'0:21'},caption:'Shakira in Colombo. Hips don’t lie and neither do I: I’m going 💃 #ShakiraColombo #HiruTV'},
+    {...N,posted:'Scheduled',media:{type:'image',items:['grid6']},caption:'Pre-show dinner plans for Shakira night ✨ #ShakiraColombo'}],
+};
+const POSTS=id=>[SUB[id],...(MORE[id]||[])];
 const PLAYIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.1-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>';
 const PAUSEIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
 const MUTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
 const SOUNDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
 const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 
-function viewAdmin(id){
-  const c=C[id], s=SUB[id], m=s.media;
-  const num=v=>+String(v).replace(/[^0-9]/g,'');
-  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
-  const kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
-  let screen;
-  if(m.type==='reel') screen=`<div class="adm-screen" id="reel" data-len="${m.length}">
+function admScreen(s){
+  const m=s.media;
+  if(m.type==='reel') return `<div class="adm-screen reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
-      <span class="adm-kind">${kind}</span>
-      <span class="reel-icon" id="reel-icon">${PAUSEIC}</span>
-      <div class="reel-progress"><i id="reel-bar"></i></div>
-      <button class="reel-mute" type="button" id="reel-mute" aria-label="Unmute">${MUTEIC}</button></div>`;
-  else if(m.type==='carousel') screen=`<div class="adm-screen" id="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
-      <div class="car-track" id="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
-      <span class="adm-kind">${kind}</span><span class="adm-count" id="car-count">1/${m.items.length}</span>
+      <span class="reel-icon">${PAUSEIC}</span>
+      <div class="reel-progress"><i class="reel-bar"></i></div>
+      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button></div>`;
+  if(m.type==='carousel') return `<div class="adm-screen car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
+      <div class="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
+      <span class="adm-count car-count">1/${m.items.length}</span>
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
-      <div class="car-dots" id="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
-  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">${kind}</span></div>`;
+      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
+  return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"></div>`;
+}
+/* The creator column for one post; on desktop it fills the sticky right column, on phones it sits under its post */
+function admCreator(s){
   const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
   const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
+  return `<div class="adm-sec">
+        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
+        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
+        <div class="adm-total"><b>${totalF>=1000?(totalF/1000).toFixed(1).replace(/\.0$/,'')+'K':totalF}</b> followers across ${s.followers.length} platforms</div>
+      </div>
+      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">${s.posted==='Scheduled'?'Scheduled to post':'Posted '+s.posted}</span></div>
+      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>`;
+}
+function viewAdmin(id){
+  const c=C[id], posts=POSTS(id);
+  const num=v=>+String(v).replace(/[^0-9]/g,'');
+  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
   return `<div class="adm">
     <div class="adm-col adm-left"><div class="adm-side">
       <div class="adm-sec">
@@ -823,16 +879,10 @@ function viewAdmin(id){
         </div>
       </div>
     </div></div>
-    <div class="adm-center"><div class="adm-phone">${screen}</div></div>
-    <div class="adm-col adm-right"><div class="adm-side">
-      <div class="adm-sec">
-        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-        <div class="adm-total"><b>${totalF>=1000?(totalF/1000).toFixed(1).replace(/\.0$/,'')+'K':totalF}</b> followers across ${s.followers.length} platforms</div>
-      </div>
-      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">${s.posted==='Scheduled'?'Scheduled to post':'Posted '+s.posted}</span></div>
-      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
-    </div></div>
+    <div class="adm-center adm-feed" aria-label="Uploaded content">${posts.map((s,i)=>`<article class="adm-item" data-i="${i}" aria-label="Post ${i+1} of ${posts.length} by ${s.name}">
+      <div class="adm-phone">${admScreen(s)}</div>
+      <div class="adm-inline">${admCreator(s)}</div></article>`).join('')}</div>
+    <div class="adm-col adm-right"><div class="adm-side" id="adm-creator" aria-live="polite">${admCreator(posts[0])}</div></div>
   </div>`;
 }
 
@@ -840,10 +890,10 @@ function viewAdmin(id){
 let media=null;
 function stopMedia(){if(media){media.stop();media=null;}}
 function mountReel(el){
-  const bar=el.querySelector('#reel-bar'), icon=el.querySelector('#reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('#reel-mute');
+  const bar=el.querySelector('.reel-bar'), icon=el.querySelector('.reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('.reel-mute');
   const [mm,ss]=el.dataset.len.split(':').map(Number), dur=(mm*60+ss)*1000;
-  let t=0,last=performance.now(),playing=true,raf,flashT;
-  const tick=now=>{if(playing){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
+  let t=0,last=performance.now(),playing=true,active=false,raf,flashT;
+  const tick=now=>{if(playing&&active){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
   raf=requestAnimationFrame(tick);
   /* Feedback on press, not release */
   hit.addEventListener('pointerdown',()=>{
@@ -853,7 +903,9 @@ function mountReel(el){
   });
   hit.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();hit.dispatchEvent(new PointerEvent('pointerdown'));}});
   mute.addEventListener('pointerdown',()=>{const on=mute.dataset.on!=='1';mute.dataset.on=on?'1':'';mute.innerHTML=on?SOUNDIC:MUTEIC;mute.setAttribute('aria-label',on?'Mute':'Unmute');});
-  return {stop(){cancelAnimationFrame(raf);clearTimeout(flashT);}};
+  return {stop(){cancelAnimationFrame(raf);clearTimeout(flashT);},
+    /* Only the post in view plays; scrolling back to a reel starts it again from the top */
+    setActive(on){el.classList.toggle('idle',!on);if(on===active) return;active=on;if(on){t=0;bar.style.transform='scaleX(0)';playing=true;el.classList.remove('paused');icon.innerHTML=PAUSEIC;hit.setAttribute('aria-label','Pause reel');}}};
 }
 
 /* ---------- Carousel: 1:1 drag, momentum projection, critically damped spring, rubber-band edges ---------- */
@@ -861,7 +913,7 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 function rubberband(over,dim,k=0.55){return (over*dim*k)/(dim+k*Math.abs(over));}
 function project(v,d=0.998){return (v/1000)*d/(1-d);}
 function mountCarousel(el){
-  const track=el.querySelector('#car-track'), n=track.children.length, dots=[...el.querySelectorAll('#car-dots i')], count=el.querySelector('#car-count');
+  const track=el.querySelector('.car-track'), n=track.children.length, dots=[...el.querySelectorAll('.car-dots i')], count=el.querySelector('.car-count');
   const prev=el.querySelector('.car-nav.prev'), next=el.querySelector('.car-nav.next');
   let x=0, v=0, idx=0, raf=null, drag=null;
   const W=()=>el.clientWidth;
@@ -914,6 +966,29 @@ function mountCarousel(el){
   return {stop(){cancelAnimationFrame(raf);removeEventListener('resize',onResize);}};
 }
 
+/* ---------- Feed: every post for the campaign scrolls past; the creator column follows the post in view ---------- */
+function mountFeed(root,posts){
+  const items=[...root.querySelectorAll('.adm-item')], side=root.querySelector('#adm-creator');
+  const players=items.map(it=>{const r=it.querySelector('.reel'),k=it.querySelector('.car');return r?mountReel(r):k?mountCarousel(k):null;});
+  let cur=-1,swapT;
+  const show=i=>{
+    if(i===cur) return;
+    const first=cur<0;cur=i;
+    players.forEach((p,j)=>p&&p.setActive&&p.setActive(j===i));
+    items.forEach((it,j)=>it.classList.toggle('on',j===i));
+    if(first) return;
+    clearTimeout(swapT);side.classList.add('swap');
+    swapT=setTimeout(()=>{side.innerHTML=admCreator(posts[i]);bindAssets(side);side.classList.remove('swap');},reduceMotion.matches?0:140);
+  };
+  /* The post whose centre is nearest the middle of the viewport is the one in view */
+  const pick=()=>{const mid=innerHeight/2;let best=0,bd=Infinity;items.forEach((it,j)=>{const r=it.querySelector('.adm-phone').getBoundingClientRect(),d=Math.abs(r.top+r.height/2-mid);if(d<bd){bd=d;best=j;}});show(best);};
+  let ticking=false;const onScroll=()=>{if(ticking) return;ticking=true;requestAnimationFrame(()=>{ticking=false;pick();});};
+  addEventListener('scroll',onScroll,{passive:true});
+  document.documentElement.classList.add('adm-snap');
+  show(0);
+  return {stop(){players.forEach(p=>p&&p.stop());removeEventListener('scroll',onScroll);clearTimeout(swapT);document.documentElement.classList.remove('adm-snap');}};
+}
+
 /* ================= Top menu ================= */
 function renderTopNav(){
   const items=[['campaigns','#/active',ICON.explore,'Campaigns']];
@@ -958,7 +1033,7 @@ function route(){
     sw.href=admin?`#/campaign/${id}`:`#/campaign/${id}/admin`;
   }
   bindAssets(view);
-  if(admin){const r=document.getElementById('reel'),k=document.getElementById('car');media=r?mountReel(r):k?mountCarousel(k):null;}
+  if(admin) media=mountFeed(view.querySelector('.adm'),POSTS(id));
   view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
   renderFeed();
   if(campaign) document.getElementById('search-btn').classList.remove('on');

@@ -13,8 +13,11 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser â
   web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,
   best-suited-for tags, event details for events, requirements and "Campaign created by".
 - **Admin view** â€” "Switch to admin" on a campaign page (`#/campaign/<id>/admin`). Three columns: the campaign
-  (name, timestamps, creators joined, budget progress), the creator's post in a phone frame (reel, image or
-  swipeable carousel), and the creator (name, photo, followers, caption, short bio). "Switch to creator" goes back.
+  (name, timestamps, creators joined, budget progress) stays fixed on the left; the centre is a scrollable feed of
+  every post uploaded to the campaign (reel, image or swipeable carousel), snapping one post per screen; the right
+  column shows the creator of the post in view (name, photo, followers, caption, short bio) and changes as you
+  scroll. Only the reel in view plays. On phones each post shows its creator details underneath it.
+  "Switch to creator" goes back.
 
 ## Assets
 
