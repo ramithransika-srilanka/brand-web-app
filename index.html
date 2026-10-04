@@ -457,9 +457,15 @@
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
-  .adm-screen[data-media=car]::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
+  /* Dark, blurred scrims at both ends: the blur fades out with the gradient so there's no hard edge */
+  .adm-screen::before,.adm-screen::after{content:"";position:absolute;left:0;right:0;z-index:2;pointer-events:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+  .adm-screen::before{top:0;height:96px;background:linear-gradient(rgba(0,0,0,.55),transparent);-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent);}
+  .adm-plat{position:absolute;top:12px;left:12px;right:56px;z-index:3;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;line-height:20px;color:rgba(255,255,255,.85);pointer-events:none;}
+  .adm-plat svg{width:16px;height:16px;flex-shrink:0;color:#fff;}
+  .adm-plat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .adm-plat b{font-weight:600;color:#fff;}
   /* Approve / Reject sit on the post, over a bottom scrim; reel controls and carousel dots ride above them */
-  .adm-screen::after{content:"";position:absolute;inset:auto 0 0;height:140px;z-index:2;pointer-events:none;background:linear-gradient(transparent,rgba(0,0,0,.55));}
+  .adm-screen::after{bottom:0;height:150px;background:linear-gradient(transparent,rgba(0,0,0,.6));-webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
   .adm-act{position:absolute;left:12px;right:12px;bottom:14px;z-index:4;display:flex;gap:8px;}
   .adm-act .btn{flex:1;height:42px;}
   .btn-glass{color:#fff;background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
@@ -504,12 +510,12 @@
   .adm-creator img{width:45px;height:45px;border-radius:100px;object-fit:cover;background:var(--grey-200);flex-shrink:0;}
   .adm-creator .name{font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.012em;color:var(--grey-800);}
   .adm-creator .adm-handle{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-follow{display:flex;flex-wrap:wrap;gap:6px 15px;}
+  .adm-follow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 15px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .adm-follow>i{width:1px;height:20px;background:var(--grey-200);}
+  .adm-follow>em{font-style:normal;}
   .adm-follow span{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
   .adm-follow span em{font-style:normal;font-weight:500;color:var(--grey-600);}
   .adm-follow svg{width:15px;height:15px;}
-  .adm-total{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-total b{font-weight:600;color:var(--grey-800);}
   .adm-caption{font-size:14px;line-height:21px;color:var(--grey-800);white-space:pre-line;}
   .adm-caption .tag{all:unset;color:var(--blue-600);font-weight:500;}
   .adm-posted{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);}
@@ -1002,7 +1008,6 @@ const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 /* ---------- Admin dashboard: campaign card + sub menu, one section at a time ---------- */
 const EYEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-const CHECKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
 const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
 
@@ -1020,7 +1025,11 @@ function dash(id){
   const c=C[id], s=SUB[id], r=rng(id);
   const others=POOL.filter(p=>p.name!==s.name);
   const pics=[c.img,...PICS.filter(p=>p!==c.img)];
-  const pending=c.status==='completed'?[]:POSTS(id).map((p,i)=>({...p,submitted:p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted}));
+  /* One pending item per platform: a creator who submits for two platforms shows up twice in a row, once per platform */
+  const pending=c.status==='completed'?[]:POSTS(id).flatMap((p,i)=>{
+    const submitted=p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted;
+    const plats=(i%2===0&&p.followers.length>1?p.followers.slice(0,2):p.followers.slice(0,1)).map(f=>f[0]);
+    return plats.map((pl,n)=>({...p,submitted,platform:pl,part:n+1,parts:plats.length,other:plats[1-n]}));});
   const kinds=['Reel','Post','Carousel'];
   const approved=c.status==='upcoming'?[]:Array.from({length:c.status==='completed'?8:6},(_,i)=>{
     const p=POOL[(i+2)%POOL.length];
@@ -1095,7 +1104,8 @@ function secDetails(id){
 
 function mediaHTML(s){
   const m=s.media;
-  const actions=`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-glass" type="button" data-act="reject">${XIC}Reject</button></div>`;
+  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.part===2?`Same creator · <b>${PLATNAME[s.platform]} submission</b>`:`<b>${PLATNAME[s.platform]} submission</b>${s.parts===2?` · ${PLATNAME[s.other]} next`:''}`}</span></div>`;
+  const actions=label+`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button></div>`;
   if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
@@ -1111,19 +1121,20 @@ function mediaHTML(s){
   return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}">${actions}</div>`;
 }
 
+/* Industry tiers by followers on the platform the content is for */
+const tier=n=>n>=1e6?'Mega':n>=5e5?'Macro':n>=1e5?'Mid':n>=1e4?'Micro':'Nano';
 function secPending(id){
   const d=dash(id);
   if(!d.pending.length) return null;
   return `<div class="pfeed">${d.pending.map((s,i)=>{
     const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-    const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
+    const f=s.followers.find(f=>f[0]===s.platform), fN=parseFloat(f[1])*(/K/i.test(f[1])?1000:/M/i.test(f[1])?1e6:1);
     return `<article class="pitem" data-i="${i}" aria-label="Submission by ${s.name}">
       <div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
       <div class="adm-col adm-right"><div class="adm-side">
         <div class="adm-sec">
           <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-          <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-          <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
+          <div class="adm-follow"><span title="${PLATNAME[s.platform]}">${PLAT[s.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN)} creator tier</em></div>
         </div>
         <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
         <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
@@ -1388,7 +1399,7 @@ function doAct(a,el){
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
   if(d&&(a==='approve'||a==='reject')){
     const [s]=d.pending.splice(+el.closest('[data-i]').dataset.i,1);
-    if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.followers[0][0],views:0,eng:0,posted:'Just now',isNew:true});
+    if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.platform,views:0,eng:0,posted:'Just now',isNew:true});
     rerender();
     return toast(a==='approve'?`Approved · ${s.name} has been notified`:`Rejected · ${s.name} has been notified`);
   }
