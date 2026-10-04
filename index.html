@@ -417,10 +417,14 @@
   .an-plat-menu button:hover,.an-plat-menu button:focus-visible{background:var(--page-bg);outline:0;}
   .an-plat-menu button[aria-checked="true"]{font-weight:600;color:var(--blue-500);}
   .an-plat-menu svg{width:16px;height:16px;flex-shrink:0;}
-  .tc{width:100%;margin-top:12px;border-collapse:collapse;font-size:14px;line-height:20px;}
-  .tc th{padding:8px 0;font-size:12px;font-weight:500;color:var(--grey-600);text-align:right;border-bottom:1px solid var(--line);}
-  .tc th:first-child,.tc td:first-child{text-align:left;}
-  .tc td{padding:10px 0;text-align:right;color:var(--grey-800);font-weight:500;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);}
+  .tc-wrap{margin-top:12px;overflow-x:auto;}
+  .tc{width:100%;min-width:760px;border-collapse:collapse;font-size:14px;line-height:20px;}
+  .tc th{padding:8px 0 8px 16px;white-space:nowrap;font-size:12px;font-weight:500;color:var(--grey-600);text-align:right;border-bottom:1px solid var(--line);}
+  .tc th:first-child,.tc td:first-child{padding-left:0;text-align:left;}
+  .tc .pl{text-align:left;}
+  .tc .pls{display:flex;gap:8px;color:var(--grey-800);}
+  .tc .pls svg{width:18px;height:18px;}
+  .tc td{padding:10px 0 10px 16px;white-space:nowrap;text-align:right;color:var(--grey-800);font-weight:500;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);}
   .tc tr:last-child td{border-bottom:0;}
   .tc .who{display:flex;align-items:center;gap:9px;font-weight:600;}
   .tc .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;}
@@ -1245,6 +1249,13 @@ function secApprovedFeed(id){
     </article>`;}).join('')}</div>`;
 }
 
+/* Reach: unique accounts, a share of each post's views */
+const postReach=p=>Math.round(p.views*(.55+rng(p.name+p.views)()*.25));
+/* What a post earned: base price plus performance pay per 1K views, up to the max per content */
+function postPaid(c,p){
+  const rs=i=>+c.list[i][1].match(/Rs\. ([\d,]+)/)[1].replace(/,/g,'');
+  return Math.min(rs(0)+Math.round(p.views/1000*rs(2)),rs(1));
+}
 /* Headline tiles for the analytics card, filtered by the platform dropdown */
 const AN_PLATS=[['all','All'],['insta','Instagram'],['tiktok','TikTok'],['youtube','YouTube']];
 const CARET='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3h8L5 8z" fill="currentColor"/></svg>';
@@ -1253,8 +1264,7 @@ function anTiles(id){
   const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
   if(!live.length) return `<div class="tile" style="grid-column:1/-1"><span class="l">No live posts on ${AN_PLATS.find(p=>p[0]===plat)[1]} yet</span><span class="d">Numbers show up once an approved post goes live there.</span></div>`;
   const views=live.reduce((a,p)=>a+p.views,0), eng=(live.reduce((a,p)=>a+p.eng,0)/live.length).toFixed(1);
-  /* Reach: unique accounts, a share of each post's views */
-  const reach=live.reduce((a,p)=>a+Math.round(p.views*(.55+rng(p.name+p.views)()*.25)),0);
+  const reach=live.reduce((a,p)=>a+postReach(p),0);
   const r=rng(id+plat), pct=(lo,hi)=>Math.round(lo+r()*(hi-lo));
   const who=new Set(live.map(p=>p.name)).size;
   return `<div class="tile"><span class="n">${fmtN(views)}</span><span class="l">Views</span><span class="d"><span class="up">▲ ${pct(12,40)}%</span> last 7 days</span></div>
@@ -1325,8 +1335,12 @@ function anMenu(m,open){if(!m) return;m.classList.toggle('open',open);m.querySel
 function secAnalytics(id){
   const d=dash(id), live=d.approved.filter(p=>!p.isNew);
   if(!live.length) return `<section class="dcard">${dhead('Analytics')}${empty('No data yet','Analytics start as soon as the first approved post goes live.')}</section>`;
-  const byWho={};live.forEach(p=>{const w=byWho[p.name]||(byWho[p.name]={p,posts:0,views:0,eng:0});w.posts++;w.views+=p.views;w.eng+=p.eng;});
+  /* One row per creator: totals across their live posts; engagement weighted by views; latest submission */
+  const c=C[id], ago=p=>p.posted==='Yesterday'?1:parseInt(p.posted)||0;
+  const byWho={};live.forEach(p=>{const w=byWho[p.name]||(byWho[p.name]={p,plats:new Set(),views:0,reach:0,engN:0,paid:0,ago:99});
+    w.plats.add(p.platform);w.views+=p.views;w.reach+=postReach(p);w.engN+=p.views*p.eng;w.paid+=postPaid(c,p);w.ago=Math.min(w.ago,ago(p)+1);});
   const who=Object.values(byWho).sort((a,b)=>b.views-a.views);
+  const subDate=n=>{const t=new Date();t.setDate(t.getDate()-n);return t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
   return `<section class="dcard">${dhead('Analytics','Since the campaign started',platPick(id,'an'))}
       <div class="tiles" id="an-tiles">${anTiles(id)}</div></section>
     <section class="dcard">${dhead('Engagement','',platPick(id,'eg'))}
@@ -1334,8 +1348,10 @@ function secAnalytics(id){
     <section class="dcard"><div class="ch-metric">${platPick(id,'cm',METRICS,'Metric')}</div>
       <div id="an-chart">${chartBody(id)}</div></section>
     <section class="dcard">${dhead('Top creators')}
-        <table class="tc"><thead><tr><th>Creator</th><th>Posts</th><th>Views</th></tr></thead>
-        <tbody>${who.map(w=>`<tr><td><span class="who"><img data-a="${w.p.av}" data-label="${w.p.name}" alt="">${w.p.name}</span></td><td>${w.posts}</td><td>${fmtN(w.views)}</td></tr>`).join('')}</tbody></table></section>`;
+        <div class="tc-wrap"><table class="tc"><thead><tr><th>Creator</th><th class="pl">Platforms</th><th>Views</th><th>Reach</th><th>Engagement rate</th><th>Paid amount</th><th>Submission date</th></tr></thead>
+        <tbody>${who.map(w=>`<tr><td><span class="who"><img data-a="${w.p.av}" data-label="${w.p.name}" alt="">${w.p.name}</span></td>
+          <td class="pl"><span class="pls">${[...w.plats].map(k=>`<span title="${PLATNAME[k]}" aria-label="${PLATNAME[k]}">${PLAT[k]}</span>`).join('')}</span></td>
+          <td>${fmtN(w.views)}</td><td>${fmtN(w.reach)}</td><td>${(w.engN/w.views).toFixed(1)}%</td><td>Rs. ${w.paid.toLocaleString('en-US')}</td><td>${subDate(w.ago)}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
 function secInbox(id){
