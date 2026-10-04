@@ -327,9 +327,17 @@
   .pfeed{grid-column:2/4;display:grid;grid-template-columns:subgrid;}
   /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
   html:has(.pfeed){scroll-snap-type:y mandatory;}
-  .pitem{grid-column:1/-1;display:grid;grid-template-columns:subgrid;min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
-  .pitem+.pitem .adm-center{border-top:1px solid var(--grey-200);}
-  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
+  .pitem{grid-column:1/-1;display:grid;grid-template-columns:subgrid;}
+  .ppost{min-height:calc(100dvh - var(--header) - var(--subbar));display:flex;justify-content:center;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .pitem+.pitem .adm-center,.ppost+.ppost{border-top:1px solid var(--grey-200);}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;flex-direction:column;}
+  /* A creator's other-platform submission: the panel stays, only the per-platform bits crossfade */
+  /* The hidden version is lifted out of the flow, so the panel takes the height of what is showing */
+  .sw{position:relative;}
+  .sw>*{min-width:0;transition:opacity .3s ease,visibility .3s;}
+  .pitem[data-on="0"] .sw>[data-p="1"],.pitem[data-on="1"] .sw>[data-p="0"]{position:absolute;inset:0 0 auto;opacity:0;visibility:hidden;}
+  .sw-av img.crop{object-position:50% 30%;transform:scale(1.35);}
+  .sw-av>div{width:45px;height:45px;border-radius:100px;overflow:hidden;}
   .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
   .adm-col{padding:30px 0 48px 24px;}
   .adm-right{min-width:0;}
@@ -343,7 +351,12 @@
   .btn-sec:hover{border-color:var(--grey-800);background:var(--grey-100);}
 
   /* Approved content grid */
-  .apg{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:18px 12px;margin-top:18px;}
+  .aps{margin-top:24px;}
+  .aps+.aps{padding-top:24px;border-top:1px solid var(--line);}
+  .aps-h{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .aps-h svg{width:18px;height:18px;}
+  .aps-h span{margin-left:auto;font-size:14px;font-weight:500;color:var(--grey-600);}
+  .apg{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:18px 12px;margin-top:12px;}
   .ap{display:flex;flex-direction:column;gap:9px;text-align:left;}
   .ap-media{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:var(--grey-200);}
   .ap-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1);}
@@ -351,8 +364,9 @@
   .ap-media::after{content:"";position:absolute;inset:auto 0 0;height:64px;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
   .ap-kind{position:absolute;top:8px;left:8px;z-index:1;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
   .ap-kind.new{background:var(--blue-500);}
-  .ap-views{position:absolute;left:10px;bottom:9px;z-index:1;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;line-height:16px;color:#fff;font-variant-numeric:tabular-nums;}
-  .ap-views svg{width:13px;height:13px;}
+  .ap-views{position:absolute;left:10px;bottom:9px;z-index:1;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:#fff;font-variant-numeric:tabular-nums;}
+  /* The eye only fills the middle of its 24px box, so 14px draws it at the height of the 12px numerals */
+  .ap-views svg{width:14px;height:14px;}
   .ap-by{display:flex;align-items:center;gap:8px;min-width:0;}
   .ap-by img{width:24px;height:24px;border-radius:100px;object-fit:cover;flex-shrink:0;}
   .ap-by div{min-width:0;}
@@ -450,6 +464,7 @@
   .adm-budget .kv b,.adm-budget .pct{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);}
   .adm-budget .pct{color:var(--blue-500);}
   .adm-bar{height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
+  .adm-budget .adm-bar{height:10px;}
   .adm-bar i{display:block;height:100%;width:var(--p);border-radius:inherit;background:var(--blue-500);transform-origin:left;animation:barIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
   @keyframes barIn{from{transform:scaleX(0);}to{transform:scaleX(1);}}
 
@@ -578,9 +593,11 @@
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .dsh.pend>.dsh-side{width:auto;margin:0;}
     .pfeed{grid-column:auto;display:block;}
-    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;min-height:0;padding-bottom:18px;}
+    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;padding-bottom:18px;}
+    .ppost{min-height:0;}
+    .ppost+.ppost{border-top:0;padding-top:18px;}
     .pitem+.pitem{padding-top:18px;border-top:1px solid var(--grey-200);}
-    .adm-center,.pitem+.pitem .adm-center{border:0;}
+    .adm-center,.pitem+.pitem .adm-center{border:0;align-items:center;}
     .adm-phone{position:static;width:min(100%,400px);border-radius:12px;}
     .adm-col{padding:0 0 12px;}
     .adm-side{position:static;max-width:none;}
@@ -1102,10 +1119,10 @@ function secDetails(id){
       </div></section>`;
 }
 
-function mediaHTML(s){
+function mediaHTML(s,review=true){
   const m=s.media;
-  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.part===2?`Same creator · <b>${PLATNAME[s.platform]} submission</b>`:`<b>${PLATNAME[s.platform]} submission</b>${s.parts===2?` · ${PLATNAME[s.other]} next`:''}`}</span></div>`;
-  const actions=label+`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button></div>`;
+  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.lbl}</span></div>`;
+  const actions=label+(review?`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button></div>`:'');
   if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
@@ -1123,33 +1140,83 @@ function mediaHTML(s){
 
 /* Industry tiers by followers on the platform the content is for */
 const tier=n=>n>=1e6?'Mega':n>=5e5?'Macro':n>=1e5?'Mid':n>=1e4?'Micro':'Nano';
+/* Each platform account has its own handle and photo; the other account's photo is a tighter crop of the same one */
+const ACCOUNTS={
+  'Ramith Hewavithan':{tiktok:'@ramith.hewa'},'Nethmi Perera':{tiktok:'@nethmieats'},
+  'Kavindu Jayasuriya':{tiktok:'@kavindusips',youtube:'@KavinduSips'},'Dilan Fernando':{insta:'@dilanbites_'},
+  'Sachini Wickramasinghe':{facebook:'Sachini W.'}};
+const acct=s=>{const h=(ACCOUNTS[s.name]||{})[s.platform];return {handle:h||s.handle,crop:!!h};};
+/* The second platform's caption: the opening line plus that platform's usual tags */
+const PLATTAGS={tiktok:'#fyp #foryou',youtube:'#shorts',facebook:'',insta:'',linkedin:''};
+const capFor=s=>{if(s.part!==2) return s.caption;
+  const tags=s.caption.match(/#\w+/g)||[], first=s.caption.replace(/#\w+/g,'').trim().split(/(?<=[.!?])\s/)[0];
+  return `${first} ${[...tags,PLATTAGS[s.platform]].filter(Boolean).join(' ')}`;};
+const fN=v=>parseFloat(v)*(/K/i.test(v)?1000:/M/i.test(v)?1e6:1);
 function secPending(id){
   const d=dash(id);
   if(!d.pending.length) return null;
-  return `<div class="pfeed">${d.pending.map((s,i)=>{
-    const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-    const f=s.followers.find(f=>f[0]===s.platform), fN=parseFloat(f[1])*(/K/i.test(f[1])?1000:/M/i.test(f[1])?1e6:1);
-    return `<article class="pitem" data-i="${i}" aria-label="Submission by ${s.name}">
-      <div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
+  /* Consecutive submissions from one creator for different platforms share one creator panel */
+  const groups=[];
+  d.pending.forEach((s,i)=>{const g=groups[groups.length-1];
+    if(g&&s.part===2&&g[0].s.name===s.name&&g[0].s.part===1) g.push({s,i}); else groups.push([{s,i}]);});
+  /* Only what differs per platform swaps: photo, handle, follower line, caption */
+  const sw=(g,fn,c='')=>`<div class="sw${c}">${g.map((x,p)=>`<div data-p="${p}">${fn(x.s)}</div>`).join('')}</div>`;
+  return `<div class="pfeed">${groups.map(g=>{
+    g.forEach((x,p)=>x.s.lbl=p?`Same creator · <b>${PLATNAME[x.s.platform]} submission</b>`:`<b>${PLATNAME[x.s.platform]} submission</b>${g[1]?` · ${PLATNAME[g[1].s.platform]} next`:''}`);
+    const s=g[0].s;
+    return `<article class="pitem${g[1]?' pgroup':''}" data-on="0" aria-label="Submission${g[1]?'s':''} by ${s.name}">
+      <div class="adm-center">${g.map((x,p)=>`<div class="ppost" data-i="${x.i}" data-p="${p}"><div class="adm-phone">${mediaHTML(x.s)}</div></div>`).join('')}</div>
       <div class="adm-col adm-right"><div class="adm-side">
         <div class="adm-sec">
-          <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-          <div class="adm-follow"><span title="${PLATNAME[s.platform]}">${PLAT[s.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN)} creator tier</em></div>
+          <div class="adm-creator">${sw(g,x=>`<img data-a="${x.av}" data-label="${x.name}" alt=""${acct(x).crop?' class="crop"':''}>`,' sw-av')}<div><div class="name">${s.name}</div>${sw(g,x=>`<div class="adm-handle">${acct(x).handle}</div>`)}</div></div>
+          ${sw(g,x=>{const f=x.followers.find(f=>f[0]===x.platform);return `<div class="adm-follow"><span title="${PLATNAME[x.platform]}">${PLAT[x.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN(f[1]))} creator tier</em></div>`;})}
         </div>
-        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span>${sw(g,x=>`<p class="adm-caption">${esc(capFor(x)).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`)}</p>`)}<span class="adm-posted">Submitted ${s.submitted}</span></div>
         <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
       </div></div>
     </article>`;}).join('')}</div>`;
 }
 
+/* Approved posts grouped by platform, busiest platform first: the grid and the post feed share this order */
+function approvedOrder(d){
+  const n=k=>d.approved.filter(p=>p.platform===k).length;
+  return Object.keys(PLATNAME).filter(n).sort((a,b)=>n(b)-n(a)).map(k=>[k,d.approved.map((p,i)=>i).filter(i=>d.approved[i].platform===k)]);
+}
 function secApproved(id){
   const d=dash(id);
-  return `<section class="dcard">${dhead('Approved content','Posts that are live for this campaign',`<span class="count">${d.approved.length} posts</span>`)}
-    ${d.approved.length?`<div class="apg">${d.approved.map(p=>`<button class="ap" type="button" data-act="soon" aria-label="${p.kind} by ${p.name}">
-      <div class="ap-media"><img ${src(p.img)} data-label="${p.name}" alt=""><span class="ap-kind${p.isNew?' new':''}">${p.isNew?'Just approved':p.kind}</span>
+  const card=i=>{const p=d.approved[i];return `<a class="ap" href="#/campaign/${id}/admin/approved/${i}" aria-label="${PLATNAME[p.platform]} post by ${p.name}">
+      <div class="ap-media"><img ${src(p.img)} data-label="${p.name}" alt="">${p.isNew?'<span class="ap-kind new">Just approved</span>':''}
         <span class="ap-views">${EYEIC}${p.isNew?'Going live':fmtN(p.views)}</span></div>
-      <div class="ap-by"><img data-a="${p.av}" data-label="${p.name}" alt=""><div><b>${p.name}</b><small>${PLATNAME[p.platform]} · ${p.posted}</small></div></div></button>`).join('')}</div>`
+      <div class="ap-by"><img data-a="${p.av}" data-label="${p.name}" alt=""><div><b>${p.name}</b><small>${p.posted}</small></div></div></a>`;};
+  return `<section class="dcard">${dhead('Approved content','Posts that are live for this campaign',`<span class="count">${d.approved.length} posts</span>`)}
+    ${d.approved.length?approvedOrder(d).map(([k,is])=>
+      `<div class="aps"><h3 class="aps-h">${PLAT[k]}${PLATNAME[k]}<span>${is.length} post${is.length>1?'s':''}</span></h3><div class="apg">${is.map(card).join('')}</div></div>`).join('')
       :empty('Nothing approved yet','Approved posts land here with their views once they go live.')}</section>`;
+}
+/* Opened from the grid: every approved post in a scrolling feed, laid out like Pending approvals without the review buttons */
+function secApprovedFeed(id){
+  const d=dash(id), c=C[id], caps=POSTS(id).map(p=>p.caption);
+  if(!d.approved.length) return null;
+  const items=approvedOrder(d).flatMap(([,is])=>is);
+  return `<div class="pfeed">${items.map((i,n)=>{
+    const p=d.approved[i];
+    /* A just-approved post keeps the submission as sent; older ones are built from the grid image */
+    const media=p.isNew?p.media:{Reel:{type:'reel',items:[p.img],length:'0:20'},Post:{type:'image',items:[p.img]},Carousel:{type:'carousel',items:[p.img,c.img]}}[p.kind];
+    const caption=p.isNew?p.caption:caps[i%caps.length];
+    const s={...p,media,lbl:`<b>${PLATNAME[p.platform]}</b> · ${p.isNew?'Going live':'Posted '+p.posted}`};
+    const f=p.followers.find(f=>f[0]===p.platform)||p.followers[0], a=acct(p);
+    return `<article class="pitem" aria-label="${PLATNAME[p.platform]} post by ${p.name}"><div class="adm-center"><div class="ppost" data-k="${i}"><div class="adm-phone">${mediaHTML(s,false)}</div></div></div>
+      <div class="adm-col adm-right"><div class="adm-side">
+        <div class="adm-sec">
+          <div class="adm-creator"><div class="sw-av"><div><img data-a="${p.av}" data-label="${p.name}" alt=""${a.crop?' class="crop"':''}></div></div><div><div class="name">${p.name}</div><div class="adm-handle">${a.handle}</div></div></div>
+          <div class="adm-follow"><span title="${PLATNAME[p.platform]}">${PLAT[p.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN(f[1]))} creator tier</em></div>
+        </div>
+        <div class="adm-sec"><span class="adm-eyebrow">Performance</span>
+          <div class="adm-follow">${p.isNew?'<em>Stats show up once the post goes live</em>':`<span>${fmtN(p.views)} <em>views</em></span><i aria-hidden="true"></i><span>${p.eng}% <em>engagement</em></span>`}</div></div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${esc(caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`)}</p><span class="adm-posted">${n+1} of ${items.length} approved</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${p.bio}</p></div>
+      </div></div>
+    </article>`;}).join('')}</div>`;
 }
 
 function secAnalytics(id){
@@ -1200,7 +1267,9 @@ function secInbox(id){
     </div></section>`;
 }
 
-function viewAdmin(id,sec){
+function viewAdmin(id,sec,post){
+  const feed=sec==='approved'&&post!=null&&secApprovedFeed(id);
+  if(feed) return `<div class="dsh pend">${sideHTML(id,sec)}${feed}</div>`;
   if(sec==='pending'){
     const review=secPending(id);
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
@@ -1316,9 +1385,9 @@ function toggleSearch(){
 /* ================= Router ================= */
 const view=document.getElementById('view');
 const parseHash=()=>{
-  const [root,id,mode,sec]=location.hash.replace(/^#\/?/,'').split('/');
+  const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
-  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details'};
+  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
 };
 function mountMedia(){
   const els=[...view.querySelectorAll('[data-media]')];
@@ -1326,24 +1395,26 @@ function mountMedia(){
   /* In the pending feed, a reel only plays while it is on screen */
   const io=new IntersectionObserver(es=>es.forEach(e=>e.target.dataset.vis=e.isIntersecting?'1':'0'),{threshold:.6});
   els.forEach(el=>io.observe(el));media.push({stop:()=>io.disconnect()});
+  const po=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) e.target.closest('.pitem').dataset.on=e.target.dataset.p;}),{threshold:.6});
+  view.querySelectorAll('.pgroup .ppost').forEach(el=>po.observe(el));media.push({stop:()=>po.disconnect()});
 }
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
-  stopMedia();view.innerHTML=viewAdmin(h.id,h.sec);bindAssets(view);mountMedia();scrollThread();
+  stopMedia();view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
 }
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;
   /* On narrow screens the sub menu is a scrolling row: keep the open section in view */
   const n=document.querySelector('.dsh-menu'),a=n&&n.querySelector('a.on');if(a&&n.scrollWidth>n.clientWidth) n.scrollLeft=a.offsetLeft-(n.clientWidth-a.offsetWidth)/2;}
 let lastDash=null;
 function route(){
-  const {root,id,admin,sec}=parseHash();
+  const {root,id,admin,sec,post}=parseHash();
   const campaign=!!id;
   const notifs=!campaign&&root==='notifications';
   if(!campaign&&!notifs) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
   stopMedia();
-  view.innerHTML=admin?viewAdmin(id,sec):campaign?viewCampaign(id):notifs?viewNotifs():viewExplore();
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin);
@@ -1361,6 +1432,8 @@ function route(){
   const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side)')]:[view];
   view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
   window.scrollTo({top:0,behavior:'instant'});
+  /* Opening an approved post lands on it inside the feed */
+  const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) open.scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
   /* The search button only belongs on the Explore page */
   const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs;
