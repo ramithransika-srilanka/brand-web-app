@@ -314,7 +314,6 @@
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
   .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
-  .adm-kind{position:absolute;top:12px;left:0;right:0;z-index:3;text-align:center;font-size:14px;font-weight:600;line-height:20px;letter-spacing:-.01em;color:#fff;pointer-events:none;}
   .adm-count{position:absolute;top:11px;right:11px;z-index:3;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);font-variant-numeric:tabular-nums;}
 
   /* Reel */
@@ -800,7 +799,7 @@ function viewAdmin(id){
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
       <div class="car-dots" id="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
-  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">Post</span></div>`;
+  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"></div>`;
   const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
   const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
   return `<div class="adm">
