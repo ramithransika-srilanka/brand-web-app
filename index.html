@@ -509,14 +509,15 @@
   .adm-screen::after{bottom:0;height:150px;background:linear-gradient(transparent,rgba(0,0,0,.6));-webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
   .adm-act{position:absolute;left:12px;right:12px;bottom:14px;z-index:4;display:flex;gap:8px;}
   .adm-act .btn{flex:1;height:42px;}
-  /* Approve and Reject hold for 30 s: the fill drains while the brand can still undo */
-  .adm-timer{position:relative;overflow:hidden;cursor:default;background:rgba(21,72,235,.45);font-variant-numeric:tabular-nums;}
-  .adm-timer:hover{background:rgba(21,72,235,.45);}
-  .adm-timer:active{transform:none;}
+  /* Approve and Reject hold for 30 s: one full-width button whose fill drains; clicking it undoes */
+  .adm-timer{position:relative;overflow:hidden;background:rgba(21,72,235,.45);font-variant-numeric:tabular-nums;}
+  .adm-timer:hover{background:rgba(21,72,235,.6);}
+  .adm-timer em{font-style:normal;font-weight:500;opacity:.8;}
   .adm-timer::before{content:"";position:absolute;inset:0;background:var(--blue-500);transform-origin:left;animation:admDrain var(--dur) linear var(--delay) forwards;}
   .adm-timer span{position:relative;}
-  .adm-timer.rej,.adm-timer.rej:hover{background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
+  .adm-timer.rej{background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
   .adm-timer.rej::before{background:rgba(255,255,255,.28);}
+  .adm-timer.rej:hover{background:rgba(18,18,18,.6);}
   @keyframes admDrain{from{transform:scaleX(1);}to{transform:scaleX(0);}}
   @media(prefers-reduced-motion:reduce){.adm-timer::before{animation:none;}}
   .btn-glass{color:#fff;background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
@@ -1166,7 +1167,7 @@ const holdLeft=s=>Math.max(0,Math.ceil((s.hold.at-Date.now())/1000));
 function actHTML(s){
   if(!s.hold) return `<button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button>`;
   const left=s.hold.at-Date.now(), rej=s.hold.act==='reject';
-  return `<div class="btn ${rej?'btn-glass rej':'btn-pri'} adm-timer" role="timer" aria-live="off" style="--dur:${HOLD}ms;--delay:${left-HOLD}ms"><span>${rej?'Rejecting':'Approving'} in <b data-left>${holdLeft(s)}</b>s</span></div><button class="btn btn-glass" type="button" data-act="undo">Undo</button>`;
+  return `<button class="btn ${rej?'btn-glass rej':'btn-pri'} adm-timer" type="button" data-act="undo" style="--dur:${HOLD}ms;--delay:${left-HOLD}ms"><span>${rej?'Rejecting':'Approving'} in <b data-left>${holdLeft(s)}</b>s · <em>Tap to undo</em></span></button>`;
 }
 function mediaHTML(s,review=true){
   const m=s.media;
