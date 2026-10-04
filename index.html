@@ -784,7 +784,7 @@ const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 function viewAdmin(id){
   const c=C[id], s=SUB[id], m=s.media;
   const num=v=>+String(v).replace(/[^0-9]/g,'');
-  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100)), left='Rs. '+Math.max(0,total-spent).toLocaleString('en-US');
+  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
   const kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
   let screen;
   if(m.type==='reel') screen=`<div class="adm-screen" id="reel" data-len="${m.length}">
@@ -817,7 +817,7 @@ function viewAdmin(id){
         <div class="adm-budget">
           <div class="row"><span class="spent">${c.spent}</span><span class="pct">${pct}%</span></div>
           <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
-          <div class="foot"><span>spent of ${c.budget}</span><span>${left} left</span></div>
+          <div class="foot"><span>Total ${c.budget}</span></div>
         </div>
       </div>
     </div></div>
