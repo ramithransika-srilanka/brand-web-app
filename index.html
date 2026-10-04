@@ -405,6 +405,16 @@
   .an-plat-menu button:hover,.an-plat-menu button:focus-visible{background:var(--page-bg);outline:0;}
   .an-plat-menu button[aria-checked="true"]{font-weight:600;color:var(--good);}
   .an-plat-menu svg{width:16px;height:16px;flex-shrink:0;}
+  .dh h2 .help{display:inline-flex;vertical-align:-2px;margin-left:6px;color:var(--grey-700);cursor:help;}
+  .dh h2 .help svg{width:18px;height:18px;}
+  .eg-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 12px;margin-top:18px;}
+  .eg-stat{display:flex;flex-direction:column;}
+  .eg-stat .n{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .eg-stat .l{font-size:14px;line-height:20px;color:var(--grey-600);}
+  .eg-stat .d{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;font-weight:600;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .eg-stat .d.up{color:var(--good);} .eg-stat .d.down{color:var(--bad);}
+  .eg-stat .d i{width:6px;height:6px;border-radius:100px;background:currentColor;}
+  .eg-empty{grid-column:1/-1;font-size:14px;line-height:20px;color:var(--grey-600);}
   .an-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;}
   .meters{display:flex;flex-direction:column;gap:16px;margin-top:18px;}
   .meter .top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;line-height:20px;}
@@ -611,7 +621,7 @@
     .dsh-menu::-webkit-scrollbar{display:none;}
     .dsh-menu a{border-left:0;border-bottom:3px solid transparent;padding:0 12px;min-height:46px;}
     .dsh-menu a.on{border-bottom-color:var(--blue-500);}
-    .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .tiles,.eg-stats{grid-template-columns:repeat(2,minmax(0,1fr));}
     html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .dsh.pend>.dsh-side{width:auto;margin:0;}
@@ -1079,7 +1089,7 @@ function dash(id){
     {who:s,unread:true,time:'12 min',msgs:[['them','Hi! Just submitted my post for review 🙌'],['them','Let me know if you want a different caption or a shorter cut.']]},
     {who:others[0],unread:true,time:'1 hr',msgs:[['me','Thanks for joining the campaign!'],['them','Excited for this one. Is it okay to film indoors?']]},
     {who:others[2]||others[1],unread:false,time:'2 d',msgs:[['them','When do approved posts get paid?'],['me','Within 3 working days of the post going live.'],['them','Perfect, thank you!']]}];
-  return DASH[id]={pending,approved,threads,thread:0,dismissed:new Set()};
+  return DASH[id]={pending,approved,threads,thread:0,dismissed:new Set(),plats:{an:'all',eg:'all'}};
 }
 const unreadN=d=>d.threads.filter(t=>t.unread).length;
 
@@ -1246,7 +1256,7 @@ function secApprovedFeed(id){
 const AN_PLATS=[['all','All'],['insta','Instagram'],['tiktok','TikTok'],['youtube','YouTube']];
 const CARET='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3h8L5 8z" fill="currentColor"/></svg>';
 function anTiles(id){
-  const d=dash(id), plat=d.plat||'all';
+  const d=dash(id), plat=d.plats.an;
   const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
   if(!live.length) return `<div class="tile" style="grid-column:1/-1"><span class="l">No live posts on ${AN_PLATS.find(p=>p[0]===plat)[1]} yet</span><span class="d">Numbers show up once an approved post goes live there.</span></div>`;
   const views=live.reduce((a,p)=>a+p.views,0), eng=(live.reduce((a,p)=>a+p.eng,0)/live.length).toFixed(1);
@@ -1259,7 +1269,28 @@ function anTiles(id){
         <div class="tile"><span class="n">${eng}%</span><span class="l">Engagement rate</span><span class="d"><span class="up">▲ ${(.2+r()*1.2).toFixed(1)} pts</span> last 7 days</span></div>
         <div class="tile"><span class="n">${live.length}</span><span class="l">Live posts</span><span class="d">${who} creator${who===1?'':'s'}</span></div>`;
 }
-function anMenu(open){const m=document.getElementById('an-plat');if(!m) return;m.classList.toggle('open',open);m.querySelector('[data-plat-btn]').setAttribute('aria-expanded',open);}
+/* Engagement card: impressions and the actions people took on the posts */
+function egStats(id){
+  const d=dash(id), plat=d.plats.eg;
+  const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
+  if(!live.length) return `<p class="eg-empty">No live posts on ${AN_PLATS.find(p=>p[0]===plat)[1]} yet.</p>`;
+  /* Each post's engagements (views × engagement rate) split into reactions, comments and reposts */
+  const t={imp:0,re:0,co:0,rp:0};
+  live.forEach(p=>{const r=rng(p.name+p.views+'e'), e=p.views*p.eng/100;
+    t.imp+=Math.round(p.views*(1.2+r()*.4));t.re+=Math.round(e*.8);t.co+=Math.round(e*.12);t.rp+=Math.round(e*.08);});
+  const r=rng(id+plat+'e'), delta=()=>{const v=Math.round(r()*30)-4;return v>0?`<span class="d up"><i></i>${v}%</span>`:v<0?`<span class="d down"><i></i>${-v}%</span>`:`<span class="d"><i></i>0%</span>`;};
+  return [['imp','Impressions'],['re','Reactions'],['co','Comments'],['rp','Reposts']].map(([k,l])=>
+    `<div class="eg-stat"><span class="n">${t[k].toLocaleString('en-US')}</span><span class="l">${l}</span>${delta()}</div>`).join('');
+}
+/* Platform dropdown: each card keeps its own choice; PANELS says what to redraw */
+const PANELS={an:['an-tiles',anTiles],eg:['eg-stats',egStats]};
+function platPick(id,key){
+  const cur=AN_PLATS.find(p=>p[0]===dash(id).plats[key]);
+  return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
+    <div class="an-plat-menu" role="menu" aria-label="Platform">${AN_PLATS.map(([k,l])=>`<button type="button" role="menuitemradio" aria-checked="${k===cur[0]}" data-plat="${k}">${PLAT[k]||''}${l}</button>`).join('')}</div></div>`;
+}
+function anMenu(m,open){if(!m) return;m.classList.toggle('open',open);m.querySelector('[data-plat-btn]').setAttribute('aria-expanded',open);}
+const HELPIC='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.1-2.4 3.6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.2" fill="#fff"/></svg>';
 
 function secAnalytics(id){
   const d=dash(id), live=d.approved.filter(p=>!p.isNew);
@@ -1273,11 +1304,12 @@ function secAnalytics(id){
   const plats=Object.entries(byPlat).sort((a,b)=>b[1]-a[1]);
   const byWho={};live.forEach(p=>{const w=byWho[p.name]||(byWho[p.name]={p,posts:0,views:0,eng:0});w.posts++;w.views+=p.views;w.eng+=p.eng;});
   const who=Object.values(byWho).sort((a,b)=>b.views-a.views);
-  const cur=AN_PLATS.find(p=>p[0]===d.plat)||AN_PLATS[0];
-  const pick=`<div class="an-plat" id="an-plat"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
-    <div class="an-plat-menu" role="menu" aria-label="Platform">${AN_PLATS.map(([k,l])=>`<button type="button" role="menuitemradio" aria-checked="${k===cur[0]}" data-plat="${k}">${PLAT[k]||''}${l}</button>`).join('')}</div></div>`;
-  return `<section class="dcard">${dhead('Analytics','Since the campaign started',pick)}
+  const day=n=>{const t=new Date(today);t.setDate(t.getDate()-n);return t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
+  const help=`<span class="help" title="Impressions, reactions, comments and reposts across every live post" aria-label="About engagement">${HELPIC}</span>`;
+  return `<section class="dcard">${dhead('Analytics','Since the campaign started',platPick(id,'an'))}
       <div class="tiles" id="an-tiles">${anTiles(id)}</div></section>
+    <section class="dcard">${dhead('Engagement'+help,`Data for ${day(13)} – ${day(0)}`,platPick(id,'eg'))}
+      <div class="eg-stats" id="eg-stats">${egStats(id)}</div></section>
     <section class="dcard">${dhead('Views per day','Across every live post')}
       <div class="chart">
         <div class="chart-y" aria-hidden="true"><span>${fmtN(top)}</span><span>${fmtN(top/2)}</span><span>0</span></div>
@@ -1497,13 +1529,14 @@ document.addEventListener('click',e=>{
   if(nt){const n=notifications[nt.dataset.nt];if(!n.read){n.read=true;refreshNotifs();}return;}
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
-  if(t.closest('[data-plat-btn]')){const m=document.getElementById('an-plat');anMenu(!m.classList.contains('open'));if(m.classList.contains('open'))m.querySelector('[aria-checked="true"]').focus();return;}
+  const pm=t.closest('.an-plat');
+  document.querySelectorAll('.an-plat.open').forEach(m=>{if(m!==pm) anMenu(m,false);});
+  if(t.closest('[data-plat-btn]')){const open=!pm.classList.contains('open');anMenu(pm,open);if(open)pm.querySelector('[aria-checked="true"]').focus();return;}
   const pl=t.closest('[data-plat]');
-  if(pl){const id=parseHash().id;dash(id).plat=pl.dataset.plat;const m=document.getElementById('an-plat');
-    m.querySelector('[data-plat-btn]').firstChild.textContent=AN_PLATS.find(p=>p[0]===pl.dataset.plat)[1];
-    m.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b===pl));
-    const tl=document.getElementById('an-tiles');tl.innerHTML=anTiles(id);bindAssets(tl);anMenu(false);return m.querySelector('[data-plat-btn]').focus();}
-  if(!t.closest('#an-plat')) anMenu(false);
+  if(pl){const id=parseHash().id, key=pm.dataset.pk, [el,fn]=PANELS[key];dash(id).plats[key]=pl.dataset.plat;
+    pm.querySelector('[data-plat-btn]').firstChild.textContent=AN_PLATS.find(p=>p[0]===pl.dataset.plat)[1];
+    pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b===pl));
+    const box=document.getElementById(el);box.innerHTML=fn(id);bindAssets(box);anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const th=t.closest('[data-thread]');
@@ -1541,12 +1574,12 @@ document.addEventListener('submit',e=>{
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
-  const pm=document.getElementById('an-plat');
-  if(pm&&pm.classList.contains('open')){
-    if(e.key==='Escape'){e.preventDefault();anMenu(false);return pm.querySelector('[data-plat-btn]').focus();}
+  const pm=document.querySelector('.an-plat.open');
+  if(pm){
+    if(e.key==='Escape'){e.preventDefault();anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
     const items=[...pm.querySelectorAll('[data-plat]')], i=items.indexOf(document.activeElement);
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length].focus();return;}
-    if(e.key==='Tab') anMenu(false);
+    if(e.key==='Tab') anMenu(pm,false);
   }
   if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
 });
