@@ -1340,7 +1340,7 @@ function secAnalytics(id){
   const byWho={};live.forEach(p=>{const w=byWho[p.name]||(byWho[p.name]={p,plats:new Set(),views:0,reach:0,engN:0,paid:0,ago:99});
     w.plats.add(p.platform);w.views+=p.views;w.reach+=postReach(p);w.engN+=p.views*p.eng;w.paid+=postPaid(c,p);w.ago=Math.min(w.ago,ago(p)+1);});
   const who=Object.values(byWho).sort((a,b)=>b.views-a.views);
-  const subDate=n=>{const t=new Date();t.setDate(t.getDate()-n);return t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
+  const subDate=n=>{const t=new Date();t.setDate(t.getDate()-n);return t.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'});};
   return `<section class="dcard">${dhead('Analytics','Since the campaign started',platPick(id,'an'))}
       <div class="tiles" id="an-tiles">${anTiles(id)}</div></section>
     <section class="dcard">${dhead('Engagement','',platPick(id,'eg'))}
