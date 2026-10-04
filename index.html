@@ -450,6 +450,9 @@
   .ib-thread{display:flex;flex-direction:column;min-height:0;min-width:0;}
   .ib-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);}
   .ib-head .adm-creator img{width:40px;height:40px;}
+  .ib-back{display:none;align-items:center;justify-content:center;width:36px;height:36px;margin-right:-4px;border-radius:100px;color:var(--grey-800);flex-shrink:0;transition:background .2s ease;}
+  .ib-back:hover{background:var(--page-bg);}
+  .ib-back svg{width:22px;height:22px;}
   .ib-msgs{flex:1;display:flex;flex-direction:column;gap:6px;padding:18px;overflow-y:auto;}
   .ib-day{align-self:center;margin:6px 0;font-size:12px;font-weight:500;color:var(--grey-500);}
   .bub{max-width:min(75%,440px);padding:9px 13px;border-radius:12px;font-size:14px;line-height:20px;}
@@ -664,6 +667,9 @@
     .dsh-close svg{width:18px;height:18px;}
     .dsh-side .dsh-menu a{min-height:48px;}
     @media(prefers-reduced-motion:reduce){.dsh-side,body.side-open .dsh-side{transition:none;}}
+    /* Inbox fills the screen below the menu button (54px bar + 12px gap) with an 18px margin under it */
+    .dsh-main>.ib{height:calc(100dvh - var(--header) - 84px);min-height:420px;}
+    .content:has(.ib){padding-bottom:18px;}
   }
   @media (max-width:767px){
     /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
@@ -685,10 +691,13 @@
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
-    .ib-list{border-right:0;border-bottom:1px solid var(--line);}
-    .ib-scroll{max-height:220px;}
-    .ib-msgs{min-height:320px;}
+    /* Inbox works like a messaging app: the list, or one open conversation with a back button */
+    .dsh-main>.ib{grid-template-columns:minmax(0,1fr);padding:0;}
+    .ib:not(.open) .ib-item.on{background:none;border-left-color:transparent;}
+    .ib-list{border-right:0;}
+    .ib:not(.open) .ib-thread,.ib.open .ib-list{display:none;}
+    .ib-back{display:flex;}
+    .ib-head{justify-content:flex-start;padding-left:9px;}
   }
 </style>
 </head>
@@ -1085,6 +1094,8 @@ const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 /* ---------- Admin dashboard: campaign card + sub menu, one section at a time ---------- */
 const EYEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const MENUIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
 const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
@@ -1400,12 +1411,13 @@ function secAnalytics(id){
 
 function secInbox(id){
   const d=dash(id), t=d.threads[d.thread];
-  t.unread=false;
-  return `<section class="dcard ib">
+  /* On phones the thread only counts as read once it is opened from the list */
+  if(d.ibOpen||!PHONE.matches) t.unread=false;
+  return `<section class="dcard ib${d.ibOpen?' open':''}">
     <div class="ib-list"><h2>Inbox</h2><div class="ib-scroll">${d.threads.map((th,i)=>{const last=th.msgs[th.msgs.length-1];
       return `<button class="ib-item${i===d.thread?' on':''}${th.unread?' unread':''}" type="button" data-thread="${i}"><img data-a="${th.who.av}" data-label="${th.who.name}" alt=""><span class="t"><span class="r1"><b>${th.who.name}</b><small>${th.time}</small></span><span class="pv"><span>${last[0]==='me'?'You: ':''}${esc(last[1])}</span>${th.unread?'<i class="udot" aria-label="Unread"></i>':''}</span></span></button>`;}).join('')}</div></div>
     <div class="ib-thread">
-      <div class="ib-head"><div class="adm-creator"><img data-a="${t.who.av}" data-label="${t.who.name}" alt=""><div><div class="name">${t.who.name}</div><div class="adm-handle">${t.who.handle}</div></div></div></div>
+      <div class="ib-head"><button class="ib-back" type="button" data-ib-back aria-label="Back to all messages">${BACKIC}</button><div class="adm-creator"><img data-a="${t.who.av}" data-label="${t.who.name}" alt=""><div><div class="name">${t.who.name}</div><div class="adm-handle">${t.who.handle}</div></div></div></div>
       <div class="ib-msgs" id="ib-msgs"><span class="ib-day">Today</span>${t.msgs.map(m=>`<div class="bub ${m[0]}${m[2]?' new':''}">${esc(m[1])}</div>`).join('')}</div>
       <form class="ib-form" id="ib-form"><input id="ib-input" placeholder="Write a message…" autocomplete="off" aria-label="Message ${t.who.name}"><button class="btn btn-pri" type="submit">Send</button></form>
     </div></section>`;
@@ -1556,6 +1568,7 @@ function route(){
   if(!campaign&&!notifs) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
   stopMedia();setSide(false);
+  if(admin) dash(id).ibOpen=false;
   view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
@@ -1626,7 +1639,10 @@ document.addEventListener('click',e=>{
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const th=t.closest('[data-thread]');
-  if(th){dash(parseHash().id).thread=+th.dataset.thread;rerender();return document.getElementById('ib-input').focus({preventScroll:true});}
+  if(th){const d=dash(parseHash().id);d.thread=+th.dataset.thread;d.ibOpen=true;rerender();
+    /* On phones, don't pop the keyboard over the conversation just opened */
+    return PHONE.matches?document.querySelector('.ib-back').focus({preventScroll:true}):document.getElementById('ib-input').focus({preventScroll:true});}
+  if(t.closest('[data-ib-back]')){const d=dash(parseHash().id),i=d.thread;d.ibOpen=false;rerender();return document.querySelector(`[data-thread="${i}"]`).focus({preventScroll:true});}
   const go=t.closest('[data-go]');
   if(go) location.hash=go.dataset.go;
 });
