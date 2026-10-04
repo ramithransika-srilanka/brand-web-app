@@ -297,26 +297,21 @@
   .adm-joined{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--grey-800);}
   .adm-joined .cp-avatars img{border-color:#fff;}
   .adm-joined b{font-weight:600;}
-  .adm-budget{display:flex;flex-direction:column;gap:8px;font-variant-numeric:tabular-nums;}
-  .adm-budget .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;}
-  .adm-budget .kv{display:flex;flex-direction:column;white-space:nowrap;}
-  .adm-budget .kv.end{align-items:flex-end;}
-  .adm-budget .kv span{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .adm-budget .kv b{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.015em;color:var(--grey-800);}
-  .adm-budget .row.foot{align-items:baseline;}
-  .adm-budget .pct{font-size:14px;font-weight:600;line-height:20px;color:var(--blue-600);}
-  .adm-budget .left{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);white-space:nowrap;}
-  .adm-budget .left b{font-size:14px;font-weight:600;color:var(--grey-800);}
+  .adm-budget{display:flex;flex-direction:column;gap:8px;}
+  .adm-budget .row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 12px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .adm-budget .row>span{white-space:nowrap;}
+  .adm-budget .row>span:last-child{margin-left:auto;}
+  .adm-budget .row b{font-weight:600;color:var(--grey-800);}
+  .adm-budget .row .pct{font-weight:600;color:var(--blue-600);}
   .adm-bar{height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
   .adm-bar i{display:block;height:100%;width:var(--p);border-radius:inherit;background:var(--blue-500);transform-origin:left;animation:barIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
   @keyframes barIn{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-  .adm-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px;}
-  .adm-kpi{display:flex;flex-direction:column;padding:9px 12px;border:1px solid var(--grey-200);border-radius:9px;background:#fff;min-width:0;}
-  .adm-kpi b{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .adm-kpi .k{margin-top:3px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
-  .adm-kpi .s{margin-top:auto;padding-top:3px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .adm-kpi a.s{color:var(--blue-600);align-self:flex-start;}
-  .adm-kpi a.s:hover{text-decoration:underline;}
+  /* Cost tiles reuse the campaign page's spec tile, two across to fit the side column */
+  .adm-kpis{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:4px;}
+  .adm-kpis .v{font-variant-numeric:tabular-nums;}
+  .adm-kpis .s{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);}
+  .adm-kpis a.s{color:var(--blue-600);align-self:flex-start;}
+  .adm-kpis a.s:hover{text-decoration:underline;}
 
   /* Centre: the post, framed like a phone */
   /* The post fills the centre column: full height under the bars, square corners, edge to edge between the dividers */
@@ -832,16 +827,16 @@ function viewAdmin(id){
       </div>
       <div class="adm-sec"><span class="adm-eyebrow">Budget</span>
         <div class="adm-budget">
-          <div class="row"><span class="kv"><span>Spent</span><b>${c.spent}</b></span><span class="kv end"><span>Total</span><b>${c.budget}</b></span></div>
+          <div class="row"><span><b>${c.spent}</b> spent</span><span>Total <b>${c.budget}</b></span></div>
           <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
-          <div class="row foot"><span class="pct">${pct}%</span><span class="left">Remaining <b>${rs(total-spent)}</b></span></div>
+          <div class="row"><span class="pct">${pct}%</span><span>Remaining <b>${rs(total-spent)}</b></span></div>
         </div>
-        <div class="adm-kpis">
-          <div class="adm-kpi"><b>${rs(Math.round(spent/subs))}</b><span class="k">Avg per content</span><span class="s">${subs} submissions</span></div>
-          <div class="adm-kpi"><b>${rs(per1k)}</b><span class="k">Per 1000 reach</span><span class="s">Avg on all platforms</span></div>
-          <div class="adm-kpi"><b>${rs(cpe)}</b><span class="k">Cost per engagement</span><span class="s">Avg on all platforms</span></div>
-          <div class="adm-kpi"><b>${rs(maxPaid)}</b><span class="k">Max paid for content</span><a class="s" href="#" data-act="soon">View content</a></div>
-        </div>
+        <div class="cp-spec adm-kpis">${[
+          [rs(Math.round(spent/subs)),'Avg per content',`<span class="s">${subs} submissions</span>`],
+          [rs(per1k),'Per 1000 reach','<span class="s">Avg on all platforms</span>'],
+          [rs(cpe),'Cost per engagement','<span class="s">Avg on all platforms</span>'],
+          [rs(maxPaid),'Max paid for content','<a class="s" href="#" data-act="soon">View content</a>'],
+        ].map(r=>`<div class="cp-spectile"><span class="v">${r[0]}</span><span class="k">${r[1]}</span>${r[2]}</div>`).join('')}</div>
       </div>
     </div></div>
     <div class="adm-center"><div class="adm-phone">${screen}</div></div>
