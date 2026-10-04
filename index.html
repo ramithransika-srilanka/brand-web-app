@@ -1276,6 +1276,7 @@ function rerender(){
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;
   /* On narrow screens the sub menu is a scrolling row: keep the open section in view */
   const n=document.querySelector('.dsh-menu'),a=n&&n.querySelector('a.on');if(a&&n.scrollWidth>n.clientWidth) n.scrollLeft=a.offsetLeft-(n.clientWidth-a.offsetWidth)/2;}
+let lastDash=null;
 function route(){
   const {root,id,admin,sec}=parseHash();
   const campaign=!!id;
@@ -1294,7 +1295,11 @@ function route(){
   }
   bindAssets(view);
   if(admin){mountMedia();scrollThread();}
-  view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
+  /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
+  const inDash=admin&&lastDash===id;lastDash=admin?id:null;
+  const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side)')]:[view];
+  view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
+  window.scrollTo({top:0,behavior:'instant'});
   renderFeed();
   if(campaign) document.getElementById('search-btn').classList.remove('on');
   else if(state.searchOpen) setSearch(true);
