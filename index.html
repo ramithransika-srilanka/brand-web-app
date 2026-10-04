@@ -296,7 +296,7 @@
   .adm-joined{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--grey-800);}
   .adm-joined .cp-avatars img{border-color:#fff;}
   .adm-joined b{font-weight:600;}
-  .adm-budget{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:16px;background:#fff;border:1px solid var(--grey-200);}
+  .adm-budget{display:flex;flex-direction:column;gap:10px;}
   .adm-budget .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
   .adm-budget .spent{font-size:20px;font-weight:600;line-height:24px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
   .adm-budget .of{font-size:14px;font-weight:500;color:var(--grey-600);font-variant-numeric:tabular-nums;}
@@ -307,12 +307,10 @@
   .adm-budget .foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
 
   /* Centre: the post, framed like a phone */
-  .adm-phone{--w:min(400px,calc((100dvh - var(--header) - 48px - 104px - 44px) * 9 / 16));width:max(280px,var(--w));align-self:start;position:sticky;top:calc(var(--header) + 48px + 40px);
+  .adm-phone{--w:min(400px,calc((100dvh - var(--header) - 48px - 104px) * 9 / 16));width:max(280px,var(--w));align-self:start;position:sticky;top:calc(var(--header) + 48px + 40px);
     border-radius:32px;overflow:hidden;background:#000;box-shadow:0 1px 2px rgba(0,0,0,.08),0 24px 48px -24px rgba(18,18,18,.35);}
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
-  .adm-home{height:44px;display:flex;align-items:center;justify-content:center;}
-  .adm-home i{width:40%;height:5px;border-radius:100px;background:#fff;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
   .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:96px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
   .adm-kind{position:absolute;top:16px;left:0;right:0;z-index:3;text-align:center;font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.01em;color:#fff;pointer-events:none;}
@@ -356,8 +354,8 @@
   .adm-creator img{width:60px;height:60px;border-radius:100px;object-fit:cover;background:var(--grey-200);flex-shrink:0;}
   .adm-creator .name{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.012em;color:var(--grey-800);}
   .adm-creator .adm-handle{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-follow{display:flex;flex-wrap:wrap;gap:8px;}
-  .adm-follow span{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .adm-follow{display:flex;flex-wrap:wrap;gap:8px 20px;}
+  .adm-follow span{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
   .adm-follow span em{font-style:normal;font-weight:500;color:var(--grey-600);}
   .adm-follow svg{width:16px;height:16px;}
   .adm-total{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
@@ -817,7 +815,7 @@ function viewAdmin(id){
         </div>
       </div>
     </div></div>
-    <div class="adm-center"><div class="adm-phone">${screen}<div class="adm-home"><i></i></div></div></div>
+    <div class="adm-center"><div class="adm-phone">${screen}</div></div>
     <div class="adm-col adm-right"><div class="adm-side">
       <div class="adm-sec">
         <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
