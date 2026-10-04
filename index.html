@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active campaigns — UGC Platform for Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* =====================================================================
+     Design tokens — identical to the creator web app (from Figma).
+     ===================================================================== */
+  :root{
+    --grey-50:#f6f6f6; --grey-50-90:rgba(246,246,246,.9);
+    --grey-100:#ececec; --grey-100-20:rgba(236,236,236,.2);
+    --grey-200:#d9d9d9; --grey-400:#b3b3b3; --grey-500:#a0a0a0;
+    --grey-600:#717171; --grey-700:#414141; --grey-800:#121212;
+    --blue-100:#d0dafb; --blue-200:#a1b6f7; --blue-300:#7391f3; --blue-500:#1548eb; --blue-600:#123bbd; --blue-700:#0f2d8f;
+    --pink-500:#f433ab;
+    --font:'Inter',-apple-system,system-ui,sans-serif;
+
+    /* desktop layout */
+    --gutter:40px; --page:1280px; --header:72px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  body{background:var(--grey-50);color:var(--grey-800);font-family:var(--font);font-size:14px;line-height:20px;min-height:100dvh;}
+  a{color:inherit;text-decoration:none;cursor:pointer;}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;}
+  img{display:block;}
+  svg{display:block;}
+
+  /* Screen navigation transition — same signature as the creator app */
+  @keyframes screenIn{from{opacity:0;transform:translateY(22px) scale(.988);filter:blur(6px);}to{opacity:1;transform:none;filter:blur(0);}}
+  .nav-in{animation:screenIn .46s cubic-bezier(.16,1,.3,1) both;}
+  @media(prefers-reduced-motion:reduce){.nav-in{animation:none;}}
+
+  /* ================= App shell: top menu ================= */
+  .topbar{position:sticky;top:0;z-index:20;height:var(--header);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:0 max(var(--gutter),calc((100% - var(--page)) / 2));
+    background:var(--grey-50-90);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--grey-200);}
+  .brand{grid-column:1;justify-self:start;display:flex;align-items:center;height:44px;color:var(--grey-800);border-radius:8px;transition:opacity .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .brand svg{height:28px;width:auto;aspect-ratio:269/184;}
+  .brand:hover{opacity:.8;}
+  .brand:active{transform:scale(.96);}
+  .tnav{grid-column:2;display:flex;align-items:center;gap:8px;}
+  .tnav a{width:64px;height:44px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-500);transition:background .25s ease,color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .tnav a svg{height:22px;width:auto;max-width:26px;}
+  .tnav a:hover{background:var(--grey-100);color:var(--grey-700);}
+  .tnav a.active{color:var(--grey-800);}
+  .tnav a:active{transform:scale(.94);}
+  .top-right{grid-column:3;justify-self:end;display:flex;align-items:center;gap:12px;}
+  .hicon{width:44px;height:44px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-800);position:relative;background:#fff;border:1px solid var(--grey-200);transition:background .25s ease,border-color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .hicon:hover{background:var(--grey-100);}
+  .hicon:active{transform:scale(.94);}
+  .hicon.on{background:var(--grey-800);border-color:var(--grey-800);color:var(--grey-50);}
+  .hicon svg{width:22px;height:22px;}
+  .hicon .dot{position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:100px;background:var(--pink-500);border:1.5px solid #fff;}
+  .top-av{display:block;width:44px;height:44px;border-radius:100px;object-fit:cover;border:1px solid var(--grey-200);transition:transform .2s cubic-bezier(.16,1,.3,1);}
+  .top-av:active{transform:scale(.94);}
+
+  /* ================= Secondary menu: campaign status ================= */
+  .subnav{position:sticky;top:var(--header);z-index:19;height:48px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 var(--gutter);background:var(--grey-800);}
+  .subnav a{height:32px;padding:0 14px;display:flex;align-items:center;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-500);transition:color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .subnav a:hover{color:var(--grey-200);}
+  .subnav a.active{color:#fff;}
+  .subnav a:active{transform:scale(.96);}
+
+  /* On a campaign page the status bar becomes a blue notice */
+  .viewbar{display:none;position:sticky;top:var(--header);z-index:19;min-height:48px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:0 max(var(--gutter),calc((100% - var(--page)) / 2));background:var(--blue-500);font-size:14px;font-weight:500;line-height:20px;color:#fff;text-align:center;}
+  .viewbar .msg{grid-column:2;}
+  .viewbar-back{grid-column:1;justify-self:start;display:flex;align-items:center;gap:4px;height:32px;padding:0 12px 0 6px;margin-left:-6px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .viewbar-back svg{width:20px;height:20px;}
+  .viewbar-back:hover{background:rgba(255,255,255,.14);}
+  .viewbar-back:active{transform:scale(.96);}
+  .viewbar-btn{grid-column:3;justify-self:end;display:inline-flex;align-items:center;height:32px;padding:0 14px;border:1px solid #fff;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .viewbar-btn:hover{background:#fff;color:var(--blue-500);}
+  .viewbar-btn:active{transform:scale(.96);}
+  body.viewing .subnav{display:none;}
+  body.viewing .viewbar{display:grid;}
+
+  .content{width:100%;max-width:calc(var(--page) + var(--gutter) * 2);margin:0 auto;padding:24px var(--gutter) 80px;}
+
+  /* ================= Shared components ================= */
+  .tags{display:flex;gap:12px;flex-wrap:wrap;}
+  .tag{flex-shrink:0;padding:8px 12px;border-radius:100px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);white-space:nowrap;cursor:pointer;transition:background .25s ease,color .25s ease;}
+  .tag.active{background:var(--blue-200);}
+
+  .view-btn{background:var(--grey-50);padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);box-shadow:2px 2px 12px rgba(0,0,0,.08);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+
+  .progress{height:6px;border-radius:100px;background:#ddd;overflow:hidden;}
+  .progress .fill{height:6px;background:var(--blue-500);border-radius:20px;}
+
+  /* Placeholder / empty state */
+  .ph{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 32px;gap:12px;grid-column:1/-1;}
+  .ph .tag2{background:var(--blue-100);color:var(--blue-700);font-size:12px;font-weight:600;padding:6px 12px;border-radius:100px;}
+  .ph h2{font-size:24px;font-weight:600;color:var(--grey-800);line-height:32px;}
+  .ph p{font-size:14px;line-height:20px;color:var(--grey-600);max-width:280px;}
+
+  /* Skeleton while the feed loads */
+  .sk{background:var(--grey-100);border-radius:12px;position:relative;overflow:hidden;}
+  .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:shimmer 1.3s infinite;}
+  @keyframes shimmer{to{transform:translateX(100%);}}
+  .sk-card{display:flex;flex-direction:column;gap:8px;padding:12px;}
+  .sk-card .img{height:240px;border-radius:20px;}
+  .sk-card .l1{height:20px;width:80%;margin:16px 16px 0;}
+  .sk-card .l2{height:12px;width:40%;margin:0 16px;}
+  .sk-card .l3{height:6px;margin:4px 16px 16px;border-radius:100px;}
+
+  /* ================= Campaign card ================= */
+  .cardwrap{padding:12px;}
+  .card-img{position:relative;height:240px;border-radius:20px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
+  .card-img>.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .card-logobar{position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px;}
+  .card-logobar .logo{width:36px;height:36px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
+  .heart{width:24px;height:24px;color:#fff;}
+  .heart path{fill:rgba(18,18,18,.6);}
+  .overlaybar{position:absolute;bottom:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 22px;}
+  .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:20px;z-index:0;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);}
+  .overlaybar>*{position:relative;z-index:1;}
+  .details{display:flex;gap:6px;align-items:center;}
+  .details svg{width:14px;height:14px;color:#fff;}
+  .price-chip{background:var(--grey-100-20);padding:4px 8px;border-radius:20px;font-size:12px;font-weight:500;color:#fff;line-height:12px;}
+  .card-content{display:flex;flex-direction:column;gap:8px;padding:16px;}
+  .card-content .ctitle{font-size:16px;font-weight:600;line-height:20px;color:#000;cursor:pointer;}
+  .card-time{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+  .card-time .dot{width:2px;height:2px;border-radius:2px;background:var(--grey-600);}
+  .progress-group{display:flex;flex-direction:column;gap:4px;}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:normal;}
+  .card-foot .joined{display:flex;gap:4px;align-items:center;font-weight:500;color:var(--grey-800);}
+  .card-foot .joined svg{width:14px;height:14px;color:#131927;}
+  .card-foot .money{display:flex;gap:4px;align-items:center;white-space:nowrap;color:var(--grey-800);font-weight:500;}
+  .card-foot .money b{font-weight:600;color:var(--grey-800);}
+
+  /* ================= Explore: Campaigns ================= */
+  .home{padding-top:16px;}
+  .home-title{font-size:40px;font-weight:600;line-height:48px;letter-spacing:-.025em;color:#000;}
+  /* Search reveals under the heading (toggled from the header search icon) */
+  .home-search{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1),margin-top .45s cubic-bezier(.16,1,.3,1);}
+  .home-search>div{overflow:hidden;min-height:0;}
+  .home-search .search{opacity:0;transform:translateY(-8px);transition:opacity .3s ease,transform .45s cubic-bezier(.16,1,.3,1);}
+  .home-search.open{grid-template-rows:1fr;margin-top:16px;}
+  .home-search.open .search{opacity:1;transform:none;}
+  .search{display:flex;align-items:center;gap:12px;height:48px;margin:1px;padding:0 20px;border:1px solid var(--grey-400);border-radius:100px;background:#fff;transition:border-color .2s ease;}
+  .search:focus-within{border-color:var(--blue-300);}
+  .search svg{width:22px;height:22px;color:var(--grey-800);flex-shrink:0;}
+  .search input{flex:1;min-width:0;width:100%;border:0;outline:0;background:none;font:500 14px var(--font);color:var(--grey-800);}
+  .search input::placeholder{color:var(--grey-600);}
+  .search input::-webkit-search-cancel-button{display:none;}
+  .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:4px 8px;border-radius:8px;background:var(--grey-100);}
+  .home .tags{margin-top:24px;gap:8px;}
+  .tag:active{transform:scale(.96);}
+
+  .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px;}
+  .feedgrid>.cardwrap,.feedgrid>.sk-card{background:#fff;border:1px solid var(--grey-200);border-radius:32px;}
+  .feedgrid>.cardwrap{transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1);animation:cardIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i,0) * 60ms);}
+  .feedgrid>.cardwrap:hover{transform:translateY(-2px);box-shadow:0 20px 40px -24px rgba(18,18,18,.22);}
+  .feedgrid .view-btn{transition:transform .2s cubic-bezier(.16,1,.3,1);}
+  .feedgrid .view-btn:active{transform:scale(.96);}
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){.feedgrid>.cardwrap{animation:none;}}
+
+  /* ================= Campaign page (middle column of the creator app's campaign page, main branch) ================= */
+  .like-heart{cursor:pointer;display:flex;}
+  .like-heart svg{transition:transform .2s ease;}
+  .like-heart.liked path{fill:#FF6B4A;}
+  .like-heart.liked svg{animation:heartpop .3s ease;}
+  @keyframes heartpop{0%{transform:scale(1);}40%{transform:scale(1.3);}100%{transform:scale(1);}}
+  .btn-questions{background:var(--blue-100);border:2px solid var(--blue-100);padding:9px 0;border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 5px rgba(0,0,0,.08);cursor:pointer;width:100%;font-size:14px;font-weight:500;line-height:20px;color:var(--blue-700);}
+  .cp-list{padding:12px;border-radius:9px;display:flex;flex-direction:column;gap:6px;width:100%;}
+  .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;line-height:20px;}
+  .cp-list .row .k{font-weight:500;color:var(--grey-600);}
+  .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;white-space:nowrap;}
+  .cp-list .div{height:1px;background:var(--grey-200);margin:3px 0;}
+  .cp-list .social{display:flex;gap:6px;align-items:center;}
+  .cp-list .social svg{width:16px;height:16px;color:var(--grey-800);}
+  .wcard{background:#fff;border-radius:15px;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.12));}
+  .band{background:var(--grey-800);display:flex;flex-direction:column;}
+  .sheet-b{background:var(--grey-50);border-radius:0 0 21px 21px;}
+  .sheet-t{background:var(--grey-50);border-radius:21px 21px 0 0;}
+
+  .cp{display:grid;grid-template-columns:minmax(0,555px);justify-content:center;align-items:start;margin:-24px auto -80px;}
+  /* Main column sits between two full-height divider lines */
+  .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
+  .cp-main{display:flex;flex-direction:column;min-width:0;padding-bottom:60px;}
+  .cp-hero{position:relative;height:225px;border-radius:15px 15px 0 0;background:var(--grey-200);}
+  .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-27px;width:54px;height:54px;border-radius:75px;border:3px solid #fff;overflow:hidden;background:#fff;}
+  .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
+  /* Top bar above the main image: back link on the left, like + share on the right */
+  .cp-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;padding-bottom:12px;}
+  .cp-back{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 0;font-size:14px;font-weight:500;line-height:19px;color:var(--grey-600);transition:color .2s ease;}
+  .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
+  .cp-back:hover{color:var(--grey-800);}
+  .cp-back:hover svg{transform:translateX(-2px);}
+  .cp-actions{display:flex;gap:9px;align-items:center;}
+  .cp-round{width:30px;height:30px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .cp-round svg{width:20px;height:20px;}
+  .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
+  .cp-round:active{transform:scale(.94);}
+  .cp-details{display:flex;flex-direction:column;gap:9px;padding:39px 0 18px;}
+  .cp-title{font-size:22px;font-weight:600;line-height:26px;letter-spacing:-.02em;color:var(--grey-800);}
+  .cp-details>.cp-list{margin-top:9px;padding:6px 0 0;border-radius:0;}
+  .cp-joined{display:flex;gap:6px;align-items:center;}
+  .cp-avatars{display:flex;}
+  .cp-avatars img{width:22px;height:22px;border-radius:15px;border:1.5px solid var(--grey-50);object-fit:cover;margin-left:-6px;background:#ddd;}
+  .cp-avatars img:first-child{margin-left:0;}
+  .cp-joined .count{font-size:14px;font-weight:500;color:var(--grey-600);}
+  .cp-infotags{padding:18px 8px;display:flex;flex-direction:column;gap:12px;align-items:center;}
+  .cp-infotags h3{font-size:15px;font-weight:600;line-height:19px;color:var(--grey-800);text-align:center;}
+  .cp-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;}
+  .cp-tag{background:var(--grey-200);display:flex;gap:3px;align-items:center;justify-content:center;padding:5px 9px;border-radius:75px;}
+  .cp-tag svg{width:20px;height:20px;color:var(--grey-800);}
+  .cp-tag span{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);}
+  .cp-event{display:flex;justify-content:center;padding:12px 18px;}
+  .cp-event-card{display:flex;flex-direction:column;gap:9px;align-items:center;padding:12px 15px;}
+  .cp-event-info{display:flex;flex-direction:column;align-items:center;}
+  .cp-event-info .line{font-size:18px;font-weight:600;line-height:22px;color:var(--grey-50);text-align:center;}
+  .cp-event-info .mut{color:var(--grey-500);}
+  .cp-event-row{display:flex;gap:6px;align-items:center;justify-content:center;}
+  .cp-event-ic{width:24px;height:24px;flex-shrink:0;color:var(--grey-50);}
+  .cp-event-ic svg{width:24px;height:24px;}
+  .cp-event-cta{display:flex;flex-direction:column;align-items:center;}
+  .cp-event-cta .lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-500);}
+  .cp-event-link{display:flex;gap:3px;align-items:center;cursor:pointer;}
+  .cp-event-link span{font-size:14px;font-weight:500;line-height:20px;color:var(--blue-300);}
+  .cp-event-link .ext{width:16px;height:16px;color:var(--blue-300);}
+  .cp-event-link .ext svg{width:16px;height:16px;}
+  .cp-reqs{padding:24px 18px 12px;display:flex;flex-direction:column;gap:24px;}
+  .cp-reqs h3,.cp-createdby>h3{font-size:15px;font-weight:600;line-height:19px;color:#000;}
+  .cp-sec{display:flex;flex-direction:column;gap:9px;}
+  .cp-reqs p{font-size:14px;line-height:20px;color:#000;max-width:480px;}
+  .cp-reqs h4{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);margin-top:9px;}
+  .cp-spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;}
+  .cp-spectile{background:var(--grey-100);border:1px solid var(--grey-200);border-radius:9px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;}
+  .cp-spectile .k{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .cp-spectile .v{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .cp-plats{display:flex;flex-wrap:wrap;gap:6px;}
+  .cp-plat{display:flex;gap:5px;align-items:center;padding:6px 11px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .cp-plat svg{width:18px;height:18px;}
+  .cp-ctas{background:var(--blue-100);border-left:2px solid var(--blue-500);border-radius:0 9px 9px 0;padding:12px 15px;display:flex;flex-direction:column;gap:6px;}
+  .cp-ctas p{font-style:italic;color:var(--grey-800);}
+  .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:8px;}
+  .cp-restrict li{counter-increment:r;display:flex;gap:9px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
+  .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:75px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
+  .cp-meta{display:flex;gap:6px 15px;align-items:center;flex-wrap:wrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .cp-mi{display:flex;gap:5px;align-items:center;white-space:nowrap;}
+  .cp-mi svg{width:16px;height:16px;}
+  .cp-metaplat{display:flex;gap:9px;align-items:center;color:var(--grey-600);}
+  .cp-metaplat svg{width:16px;height:16px;}
+  .cp-createdby{display:flex;flex-direction:column;gap:12px;padding:24px 0 8px;}
+  .cp-main>div:not(.band)>.cp-reqs{padding-left:0;padding-right:0;}
+  .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:6px 0 12px;}
+  .cp-creatorcard .col{display:flex;flex-direction:column;gap:12px;}
+  .cp-identity{display:flex;flex-direction:column;gap:12px;align-items:center;padding:12px 24px 3px;}
+  .cp-identity .av{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
+  .cp-idtext{display:flex;flex-direction:column;gap:6px;align-items:center;}
+  .cp-identity .name{font-size:18px;font-weight:600;line-height:18px;color:var(--grey-800);}
+  .cp-identity .since{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .cp-cdesc{padding:0 18px;font-size:14px;line-height:20px;color:#000;text-align:center;}
+  .cp-stats{display:flex;align-items:center;justify-content:center;padding:12px 18px;}
+  .cp-stat{display:flex;flex-direction:column;align-items:center;flex:1;}
+  .cp-stat .big{font-size:18px;font-weight:600;color:var(--grey-800);}
+  .cp-stat .lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .cp-stat-div{width:1px;height:29px;background:var(--grey-200);}
+  .cp-cmetrics{display:flex;flex-direction:column;gap:6px;padding:18px 18px 6px 6px;}
+  .cp-cmetrics .row{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:20px;}
+  .cp-cmetrics .row .k{font-weight:400;color:var(--grey-600);}
+  .cp-cmetrics .row .v{font-weight:600;color:var(--grey-800);}
+  .cp-cmetrics .div{height:1px;background:var(--grey-100);margin:3px 0;}
+  .handles{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
+  .handle{display:flex;flex-direction:column;gap:3px;align-items:center;padding:6px;position:relative;flex-shrink:0;}
+  .handle .pf{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
+  .handle .badge{position:absolute;left:39px;top:0;background:#fff;padding:5px;border-radius:15px;display:flex;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));color:#121212;}
+  .handle .badge svg{width:12px;height:12px;}
+  .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
+  .cp-questions{padding:6px 18px 0 6px;}
+
+  /* ================= Admin view: campaign · post · creator ================= */
+  .adm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin:-24px auto -80px;min-height:calc(100dvh - var(--header) - 48px);}
+  .adm-col{padding:40px 32px 64px;}
+  .adm-side{position:sticky;top:calc(var(--header) + 48px);align-self:start;display:flex;flex-direction:column;gap:24px;max-width:400px;}
+  .adm-left{justify-self:end;width:100%;}
+  .adm-right{justify-self:start;width:100%;}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding:40px 40px 64px;display:flex;justify-content:center;}
+  .adm-eyebrow{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  .adm-sec{display:flex;flex-direction:column;gap:10px;}
+  .adm-sec+.adm-sec{padding-top:24px;border-top:1px solid var(--grey-200);}
+
+  /* Left: campaign */
+  .adm-title{font-size:24px;font-weight:600;line-height:28px;letter-spacing:-.022em;color:var(--grey-800);text-wrap:balance;}
+  .adm-meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .adm-meta span{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .adm-meta svg{width:16px;height:16px;}
+  .adm-joined{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--grey-800);}
+  .adm-joined .cp-avatars img{border-color:#fff;}
+  .adm-joined b{font-weight:600;}
+  .adm-budget{display:flex;flex-direction:column;gap:10px;}
+  .adm-budget .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+  .adm-budget .spent{font-size:20px;font-weight:600;line-height:24px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .adm-budget .of{font-size:14px;font-weight:500;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .adm-budget .pct{font-size:14px;font-weight:600;color:var(--blue-600);font-variant-numeric:tabular-nums;}
+  .adm-bar{height:8px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
+  .adm-bar i{display:block;height:100%;width:var(--p);border-radius:inherit;background:var(--blue-500);transform-origin:left;animation:barIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
+  @keyframes barIn{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .adm-budget .foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+
+  /* Centre: the post, framed like a phone */
+  .adm-phone{--w:min(400px,calc((100dvh - var(--header) - 48px - 104px) * 9 / 16));width:max(280px,var(--w));align-self:start;position:sticky;top:calc(var(--header) + 48px + 40px);
+    border-radius:32px;overflow:hidden;background:#000;box-shadow:0 1px 2px rgba(0,0,0,.08),0 24px 48px -24px rgba(18,18,18,.35);}
+  .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
+  .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
+  /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
+  .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:96px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
+  .adm-kind{position:absolute;top:16px;left:0;right:0;z-index:3;text-align:center;font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.01em;color:#fff;pointer-events:none;}
+  .adm-count{position:absolute;top:14px;right:14px;z-index:3;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);font-variant-numeric:tabular-nums;}
+
+  /* Reel */
+  .reel-frame{position:absolute;inset:0;}
+  .reel-frame img{transform-origin:50% 40%;animation:reelDrift 15s linear infinite;}
+  .adm-screen.paused .reel-frame img{animation-play-state:paused;}
+  @keyframes reelDrift{from{transform:scale(1);}to{transform:scale(1.08);}}
+  .reel-hit{position:absolute;inset:0;z-index:1;cursor:pointer;}
+  .reel-icon{position:absolute;left:50%;top:50%;z-index:3;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
+    background:rgba(18,18,18,.4);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);opacity:0;transform:scale(.8);pointer-events:none;transition:opacity .2s ease,transform .35s cubic-bezier(.2,.9,.3,1);}
+  .reel-icon svg{width:32px;height:32px;}
+  .adm-screen.paused .reel-icon{opacity:1;transform:scale(1);}
+  .adm-screen.flash .reel-icon{opacity:1;transform:scale(1);}
+  .reel-mute{position:absolute;right:14px;bottom:22px;z-index:3;width:36px;height:36px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
+    background:rgba(18,18,18,.4);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .1s ease-out;}
+  .reel-mute svg{width:18px;height:18px;}
+  .reel-mute:active{transform:scale(.9);}
+  .reel-progress{position:absolute;left:14px;right:62px;bottom:38px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
+  .reel-progress i{display:block;height:100%;width:100%;background:#fff;transform-origin:left;transform:scaleX(0);}
+
+  /* Carousel */
+  .car-track{position:absolute;inset:0;display:flex;will-change:transform;cursor:grab;}
+  .car-track.dragging{cursor:grabbing;}
+  .car-slide{flex:0 0 100%;height:100%;}
+  .car-dots{position:absolute;left:0;right:0;bottom:16px;z-index:3;display:flex;justify-content:center;gap:6px;pointer-events:none;}
+  .car-dots i{width:6px;height:6px;border-radius:100px;background:rgba(255,255,255,.5);transition:background .25s ease,width .35s cubic-bezier(.2,.9,.3,1);}
+  .car-dots i.on{width:18px;background:#fff;}
+  .car-nav{position:absolute;top:50%;z-index:3;width:36px;height:36px;margin-top:-18px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-800);
+    background:rgba(255,255,255,.75);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);box-shadow:0 2px 8px rgba(0,0,0,.18);opacity:0;transition:opacity .2s ease,transform .1s ease-out;}
+  .car-nav svg{width:20px;height:20px;}
+  .car-nav.prev{left:12px;} .car-nav.next{right:12px;transform:scaleX(-1);}
+  .adm-screen:hover .car-nav:not([disabled]),.car-nav:focus-visible{opacity:1;}
+  .car-nav:active{transform:scale(.9);} .car-nav.next:active{transform:scaleX(-1) scale(.9);}
+  .car-nav[disabled]{pointer-events:none;}
+
+  /* Right: creator */
+  .adm-creator{display:flex;align-items:center;gap:14px;}
+  .adm-creator img{width:60px;height:60px;border-radius:100px;object-fit:cover;background:var(--grey-200);flex-shrink:0;}
+  .adm-creator .name{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.012em;color:var(--grey-800);}
+  .adm-creator .adm-handle{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .adm-follow{display:flex;flex-wrap:wrap;gap:8px 20px;}
+  .adm-follow span{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .adm-follow span em{font-style:normal;font-weight:500;color:var(--grey-600);}
+  .adm-follow svg{width:16px;height:16px;}
+  .adm-total{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .adm-total b{font-weight:600;color:var(--grey-800);}
+  .adm-caption{font-size:15px;line-height:22px;color:var(--grey-800);white-space:pre-line;}
+  .adm-caption .tag{all:unset;color:var(--blue-600);font-weight:500;}
+  .adm-posted{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);}
+  .adm-bio{font-size:14px;line-height:21px;color:var(--grey-700);}
+
+  /* Columns settle in left → centre → right */
+  .adm>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
+  .adm>:nth-child(2){animation-delay:60ms;} .adm>:nth-child(3){animation-delay:120ms;}
+  @keyframes admIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){
+    .adm>*,.adm-bar i{animation:none;}
+    .reel-frame img{animation:none;}
+    .reel-icon,.car-dots i{transition:opacity .2s ease;}
+  }
+  @media(prefers-reduced-transparency:reduce){
+    .adm-count,.reel-icon,.reel-mute{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .car-nav{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  }
+
+  /* ================= Notifications popover ================= */
+  .pop{position:fixed;top:calc(var(--header) + 8px);right:var(--gutter);width:400px;max-height:min(560px,calc(100dvh - 88px));z-index:40;display:flex;flex-direction:column;
+    background:var(--grey-50);border-radius:28px;box-shadow:0 16px 40px rgba(0,0,0,.18);border:1px solid var(--grey-200);
+    opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
+  .pop.open{opacity:1;transform:none;pointer-events:auto;}
+  .nt-title{padding:24px 24px 0;font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);}
+  .nt-list{display:flex;flex-direction:column;gap:16px;padding:20px 16px 24px;overflow-y:auto;}
+  .nt-item{display:flex;gap:12px;align-items:flex-start;}
+  .nt-logo{width:32px;height:32px;border-radius:20px;object-fit:cover;flex-shrink:0;background:var(--grey-100);}
+  .nt-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--grey-200);}
+  .nt-item:last-child .nt-body{border-bottom:none;padding-bottom:0;}
+  .nt-text{font-size:14px;line-height:20px;color:var(--grey-800);font-weight:600;}
+  .nt-text .med{font-weight:500;}
+  .nt-time{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+
+  .toast{position:fixed;left:50%;bottom:32px;z-index:60;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--grey-800);color:var(--grey-50);
+    padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;box-shadow:2px 2px 12px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  /* ================= Responsive ================= */
+  @media (max-width:1279px){
+    .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .adm-col{padding-left:24px;padding-right:24px;}
+    .adm-center{padding-left:24px;padding-right:24px;}
+  }
+  /* Tablet portrait: just the post and the creator, side by side (landscape keeps all three columns) */
+  @media (min-width:768px) and (max-width:1279px) and (orientation:portrait){
+    .adm{grid-template-columns:auto minmax(0,400px);justify-content:center;}
+    .adm-left{display:none;}
+    .adm-center{border-left:0;padding:40px 32px 64px 0;}
+    .adm-phone{width:max(280px,min(var(--w),46vw));}
+    .adm-col{padding:40px 0 64px 32px;}
+  }
+  @media (max-width:1023px){
+    :root{--gutter:24px;}
+    .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
+    .cp-cmetrics,.cp-questions{padding-left:18px;}
+  }
+  @media (max-width:767px){
+    :root{--gutter:16px;}
+    .topbar{grid-template-columns:auto auto minmax(0,1fr);gap:8px;}
+    .brand svg{height:22px;}
+    .tnav{gap:0;}
+    .tnav a{width:44px;}
+    .top-right{gap:8px;}
+    .home-title{font-size:32px;line-height:40px;}
+    .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
+    .pop{left:var(--gutter);width:auto;}
+    .adm{grid-template-columns:minmax(0,1fr);margin-bottom:0;}
+    .adm-left{display:block;}
+    .adm-center{order:-1;border:0;padding:24px 0 8px;}
+    .adm-phone{position:static;width:min(100%,360px);}
+    .adm-side{position:static;max-width:560px;margin:0 auto;}
+    .adm-col{padding:24px 0;}
+    .adm-right{border-top:1px solid var(--grey-200);}
+    .cp-hero{height:180px;}
+    .cp{margin-bottom:0;}
+    .cp-main{padding-bottom:24px;}
+    .viewbar{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding-top:8px;padding-bottom:8px;text-align:left;}
+    .viewbar .msg{grid-column:2;}
+    .viewbar-back .lbl{display:none;}
+    .viewbar-back{padding:0 6px;}
+    .viewbar-btn{grid-column:3;}
+    .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar">
+  <a class="brand" href="#/active" aria-label="UGC Platform home"><svg viewBox="0 0 269 184" fill="none" aria-hidden="true"><path d="M121.556 4.06404C141.556 -7.48297 166.556 6.9505 166.556 30.0445C166.556 31.0921 165.899 32.0212 164.936 32.4319C152.062 37.9179 143.037 50.6867 143.037 65.564V116.564C143.037 131.086 151.636 143.598 164.02 149.29C165.519 149.979 166.556 151.435 166.556 153.085C166.555 176.178 141.556 190.612 121.556 179.065L15 117.545C-5 105.998 -5 77.1306 15 65.5836L121.556 4.06404Z" fill="currentColor"/><path d="M227.969 0.278931C250.418 0.27893 268.617 18.478 268.617 40.9274V140.409C268.617 162.858 250.418 181.056 227.969 181.056C210.666 181.056 195.891 170.245 190.025 155.01C189.233 152.955 190.505 150.769 192.546 149.942C205.734 144.6 215.037 131.669 215.037 116.564V65.5641C215.037 50.3684 205.621 37.3734 192.306 32.0911C190.279 31.2867 188.994 29.1414 189.737 27.0903C195.397 11.453 210.378 0.278951 227.969 0.278931Z" fill="currentColor"/></svg></a>
+  <nav class="tnav" id="tnav" aria-label="Main"></nav>
+  <div class="top-right">
+    <button class="hicon" id="search-btn" data-search aria-label="Search" aria-expanded="false"></button>
+    <button class="hicon" data-pop="notifs" aria-label="Notifications"><span id="bell-ic"></span><i class="dot"></i></button>
+    <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="pfAvatar" data-label="B" alt=""></a>
+  </div>
+</header>
+<nav class="subnav" id="subnav" aria-label="Campaign status">
+  <a href="#/active" data-tab="active">Active</a>
+  <a href="#/completed" data-tab="completed">Completed</a>
+  <a href="#/upcoming" data-tab="upcoming">Upcoming</a>
+</nav>
+<div class="viewbar"><a class="viewbar-back" id="viewbar-back" href="#/active" aria-label="Back to campaigns"><span id="viewbar-back-ic"></span><span class="lbl">Back to campaigns</span></a><span class="msg" role="status" id="viewbar-msg">You are viewing this page as a creator</span><a class="viewbar-btn" id="viewbar-switch" href="#/active">Switch to admin</a></div>
+<main class="content" id="view"></main>
+
+<div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- Design assets shared with the creator web app (generated by scripts/sync-assets.js) -->
+<script src="assets.js"></script>
+<script>
+function fallback(img){
+  const label=(img.dataset.label||"?").slice(0,2).toUpperCase();
+  const c=['#1548eb','#f433ab','#717171','#121212'][label.charCodeAt(0)%4];
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='${c}'/><text x='50%' y='54%' font-family='Inter,sans-serif' font-size='26' font-weight='600' fill='white' text-anchor='middle' dominant-baseline='middle'>${label}</text></svg>`;
+  img.src='data:image/svg+xml;base64,'+btoa(svg);
+}
+function bindAssets(root){
+  root.querySelectorAll('img[data-a]').forEach(img=>{
+    if(img.dataset.bound) return; img.dataset.bound=1;
+    img.onerror=()=>{img.onerror=null;fallback(img);};
+    if(A[img.dataset.a]) img.src=A[img.dataset.a]; else fallback(img);
+  });
+}
+
+const AVSET='<img data-a="av1" data-label="C" alt=""><img data-a="av2" data-label="C" alt=""><img data-a="av3" data-label="C" alt=""><img data-a="av4" data-label="C" alt="">';
+const PLAT={insta:CPICON.insta,tiktok:CPICON.tiktok,linkedin:CPICON.linkedin,
+  youtube:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 00-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>`,
+  facebook:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.1v3h2.5V21h2.9z"/></svg>`};
+const PLATNAME={tiktok:'TikTok',insta:'Instagram',youtube:'YouTube',facebook:'Facebook',linkedin:'LinkedIn'};
+
+/* ================= Data (same campaigns as the creator web app) ================= */
+const SPEC=[['Format','Vertical 9:16'],['Duration','30–45 seconds'],['Quality','Min 1080p'],['Language','English, Sinhala'],['Captions','Required']];
+const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio','Keep the post live for at least 30 days'];
+
+const C={
+  uber:{img:'card1',logo:'logo1',abbr:'Ub',cat:'Mobility',
+    title:'Uber Moto UGC campaign in Colombo Book festival',time:'5 hrs ago',right:'10 d left',progress:40,joined:'412 joined',joinedShort:'400+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 1,000,000</b>',spent:'Rs. 284,536',available:'Rs. 715,464',budget:'Rs. 1,000,000',budgetN:1000000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,000,000']],
+    tags:[['Females','people'],['25-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
+    reqDesc:'Show your audience how Uber Moto can make everyday city travel quicker, easier, and more convenient.',
+    platforms:['tiktok','insta','youtube','facebook'],visibility:'Uber Moto helmet and app ride screen clearly visible',
+    ctas:['Skip the traffic — ride Uber Moto.','Book your Moto in two taps.','Show us your fastest Colombo shortcut and tag us.'],
+    brand:'Uber Sri Lanka',since:'Since Mar 2026',brandDesc:'Create creative content when you ride Uber Moto across Colombo and share your journey.',
+    totalPaid:'Rs. 2.6 M',campaigns:'48',metrics:[['Content approval rate','96 %'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['10K','insta'],['2.5K','tiktok'],['546','linkedin']]},
+  eats:{img:'card2',logo:'logo2',abbr:'UE',cat:'Food',
+    title:'UberEats UGC campaign in Colombo Book festival',time:'5 hrs ago',right:'10 d left',progress:70,joined:'412 joined',joinedShort:'300+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 500,000</b>',spent:'Rs. 350,000',available:'Rs. 150,000',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 5200'],['Max earning per content','Rs. 80,000'],['Performance pricing','Rs. 1500 / 1K views'],['Total budget','Rs. 500,000']],
+    tags:[['Foodies','people'],['20-30 age','age'],['Colombo','pin'],['Reels','video'],['Story','camera']],
+    reqDesc:'Show how UberEats brings your favourite Colombo restaurants to your door in minutes.',
+    platforms:['tiktok','insta','facebook'],visibility:'Uber Eats bag and the order screen clearly visible',
+    ctas:['Your favourites, at your door.','Order in — tag us with your Uber Eats haul.','Craving it? Uber Eats it.'],
+    brand:'Uber Eats LK',since:'Since Jan 2026',brandDesc:'Create tasty content while ordering your favourite meals on Uber Eats.',
+    totalPaid:'Rs. 1.8 M',campaigns:'32',metrics:[['Content approval rate','94 %'],['Approval time','1 d'],['Responds within','3 hrs']],
+    handles:[['8K','insta'],['1.9K','tiktok'],['420','linkedin']]},
+  hiru:{img:'card3',logo:'logo3',abbr:'Hi',cat:'Entertainment',
+    title:'Hiru TV, Akon Musical event & DJ in Colombo',time:'Happening on July 4',right:null,progress:100,joined:null,joinedShort:'500+',
+    money:'<span>Total budget:</span><b>Rs. 500,000</b>',spent:'Rs. 320,000',available:'Rs. 180,000',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 8000'],['Max earning per content','Rs. 150,000'],['Performance pricing','Rs. 2500 / 1K views'],['Total budget','Rs. 500,000']],
+    tags:[['All ages','people'],['Colombo','pin'],['Music','video'],['Reels','video'],['Story','camera']],
+    reqDesc:'Capture the energy of Akon live in Colombo — the countdown, the venue, and the crowd.',
+    platforms:['tiktok','insta','youtube'],visibility:'Hiru TV branding and the stage clearly visible',
+    ctas:['Akon. Live. Colombo.','Grab your tickets on PickMe Events.','Show us your best moment from the crowd.'],
+    brand:'Hiru TV',since:'Since Jan 2026',brandDesc:'Sri Lanka’s leading entertainment network bringing world-class events to Colombo.',
+    totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
+    handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
+    event:{date:'July 4',time:'6 pm onwards',location:'Port City, Colombo',ticket:'PickMe Events'}},
+  starbucks:{img:'sbHero',logo:'starbucks',abbr:'St',cat:'Food',status:'ongoing',
+    title:'Starbucks Christmas Mocha campaign',time:'5 hrs ago',right:'10 d left',progress:57,joined:'400+ joined',joinedShort:'400+',
+    money:'<span>Rs. 92,872 /</span><b>Rs. 500,000</b>',spent:'Rs. 38,588',available:'Rs. 1,236,568',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 500,000']],
+    tags:[['All genders','people'],['18-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
+    reqDesc:'Create creative content when you are using Uber Eats Food Delivery service with Uber Eats logo being clearly visible and a shot at the Uber Eats UI from your phone.',
+    platforms:['tiktok','insta','youtube','facebook'],visibility:'Starbucks cup and Christmas Mocha label clearly visible',
+    ctas:['Make it a Christmas Mocha moment.','Sip the season at Starbucks.','Show us your holiday cup and tag us.'],
+    brand:'Starbucks Sri Lanka',since:'Since Mar 2026',brandDesc:'Create creative content when you are using Uber Eats Food Delivery service with Uber.',
+    totalPaid:'Rs. 2.6 M',campaigns:'48',metrics:[['Content approval rate','96 %'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['10K','insta'],['2.5K','tiktok'],['546','linkedin']]},
+  burgerking:{img:'burgerPhoto',logo:'burgerking',abbr:'BK',cat:'Food',
+    title:'Burger King Whopper Wednesday creator drop',time:'1 d ago',right:'1 d left',progress:38,joined:'184 joined',joinedShort:'180+',
+    money:'<span>Rs. 751,428 /</span><b>Rs. 2,000,000</b>',spent:'Rs. 751,428',available:'Rs. 1,248,572',budget:'Rs. 2,000,000',budgetN:2000000,
+    list:[['Base price per content','Rs. 7250'],['Max earning per content','Rs. 120,000'],['Performance pricing','Rs. 1800 / 1K views'],['Total budget','Rs. 2,000,000']],
+    tags:[['Foodies','people'],['18-30 age','age'],['Colombo','pin'],['Reels','video']],
+    reqDesc:'Film your first bite of the Whopper on a Wednesday and tell your audience what makes it worth the queue.',
+    platforms:['tiktok','insta'],visibility:'Whopper wrap and Burger King tray clearly visible',
+    ctas:['Whopper Wednesday — worth the queue.','Have it your way, every Wednesday.','Show us your first bite and tag us.'],
+    brand:'Burger King LK',since:'Since Jun 2026',brandDesc:'Flame-grilled burgers across 23 outlets island-wide.',
+    totalPaid:'Rs. 940 K',campaigns:'11',metrics:[['Content approval rate','91 %'],['Approval time','2 d'],['Responds within','5 hrs']],
+    handles:[['22K','insta'],['6.1K','tiktok'],['1.2K','linkedin']]},
+  dominos:{img:'grid3',logo:'dominos',abbr:'Do',cat:'Food',status:'pending',
+    title:'Domino’s Polos Pizza product launch',time:'10 d ago',right:'Ending Today',progress:57,joined:'412 joined',joinedShort:'400+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 500,000</b>',spent:'Rs. 284,536',available:'Rs. 215,464',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,500,000']],
+    tags:[['Foodies','people'],['20-35 age','age'],['Colombo','pin'],['Reels','video']],
+    reqDesc:'Unbox the new Polos Pizza with friends and capture the first reactions on camera.',
+    platforms:['tiktok','insta','facebook'],visibility:'Domino’s box and the Polos Pizza clearly visible',
+    ctas:['Polos Pizza is here — grab a slice.','Order Polos on the Domino’s app.','Show us your first-slice reaction and tag us.'],
+    brand:'Domino’s Pizza LK',since:'Since Feb 2026',brandDesc:'Hot pizza delivered in 30 minutes across Colombo and suburbs.',
+    totalPaid:'Rs. 1.4 M',campaigns:'27',metrics:[['Content approval rate','93 %'],['Approval time','1 d'],['Responds within','4 hrs']],
+    handles:[['31K','insta'],['9.4K','tiktok'],['870','linkedin']]},
+  kfc:{img:'grid2',logo:'kfcLogo',abbr:'KF',cat:'Food',
+    title:'KFC Hot & Crispy first-bite challenge',time:'1 d ago',right:'3 d left',progress:42,joined:'260 joined',joinedShort:'260',
+    money:'<span>Rs. 120,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 120,000',available:'Rs. 160,000',budget:'Rs. 280,000',budgetN:280000,
+    list:[['Base price per content','Rs. 4400'],['Max earning per content','Rs. 60,000'],['Performance pricing','Rs. 1200 / 1K views'],['Total budget','Rs. 280,000']],
+    tags:[['Spice lovers','people'],['18-30 age','age'],['Island-wide','pin'],['Reels','video']],
+    reqDesc:'Film your honest first bite of the new Hot & Crispy bucket — the crunch, the heat, the reaction.',
+    platforms:['tiktok','insta','youtube'],visibility:'KFC bucket and Hot & Crispy pieces clearly visible',
+    ctas:['Feel the crunch — Hot & Crispy.','Can you handle the heat?','Show us your first bite and tag us.'],
+    brand:'KFC Sri Lanka',since:'Since Apr 2026',brandDesc:'Finger lickin’ good chicken from 38 restaurants across the island.',
+    totalPaid:'Rs. 610 K',campaigns:'9',metrics:[['Content approval rate','97 %'],['Approval time','1 d'],['Responds within','6 hrs']],
+    handles:[['14K','insta'],['3.3K','tiktok'],['2.1K','linkedin']]},
+  shakira:{img:'grid6',logo:'logo3',abbr:'Hi',cat:'Entertainment',
+    title:'Shakira Live Musical event at City of Dreams',time:'Happening on July 4',right:null,progress:100,joined:null,joinedShort:'600+',
+    money:'<span>Total budget:</span><b>Rs. 2,000,000</b>',spent:'Rs. 610,000',available:'Rs. 1,390,000',budget:'Rs. 2,000,000',budgetN:2000000,
+    list:[['Base price per content','Rs. 9500'],['Max earning per content','Rs. 200,000'],['Performance pricing','Rs. 3000 / 1K views'],['Total budget','Rs. 2,000,000']],
+    tags:[['All ages','people'],['Colombo','pin'],['Music','video'],['Reels','video']],
+    reqDesc:'Take your audience inside City of Dreams for Shakira’s first show in Sri Lanka.',
+    platforms:['tiktok','insta','youtube','facebook'],visibility:'Hiru TV branding and the City of Dreams stage clearly visible',
+    ctas:['Shakira. Live. City of Dreams.','Grab your tickets on PickMe Events.','Show us your best moment from the show.'],
+    brand:'Hiru TV',since:'Since Jan 2026',brandDesc:'Sri Lanka’s leading entertainment network bringing world-class events to Colombo.',
+    totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
+    handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
+    event:{date:'July 4',time:'7 pm onwards',location:'City of Dreams, Colombo',ticket:'PickMe Events'}},
+};
+/* Brand-side status for each campaign (Active / Completed / Upcoming tabs) */
+Object.assign(C.uber,{status:'active'});
+Object.assign(C.starbucks,{status:'active'});
+Object.assign(C.burgerking,{status:'active'});
+Object.assign(C.dominos,{status:'active'});
+Object.assign(C.eats,{status:'completed',time:'Ended on June 28',right:null,money:'<span>Rs. 350,000 /</span><b>Rs. 500,000</b>'});
+Object.assign(C.kfc,{status:'completed',time:'Ended on July 1',right:null,progress:100,money:'<span>Rs. 280,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 280,000',available:'Rs. 0'});
+Object.assign(C.hiru,{status:'upcoming'});
+Object.assign(C.shakira,{status:'upcoming'});
+const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
+const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
+
+/* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
+A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
+
+const notifications=[
+  {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'logo1',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'uberLogo',type:'reply',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'legoLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'dominos',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'pepsi',type:'reply',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'card1',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'avatar',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+];
+
+const state={tab:'active',cat:'All',q:'',searchOpen:false,loaded:false};
+
+/* ================= Templates ================= */
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
+
+function cardHTML(id){
+  const c=C[id];
+  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}">
+      <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
+      <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
+      <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
+    </div>
+    <div class="card-content">
+      <div class="ctitle" data-go="#/campaign/${id}">${c.title}</div>${timeHTML(c)}
+      <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
+        <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
+    </div></div>`;
+}
+
+/* ---------- Explore ---------- */
+function viewExplore(){
+  const cats=['All','Price','Mobility','Food','Entertainment','Lifestyle'];
+  return `<div class="home">
+    <h1 class="home-title">${TABS[state.tab]}</h1>
+    <div class="home-search${state.searchOpen?' open':''}" id="home-search"><div>
+      <label class="search">${MICON.search}<input id="q" type="search" placeholder="Search" value="${esc(state.q)}" autocomplete="off" aria-label="Search campaigns and brands"${state.searchOpen?'':' tabindex="-1"'}><kbd>Esc</kbd></label>
+    </div></div>
+    <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}</div>
+    <div class="feedgrid" id="feed"></div>
+  </div>`;
+}
+function renderFeed(){
+  const f=document.getElementById('feed'); if(!f) return;
+  if(!state.loaded){
+    f.innerHTML=Array.from({length:6},()=>`<div class="sk-card"><div class="sk img"></div><div class="sk l1"></div><div class="sk l2"></div><div class="sk l3"></div></div>`).join('');
+    setTimeout(()=>{state.loaded=true;renderFeed();},600);return;
+  }
+  const q=state.q.trim().toLowerCase();
+  let ids=EXPLORE.filter(id=>{const c=C[id];
+    if(c.status!==state.tab) return false;
+    if(!['All','Price'].includes(state.cat)&&c.cat!==state.cat) return false;
+    return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
+  if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
+  f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
+    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||state.cat)}”</h2><p>Try another brand name or clear the search to see every ${state.tab} campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
+  bindAssets(f);
+}
+
+/* ---------- Campaign page (middle column of the creator campaign page) ---------- */
+const CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
+function viewCampaign(id){
+  const c=C[id];
+  const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+  const list=`<div class="cp-list"><div class="row"><span class="k">Target platforms</span><span class="social">${c.platforms.map(p=>PLAT[p]).join('')}</span></div>${listRows}</div>`;
+  const tags=c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('');
+  const metrics=c.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
+  const handles=c.handles.map(h=>`<div class="handle"><img class="pf" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">${h[0]}</span></div>`).join('');
+  const mid=c.event
+    ? `<div class="cp-event"><div class="cp-event-card">
+        <div class="cp-event-info">
+          <div class="cp-event-row"><span class="line"><span class="mut">Happening on </span>${c.event.date}</span><span class="cp-event-ic">${CPICON.calendar}</span></div>
+          <span class="line">${c.event.time} <span class="mut">at</span></span>
+          <div class="cp-event-row"><span class="cp-event-ic">${CPICON.pin}</span><span class="line">${c.event.location}</span></div>
+        </div>
+        <div class="cp-event-cta"><span class="lbl">Buy tickets from</span><a class="cp-event-link" data-act="soon"><span>${c.event.ticket}</span><span class="ext">${CPICON.extlink}</span></a></div>
+      </div></div>`
+    : '';
+  return `<div class="cp">
+    <div class="cp-top">
+      <a class="cp-back" href="#/${c.status}" aria-label="Back to Campaigns">${BACKARROW}<span>Campaigns</span></a>
+      <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
+    </div>
+    <div class="cp-main">
+      <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
+        <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
+      </div>
+      <div class="cp-details">
+        <h1 class="cp-title">${c.title}</h1>
+        <div class="cp-meta">
+          ${c.event?`<span class="cp-mi">${CPICON.calendar}${c.time}</span>`:`<span class="cp-mi">${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
+          ${c.right?`<span class="cp-mi">${CLOCK}${c.right}</span>`:''}
+          <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} creators joined</span></div>
+          <div class="cp-metaplat" aria-label="Platforms">${c.platforms.map(p=>`<span title="${PLATNAME[p]}">${PLAT[p]}</span>`).join('')}</div></div>
+        ${list}
+      </div>
+      <div class="${c.event?'band':''}">
+        <div class="${c.event?'sheet-b ':''}cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
+        ${mid}
+        <div class="${c.event?'sheet-t ':''}cp-reqs" id="reqs">
+          <section class="cp-sec"><h3>About this campaign</h3><p>${c.reqDesc}</p></section>
+          <section class="cp-sec"><h3>Requirements &amp; resources</h3>
+            <div class="cp-spec">${[...SPEC,['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+            <h4>Platforms to post on</h4>
+            <div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
+            <h4>Call-to-action ideas</h4>
+            <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
+            <h4>Restrictions</h4>
+            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+          </section></div>
+      </div>
+      <div class="cp-createdby"><h3>Campaign created by</h3>
+        <div class="wcard cp-creatorcard">
+          <div class="col">
+            <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
+            <p class="cp-cdesc">${c.brandDesc}</p>
+            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
+          </div>
+          <div class="col">
+            <div class="cp-cmetrics">${metrics}</div>
+            <div class="handles">${handles}</div>
+            <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
+          </div>
+        </div></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Admin view: the creator's post for this campaign ---------- */
+/* media.type: reel | image | carousel. Followers per platform; caption as posted. */
+const SUB={
+  uber:{name:'Ramith Hewavithan',handle:'@ramith_h',av:'pfAvatar',posted:'2 hrs ago',
+    media:{type:'reel',items:['images/hotzy-reel.jpg'],length:'0:15'},
+    followers:[['insta','12.4K'],['tiktok','8.1K']],
+    caption:'Colombo traffic at 6pm? Not my problem anymore 🏍️ Booked an Uber Moto in two taps and made it to the Book Festival before the doors opened. #UberMoto #ColomboBookFestival #ad',
+    bio:'Colombo-based food and city-life creator. Short, honest reels about getting around town and where to eat after.'},
+  eats:{name:'Nethmi Perera',handle:'@nethmi.eats',av:'av1',posted:'June 26',
+    media:{type:'carousel',items:['card2','grid2']},
+    followers:[['insta','31K'],['tiktok','14.2K']],
+    caption:'Book festival haul, part 2: the snack run 📚🍗 Ordered on Uber Eats from the queue and it beat me to the gate. Swipe for the spread → #UberEatsLK #ColomboBookFestival',
+    bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'},
+  starbucks:{name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',posted:'5 hrs ago',
+    media:{type:'carousel',items:['sbContent2','sbContent1','sbHero']},
+    followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],
+    caption:'First Christmas Mocha of the season ☕🎄 Cheers to the holidays, swipe for the whole cup. #StarbucksLK #ChristmasMocha',
+    bio:'Coffee, cafés and slow mornings. Rating every new seasonal drink in Sri Lanka, one sip at a time.'},
+  burgerking:{name:'Dilan Fernando',handle:'@dilan.bites',av:'av3',posted:'1 d ago',
+    media:{type:'reel',items:['burgerPhoto'],length:'0:22'},
+    followers:[['tiktok','41K'],['insta','9.8K']],
+    caption:'Whopper Wednesday is real and the queue was worth it 🍔 First-bite reaction at the end. #WhopperWednesday #BurgerKingLK',
+    bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'},
+  dominos:{name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',posted:'3 d ago',
+    media:{type:'image',items:['grid3']},
+    followers:[['insta','26.5K'],['facebook','12K']],
+    caption:'Polos Pizza unboxing with the squad 🍕 The verdict? We ordered a second one. #DominosLK #PolosPizza',
+    bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
+  kfc:{name:'Nethmi Perera',handle:'@nethmi.eats',av:'av1',posted:'June 30',
+    media:{type:'image',items:['grid2']},
+    followers:[['insta','31K'],['tiktok','14.2K']],
+    caption:'Didn’t think I could handle the heat. I was wrong 🔥 Hot & Crispy first-bite challenge, complete. #KFCSriLanka #HotAndCrispy',
+    bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'},
+  hiru:{name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',posted:'Scheduled',
+    media:{type:'reel',items:['card3'],length:'0:30'},
+    followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],
+    caption:'Countdown is ON ⏳ Akon live at Port City this July 4, who’s coming? Tickets on PickMe Events. #AkonColombo #HiruTV',
+    bio:'Coffee, cafés and slow mornings, plus every big concert that lands in Colombo.'},
+  shakira:{name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',posted:'Scheduled',
+    media:{type:'image',items:['grid6']},
+    followers:[['insta','26.5K'],['facebook','12K']],
+    caption:'Shakira at City of Dreams. In Colombo. I’m still not over it 💃 Who’s getting tickets? #ShakiraColombo #HiruTV',
+    bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
+};
+const PLAYIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.1-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>';
+const PAUSEIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
+const MUTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
+const SOUNDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
+
+function viewAdmin(id){
+  const c=C[id], s=SUB[id], m=s.media;
+  const num=v=>+String(v).replace(/[^0-9]/g,'');
+  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
+  const kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
+  let screen;
+  if(m.type==='reel') screen=`<div class="adm-screen" id="reel" data-len="${m.length}">
+      <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
+      <button class="reel-hit" type="button" aria-label="Pause reel"></button>
+      <span class="adm-kind">${kind}</span>
+      <span class="reel-icon" id="reel-icon">${PAUSEIC}</span>
+      <div class="reel-progress"><i id="reel-bar"></i></div>
+      <button class="reel-mute" type="button" id="reel-mute" aria-label="Unmute">${MUTEIC}</button></div>`;
+  else if(m.type==='carousel') screen=`<div class="adm-screen" id="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
+      <div class="car-track" id="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
+      <span class="adm-kind">${kind}</span><span class="adm-count" id="car-count">1/${m.items.length}</span>
+      <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
+      <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
+      <div class="car-dots" id="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
+  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">${kind}</span></div>`;
+  const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
+  const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
+  return `<div class="adm">
+    <div class="adm-col adm-left"><div class="adm-side">
+      <div class="adm-sec">
+        <h1 class="adm-title">${c.title}</h1>
+        <div class="adm-meta">
+          ${c.event?`<span>${CPICON.calendar}${c.time}</span>`:`<span>${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
+          ${c.right?`<span>${CLOCK}${c.right}</span>`:''}
+        </div>
+        <div class="adm-joined"><div class="cp-avatars">${AVSET}</div><span><b>${c.joinedShort}</b> creators joined</span></div>
+      </div>
+      <div class="adm-sec"><span class="adm-eyebrow">Budget</span>
+        <div class="adm-budget">
+          <div class="row"><span class="spent">${c.spent}</span><span class="pct">${pct}%</span></div>
+          <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
+          <div class="foot"><span>Total ${c.budget}</span></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="adm-center"><div class="adm-phone">${screen}</div></div>
+    <div class="adm-col adm-right"><div class="adm-side">
+      <div class="adm-sec">
+        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
+        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
+        <div class="adm-total"><b>${totalF>=1000?(totalF/1000).toFixed(1).replace(/\.0$/,'')+'K':totalF}</b> followers across ${s.followers.length} platforms</div>
+      </div>
+      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">${s.posted==='Scheduled'?'Scheduled to post':'Posted '+s.posted}</span></div>
+      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
+    </div></div>
+  </div>`;
+}
+
+/* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
+let media=null;
+function stopMedia(){if(media){media.stop();media=null;}}
+function mountReel(el){
+  const bar=el.querySelector('#reel-bar'), icon=el.querySelector('#reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('#reel-mute');
+  const [mm,ss]=el.dataset.len.split(':').map(Number), dur=(mm*60+ss)*1000;
+  let t=0,last=performance.now(),playing=true,raf,flashT;
+  const tick=now=>{if(playing){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
+  raf=requestAnimationFrame(tick);
+  /* Feedback on press, not release */
+  hit.addEventListener('pointerdown',()=>{
+    playing=!playing;el.classList.toggle('paused',!playing);
+    icon.innerHTML=playing?PAUSEIC:PLAYIC;hit.setAttribute('aria-label',playing?'Pause reel':'Play reel');
+    clearTimeout(flashT);if(playing){el.classList.add('flash');flashT=setTimeout(()=>el.classList.remove('flash'),450);}
+  });
+  hit.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();hit.dispatchEvent(new PointerEvent('pointerdown'));}});
+  mute.addEventListener('pointerdown',()=>{const on=mute.dataset.on!=='1';mute.dataset.on=on?'1':'';mute.innerHTML=on?SOUNDIC:MUTEIC;mute.setAttribute('aria-label',on?'Mute':'Unmute');});
+  return {stop(){cancelAnimationFrame(raf);clearTimeout(flashT);}};
+}
+
+/* ---------- Carousel: 1:1 drag, momentum projection, critically damped spring, rubber-band edges ---------- */
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
+function rubberband(over,dim,k=0.55){return (over*dim*k)/(dim+k*Math.abs(over));}
+function project(v,d=0.998){return (v/1000)*d/(1-d);}
+function mountCarousel(el){
+  const track=el.querySelector('#car-track'), n=track.children.length, dots=[...el.querySelectorAll('#car-dots i')], count=el.querySelector('#car-count');
+  const prev=el.querySelector('.car-nav.prev'), next=el.querySelector('.car-nav.next');
+  let x=0, v=0, idx=0, raf=null, drag=null;
+  const W=()=>el.clientWidth;
+  const paint=()=>{track.style.transform=`translate3d(${x}px,0,0)`;};
+  const setIdx=i=>{idx=i;dots.forEach((d,j)=>d.classList.toggle('on',j===i));count.textContent=`${i+1}/${n}`;prev.disabled=i===0;next.disabled=i===n-1;};
+  /* Spring in Apple's terms: damping ratio 1 (no overshoot), response 0.35s. Always starts from the live value + velocity. */
+  function springTo(target,vel=0){
+    cancelAnimationFrame(raf);
+    if(reduceMotion.matches){x=target;v=0;paint();return;}
+    const response=.35, k=Math.pow(2*Math.PI/response,2), c=4*Math.PI*1/response;
+    v=vel;let last=performance.now();
+    const step=now=>{
+      const dt=Math.min(.032,(now-last)/1000);last=now;
+      v+=(-k*(x-target)-c*v)*dt;x+=v*dt;paint();
+      if(Math.abs(x-target)<.4&&Math.abs(v)<4){x=target;v=0;paint();raf=null;return;}
+      raf=requestAnimationFrame(step);
+    };
+    raf=requestAnimationFrame(step);
+  }
+  const go=(i,vel=0)=>{setIdx(Math.max(0,Math.min(n-1,i)));springTo(-idx*W(),vel);};
+  el.addEventListener('pointerdown',e=>{
+    if(e.button!==0||e.target.closest('.car-nav')) return;
+    cancelAnimationFrame(raf);raf=null;                      /* grab it mid-flight: keep the on-screen x */
+    drag={id:e.pointerId,startX:e.clientX,baseX:x,hist:[[e.clientX,e.timeStamp]],locked:false};
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!drag||e.pointerId!==drag.id) return;
+    const dx=e.clientX-drag.startX;
+    if(!drag.locked){if(Math.abs(dx)<6) return;drag.locked=true;el.setPointerCapture(e.pointerId);track.classList.add('dragging');}
+    let nx=drag.baseX+dx; const min=-(n-1)*W();
+    if(nx>0) nx=rubberband(nx,W()); else if(nx<min) nx=min-rubberband(min-nx,W());
+    x=nx;paint();
+    drag.hist.push([e.clientX,e.timeStamp]);if(drag.hist.length>6) drag.hist.shift();
+  });
+  const end=e=>{
+    if(!drag||e.pointerId!==drag.id) return;
+    const d=drag;drag=null;track.classList.remove('dragging');
+    if(!d.locked){springTo(-idx*W());return;}
+    const h=d.hist, a=h[0], b=h[h.length-1], dt=(b[1]-a[1])||1, vel=(b[0]-a[0])/dt*1000; /* px/s */
+    const projected=x+project(vel);
+    const target=Math.round(-projected/W());
+    go(Math.max(idx-1,Math.min(idx+1,target)),vel);       /* one slide per flick, like the real apps */
+  };
+  el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-car]');if(b) go(idx+ +b.dataset.car);});
+  el.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(idx+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(idx-1);}});
+  const onResize=()=>{cancelAnimationFrame(raf);x=-idx*W();paint();};
+  addEventListener('resize',onResize);
+  setIdx(0);
+  return {stop(){cancelAnimationFrame(raf);removeEventListener('resize',onResize);}};
+}
+
+/* ================= Top menu ================= */
+function renderTopNav(){
+  const items=[['campaigns','#/active',ICON.explore,'Campaigns']];
+  document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
+  document.getElementById('search-btn').innerHTML=MICON.search;
+  document.getElementById('bell-ic').innerHTML=MICON.bell;
+  document.getElementById('viewbar-back-ic').innerHTML=CPICON.chevL;
+}
+
+/* Search lives under the Campaigns heading; the header icon opens and closes it */
+function setSearch(open){
+  state.searchOpen=open;
+  const btn=document.getElementById('search-btn');
+  btn.classList.toggle('on',open);btn.setAttribute('aria-expanded',open);
+  const wrap=document.getElementById('home-search'); if(!wrap) return;
+  wrap.classList.toggle('open',open);
+  const input=document.getElementById('q');
+  input.tabIndex=open?0:-1;
+  if(open) input.focus({preventScroll:true});
+  else if(state.q){state.q='';input.value='';renderFeed();}
+}
+function toggleSearch(){
+  if(!document.getElementById('home-search')){state.searchOpen=true;location.hash='#/'+state.tab;return;}
+  setSearch(!state.searchOpen);
+}
+
+/* ================= Router ================= */
+const view=document.getElementById('view');
+function route(){
+  const [root,id,mode]=location.hash.replace(/^#\/?/,'').split('/');
+  const campaign=root==='campaign'&&C[id];
+  const admin=campaign&&mode==='admin';
+  if(!campaign) state.tab=TABS[root]?root:'active';
+  stopMedia();
+  view.innerHTML=admin?viewAdmin(id):campaign?viewCampaign(id):viewExplore();
+  document.body.classList.toggle('viewing',!!campaign);
+  if(campaign){
+    document.getElementById('viewbar-back').href='#/'+C[id].status;
+    document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
+    const sw=document.getElementById('viewbar-switch');
+    sw.textContent=admin?'Switch to creator':'Switch to admin';
+    sw.href=admin?`#/campaign/${id}`:`#/campaign/${id}/admin`;
+  }
+  bindAssets(view);
+  if(admin){const r=document.getElementById('reel'),k=document.getElementById('car');media=r?mountReel(r):k?mountCarousel(k):null;}
+  view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
+  renderFeed();
+  if(campaign) document.getElementById('search-btn').classList.remove('on');
+  else if(state.searchOpen) setSearch(true);
+  document.title=(campaign?C[id].title:TABS[state.tab])+' — UGC Platform for Brands';
+  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root==='campaigns'));
+  document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
+  closePop();
+}
+window.addEventListener('hashchange',route);
+
+/* ================= Interactions ================= */
+const toastEl=document.getElementById('toast');let toastT;
+function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),2200);}
+const pop=document.getElementById('pop-notifs');
+function closePop(){pop.classList.remove('open');}
+function renderNotifs(){
+  const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b><span class="med"> got approved</span>`
+    :n.type==='reply'?`<span class="med">Check out the </span><b>reply from ${n.brand}</b>`
+    :`<b>+ Rs. ${n.amount}</b><span class="med"> from </span><b>${n.brand}</b><span class="med">, ${n.detail}</span>`;
+  const l=document.getElementById('nt-list');
+  l.innerHTML=notifications.map(n=>`<div class="nt-item"><img class="nt-logo" data-a="${n.logo}" alt=""><div class="nt-body"><p class="nt-text">${text(n)}</p><span class="nt-time">${n.time}</span></div></div>`).join('');
+  bindAssets(l);
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target;
+  const heart=t.closest('.like-heart');
+  if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
+  if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
+  if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
+  if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
+  const cat=t.closest('[data-cat]');
+  if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
+  const act=t.closest('[data-act]');
+  if(act){e.preventDefault();return doAct(act.dataset.act);}
+  const go=t.closest('[data-go]');
+  if(go) location.hash=go.dataset.go;
+});
+function doAct(a){
+  if(a==='soon') return toast('This screen is next to build');
+  if(a==='share') return toast('Link copied');
+  if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
+}
+
+/* Search filters the campaign feed */
+document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
+  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}closePop();}
+});
+
+/* ===== Init ===== */
+renderTopNav();
+bindAssets(document.body);
+renderNotifs();
+route();
+</script>
+</body>
+</html>
