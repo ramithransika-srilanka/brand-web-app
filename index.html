@@ -380,20 +380,31 @@
     .car-nav{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
   }
 
-  /* ================= Notifications popover ================= */
-  .pop{position:fixed;top:calc(var(--header) + 8px);right:var(--gutter);width:300px;max-height:min(420px,calc(100dvh - var(--header) - 16px));z-index:40;display:flex;flex-direction:column;
-    background:var(--grey-50);border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.18);border:1px solid var(--grey-200);
-    opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
-  .pop.open{opacity:1;transform:none;pointer-events:auto;}
-  .nt-title{padding:18px 18px 0;font-size:18px;font-weight:600;line-height:22px;color:var(--grey-800);}
-  .nt-list{display:flex;flex-direction:column;gap:12px;padding:15px 12px 18px;overflow-y:auto;}
-  .nt-item{display:flex;gap:9px;align-items:flex-start;}
-  .nt-logo{width:24px;height:24px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--grey-100);}
-  .nt-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;padding-bottom:12px;border-bottom:1px solid var(--grey-200);}
-  .nt-item:last-child .nt-body{border-bottom:none;padding-bottom:0;}
-  .nt-text{font-size:14px;line-height:20px;color:var(--grey-800);font-weight:600;}
-  .nt-text .med{font-weight:500;}
-  .nt-time{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+  /* ================= Notifications page ================= */
+  .nt-page{max-width:640px;margin:0 auto;padding-top:6px;}
+  .nt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .nt-head .count{margin-top:4px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .nt-markall{flex-shrink:0;height:32px;padding:0 12px;border:1px solid var(--grey-200);border-radius:100px;background:#fff;font:500 14px/20px var(--font);color:var(--grey-800);cursor:pointer;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .nt-markall:hover{background:var(--grey-100);}
+  .nt-markall:active{transform:scale(.96);}
+  .nt-markall:disabled{opacity:.4;cursor:default;background:#fff;transform:none;}
+  .nt-group{margin-top:24px;font-size:12px;font-weight:600;line-height:16px;letter-spacing:.04em;text-transform:uppercase;color:var(--grey-600);}
+  .nt-list{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
+  .nt-item{position:relative;display:flex;gap:12px;align-items:flex-start;width:100%;padding:12px 36px 12px 12px;border:1px solid transparent;border-radius:12px;background:none;text-align:left;font:inherit;cursor:pointer;transition:background .25s ease,border-color .25s ease;}
+  .nt-item:hover{background:var(--grey-100);}
+  .nt-item.unread{background:#eef2fe;border-color:var(--blue-100);}
+  .nt-item.unread:hover{background:#e3e9fd;}
+  .nt-item.unread::after{content:"";position:absolute;top:50%;right:16px;width:8px;height:8px;margin-top:-4px;border-radius:100px;background:var(--blue-500);}
+  .nt-logo{width:40px;height:40px;border-radius:100px;object-fit:cover;flex-shrink:0;background:var(--grey-100);border:1px solid var(--grey-200);}
+  .nt-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+  .nt-text{font-size:14px;line-height:20px;color:var(--grey-600);font-weight:400;}
+  .nt-text b{font-weight:500;color:var(--grey-700);}
+  .nt-item.unread .nt-text{color:var(--grey-800);}
+  .nt-item.unread .nt-text b{font-weight:600;color:var(--grey-800);}
+  .nt-time{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);font-variant-numeric:tabular-nums;}
+  .nt-item.unread .nt-time{color:var(--blue-600);}
+  .hicon .dot[hidden]{display:none;}
+  body.notifs .subnav{display:none;}
 
   .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--grey-800);color:var(--grey-50);
     padding:9px 15px;border-radius:100px;font-size:14px;font-weight:500;box-shadow:2px 2px 9px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
@@ -426,7 +437,6 @@
     .top-right{gap:6px;}
     .top-av{display:none;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
-    .pop{left:var(--gutter);width:auto;}
     .adm{grid-template-columns:minmax(0,1fr);margin-bottom:0;}
     .adm-left{display:block;}
     .adm-center{order:-1;border:0;margin:0 calc(var(--gutter) * -1);}
@@ -452,7 +462,7 @@
   <nav class="tnav" id="tnav" aria-label="Main"></nav>
   <div class="top-right">
     <button class="hicon" id="search-btn" data-search aria-label="Search" aria-expanded="false"></button>
-    <button class="hicon" data-pop="notifs" aria-label="Notifications"><span id="bell-ic"></span><i class="dot"></i></button>
+    <a class="hicon" id="bell-btn" href="#/notifications" aria-label="Notifications"><span id="bell-ic"></span><i class="dot" id="bell-dot"></i></a>
     <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="pfAvatar" data-label="B" alt=""></a>
   </div>
 </header>
@@ -464,7 +474,6 @@
 <div class="viewbar"><a class="viewbar-back" id="viewbar-back" href="#/active" aria-label="Back to campaigns"><span id="viewbar-back-ic"></span><span class="lbl">Back to campaigns</span></a><span class="msg" role="status" id="viewbar-msg">You are viewing this page as a creator</span><a class="viewbar-btn" id="viewbar-switch" href="#/active">Switch to admin</a></div>
 <main class="content" id="view"></main>
 
-<div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
 <div class="toast" id="toast"></div>
 
 <!-- Design assets shared with the creator web app (generated by scripts/sync-assets.js) -->
@@ -601,17 +610,18 @@ const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'
 /* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
 A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
 
+/* ago = minutes before now; read = already seen */
 const notifications=[
-  {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'logo1',type:'approved',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'uberLogo',type:'reply',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'legoLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'dominos',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'pepsi',type:'reply',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'card1',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'avatar',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:12,read:false},
+  {logo:'logo1',type:'approved',brand:'PickMe',ago:95,read:false},
+  {logo:'uberLogo',type:'reply',brand:'PickMe',ago:300,read:false},
+  {logo:'legoLogo',type:'approved',brand:'PickMe',ago:320,read:true},
+  {logo:'dominos',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:1560,read:true},
+  {logo:'pepsi',type:'reply',brand:'PickMe',ago:1840,read:true},
+  {logo:'card1',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:2940,read:true},
+  {logo:'avatar',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:4520,read:true},
+  {logo:'logo2',type:'approved',brand:'PickMe',ago:8640,read:true},
+  {logo:'pickmeLogo',type:'approved',brand:'PickMe',ago:12960,read:true},
 ];
 
 const state={tab:'active',cat:'All',q:'',searchOpen:false,loaded:false};
@@ -645,6 +655,33 @@ function viewExplore(){
     <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}</div>
     <div class="feedgrid" id="feed"></div>
   </div>`;
+}
+function viewNotifs(){
+  const unread=notifications.filter(n=>!n.read).length;
+  const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b> got approved`
+    :n.type==='reply'?`Check out the <b>reply from ${n.brand}</b>`
+    :`<b>+ Rs. ${n.amount}</b> from <b>${n.brand}</b>, ${n.detail}`;
+  const item=(n,i)=>{const d=new Date(Date.now()-n.ago*60000);
+    return `<button class="nt-item${n.read?'':' unread'}" data-nt="${i}" aria-label="${n.read?'':'Unread: '}${esc(text(n).replace(/<[^>]+>/g,''))}"><img class="nt-logo" data-a="${n.logo}" data-label="${n.brand}" alt=""><span class="nt-body"><span class="nt-text">${text(n)}</span><time class="nt-time" datetime="${d.toISOString()}" title="${d.toLocaleString()}">${stamp(n.ago,d)}</time></span></button>`;};
+  const groups=[['New',notifications.map((n,i)=>[n,i]).filter(([n])=>!n.read)],['Earlier',notifications.map((n,i)=>[n,i]).filter(([n])=>n.read)]].filter(g=>g[1].length);
+  return `<div class="nt-page">
+    <div class="nt-head"><div><h1 class="home-title">Notifications</h1><p class="count">${unread?`${unread} unread`:'You\u2019re all caught up'}</p></div>
+    <button class="nt-markall" data-act="readall"${unread?'':' disabled'}>Mark all as read</button></div>
+    ${groups.map(([g,list])=>`<h2 class="nt-group">${g}</h2><div class="nt-list">${list.map(([n,i])=>item(n,i)).join('')}</div>`).join('')}
+  </div>`;
+}
+/* "12 min ago · Today, 1:42 PM" — relative time first, exact time after */
+function stamp(ago,d){
+  const rel=ago<60?`${ago} min ago`:ago<1440?`${Math.floor(ago/60)} hr${ago<120?'':'s'} ago`:ago<2880?'Yesterday':`${Math.floor(ago/1440)} days ago`;
+  const t=d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+  const today=new Date(),y=new Date(today-864e5);
+  const day=d.toDateString()===today.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([], {month:'short',day:'numeric'});
+  return rel==='Yesterday'?`Yesterday, ${t}`:`${rel} · ${day}, ${t}`;
+}
+function updateBell(){
+  const n=notifications.filter(x=>!x.read).length;
+  document.getElementById('bell-dot').hidden=!n;
+  document.getElementById('bell-btn').setAttribute('aria-label',n?`Notifications, ${n} unread`:'Notifications');
 }
 function renderFeed(){
   const f=document.getElementById('feed'); if(!f) return;
@@ -946,10 +983,12 @@ function route(){
   const [root,id,mode]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id];
   const admin=campaign&&mode==='admin';
-  if(!campaign) state.tab=TABS[root]?root:'active';
+  const notifs=root==='notifications';
+  if(!campaign&&!notifs) state.tab=TABS[root]?root:'active';
   stopMedia();
-  view.innerHTML=admin?viewAdmin(id):campaign?viewCampaign(id):viewExplore();
+  view.innerHTML=admin?viewAdmin(id):campaign?viewCampaign(id):notifs?viewNotifs():viewExplore();
   document.body.classList.toggle('viewing',!!campaign);
+  document.body.classList.toggle('notifs',notifs);
   if(campaign){
     document.getElementById('viewbar-back').href='#/'+C[id].status;
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
@@ -961,36 +1000,25 @@ function route(){
   if(admin){const r=document.getElementById('reel'),k=document.getElementById('car');media=r?mountReel(r):k?mountCarousel(k):null;}
   view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
   renderFeed();
-  if(campaign) document.getElementById('search-btn').classList.remove('on');
+  if(campaign||notifs) document.getElementById('search-btn').classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(campaign?C[id].title:TABS[state.tab])+' — UGC Platform for Brands';
-  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root==='campaigns'));
+  document.title=(campaign?C[id].title:notifs?'Notifications':TABS[state.tab])+' — UGC Platform for Brands';
+  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',!notifs&&n.dataset.root==='campaigns'));
+  const bell=document.getElementById('bell-btn');bell.classList.toggle('on',notifs);if(notifs)bell.setAttribute('aria-current','page');else bell.removeAttribute('aria-current');
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
-  closePop();
 }
 window.addEventListener('hashchange',route);
 
 /* ================= Interactions ================= */
 const toastEl=document.getElementById('toast');let toastT;
 function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),2200);}
-const pop=document.getElementById('pop-notifs');
-function closePop(){pop.classList.remove('open');}
-function renderNotifs(){
-  const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b><span class="med"> got approved</span>`
-    :n.type==='reply'?`<span class="med">Check out the </span><b>reply from ${n.brand}</b>`
-    :`<b>+ Rs. ${n.amount}</b><span class="med"> from </span><b>${n.brand}</b><span class="med">, ${n.detail}</span>`;
-  const l=document.getElementById('nt-list');
-  l.innerHTML=notifications.map(n=>`<div class="nt-item"><img class="nt-logo" data-a="${n.logo}" alt=""><div class="nt-body"><p class="nt-text">${text(n)}</p><span class="nt-time">${n.time}</span></div></div>`).join('');
-  bindAssets(l);
-}
-
 document.addEventListener('click',e=>{
   const t=e.target;
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
-  if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
-  if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
+  const nt=t.closest('[data-nt]');
+  if(nt){const n=notifications[nt.dataset.nt];if(!n.read){n.read=true;refreshNotifs();}return;}
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
   const act=t.closest('[data-act]');
@@ -998,9 +1026,11 @@ document.addEventListener('click',e=>{
   const go=t.closest('[data-go]');
   if(go) location.hash=go.dataset.go;
 });
+function refreshNotifs(){updateBell();if(document.body.classList.contains('notifs')){view.innerHTML=viewNotifs();bindAssets(view);}}
 function doAct(a){
   if(a==='soon') return toast('This screen is next to build');
   if(a==='share') return toast('Link copied');
+  if(a==='readall'){notifications.forEach(n=>n.read=true);return refreshNotifs();}
   if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
 }
 
@@ -1008,13 +1038,13 @@ function doAct(a){
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
-  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}closePop();}
+  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
 });
 
 /* ===== Init ===== */
 renderTopNav();
 bindAssets(document.body);
-renderNotifs();
+updateBell();
 route();
 </script>
 </body>
