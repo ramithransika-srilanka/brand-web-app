@@ -24,6 +24,8 @@
     --gutter:24px; --page:1128px; --header:52px; --shell:1128px;
     /* brand-only bar under the top menu (status tabs / blue notice) */
     --subbar:36px;
+    /* admin dashboard */
+    --page-bg:#f6f6f6; --line:#e6e6e6; --good:#0a7d3e; --bad:#c8102e;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
   /* Reserve the scrollbar space on every page so short and long pages line up */
@@ -278,16 +280,178 @@
   .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
   .cp-questions{padding:6px 18px 0 6px;}
 
-  /* ================= Admin view: campaign · post · creator ================= */
-  .adm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin:-18px auto -60px;min-height:calc(100dvh - var(--header) - var(--subbar));}
-  .adm-col{padding:30px 24px 48px;}
-  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);align-self:start;display:flex;flex-direction:column;gap:18px;max-width:320px;}
-  .adm-left{justify-self:end;width:100%;}
-  .adm-right{justify-self:start;width:100%;}
-  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;flex-direction:column;align-items:center;}
-  .adm-eyebrow{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  /* ================= Admin dashboard: campaign card + sub menu on the left, section on the right ================= */
+  body.dash{background:var(--page-bg);}
+  .dsh{display:grid;grid-template-columns:264px minmax(0,1fr);gap:24px;align-items:start;padding-top:6px;}
+  .dcard{background:#fff;border:1px solid var(--line);border-radius:12px;}
+  .dsh-side{position:sticky;top:calc(var(--header) + var(--subbar) + 24px);overflow:hidden;}
+  .dsh-cover{position:relative;height:92px;background:var(--grey-200);}
+  .dsh-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+  .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;}
+  .dsh-title{font-size:18px;font-weight:600;line-height:23px;letter-spacing:-.015em;color:var(--grey-800);text-wrap:balance;}
+  .dsh-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
+  .dsh-status{padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;background:var(--blue-100);color:var(--blue-700);text-transform:capitalize;}
+  .dsh-status.completed{background:var(--grey-100);color:var(--grey-700);}
+  .dsh-viewas{display:inline-flex;align-items:center;gap:7px;height:34px;margin-top:6px;padding:0 15px 0 12px;border:1px solid var(--grey-800);border-radius:100px;font-size:14px;font-weight:600;color:var(--grey-800);transition:background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .dsh-viewas svg{width:17px;height:17px;}
+  .dsh-viewas:hover{background:var(--grey-100);}
+  .dsh-viewas:active{transform:scale(.96);}
+  .dsh-menu{display:flex;flex-direction:column;padding:8px 0;border-top:1px solid var(--line);}
+  .dsh-menu a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:0 18px 0 15px;border-left:3px solid transparent;font-size:15px;font-weight:500;line-height:20px;color:var(--grey-700);white-space:nowrap;transition:background .2s ease,color .2s ease;}
+  .dsh-menu a:hover{background:var(--page-bg);color:var(--grey-800);}
+  .dsh-menu a.on{border-left-color:var(--blue-500);color:var(--blue-600);font-weight:600;}
+  .badge-n{min-width:20px;height:20px;padding:0 6px;border-radius:100px;display:inline-flex;align-items:center;justify-content:center;background:var(--pink-500);color:#fff;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .dsh-foot{padding:12px 18px 16px;border-top:1px solid var(--line);}
+  .dsh-foot a{font-size:14px;font-weight:600;color:var(--grey-600);transition:color .2s ease;}
+  .dsh-foot a:hover{color:var(--grey-800);}
+
+  .dsh-main{display:flex;flex-direction:column;gap:18px;min-width:0;}
+  .dsh-main>.dcard{padding:24px;}
+  .dh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .dh h2{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;color:var(--grey-800);}
+  .dh p{margin-top:2px;font-size:14px;line-height:20px;color:var(--grey-600);}
+  .dh .count{font-size:14px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
+  .dlink{font-weight:600;color:var(--blue-500);}
+  .dlink:hover{text-decoration:underline;}
+
+  /* "Needs your attention" rows (dismissable, like LinkedIn's suggestions) */
+  .att-list{display:flex;flex-direction:column;gap:12px;margin-top:18px;}
+  .att{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;}
+  .att b{display:block;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .att span{display:block;margin-top:3px;font-size:14px;line-height:20px;color:var(--grey-700);}
+  .x-btn{width:30px;height:30px;margin:-5px -6px 0 0;flex-shrink:0;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:background .2s ease,color .2s ease;}
+  .x-btn svg{width:18px;height:18px;}
+  .x-btn:hover{background:var(--grey-100);color:var(--grey-800);}
+
+  /* Stat tiles */
+  .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px;}
+  .tile{display:flex;flex-direction:column;gap:2px;padding:16px;border:1px solid var(--line);border-radius:12px;text-align:left;transition:border-color .2s ease;}
+  a.tile:hover,button.tile:hover{border-color:var(--grey-400);}
+  .tile .n{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .tile .l{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  a.tile .l{color:var(--blue-500);}
+  .tile .d{margin-top:2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .up{color:var(--good);} .down{color:var(--bad);}
+
+  .brief{display:flex;flex-direction:column;gap:9px;margin-top:18px;}
+  .brief h4{margin-top:9px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  .brief p{font-size:14px;line-height:21px;color:var(--grey-800);max-width:620px;}
+  .brief .cp-tags{justify-content:flex-start;}
+  .brief .cp-tag{background:var(--grey-100);}
+  .dbudget{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:18px;}
+  .dbudget .cp-list{padding:0;}
+
+  /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
+  .dsh.pend{grid-template-columns:288px minmax(0,1fr);gap:0;margin:-24px 0 -60px;padding-top:0;}
+  .dsh.pend>.dsh-side{align-self:start;margin:24px 24px 48px 0;}
+  /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
+  html:has(.pfeed){scroll-snap-type:y mandatory;}
+  .pitem{display:grid;grid-template-columns:auto minmax(0,1fr);min-height:calc(100dvh - var(--header) - var(--subbar));scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .pitem+.pitem .adm-center{border-top:1px solid var(--grey-200);}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
+  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
+  .adm-col{padding:30px 0 48px 24px;}
+  .adm-right{min-width:0;}
+  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);display:flex;flex-direction:column;gap:18px;max-width:320px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 18px;border-radius:100px;font-size:14px;font-weight:600;white-space:nowrap;transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .btn svg{width:17px;height:17px;}
+  .btn:active{transform:scale(.96);}
+  .btn-pri{background:var(--blue-500);color:#fff;}
+  .btn-pri:hover{background:var(--blue-600);}
+  .btn-sec{border:1px solid var(--grey-400);color:var(--grey-800);}
+  .btn-sec:hover{border-color:var(--grey-800);background:var(--grey-100);}
+
+  /* Approved content grid */
+  .apg{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:18px 12px;margin-top:18px;}
+  .ap{display:flex;flex-direction:column;gap:9px;text-align:left;}
+  .ap-media{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:var(--grey-200);}
+  .ap-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+  .ap:hover .ap-media img{transform:scale(1.03);}
+  .ap-media::after{content:"";position:absolute;inset:auto 0 0;height:64px;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
+  .ap-kind{position:absolute;top:8px;left:8px;z-index:1;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .ap-kind.new{background:var(--blue-500);}
+  .ap-views{position:absolute;left:10px;bottom:9px;z-index:1;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;line-height:16px;color:#fff;font-variant-numeric:tabular-nums;}
+  .ap-views svg{width:13px;height:13px;}
+  .ap-by{display:flex;align-items:center;gap:8px;min-width:0;}
+  .ap-by img{width:24px;height:24px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .ap-by div{min-width:0;}
+  .ap-by b{display:block;font-size:13px;font-weight:600;line-height:17px;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ap-by small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+
+  /* Analytics */
+  .chart{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;margin-top:22px;}
+  .chart-y{display:flex;flex-direction:column;justify-content:space-between;height:200px;margin-top:-8px;margin-bottom:-8px;font-size:12px;line-height:16px;color:var(--grey-600);text-align:right;font-variant-numeric:tabular-nums;}
+  .chart-plot{position:relative;height:200px;display:flex;align-items:flex-end;gap:2px;border-bottom:1px solid var(--grey-400);
+    background:linear-gradient(var(--grey-100) 1px,transparent 1px) 0 0/100% 50%;}
+  .chart-col{position:relative;flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;cursor:default;outline:0;}
+  .chart-col i{display:block;width:min(70%,26px);height:var(--h);border-radius:4px 4px 0 0;background:var(--blue-500);transform-origin:bottom;animation:barUp .7s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 25ms);transition:background .15s ease;}
+  .chart-plot:hover .chart-col i{background:var(--blue-200);}
+  .chart-plot .chart-col:hover i,.chart-col:focus-visible i{background:var(--blue-500);}
+  @keyframes barUp{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  .chart-tip{position:absolute;bottom:calc(var(--h) + 8px);left:50%;z-index:2;transform:translate(-50%,4px);padding:6px 10px;border-radius:8px;background:var(--grey-800);color:#fff;font-size:12px;line-height:16px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .chart-tip b{font-weight:600;font-variant-numeric:tabular-nums;}
+  .chart-col:hover .chart-tip,.chart-col:focus-visible .chart-tip{opacity:1;transform:translate(-50%,0);}
+  .chart-x{grid-column:2;display:flex;justify-content:space-between;margin-top:8px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .an-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;}
+  .meters{display:flex;flex-direction:column;gap:16px;margin-top:18px;}
+  .meter .top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;line-height:20px;}
+  .meter .top span{display:flex;align-items:center;gap:6px;font-weight:500;color:var(--grey-800);}
+  .meter .top svg{width:15px;height:15px;}
+  .meter .top b{font-weight:600;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .meter .top em{font-style:normal;font-weight:500;color:var(--grey-600);margin-left:4px;}
+  .meter .adm-bar{margin-top:6px;}
+  .tc{width:100%;margin-top:12px;border-collapse:collapse;font-size:14px;line-height:20px;}
+  .tc th{padding:8px 0;font-size:12px;font-weight:500;color:var(--grey-600);text-align:right;border-bottom:1px solid var(--line);}
+  .tc th:first-child,.tc td:first-child{text-align:left;}
+  .tc td{padding:10px 0;text-align:right;color:var(--grey-800);font-weight:500;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);}
+  .tc tr:last-child td{border-bottom:0;}
+  .tc .who{display:flex;align-items:center;gap:9px;font-weight:600;}
+  .tc .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;}
+
+  /* Inbox */
+  .dsh-main>.ib{display:grid;grid-template-columns:280px minmax(0,1fr);height:min(640px,calc(100dvh - var(--header) - var(--subbar) - 48px));padding:0;overflow:hidden;}
+  .ib-list{display:flex;flex-direction:column;border-right:1px solid var(--line);min-height:0;}
+  .ib-list h2{padding:18px 18px 12px;font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;}
+  .ib-scroll{overflow-y:auto;}
+  .ib-item{display:flex;gap:10px;width:100%;padding:12px 18px 12px 15px;border-left:3px solid transparent;text-align:left;transition:background .2s ease;}
+  .ib-item:hover{background:var(--page-bg);}
+  .ib-item.on{border-left-color:var(--blue-500);background:var(--blue-100);background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
+  .ib-item img{width:40px;height:40px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .ib-item .t{flex:1;min-width:0;}
+  .ib-item .r1{display:flex;justify-content:space-between;gap:6px;font-size:14px;line-height:20px;}
+  .ib-item .r1 b{font-weight:600;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ib-item .r1 small{font-size:12px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
+  .ib-item .pv{display:flex;align-items:center;gap:6px;font-size:13px;line-height:18px;color:var(--grey-600);}
+  .ib-item .pv span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ib-item.unread .pv span{color:var(--grey-800);font-weight:600;}
+  .ib-item .udot{width:8px;height:8px;border-radius:100px;background:var(--blue-500);flex-shrink:0;}
+  .ib-thread{display:flex;flex-direction:column;min-height:0;min-width:0;}
+  .ib-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);}
+  .ib-head .adm-creator img{width:40px;height:40px;}
+  .ib-msgs{flex:1;display:flex;flex-direction:column;gap:6px;padding:18px;overflow-y:auto;}
+  .ib-day{align-self:center;margin:6px 0;font-size:12px;font-weight:500;color:var(--grey-500);}
+  .bub{max-width:min(75%,440px);padding:9px 13px;border-radius:12px;font-size:14px;line-height:20px;}
+  .bub.them{align-self:flex-start;background:var(--grey-100);color:var(--grey-800);border-bottom-left-radius:4px;}
+  .bub.me{align-self:flex-end;background:var(--blue-500);color:#fff;border-bottom-right-radius:4px;}
+  .bub.new{animation:bubIn .35s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes bubIn{from{opacity:0;transform:translateY(6px) scale(.98);}to{opacity:1;transform:none;}}
+  .ib-form{display:flex;gap:8px;padding:12px 18px 16px;border-top:1px solid var(--line);}
+  .ib-form input{flex:1;min-width:0;height:40px;padding:0 16px;border:1px solid var(--grey-400);border-radius:100px;outline:0;font:500 14px var(--font);color:var(--grey-800);background:#fff;transition:border-color .2s ease;}
+  .ib-form input:focus{border-color:var(--blue-300);}
+  .ib-form .btn{height:40px;}
+
+  .dempty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 12px 18px;text-align:center;}
+  .dempty b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
+  .dempty span{max-width:320px;font-size:14px;line-height:20px;color:var(--grey-600);}
+
+  .dsh>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
+  .dsh>:nth-child(2){animation-delay:60ms;} .dsh>:nth-child(3){animation-delay:120ms;}
+  @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
+
+  /* Shared pieces from the original admin view (post, creator, caption, budget) */
   .adm-sec{display:flex;flex-direction:column;gap:8px;}
-  .adm-sec+.adm-sec{padding-top:18px;border-top:1px solid var(--grey-200);}
+  .adm-sec+.adm-sec{padding-top:18px;border-top:1px solid var(--line);}
+  .adm-eyebrow{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
 
   /* Left: campaign */
   .adm-title{font-size:20px;font-weight:600;line-height:25px;letter-spacing:-.02em;color:var(--grey-800);text-wrap:balance;}
@@ -308,21 +472,16 @@
   .adm-budget .foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
 
   /* Centre: the post, framed like a phone */
-  /* The post fills the centre column: full height under the bars, square corners, edge to edge between the dividers */
-  /* Feed: one post per screen, snapping into place like the apps they were made for */
-  html.adm-snap{scroll-snap-type:y mandatory;}
-  .adm-item{scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
-  .adm-item+.adm-item{border-top:1px solid var(--grey-200);}
-  .adm-inline{display:none;}
-  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),45vw);overflow:hidden;background:#000;}
-  .adm-screen.idle .reel-frame img{animation-play-state:paused;}
-  /* The creator column follows the post in view with a quick cross-fade */
-  #adm-creator{transition:opacity .14s ease,transform .14s ease;}
-  #adm-creator.swap{opacity:0;transform:translateY(4px);}
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
-  .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
+  .adm-screen[data-media=car]::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
+  /* Approve / Reject sit on the post, over a bottom scrim; reel controls and carousel dots ride above them */
+  .adm-screen::after{content:"";position:absolute;inset:auto 0 0;height:140px;z-index:2;pointer-events:none;background:linear-gradient(transparent,rgba(0,0,0,.55));}
+  .adm-act{position:absolute;left:12px;right:12px;bottom:14px;z-index:4;display:flex;gap:8px;}
+  .adm-act .btn{flex:1;height:42px;}
+  .btn-glass{color:#fff;background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
+  .btn-glass:hover{background:rgba(18,18,18,.6);}
   .adm-count{position:absolute;top:11px;right:11px;z-index:3;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);font-variant-numeric:tabular-nums;}
 
   /* Reel */
@@ -336,18 +495,18 @@
   .reel-icon svg{width:24px;height:24px;}
   .adm-screen.paused .reel-icon{opacity:1;transform:scale(1);}
   .adm-screen.flash .reel-icon{opacity:1;transform:scale(1);}
-  .reel-mute{position:absolute;right:11px;bottom:14px;z-index:3;width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
+  .reel-mute{position:absolute;right:11px;bottom:68px;z-index:3;width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
     background:rgba(18,18,18,.4);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .1s ease-out;}
   .reel-mute svg{width:15px;height:15px;}
   .reel-mute:active{transform:scale(.9);}
-  .reel-progress{position:absolute;left:11px;right:48px;bottom:27px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
+  .reel-progress{position:absolute;left:11px;right:48px;bottom:81px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
   .reel-progress i{display:block;height:100%;width:100%;background:#fff;transform-origin:left;transform:scaleX(0);}
 
   /* Carousel */
   .car-track{position:absolute;inset:0;display:flex;will-change:transform;cursor:grab;}
   .car-track.dragging{cursor:grabbing;}
   .car-slide{flex:0 0 100%;height:100%;}
-  .car-dots{position:absolute;left:0;right:0;bottom:12px;z-index:3;display:flex;justify-content:center;gap:5px;pointer-events:none;}
+  .car-dots{position:absolute;left:0;right:0;bottom:70px;z-index:3;display:flex;justify-content:center;gap:5px;pointer-events:none;}
   .car-dots i{width:5px;height:5px;border-radius:100px;background:rgba(255,255,255,.5);transition:background .25s ease,width .35s cubic-bezier(.2,.9,.3,1);}
   .car-dots i.on{width:14px;background:#fff;}
   .car-nav{position:absolute;top:50%;z-index:3;width:28px;height:28px;margin-top:-14px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-800);
@@ -374,18 +533,13 @@
   .adm-posted{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);}
   .adm-bio{font-size:14px;line-height:21px;color:var(--grey-700);}
 
-  /* Columns settle in left → centre → right */
-  .adm>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
-  .adm>:nth-child(2){animation-delay:60ms;} .adm>:nth-child(3){animation-delay:120ms;}
-  @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
   @media(prefers-reduced-motion:reduce){
-    #adm-creator{transition:none;}
-    .adm>*,.adm-bar i{animation:none;}
+    .dsh>*,.adm-bar i,.chart-col i,.bub.new{animation:none;}
     .reel-frame img{animation:none;}
     .reel-icon,.car-dots i{transition:opacity .2s ease;}
   }
   @media(prefers-reduced-transparency:reduce){
-    .adm-count,.reel-icon,.reel-mute{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .adm-count,.reel-icon,.reel-mute,.btn-glass{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
     .car-nav{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
   }
 
@@ -411,18 +565,26 @@
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .adm-col{padding-left:18px;padding-right:18px;}
-  }
-  /* Tablet portrait: just the post and the creator, side by side (landscape keeps all three columns) */
-  @media (min-width:768px) and (max-width:1279px) and (orientation:portrait){
-    .adm{grid-template-columns:auto minmax(0,320px);justify-content:center;}
-    .adm-left{display:none;}
-    .adm-center{border-left:0;}
-    .adm-phone{width:min(var(--w),calc(100vw - var(--gutter) * 2 - 344px));}
-    .adm-col{padding:30px 0 48px 24px;}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
+    .dsh{grid-template-columns:minmax(0,1fr);}
+    .dsh-side{position:static;display:grid;grid-template-columns:minmax(0,1fr);}
+    .dsh-menu{flex-direction:row;overflow-x:auto;padding:0 6px;scrollbar-width:none;}
+    .dsh-menu::-webkit-scrollbar{display:none;}
+    .dsh-menu a{border-left:0;border-bottom:3px solid transparent;padding:0 12px;min-height:46px;}
+    .dsh-menu a.on{border-bottom-color:var(--blue-500);}
+    .dsh-foot{display:none;}
+    .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+    html:has(.pfeed){scroll-snap-type:none;}
+    .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
+    .dsh.pend>.dsh-side{margin:0;}
+    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;min-height:0;padding-bottom:18px;}
+    .pitem+.pitem{padding-top:18px;border-top:1px solid var(--grey-200);}
+    .adm-center,.pitem+.pitem .adm-center{border:0;}
+    .adm-phone{position:static;width:min(100%,400px);border-radius:12px;}
+    .adm-col{padding:0 0 12px;}
+    .adm-side{position:static;max-width:none;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
   }
@@ -436,18 +598,6 @@
     .top-av{display:none;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
     .pop{left:var(--gutter);width:auto;}
-    .adm{grid-template-columns:minmax(0,1fr);margin-bottom:0;}
-    .adm-left{display:block;}
-    .adm-center{border:0;margin:0 calc(var(--gutter) * -1);border-top:1px solid var(--grey-200);}
-    .adm-phone{width:100%;}
-    .adm-side{position:static;max-width:420px;margin:0 auto;}
-    .adm-col{padding:18px 0;}
-    .adm-right{display:none;}
-    /* Phones: no snapping, each post carries its own creator details underneath */
-    html.adm-snap{scroll-snap-type:none;}
-    .adm-item{width:100%;}
-    .adm-item+.adm-item{border-top:0;}
-    .adm-inline{display:flex;flex-direction:column;gap:18px;max-width:420px;margin:0 auto;padding:18px var(--gutter) 30px;}
     .cp-hero{height:180px;}
     .cp{margin-bottom:0;}
     .cp-main{padding-bottom:24px;}
@@ -457,6 +607,13 @@
     .viewbar-back{padding:0 5px;}
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dsh-main>.dcard{padding:18px;}
+    .dbudget,.an-two{grid-template-columns:minmax(0,1fr);}
+    .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
+    .ib-list{border-right:0;border-bottom:1px solid var(--line);}
+    .ib-scroll{max-height:220px;}
+    .ib-msgs{min-height:320px;}
   }
 </style>
 </head>
@@ -829,71 +986,207 @@ const MUTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const SOUNDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
 const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 
-function admScreen(s){
+/* ---------- Admin dashboard: campaign card + sub menu, one section at a time ---------- */
+const EYEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const CHECKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
+const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+
+/* Creators who post for brands (taken from the submissions above) */
+const POOL=Object.values(SUB).filter((s,i,a)=>a.findIndex(o=>o.name===s.name)===i)
+  .map(({name,handle,av,followers,bio})=>({name,handle,av,followers,bio}));
+const PICS=['card1','card2','card3','grid2','grid3','grid6','sbContent1','sbContent2','burgerPhoto','sbHero'];
+const fmtN=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n);
+const num=v=>+String(v).replace(/[^0-9]/g,'');
+function rng(id){let x=[...id].reduce((h,ch)=>(h*31+ch.charCodeAt(0))>>>0,7);return ()=>(x=(x*1664525+1013904223)>>>0)/4294967296;}
+
+const DASH={};
+function dash(id){
+  if(DASH[id]) return DASH[id];
+  const c=C[id], s=SUB[id], r=rng(id);
+  const others=POOL.filter(p=>p.name!==s.name);
+  const pics=[c.img,...PICS.filter(p=>p!==c.img)];
+  const pending=c.status==='completed'?[]:POSTS(id).map((p,i)=>({...p,submitted:p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted}));
+  const kinds=['Reel','Post','Carousel'];
+  const approved=c.status==='upcoming'?[]:Array.from({length:c.status==='completed'?8:6},(_,i)=>{
+    const p=POOL[(i+2)%POOL.length];
+    return {...p,img:pics[(i+3)%pics.length],kind:kinds[i%3],platform:p.followers[i%p.followers.length][0],
+      views:Math.round(2500+r()*42000),eng:+(3+r()*6).toFixed(1),posted:i?`${i+1} d ago`:'Yesterday'};});
+  const threads=[
+    {who:s,unread:true,time:'12 min',msgs:[['them','Hi! Just submitted my post for review 🙌'],['them','Let me know if you want a different caption or a shorter cut.']]},
+    {who:others[0],unread:true,time:'1 hr',msgs:[['me','Thanks for joining the campaign!'],['them','Excited for this one. Is it okay to film indoors?']]},
+    {who:others[2]||others[1],unread:false,time:'2 d',msgs:[['them','When do approved posts get paid?'],['me','Within 3 working days of the post going live.'],['them','Perfect, thank you!']]}];
+  return DASH[id]={pending,approved,threads,thread:0,dismissed:new Set()};
+}
+const unreadN=d=>d.threads.filter(t=>t.unread).length;
+
+function sideHTML(id,sec){
+  const c=C[id], d=dash(id);
+  const badge={pending:d.pending.length,inbox:unreadN(d)};
+  return `<aside class="dcard dsh-side">
+    <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
+    <div class="dsh-id">
+      <h1 class="dsh-title">${c.title}</h1>
+      <div class="dsh-meta"><span class="dsh-status ${c.status}">${c.status}</span><span>${c.right||c.time}</span></div>
+      <a class="dsh-viewas" href="#/campaign/${id}">${EYEIC}View as creator</a>
+    </div>
+    <nav class="dsh-menu" aria-label="Campaign admin">${SECTIONS.map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
+    <div class="dsh-foot"><a data-act="soon">Edit campaign</a></div>
+  </aside>`;
+}
+const empty=(t,m)=>`<div class="dempty"><b>${t}</b><span>${m}</span></div>`;
+const dhead=(t,p,right='')=>`<div class="dh"><div><h2>${t}</h2>${p?`<p>${p}</p>`:''}</div>${right}</div>`;
+
+function secDetails(id){
+  const c=C[id], d=dash(id), base=`#/campaign/${id}/admin/`;
+  const spent=num(c.spent), pct=Math.min(100,Math.round(spent/c.budgetN*100));
+  const views=d.approved.reduce((a,p)=>a+p.views,0);
+  const att=[
+    d.pending.length&&['review',`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,`Creators are waiting on you. <a class="dlink" href="${base}pending">Review now</a>`],
+    unreadN(d)&&['inbox',`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,`Quick replies keep your response time badge. <a class="dlink" href="${base}inbox">Open inbox</a>`],
+    c.status==='upcoming'&&['brief','Share the brief before launch','Creators can read it and save the campaign ahead of time. <a class="dlink" href="#/campaign/'+id+'">View as creator</a>'],
+  ].filter(a=>a&&!d.dismissed.has(a[0]));
+  return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
+    <section class="dcard">${dhead('Track performance','How this campaign is doing across every creator')}
+      <div class="tiles">
+        <div class="tile"><span class="n">${d.pending.length+d.approved.length}</span><span class="l">Content submitted</span><span class="d">${c.joinedShort} creators joined</span></div>
+        <a class="tile" href="${base}pending"><span class="n">${d.pending.length}</span><span class="l">Pending approvals</span><span class="d">${d.pending.length?'Oldest '+d.pending[d.pending.length-1].submitted:'All caught up'}</span></a>
+        <a class="tile" href="${base}approved"><span class="n">${d.approved.length}</span><span class="l">Approved content</span><span class="d">${d.approved.length?'Live on '+new Set(d.approved.map(p=>p.platform)).size+' platforms':'Nothing live yet'}</span></a>
+        <a class="tile" href="${base}analytics"><span class="n">${fmtN(views)}</span><span class="l">Total views</span><span class="d">${views?'<span class="up">▲ 32%</span> last 7 days':'N/A'}</span></a>
+      </div></section>
+    <section class="dcard">${dhead('Budget','',`<span class="count">${pct}% spent</span>`)}
+      <div class="dbudget">
+        <div class="adm-budget">
+          <div class="row"><span class="spent">${c.spent}</span><span class="of">of ${c.budget}</span></div>
+          <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
+          <div class="foot"><span>Spent</span><span>${c.available} available</span></div>
+        </div>
+        <div class="cp-list">${c.list.slice(0,3).map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+      </div></section>
+    <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign',`<a class="dlink" data-act="soon">Edit</a>`)}
+      <div class="brief">
+        <p>${c.reqDesc}</p>
+        <h4>Best suited for</h4><div class="cp-tags">${c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('')}</div>
+        <h4>Platforms to post on</h4><div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
+        <h4>Requirements</h4><div class="cp-spec">${[...SPEC,['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+      </div></section>`;
+}
+
+function mediaHTML(s){
   const m=s.media;
-  if(m.type==='reel') return `<div class="adm-screen reel" data-len="${m.length}">
+  const actions=`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-glass" type="button" data-act="reject">${XIC}Reject</button></div>`;
+  if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
       <span class="reel-icon">${PAUSEIC}</span>
-      <div class="reel-progress"><i class="reel-bar"></i></div>
-      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button></div>`;
-  if(m.type==='carousel') return `<div class="adm-screen car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
+      <div class="reel-progress"><i></i></div>
+      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button>${actions}</div>`;
+  if(m.type==='carousel') return `<div class="adm-screen" data-media="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
       <div class="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
-      <span class="adm-count car-count">1/${m.items.length}</span>
+      <span class="adm-count">1/${m.items.length}</span>
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
-      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
-  return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"></div>`;
+      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div>${actions}</div>`;
+  return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}">${actions}</div>`;
 }
-/* The creator column for one post; on desktop it fills the sticky right column, on phones it sits under its post */
-function admCreator(s){
-  const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-  const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
-  return `<div class="adm-sec">
-        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-        <div class="adm-total"><b>${totalF>=1000?(totalF/1000).toFixed(1).replace(/\.0$/,'')+'K':totalF}</b> followers across ${s.followers.length} platforms</div>
-      </div>
-      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">${s.posted==='Scheduled'?'Scheduled to post':'Posted '+s.posted}</span></div>
-      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>`;
+
+function secPending(id){
+  const d=dash(id);
+  if(!d.pending.length) return null;
+  return `<div class="pfeed">${d.pending.map((s,i)=>{
+    const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
+    const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
+    return `<article class="pitem" data-i="${i}" aria-label="Submission by ${s.name}">
+      <div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
+      <div class="adm-col adm-right"><div class="adm-side">
+        <div class="adm-sec">
+          <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
+          <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
+          <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
+        </div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
+      </div></div>
+    </article>`;}).join('')}</div>`;
 }
-function viewAdmin(id){
-  const c=C[id], posts=POSTS(id);
-  const num=v=>+String(v).replace(/[^0-9]/g,'');
-  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
-  return `<div class="adm">
-    <div class="adm-col adm-left"><div class="adm-side">
-      <div class="adm-sec">
-        <h1 class="adm-title">${c.title}</h1>
-        <div class="adm-meta">
-          ${c.event?`<span>${CPICON.calendar}${c.time}</span>`:`<span>${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
-          ${c.right?`<span>${CLOCK}${c.right}</span>`:''}
-        </div>
-        <div class="adm-joined"><div class="cp-avatars">${AVSET}</div><span><b>${c.joinedShort}</b> creators joined</span></div>
-      </div>
-      <div class="adm-sec"><span class="adm-eyebrow">Budget</span>
-        <div class="adm-budget">
-          <div class="row"><span class="spent">${c.spent}</span><span class="pct">${pct}%</span></div>
-          <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
-          <div class="foot"><span>Total ${c.budget}</span></div>
-        </div>
-      </div>
-    </div></div>
-    <div class="adm-center adm-feed" aria-label="Uploaded content">${posts.map((s,i)=>`<article class="adm-item" data-i="${i}" aria-label="Post ${i+1} of ${posts.length} by ${s.name}">
-      <div class="adm-phone">${admScreen(s)}</div>
-      <div class="adm-inline">${admCreator(s)}</div></article>`).join('')}</div>
-    <div class="adm-col adm-right"><div class="adm-side" id="adm-creator" aria-live="polite">${admCreator(posts[0])}</div></div>
-  </div>`;
+
+function secApproved(id){
+  const d=dash(id);
+  return `<section class="dcard">${dhead('Approved content','Posts that are live for this campaign',`<span class="count">${d.approved.length} posts</span>`)}
+    ${d.approved.length?`<div class="apg">${d.approved.map(p=>`<button class="ap" type="button" data-act="soon" aria-label="${p.kind} by ${p.name}">
+      <div class="ap-media"><img ${src(p.img)} data-label="${p.name}" alt=""><span class="ap-kind${p.isNew?' new':''}">${p.isNew?'Just approved':p.kind}</span>
+        <span class="ap-views">${EYEIC}${p.isNew?'Going live':fmtN(p.views)}</span></div>
+      <div class="ap-by"><img data-a="${p.av}" data-label="${p.name}" alt=""><div><b>${p.name}</b><small>${PLATNAME[p.platform]} · ${p.posted}</small></div></div></button>`).join('')}</div>`
+      :empty('Nothing approved yet','Approved posts land here with their views once they go live.')}</section>`;
+}
+
+function secAnalytics(id){
+  const c=C[id], d=dash(id), live=d.approved.filter(p=>!p.isNew);
+  if(!live.length) return `<section class="dcard">${dhead('Analytics')}${empty('No data yet','Analytics start as soon as the first approved post goes live.')}</section>`;
+  const views=live.reduce((a,p)=>a+p.views,0), eng=(live.reduce((a,p)=>a+p.eng,0)/live.length).toFixed(1);
+  const cpm=Math.round(num(c.spent)/(views/1000));
+  /* Views per day: last 14 days, building toward today */
+  const r=rng(id+'v'), days=Array.from({length:14},(_,i)=>.4+i/14+r()*.5), sum=days.reduce((a,b)=>a+b,0);
+  const daily=days.map(v=>Math.round(v/sum*views)), max=Math.max(...daily), top=Math.ceil(max/1000)*1000;
+  const today=new Date(), label=i=>{const t=new Date(today);t.setDate(t.getDate()-(13-i));return t.toLocaleDateString('en-GB',{day:'numeric',month:'short'});};
+  const byPlat={};live.forEach(p=>byPlat[p.platform]=(byPlat[p.platform]||0)+p.views);
+  const plats=Object.entries(byPlat).sort((a,b)=>b[1]-a[1]);
+  const byWho={};live.forEach(p=>{const w=byWho[p.name]||(byWho[p.name]={p,posts:0,views:0,eng:0});w.posts++;w.views+=p.views;w.eng+=p.eng;});
+  const who=Object.values(byWho).sort((a,b)=>b.views-a.views);
+  return `<section class="dcard">${dhead('Analytics','Last 14 days')}
+      <div class="tiles">
+        <div class="tile"><span class="n">${fmtN(views)}</span><span class="l">Views</span><span class="d"><span class="up">▲ 32%</span> last 7 days</span></div>
+        <div class="tile"><span class="n">${eng}%</span><span class="l">Engagement rate</span><span class="d"><span class="up">▲ 0.8 pts</span> last 7 days</span></div>
+        <div class="tile"><span class="n">Rs. ${cpm.toLocaleString('en-US')}</span><span class="l">Cost per 1K views</span><span class="d"><span class="up">▼ 12%</span> last 7 days</span></div>
+        <div class="tile"><span class="n">${live.length}</span><span class="l">Live posts</span><span class="d">${who.length} creators</span></div>
+      </div></section>
+    <section class="dcard">${dhead('Views per day','Across every live post')}
+      <div class="chart">
+        <div class="chart-y" aria-hidden="true"><span>${fmtN(top)}</span><span>${fmtN(top/2)}</span><span>0</span></div>
+        <div class="chart-plot" role="list" aria-label="Views per day">${daily.map((v,i)=>`<div class="chart-col" role="listitem" tabindex="0" style="--h:${(v/top*100).toFixed(1)}%;--i:${i}" aria-label="${label(i)}: ${v.toLocaleString('en-US')} views"><i></i><span class="chart-tip">${label(i)} · <b>${v.toLocaleString('en-US')}</b> views</span></div>`).join('')}</div>
+        <div class="chart-x" aria-hidden="true"><span>${label(0)}</span><span>${label(7)}</span><span>Today</span></div>
+      </div></section>
+    <div class="an-two">
+      <section class="dcard" style="padding:24px">${dhead('Views by platform')}
+        <div class="meters">${plats.map(([k,v])=>{const p=Math.round(v/views*100);return `<div class="meter"><div class="top"><span>${PLAT[k]}${PLATNAME[k]}</span><span><b>${fmtN(v)}</b><em>${p}%</em></span></div><div class="adm-bar"><i style="--p:${p}%"></i></div></div>`;}).join('')}</div></section>
+      <section class="dcard" style="padding:24px">${dhead('Top creators')}
+        <table class="tc"><thead><tr><th>Creator</th><th>Posts</th><th>Views</th></tr></thead>
+        <tbody>${who.map(w=>`<tr><td><span class="who"><img data-a="${w.p.av}" data-label="${w.p.name}" alt="">${w.p.name}</span></td><td>${w.posts}</td><td>${fmtN(w.views)}</td></tr>`).join('')}</tbody></table></section>
+    </div>`;
+}
+
+function secInbox(id){
+  const d=dash(id), t=d.threads[d.thread];
+  t.unread=false;
+  return `<section class="dcard ib">
+    <div class="ib-list"><h2>Inbox</h2><div class="ib-scroll">${d.threads.map((th,i)=>{const last=th.msgs[th.msgs.length-1];
+      return `<button class="ib-item${i===d.thread?' on':''}${th.unread?' unread':''}" type="button" data-thread="${i}"><img data-a="${th.who.av}" data-label="${th.who.name}" alt=""><span class="t"><span class="r1"><b>${th.who.name}</b><small>${th.time}</small></span><span class="pv"><span>${last[0]==='me'?'You: ':''}${esc(last[1])}</span>${th.unread?'<i class="udot" aria-label="Unread"></i>':''}</span></span></button>`;}).join('')}</div></div>
+    <div class="ib-thread">
+      <div class="ib-head"><div class="adm-creator"><img data-a="${t.who.av}" data-label="${t.who.name}" alt=""><div><div class="name">${t.who.name}</div><div class="adm-handle">${t.who.handle}</div></div></div></div>
+      <div class="ib-msgs" id="ib-msgs"><span class="ib-day">Today</span>${t.msgs.map(m=>`<div class="bub ${m[0]}${m[2]?' new':''}">${esc(m[1])}</div>`).join('')}</div>
+      <form class="ib-form" id="ib-form"><input id="ib-input" placeholder="Write a message…" autocomplete="off" aria-label="Message ${t.who.name}"><button class="btn btn-pri" type="submit">Send</button></form>
+    </div></section>`;
+}
+
+function viewAdmin(id,sec){
+  if(sec==='pending'){
+    const review=secPending(id);
+    return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
+      :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
+  }
+  const body={details:secDetails,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
 /* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
-let media=null;
-function stopMedia(){if(media){media.stop();media=null;}}
+let media=[];
+function stopMedia(){media.forEach(m=>m.stop());media=[];}
 function mountReel(el){
-  const bar=el.querySelector('.reel-bar'), icon=el.querySelector('.reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('.reel-mute');
+  const bar=el.querySelector('.reel-progress i'), icon=el.querySelector('.reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('.reel-mute');
   const [mm,ss]=el.dataset.len.split(':').map(Number), dur=(mm*60+ss)*1000;
-  let t=0,last=performance.now(),playing=true,active=false,raf,flashT;
-  const tick=now=>{if(playing&&active){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
+  let t=0,last=performance.now(),playing=true,raf,flashT;
+  const tick=now=>{if(playing&&el.dataset.vis!=='0'){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
   raf=requestAnimationFrame(tick);
   /* Feedback on press, not release */
   hit.addEventListener('pointerdown',()=>{
@@ -903,9 +1196,7 @@ function mountReel(el){
   });
   hit.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();hit.dispatchEvent(new PointerEvent('pointerdown'));}});
   mute.addEventListener('pointerdown',()=>{const on=mute.dataset.on!=='1';mute.dataset.on=on?'1':'';mute.innerHTML=on?SOUNDIC:MUTEIC;mute.setAttribute('aria-label',on?'Mute':'Unmute');});
-  return {stop(){cancelAnimationFrame(raf);clearTimeout(flashT);},
-    /* Only the post in view plays; scrolling back to a reel starts it again from the top */
-    setActive(on){el.classList.toggle('idle',!on);if(on===active) return;active=on;if(on){t=0;bar.style.transform='scaleX(0)';playing=true;el.classList.remove('paused');icon.innerHTML=PAUSEIC;hit.setAttribute('aria-label','Pause reel');}}};
+  return {stop(){cancelAnimationFrame(raf);clearTimeout(flashT);}};
 }
 
 /* ---------- Carousel: 1:1 drag, momentum projection, critically damped spring, rubber-band edges ---------- */
@@ -913,7 +1204,7 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 function rubberband(over,dim,k=0.55){return (over*dim*k)/(dim+k*Math.abs(over));}
 function project(v,d=0.998){return (v/1000)*d/(1-d);}
 function mountCarousel(el){
-  const track=el.querySelector('.car-track'), n=track.children.length, dots=[...el.querySelectorAll('.car-dots i')], count=el.querySelector('.car-count');
+  const track=el.querySelector('.car-track'), n=track.children.length, dots=[...el.querySelectorAll('.car-dots i')], count=el.querySelector('.adm-count');
   const prev=el.querySelector('.car-nav.prev'), next=el.querySelector('.car-nav.next');
   let x=0, v=0, idx=0, raf=null, drag=null;
   const W=()=>el.clientWidth;
@@ -935,7 +1226,7 @@ function mountCarousel(el){
   }
   const go=(i,vel=0)=>{setIdx(Math.max(0,Math.min(n-1,i)));springTo(-idx*W(),vel);};
   el.addEventListener('pointerdown',e=>{
-    if(e.button!==0||e.target.closest('.car-nav')) return;
+    if(e.button!==0||e.target.closest('.car-nav,.adm-act')) return;
     cancelAnimationFrame(raf);raf=null;                      /* grab it mid-flight: keep the on-screen x */
     drag={id:e.pointerId,startX:e.clientX,baseX:x,hist:[[e.clientX,e.timeStamp]],locked:false};
   });
@@ -966,29 +1257,6 @@ function mountCarousel(el){
   return {stop(){cancelAnimationFrame(raf);removeEventListener('resize',onResize);}};
 }
 
-/* ---------- Feed: every post for the campaign scrolls past; the creator column follows the post in view ---------- */
-function mountFeed(root,posts){
-  const items=[...root.querySelectorAll('.adm-item')], side=root.querySelector('#adm-creator');
-  const players=items.map(it=>{const r=it.querySelector('.reel'),k=it.querySelector('.car');return r?mountReel(r):k?mountCarousel(k):null;});
-  let cur=-1,swapT;
-  const show=i=>{
-    if(i===cur) return;
-    const first=cur<0;cur=i;
-    players.forEach((p,j)=>p&&p.setActive&&p.setActive(j===i));
-    items.forEach((it,j)=>it.classList.toggle('on',j===i));
-    if(first) return;
-    clearTimeout(swapT);side.classList.add('swap');
-    swapT=setTimeout(()=>{side.innerHTML=admCreator(posts[i]);bindAssets(side);side.classList.remove('swap');},reduceMotion.matches?0:140);
-  };
-  /* The post whose centre is nearest the middle of the viewport is the one in view */
-  const pick=()=>{const mid=innerHeight/2;let best=0,bd=Infinity;items.forEach((it,j)=>{const r=it.querySelector('.adm-phone').getBoundingClientRect(),d=Math.abs(r.top+r.height/2-mid);if(d<bd){bd=d;best=j;}});show(best);};
-  let ticking=false;const onScroll=()=>{if(ticking) return;ticking=true;requestAnimationFrame(()=>{ticking=false;pick();});};
-  addEventListener('scroll',onScroll,{passive:true});
-  document.documentElement.classList.add('adm-snap');
-  show(0);
-  return {stop(){players.forEach(p=>p&&p.stop());removeEventListener('scroll',onScroll);clearTimeout(swapT);document.documentElement.classList.remove('adm-snap');}};
-}
-
 /* ================= Top menu ================= */
 function renderTopNav(){
   const items=[['campaigns','#/active',ICON.explore,'Campaigns']];
@@ -1017,15 +1285,37 @@ function toggleSearch(){
 
 /* ================= Router ================= */
 const view=document.getElementById('view');
+const parseHash=()=>{
+  const [root,id,mode,sec]=location.hash.replace(/^#\/?/,'').split('/');
+  const campaign=root==='campaign'&&C[id]?id:null;
+  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details'};
+};
+function mountMedia(){
+  const els=[...view.querySelectorAll('[data-media]')];
+  media=els.map(el=>el.dataset.media==='reel'?mountReel(el):mountCarousel(el));
+  /* In the pending feed, a reel only plays while it is on screen */
+  const io=new IntersectionObserver(es=>es.forEach(e=>e.target.dataset.vis=e.isIntersecting?'1':'0'),{threshold:.6});
+  els.forEach(el=>io.observe(el));media.push({stop:()=>io.disconnect()});
+}
+/* Re-render the admin section in place (after approve, send, …) without the page transition */
+function rerender(){
+  const h=parseHash(); if(!h.admin) return;
+  stopMedia();view.innerHTML=viewAdmin(h.id,h.sec);bindAssets(view);mountMedia();scrollThread();
+}
+function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;
+  /* On narrow screens the sub menu is a scrolling row: keep the open section in view */
+  const n=document.querySelector('.dsh-menu'),a=n&&n.querySelector('a.on');if(a&&n.scrollWidth>n.clientWidth) n.scrollLeft=a.offsetLeft-(n.clientWidth-a.offsetWidth)/2;}
 function route(){
-  const [root,id,mode]=location.hash.replace(/^#\/?/,'').split('/');
-  const campaign=root==='campaign'&&C[id];
-  const admin=campaign&&mode==='admin';
+  const {root,id,admin,sec}=parseHash();
+  const campaign=!!id;
   if(!campaign) state.tab=TABS[root]?root:'active';
+  else if(admin) state.tab=C[id].status;
   stopMedia();
-  view.innerHTML=admin?viewAdmin(id):campaign?viewCampaign(id):viewExplore();
-  document.body.classList.toggle('viewing',!!campaign);
-  if(campaign){
+  view.innerHTML=admin?viewAdmin(id,sec):campaign?viewCampaign(id):viewExplore();
+  /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
+  document.body.classList.toggle('viewing',campaign&&!admin);
+  document.body.classList.toggle('dash',admin);
+  if(campaign&&!admin){
     document.getElementById('viewbar-back').href='#/'+C[id].status;
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
     const sw=document.getElementById('viewbar-switch');
@@ -1033,12 +1323,12 @@ function route(){
     sw.href=admin?`#/campaign/${id}`:`#/campaign/${id}/admin`;
   }
   bindAssets(view);
-  if(admin) media=mountFeed(view.querySelector('.adm'),POSTS(id));
+  if(admin){mountMedia();scrollThread();}
   view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
   renderFeed();
   if(campaign) document.getElementById('search-btn').classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(campaign?C[id].title:TABS[state.tab])+' — UGC Platform for Brands';
+  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:TABS[state.tab])+' — UGC Platform for Brands';
   document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root==='campaigns'));
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   closePop();
@@ -1069,15 +1359,35 @@ document.addEventListener('click',e=>{
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
   const act=t.closest('[data-act]');
-  if(act){e.preventDefault();return doAct(act.dataset.act);}
+  if(act){e.preventDefault();return doAct(act.dataset.act,act);}
+  const th=t.closest('[data-thread]');
+  if(th){dash(parseHash().id).thread=+th.dataset.thread;rerender();return document.getElementById('ib-input').focus({preventScroll:true});}
   const go=t.closest('[data-go]');
   if(go) location.hash=go.dataset.go;
 });
-function doAct(a){
+function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
+  const h=parseHash(), d=h.admin&&dash(h.id);
+  if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
+  if(d&&(a==='approve'||a==='reject')){
+    const [s]=d.pending.splice(+el.closest('[data-i]').dataset.i,1);
+    if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.followers[0][0],views:0,eng:0,posted:'Just now',isNew:true});
+    rerender();
+    return toast(a==='approve'?`Approved · ${s.name} has been notified`:`Rejected · ${s.name} has been notified`);
+  }
   if(a==='share') return toast('Link copied');
   if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
 }
+
+/* Inbox: send a message in the open thread */
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='ib-form') return;
+  e.preventDefault();
+  const input=document.getElementById('ib-input'), text=input.value.trim(); if(!text) return;
+  const d=dash(parseHash().id), t=d.threads[d.thread];
+  t.msgs.forEach(m=>m.length=2);t.msgs.push(['me',text,1]);t.time='now';
+  rerender();document.getElementById('ib-input').focus({preventScroll:true});
+});
 
 /* Search filters the campaign feed */
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
