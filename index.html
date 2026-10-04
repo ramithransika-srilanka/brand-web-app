@@ -319,8 +319,6 @@
   .brief p{font-size:14px;line-height:21px;color:var(--grey-800);max-width:620px;}
   .brief .cp-tags{justify-content:flex-start;}
   .brief .cp-tag{background:var(--grey-100);}
-  .dbudget{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:18px;}
-  .dbudget .cp-list{padding:0;}
 
   /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
   /* Three columns with equal outer tracks so the post sits in the middle of the page */
@@ -444,23 +442,30 @@
   .adm-joined{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--grey-800);}
   .adm-joined .cp-avatars img{border-color:#fff;}
   .adm-joined b{font-weight:600;}
-  .adm-budget{display:flex;flex-direction:column;gap:8px;}
-  .adm-budget .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
-  .adm-budget .spent{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .adm-budget .of{font-size:14px;font-weight:500;color:var(--grey-600);font-variant-numeric:tabular-nums;}
-  .adm-budget .pct{font-size:14px;font-weight:600;color:var(--blue-600);font-variant-numeric:tabular-nums;}
+  /* Budget: spent and total over the bar, percent and remaining under it; figures match the stat tile numbers */
+  .adm-budget{display:flex;flex-direction:column;gap:8px;margin-top:18px;font-variant-numeric:tabular-nums;}
+  .adm-budget .row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;}
+  .adm-budget .row>:last-child{margin-left:auto;}
+  .adm-budget .kv{display:flex;align-items:baseline;gap:8px;white-space:nowrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .adm-budget .kv b,.adm-budget .pct{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);}
+  .adm-budget .pct{color:var(--blue-500);}
   .adm-bar{height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
   .adm-bar i{display:block;height:100%;width:var(--p);border-radius:inherit;background:var(--blue-500);transform-origin:left;animation:barIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
   @keyframes barIn{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-  .adm-budget .foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
 
   /* Centre: the post, framed like a phone */
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
-  .adm-screen[data-media=car]::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
+  /* Dark, blurred scrims at both ends: the blur fades out with the gradient so there's no hard edge */
+  .adm-screen::before,.adm-screen::after{content:"";position:absolute;left:0;right:0;z-index:2;pointer-events:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+  .adm-screen::before{top:0;height:96px;background:linear-gradient(rgba(0,0,0,.55),transparent);-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent);}
+  .adm-plat{position:absolute;top:12px;left:12px;right:56px;z-index:3;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;line-height:20px;color:rgba(255,255,255,.85);pointer-events:none;}
+  .adm-plat svg{width:16px;height:16px;flex-shrink:0;color:#fff;}
+  .adm-plat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .adm-plat b{font-weight:600;color:#fff;}
   /* Approve / Reject sit on the post, over a bottom scrim; reel controls and carousel dots ride above them */
-  .adm-screen::after{content:"";position:absolute;inset:auto 0 0;height:140px;z-index:2;pointer-events:none;background:linear-gradient(transparent,rgba(0,0,0,.55));}
+  .adm-screen::after{bottom:0;height:150px;background:linear-gradient(transparent,rgba(0,0,0,.6));-webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
   .adm-act{position:absolute;left:12px;right:12px;bottom:14px;z-index:4;display:flex;gap:8px;}
   .adm-act .btn{flex:1;height:42px;}
   .btn-glass{color:#fff;background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
@@ -505,12 +510,12 @@
   .adm-creator img{width:45px;height:45px;border-radius:100px;object-fit:cover;background:var(--grey-200);flex-shrink:0;}
   .adm-creator .name{font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.012em;color:var(--grey-800);}
   .adm-creator .adm-handle{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-follow{display:flex;flex-wrap:wrap;gap:6px 15px;}
+  .adm-follow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 15px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .adm-follow>i{width:1px;height:20px;background:var(--grey-200);}
+  .adm-follow>em{font-style:normal;}
   .adm-follow span{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
   .adm-follow span em{font-style:normal;font-weight:500;color:var(--grey-600);}
   .adm-follow svg{width:15px;height:15px;}
-  .adm-total{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-total b{font-weight:600;color:var(--grey-800);}
   .adm-caption{font-size:14px;line-height:21px;color:var(--grey-800);white-space:pre-line;}
   .adm-caption .tag{all:unset;color:var(--blue-600);font-weight:500;}
   .adm-posted{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);}
@@ -583,6 +588,8 @@
     .cp-cmetrics,.cp-questions{padding-left:18px;}
   }
   @media (max-width:767px){
+    /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
+    .adm-budget .kv b,.adm-budget .pct,.btiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}
     :root{--gutter:12px;}
     .topbar{grid-template-columns:auto auto minmax(0,1fr);gap:6px;}
     .brand svg{height:16px;}
@@ -599,7 +606,7 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
-    .dbudget,.an-two{grid-template-columns:minmax(0,1fr);}
+    .an-two{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
     .ib-list{border-right:0;border-bottom:1px solid var(--line);}
@@ -1001,7 +1008,6 @@ const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 /* ---------- Admin dashboard: campaign card + sub menu, one section at a time ---------- */
 const EYEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-const CHECKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
 const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
 
@@ -1019,7 +1025,11 @@ function dash(id){
   const c=C[id], s=SUB[id], r=rng(id);
   const others=POOL.filter(p=>p.name!==s.name);
   const pics=[c.img,...PICS.filter(p=>p!==c.img)];
-  const pending=c.status==='completed'?[]:POSTS(id).map((p,i)=>({...p,submitted:p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted}));
+  /* One pending item per platform: a creator who submits for two platforms shows up twice in a row, once per platform */
+  const pending=c.status==='completed'?[]:POSTS(id).flatMap((p,i)=>{
+    const submitted=p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted;
+    const plats=(i%2===0&&p.followers.length>1?p.followers.slice(0,2):p.followers.slice(0,1)).map(f=>f[0]);
+    return plats.map((pl,n)=>({...p,submitted,platform:pl,part:n+1,parts:plats.length,other:plats[1-n]}));});
   const kinds=['Reel','Post','Carousel'];
   const approved=c.status==='upcoming'?[]:Array.from({length:c.status==='completed'?8:6},(_,i)=>{
     const p=POOL[(i+2)%POOL.length];
@@ -1053,6 +1063,11 @@ function secDetails(id){
   const c=C[id], d=dash(id), base=`#/campaign/${id}/admin/`;
   const spent=num(c.spent), pct=Math.min(100,Math.round(spent/c.budgetN*100));
   const views=d.approved.reduce((a,p)=>a+p.views,0);
+  /* Budget figures from the posts: payout = base price + performance rate per 1K views, capped at the max earning */
+  const subs=d.pending.length+d.approved.length, engs=Math.round(d.approved.reduce((a,p)=>a+p.views*p.eng/100,0));
+  const [basePay,capPay,perfPay]=c.list.map(r=>num(String(r[1]).split('/')[0]));
+  const maxPaid=d.approved.reduce((m,p)=>Math.max(m,Math.min(capPay,basePay+Math.round(p.views/1000*perfPay))),0);
+  const rs=n=>'Rs. '+n.toLocaleString('en-US');
   const att=[
     d.pending.length&&['review',`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,`Creators are waiting on you. <a class="dlink" href="${base}pending">Review now</a>`],
     unreadN(d)&&['inbox',`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,`Quick replies keep your response time badge. <a class="dlink" href="${base}inbox">Open inbox</a>`],
@@ -1066,14 +1081,17 @@ function secDetails(id){
         <a class="tile" href="${base}approved"><span class="n">${d.approved.length}</span><span class="l">Approved content</span><span class="d">${d.approved.length?'Live on '+new Set(d.approved.map(p=>p.platform)).size+' platforms':'Nothing live yet'}</span></a>
         <a class="tile" href="${base}analytics"><span class="n">${fmtN(views)}</span><span class="l">Total views</span><span class="d">${views?'<span class="up">▲ 32%</span> last 7 days':'N/A'}</span></a>
       </div></section>
-    <section class="dcard">${dhead('Budget','',`<span class="count">${pct}% spent</span>`)}
-      <div class="dbudget">
-        <div class="adm-budget">
-          <div class="row"><span class="spent">${c.spent}</span><span class="of">of ${c.budget}</span></div>
-          <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
-          <div class="foot"><span>Spent</span><span>${c.available} available</span></div>
-        </div>
-        <div class="cp-list">${c.list.slice(0,3).map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+    <section class="dcard">${dhead('Budget')}
+      <div class="adm-budget">
+        <div class="row"><span class="kv"><b>${c.spent}</b>Spent</span><span class="kv">Total<b>${c.budget}</b></span></div>
+        <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
+        <div class="row"><span class="pct">${pct}%</span><span class="kv">Remaining<b>${rs(Math.max(0,c.budgetN-spent))}</b></span></div>
+      </div>
+      <div class="tiles btiles">
+        <div class="tile"><span class="n">${subs?rs(Math.round(spent/subs)):'N/A'}</span><span class="l">Avg per content</span><span class="d">${subs} submission${subs===1?'':'s'}</span></div>
+        <div class="tile"><span class="n">${views?rs(Math.round(spent/views*1000)):'N/A'}</span><span class="l">Per 1000 reach</span><span class="d">Avg on all platforms</span></div>
+        <div class="tile"><span class="n">${engs?rs(Math.round(spent/engs)):'N/A'}</span><span class="l">Cost per engagement</span><span class="d">Avg on all platforms</span></div>
+        <div class="tile"><span class="n">${maxPaid?rs(maxPaid):'N/A'}</span><span class="l">Max paid for content</span><span class="d">${maxPaid?`<a class="dlink" href="${base}approved">View content</a>`:'Nothing live yet'}</span></div>
       </div></section>
     <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign')}
       <div class="brief">
@@ -1086,7 +1104,8 @@ function secDetails(id){
 
 function mediaHTML(s){
   const m=s.media;
-  const actions=`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">${CHECKIC}Approve</button><button class="btn btn-glass" type="button" data-act="reject">${XIC}Reject</button></div>`;
+  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.part===2?`Same creator · <b>${PLATNAME[s.platform]} submission</b>`:`<b>${PLATNAME[s.platform]} submission</b>${s.parts===2?` · ${PLATNAME[s.other]} next`:''}`}</span></div>`;
+  const actions=label+`<div class="adm-act"><button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button></div>`;
   if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
@@ -1102,19 +1121,20 @@ function mediaHTML(s){
   return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}">${actions}</div>`;
 }
 
+/* Industry tiers by followers on the platform the content is for */
+const tier=n=>n>=1e6?'Mega':n>=5e5?'Macro':n>=1e5?'Mid':n>=1e4?'Micro':'Nano';
 function secPending(id){
   const d=dash(id);
   if(!d.pending.length) return null;
   return `<div class="pfeed">${d.pending.map((s,i)=>{
     const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-    const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
+    const f=s.followers.find(f=>f[0]===s.platform), fN=parseFloat(f[1])*(/K/i.test(f[1])?1000:/M/i.test(f[1])?1e6:1);
     return `<article class="pitem" data-i="${i}" aria-label="Submission by ${s.name}">
       <div class="adm-center"><div class="adm-phone">${mediaHTML(s)}</div></div>
       <div class="adm-col adm-right"><div class="adm-side">
         <div class="adm-sec">
           <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-          <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-          <div class="adm-total"><b>${fmtN(totalF)}</b> followers across ${s.followers.length} platforms</div>
+          <div class="adm-follow"><span title="${PLATNAME[s.platform]}">${PLAT[s.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN)} creator tier</em></div>
         </div>
         <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">Submitted ${s.submitted}</span></div>
         <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
@@ -1379,7 +1399,7 @@ function doAct(a,el){
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
   if(d&&(a==='approve'||a==='reject')){
     const [s]=d.pending.splice(+el.closest('[data-i]').dataset.i,1);
-    if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.followers[0][0],views:0,eng:0,posted:'Just now',isNew:true});
+    if(a==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.platform,views:0,eng:0,posted:'Just now',isNew:true});
     rerender();
     return toast(a==='approve'?`Approved · ${s.name} has been notified`:`Rejected · ${s.name} has been notified`);
   }
