@@ -401,8 +401,8 @@
   .chart-tip b{font-weight:600;font-variant-numeric:tabular-nums;}
   .chart-col:hover .chart-tip,.chart-col:focus-visible .chart-tip{opacity:1;transform:translate(-50%,0);}
   .chart-col.l:hover .chart-tip,.chart-col.l:focus-visible .chart-tip,.chart-col.r:hover .chart-tip,.chart-col.r:focus-visible .chart-tip{transform:none;}
-  .ch-metric{margin-bottom:14px;}
-  .ch-metric .an-plat-menu{left:0;right:auto;}
+  .ch-picks{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
+  .ch-picks .an-plat:first-child .an-plat-menu{left:0;right:auto;}
   .chart-x{grid-column:2;display:flex;justify-content:space-between;margin-top:8px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .an-plat{position:relative;}
   .an-plat-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px 0 16px;border-radius:100px;background:var(--blue-500);color:#fff;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;transition:background .2s ease;}
@@ -1302,7 +1302,7 @@ const MDESC={views:['Views per day','Across every live post'],reach:['Reach per 
 function chartBody(id){
   const d=dash(id), m=d.plats.cm, plat=d.plats.cp, [title,sub]=MDESC[m];
   const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
-  const head=`<div class="dh"><div><h2>${title}</h2><p>${sub}</p></div>${platPick(id,'cp')}</div>`;
+  const head=dhead(title,sub);
   if(!live.length) return head+empty('No data yet',`Nothing on ${AN_PLATS.find(p=>p[0]===plat)[1]} so far.`);
   const r=rng(id+m+plat), shape=Array.from({length:14},(_,i)=>.4+i/14+r()*.5), sum=shape.reduce((a,b)=>a+b,0);
   const views=live.reduce((a,p)=>a+p.views,0), eng=live.reduce((a,p)=>a+p.eng,0)/live.length;
@@ -1345,7 +1345,7 @@ function secAnalytics(id){
       <div class="tiles" id="an-tiles">${anTiles(id)}</div></section>
     <section class="dcard">${dhead('Engagement','',platPick(id,'eg'))}
       <div class="tiles" id="eg-stats">${egStats(id)}</div></section>
-    <section class="dcard"><div class="ch-metric">${platPick(id,'cm',METRICS,'Metric')}</div>
+    <section class="dcard"><div class="ch-picks">${platPick(id,'cm',METRICS,'Metric')}${platPick(id,'cp')}</div>
       <div id="an-chart">${chartBody(id)}</div></section>
     <section class="dcard">${dhead('Top creators')}
         <div class="tc-wrap"><table class="tc"><thead><tr><th>Creator</th><th class="pl">Platforms</th><th>Views</th><th>Reach</th><th>Engagement rate</th><th>Paid amount</th><th>Submission date</th></tr></thead>
