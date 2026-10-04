@@ -41,6 +41,7 @@ const A = pick(ctx.A, [
   'logo1', 'logo2', 'logo3', 'starbucks', 'burgerking', 'dominos',      // brand logos
   'avatar', 'pfAvatar', 'pickmeLogo', 'uberLogo', 'legoLogo', 'pepsi',  // header + notifications
   'av1', 'av2', 'av3', 'av4',                                            // creator avatars
+  'sbContent1', 'sbContent2',                                            // creator posts (admin view)
 ], 'A');
 const ICON = pick(ctx.ICON, ['explore', 'heart', 'tiktok', 'insta', 'user'], 'ICON');
 const home = mobile.indexOf('id="home"');

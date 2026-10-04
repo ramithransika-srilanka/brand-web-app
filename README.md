@@ -12,6 +12,9 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser â
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
   web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,
   best-suited-for tags, event details for events, requirements and "Campaign created by".
+- **Admin view** â€” "Switch to admin" on a campaign page (`#/campaign/<id>/admin`). Three columns: the campaign
+  (name, timestamps, creators joined, budget progress), the creator's post in a phone frame (reel, image or
+  swipeable carousel), and the creator (name, photo, followers, caption, short bio). "Switch to creator" goes back.
 
 ## Assets
 
@@ -20,3 +23,5 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser â
 ```sh
 node scripts/sync-assets.js <path-to-creator-web-app>
 ```
+
+`images/hotzy-reel.jpg` is a demo reel frame taken from the admin-view mockup.
