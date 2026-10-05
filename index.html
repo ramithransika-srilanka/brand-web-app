@@ -884,6 +884,17 @@
     .cp-cmetrics,.cp-questions{padding-left:16px;padding-right:16px;}
     .cp-creatorcard{padding:0 0 16px;}
     .ff-2,.fin3{grid-template-columns:minmax(0,1fr);}
+    /* Notifications: rows run edge to edge so logos line up with the heading; unread rows are tinted bands, not boxes */
+    .nt-head .home-title{font-size:22px;line-height:28px;}
+    .nt-group{margin-top:28px;}
+    .nt-list{gap:0;margin:8px calc(var(--gutter) * -1) 0;}
+    .nt-item{padding:14px 40px 14px var(--gutter);border:0;border-radius:0;}
+    .nt-item.unread{border:0;}
+    .nt-item.unread+.nt-item.unread{box-shadow:inset 0 1px 0 #fff;}
+    .nt-item.unread::after{right:var(--gutter);}
+    .nt-item:active{background:var(--grey-100);}
+    .nt-text{font-size:15px;line-height:21px;}
+    .nt-time{font-size:13px;line-height:18px;}
     /* Monthly chart: the tooltip spans the chart above the bars and wraps, instead of one long line centred on a bar */
     .fchart .chart-col{position:static;}
     .fchart .chart-col .chart-tip,.fchart .chart-col.tl .chart-tip,.fchart .chart-col.tr .chart-tip{left:0;right:0;bottom:calc(100% + 10px);white-space:normal;text-align:center;transform:translateY(4px);}
