@@ -640,6 +640,10 @@
   /* Wallet: balance, total added and spent as three wider tiles above the four */
   .fin3{grid-template-columns:repeat(3,minmax(0,1fr));}
   .fin3+.tiles{margin-top:12px;}
+  /* The balance is the figure that matters most: highlighted in the primary blue */
+  .tile.hl{background:var(--blue-500);border-color:var(--blue-500);}
+  .tile.hl .n,.tile.hl .l{color:#fff;}
+  .tile.hl .d{color:var(--blue-100);}
   .fin3 .n,.fin3+.tiles .n{white-space:nowrap;}
   /* Small laptops: the main column is narrow, so the rupee figures take the phone size */
   @media (min-width:1024px) and (max-width:1279px){.fin3 .n,.fin3+.tiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}}
@@ -1641,7 +1645,7 @@ function finOverview(){
   return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
     <section class="dcard">${dhead('Wallet','One balance that pays for every campaign')}
       <div class="tiles btiles fin3">
-        <div class="tile"><span class="n">${RS(t.balance)}</span><span class="l">Balance</span><span class="d">Ready for your campaigns</span></div>
+        <div class="tile hl"><span class="n">${RS(t.balance)}</span><span class="l">Balance</span><span class="d">Ready for your campaigns</span></div>
         <a class="tile" href="#/financials/funds/transfers"><span class="n">${RS(t.added)}</span><span class="l">Total added</span><span class="d">${verified().length} verified transfers</span></a>
         <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Spent</span><span class="d">${p}% of total added</span></a>
       </div>
