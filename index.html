@@ -1602,6 +1602,7 @@ function monthStats(i){
   return {open,added,spent,close:open+added-spent};
 }
 
+/* Add funds opens from the button in the left card, so it has no sub menu entry */
 /* Financials is laid out like a campaign dashboard: a card with the sub menu on the left (a drawer on phones), sections on the right */
 const FSECTIONS=[['overview','Overview'],['monthly','Monthly financials'],['funds','Add funds'],['transfers','Bank transfers']];
 FIN.dismissed=new Set();
@@ -1615,9 +1616,9 @@ function finSide(sec){
     <div class="dsh-id">
       <h1 class="dsh-title">Financials</h1>
       <div class="dsh-meta"><span class="dsh-status active">${RS(t.balance)}</span><span>Wallet balance for all your campaigns</span></div>
-      <a class="dsh-viewas" href="#/financials/funds">${UPIC}Add funds</a>
+      <a class="dsh-viewas" href="#/financials/funds"${sec==='funds'?' aria-current="page"':''}>${UPIC}Add funds</a>
     </div>
-    <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${k==='transfers'&&pend?`<span class="badge-n" aria-label="${pend} pending">${pend}</span>`:''}</a>`).join('')}</nav>
+    <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.filter(x=>x[0]!=='funds').map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${k==='transfers'&&pend?`<span class="badge-n" aria-label="${pend} pending">${pend}</span>`:''}</a>`).join('')}</nav>
   </aside>`;
 }
 
@@ -1952,7 +1953,7 @@ function setSide(open){
   document.body.classList.toggle('side-open',open);
   const btn=document.querySelector('.dsh-toggle');if(!btn) return;
   btn.setAttribute('aria-expanded',open);
-  if(open) document.querySelector('.dsh-menu a.on').focus({preventScroll:true});
+  if(open) (document.querySelector('.dsh-menu a.on')||document.querySelector('.dsh-side a')).focus({preventScroll:true});
   else if(was) btn.focus({preventScroll:true});
 }
 
