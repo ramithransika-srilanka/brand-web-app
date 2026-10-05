@@ -28,7 +28,7 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   dashboard (same left card + sub menu (Overview, Monthly financials), drawer on phones, cards, tiles and tables). One wallet funds every campaign:
   - **Overview** (`/financials/overview`, default) — dismissable "Needs your attention" items (transfer being verified,
     rejected slip, budget shortfall), a Wallet card of tiles (balance, total added, spent; then free
-    to spend, committed to campaign budgets, spent this month and pending verification), then spend by campaign.
+    to spend, committed to campaign budgets, spent this month and pending verification), then spend by campaign for the last 10 campaigns.
   - **Monthly financials** (`/financials/monthly`) — added vs spent for the last six months in the analytics chart frame
     (click a month or use the dropdown); the month's opening, added, spent and closing balance; spend by campaign with a
     CSV statement download.
