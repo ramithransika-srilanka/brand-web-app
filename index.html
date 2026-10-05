@@ -1755,7 +1755,7 @@ function pickFile(f){
 
 function viewFinancials(sec){
   const newTx=FIN.newTx;FIN.newTx=null;
-  const body={overview:finOverview,monthly:finMonthly,funds:()=>finFunds()+finTransfers(newTx)}[sec]();
+  const body={overview:()=>finOverview()+finTransfers(),monthly:finMonthly,funds:()=>finFunds()+finTransfers(newTx)}[sec]();
   return `<div class="dsh">${finSide(sec)}<div class="dsh-main">${body}</div></div>`;
 }
 function downloadStatement(){
