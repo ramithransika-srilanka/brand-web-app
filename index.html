@@ -1572,7 +1572,8 @@ const daysAgo=n=>{const t=new Date();t.setHours(12,0,0,0);t.setDate(t.getDate()-
 /* Placeholder account — replace with PolySocial's real collection account before launch */
 const BANK=[['Account name','PolySocial (Pvt) Ltd'],['Bank','Commercial Bank of Ceylon'],['Branch','Colombo 03, Kollupitiya'],['Account number','1000 4821 9930'],['SWIFT code','CCEYLKLX']];
 const FIN={
-  ref:'PS-UBER-2041',     /* the brand's payment reference: lets PolySocial match a transfer to this wallet */
+  ref:'PS-UBER-2041',
+  since:daysAgo(152),     /* when the brand's account was opened */     /* the brand's payment reference: lets PolySocial match a transfer to this wallet */
   plats:{fm:'5'},         /* selected month (index into MONTHS), kept in the same shape as the analytics dropdowns */
   file:null,              /* slip waiting to be submitted */
   transfers:[
@@ -1646,13 +1647,13 @@ function finOverview(){
   /* The 10 most recent campaigns: upcoming first, then running, then finished */
   const RECENT={upcoming:0,active:1,completed:2};
   const camps=EXPLORE.map(id=>({id,c:C[id],sp:num(C[id].spent)})).sort((a,b)=>RECENT[a.c.status]-RECENT[b.c.status]).slice(0,10);
-  const p=pct(t.spent,t.added), d=now.spent-last.spent;
+  const d=now.spent-last.spent;
   return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
     <section class="dcard">${dhead('Wallet','One balance that pays for every campaign')}
       <div class="tiles btiles fin3">
         <div class="tile hl"><span class="n">${RS(t.balance)}</span><span class="l">Wallet balance</span><span class="d">Ready for your campaigns</span></div>
-        <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Total spent</span><span class="d">${p}% of total added</span></a>
-        <a class="tile" href="#/financials/monthly"><span class="n">${RS(now.spent)}</span><span class="l">Spent in ${mName(cur)}</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs ${mName(cur-1,{month:'short'})}</span></a>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Total spent</span><span class="d">Since ${FIN.since.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span></a>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(now.spent)}</span><span class="l">Spent this month</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs last month</span></a>
       </div></section>
     <section class="dcard">${dhead('Spend by campaign','Your last 10 campaigns, paid out from your wallet')}
       <div class="tc-wrap"><table class="tc tc-camp"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
