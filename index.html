@@ -637,6 +637,12 @@
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
   /* ================= Financials: built from the campaign dashboard's pieces (dsh, dcard, tiles, adm-budget, chart, tc) ================= */
+  /* Wallet: balance, total added and spent as three wider tiles above the four */
+  .fin3{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .fin3+.tiles{margin-top:12px;}
+  .fin3 .n,.fin3+.tiles .n{white-space:nowrap;}
+  /* Small laptops: the main column is narrow, so the rupee figures take the phone size */
+  @media (min-width:1024px) and (max-width:1279px){.fin3 .n,.fin3+.tiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}}
   /* Monthly chart: the analytics chart frame with a pair of bars per month */
   .fchart .chart-plot{gap:0;}
   .fchart .chart-col{display:flex;align-items:flex-end;justify-content:center;gap:4px;cursor:pointer;}
@@ -784,7 +790,7 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard{padding:18px;}
-    .ff-2{grid-template-columns:minmax(0,1fr);}
+    .ff-2,.fin3{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     /* Inbox works like a messaging app: the list, or one open conversation with a back button */
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);padding:0;}
@@ -1634,10 +1640,10 @@ function finOverview(){
   const p=pct(t.spent,t.added), d=now.spent-last.spent;
   return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
     <section class="dcard">${dhead('Wallet','One balance that pays for every campaign')}
-      <div class="adm-budget">
-        <div class="row"><span class="kv"><b>${RS(t.spent)}</b>Spent</span><span class="kv">Total added<b>${RS(t.added)}</b></span></div>
-        <div class="adm-bar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="Wallet spent"><i style="--p:${p}%"></i></div>
-        <div class="row"><span class="pct">${p}%</span><span class="kv">Balance<b>${RS(t.balance)}</b></span></div>
+      <div class="tiles btiles fin3">
+        <div class="tile"><span class="n">${RS(t.balance)}</span><span class="l">Balance</span><span class="d">Ready for your campaigns</span></div>
+        <a class="tile" href="#/financials/funds/transfers"><span class="n">${RS(t.added)}</span><span class="l">Total added</span><span class="d">${verified().length} verified transfers</span></a>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Spent</span><span class="d">${p}% of total added</span></a>
       </div>
       <div class="tiles btiles">
         <div class="tile">${RSK(Math.max(0,free))}<span class="l">Free to spend</span><span class="d">After campaign budgets</span></div>
