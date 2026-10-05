@@ -825,6 +825,11 @@
     .top-right{gap:6px;}
     .top-av{display:none;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
+    /* Cards run edge to edge within the page gutter on phones */
+    .feedgrid>.cardwrap,.feedgrid>.sk-card{padding:0;border-radius:12px;}
+    .feedgrid .card-content{padding:12px 3px 18px;}
+    .feedgrid .card-content .ctitle{height:auto;}
+    .feedgrid .sk-card .l1,.feedgrid .sk-card .l2,.feedgrid .sk-card .l3{margin-left:3px;margin-right:3px;}
     .cp-hero{height:180px;}
     .cp{margin-bottom:0;}
     .cp-main{padding-bottom:24px;}
