@@ -663,6 +663,10 @@
   @keyframes barUp{from{transform:scaleY(0);}to{transform:none;}}
   .fchart .chart-x{justify-content:space-around;}
   .fchart .chart-x .on{color:var(--grey-800);font-weight:600;}
+  /* The hover readout sits in a fixed row above the plot, not over the bars */
+  .fchart{margin-top:52px;}
+  .fchart .chart-tip{bottom:calc(100% + 10px);}
+  .dcard>.fleg{justify-content:center;margin-top:16px;}
   .fleg{display:flex;gap:16px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .fleg span{display:flex;align-items:center;gap:6px;}
   .fleg i{width:10px;height:10px;border-radius:3px;background:var(--grey-400);}
@@ -1668,7 +1672,7 @@ function finChart(){
   const ax=v=>v?(v/1e6).toFixed(1).replace(/\.0$/,'')+'M':'0';
   return `<div class="chart fchart">
       <div class="chart-y" aria-hidden="true"><span>${ax(top)}</span><span>${ax(top/2)}</span><span>0</span></div>
-      <div class="chart-plot" role="list" aria-label="Added and spent per month">${st.map((s,i)=>`<button class="chart-col${i===0?' l':i===st.length-1?' r':''}${i===sel?' on':''}" type="button" role="listitem" data-fm="${i}" style="--h:${h(Math.max(s.added,s.spent))}" aria-label="${mName(i,{month:'long',year:'numeric'})}: added ${RS(s.added)}, spent ${RS(s.spent)}"${i===sel?' aria-current="true"':''}>
+      <div class="chart-plot" role="list" aria-label="Added and spent per month">${st.map((s,i)=>`<button class="chart-col${i===0?' l tl':i===st.length-1?' r tr':''}${i===sel?' on':''}" type="button" role="listitem" data-fm="${i}" style="--h:${h(Math.max(s.added,s.spent))}" aria-label="${mName(i,{month:'long',year:'numeric'})}: added ${RS(s.added)}, spent ${RS(s.spent)}"${i===sel?' aria-current="true"':''}>
           <b class="bar" style="--b:${h(s.added)}"></b><b class="bar sp" style="--b:${h(s.spent)}"></b>
           <span class="chart-tip">${mName(i,{month:'short',year:'numeric'})} · Added <b>${RS(s.added)}</b> · Spent <b>${RS(s.spent)}</b></span></button>`).join('')}</div>
       <div class="chart-x" aria-hidden="true">${MONTHS.map((_,i)=>`<span${i===sel?' class="on"':''}>${mName(i,{month:'short'})}</span>`).join('')}</div>
@@ -1692,10 +1696,9 @@ function finMonthSpend(){
 }
 const finMonthHead=()=>dhead(mName(+FIN.plats.fm,{month:'long',year:'numeric'}),'Opening and closing balance for the month');
 function finMonthly(){
-  const opts=MONTHS.map((_,i)=>[String(i),mName(i,{month:'long',year:'numeric'})]);
-  return `<section class="dcard"><div class="ch-picks">${platPick(null,'fm',opts,'Month')}<span class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></span></div>
-      ${dhead('Monthly financials','Money added to your wallet and spent on campaigns')}
-      <div id="fin-chart">${finChart()}</div></section>
+  return `<section class="dcard">${dhead('Monthly financials','Money added to your wallet and spent on campaigns')}
+      <div id="fin-chart">${finChart()}</div>
+      <div class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></div></section>
     <section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div></section>
     <section class="dcard" id="fin-spend">${finMonthSpend()}</section>`;
 }
