@@ -806,7 +806,7 @@
   @media (max-width:767px){
     /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
     .adm-budget .kv b,.adm-budget .pct,.btiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}
-    :root{--gutter:12px;--explore-gutter:16px;}
+    :root{--gutter:16px;--explore-gutter:16px;}
     .topbar{grid-template-columns:auto minmax(0,1fr);gap:6px;}
     .brand svg{height:16px;}
     /* Campaigns and Notifications live in the menu at the top right; search sits to its left */
@@ -838,6 +838,48 @@
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.dcard,#fin-month>.dcard{padding:18px;}
+    /* Campaign details: sections run edge to edge as flat panels so their content uses the full phone width */
+    .dsh-main{gap:8px;}
+    .dsh-main>.dcard:not(.ib){margin:0 calc(var(--gutter) * -1);padding:24px var(--gutter);border-left:0;border-right:0;border-radius:0;}
+    .dh h2{font-size:18px;line-height:24px;}
+    .dh p{font-size:14px;line-height:20px;}
+    .att-list{gap:8px;margin-top:16px;}
+    .att{padding:14px 16px;}
+    .tiles{gap:8px;margin-top:16px;}
+    .tile{padding:14px;}
+    .tile .n{font-size:22px;line-height:28px;}
+    .tile .l{font-size:14px;line-height:19px;}
+    .brief{gap:8px;margin-top:16px;}
+    .brief h4{margin-top:12px;}
+    .brief p{font-size:15px;line-height:23px;}
+    /* Creator view of the campaign: no side rules, the page gutter is the only inset */
+    .cp{margin-top:-18px;}
+    .cp-main{border:0;padding:16px 0 32px;}
+    .cp-hero{border-radius:12px;}
+    .cp-details{gap:10px;padding:40px 0 20px;}
+    .cp-title{font-size:22px;line-height:28px;}
+    .cp-details>.cp-list{margin-top:8px;}
+    .cp-infotags{align-items:flex-start;padding:24px 0;border-top:1px solid var(--grey-200);}
+    .cp-infotags h3,.cp-reqs h3,.cp-createdby>h3{font-size:17px;line-height:22px;letter-spacing:-.01em;text-align:left;color:var(--grey-800);}
+    .cp-tags{justify-content:flex-start;}
+    .cp-tag{padding:6px 10px;}
+    .cp-tag span{font-size:13px;line-height:16px;}
+    .cp-reqs{gap:32px;padding:24px 0 8px;border-top:1px solid var(--grey-200);}
+    .band{margin:0 calc(var(--gutter) * -1);}
+    .band .cp-reqs,.band .cp-infotags{padding-left:var(--gutter);padding-right:var(--gutter);border-top:0;}
+    .cp-sec{gap:10px;}
+    .cp-reqs p{font-size:15px;line-height:23px;color:var(--grey-800);}
+    .cp-reqs h4{margin-top:12px;}
+    .cp-spec{gap:8px;}
+    .cp-ctas{gap:8px;padding:14px 16px;}
+    .cp-restrict{gap:10px;}
+    .cp-restrict li{font-size:15px;line-height:24px;align-items:flex-start;}
+    .cp-createdby{gap:16px;padding:32px 0 0;border-top:1px solid var(--grey-200);margin-top:24px;}
+    .cp-identity{padding:20px 16px 0;}
+    .cp-cdesc{padding:0 16px;font-size:15px;line-height:22px;color:var(--grey-800);}
+    .cp-stats{padding:8px 16px;}
+    .cp-cmetrics,.cp-questions{padding-left:16px;padding-right:16px;}
+    .cp-creatorcard{padding:0 0 16px;}
     .ff-2,.fin3{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     /* Inbox works like a messaging app: the list, or one open conversation with a back button */
