@@ -442,6 +442,10 @@
   .tc tr:last-child td{border-bottom:0;}
   .tc .who{display:flex;align-items:center;gap:9px;font-weight:600;}
   .tc .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;}
+  /* Spend by campaign: titles wrap to two lines so the figures get the room */
+  .tc-camp td:first-child{width:260px;white-space:normal;}
+  .tc-camp .who img{flex-shrink:0;}
+  .tc-camp .who a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 
   /* Inbox */
   .dsh-main>.ib{display:grid;grid-template-columns:280px minmax(0,1fr);height:min(640px,calc(100dvh - var(--header) - var(--subbar) - 48px));padding:0;overflow:hidden;}
@@ -1651,7 +1655,7 @@ function finOverview(){
         <a class="tile" href="#/financials/monthly"><span class="n">${RS(now.spent)}</span><span class="l">Spent in ${mName(cur)}</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs ${mName(cur-1,{month:'short'})}</span></a>
       </div></section>
     <section class="dcard">${dhead('Spend by campaign','Your last 10 campaigns, paid out from your wallet')}
-      <div class="tc-wrap"><table class="tc"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
+      <div class="tc-wrap"><table class="tc tc-camp"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
       <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/details">${c.title}</a></span></td>
         <td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${RS(Math.max(0,c.budgetN-sp))}</td><td>${pct(sp,c.budgetN)}%</td></tr>`).join('')}</tbody></table></div></section>`;
 }
