@@ -637,7 +637,6 @@
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
   /* ================= Financials: built from the campaign dashboard's pieces (dsh, dcard, tiles, adm-budget, chart, tc) ================= */
-  .fin-av{width:48px;height:48px;border-radius:100px;object-fit:cover;border:1px solid var(--line);}
   /* Monthly chart: the analytics chart frame with a pair of bars per month */
   .fchart .chart-plot{gap:0;}
   .fchart .chart-col{display:flex;align-items:flex-end;justify-content:center;gap:4px;cursor:pointer;}
@@ -1614,7 +1613,6 @@ function finSide(sec){
   <aside class="dcard dsh-side" id="dsh-side">
     <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
     <div class="dsh-id">
-      <img class="fin-av" data-a="uberLogo" data-label="Ub" alt="">
       <h1 class="dsh-title">Financials</h1>
       <div class="dsh-meta"><span class="dsh-status active">${RS(t.balance)}</span><span>Wallet balance for all your campaigns</span></div>
       <a class="dsh-viewas" href="#/financials/funds">${UPIC}Add funds</a>
