@@ -434,7 +434,8 @@
   .an-plat-menu button:hover,.an-plat-menu button:focus-visible{background:var(--page-bg);outline:0;}
   .an-plat-menu button[aria-checked="true"]{font-weight:600;color:var(--blue-500);}
   .an-plat-menu svg{width:16px;height:16px;flex-shrink:0;}
-  .tc-wrap{margin-top:12px;overflow-x:auto;}
+  /* Positioned so absolutely placed children (the screen-reader header label) stay inside the scroll box */
+  .tc-wrap{position:relative;margin-top:12px;overflow-x:auto;}
   .tc{width:100%;min-width:760px;border-collapse:collapse;font-size:12px;line-height:16px;}
   .tc th{padding:8px 0 8px 16px;white-space:nowrap;font-size:12px;font-weight:500;color:var(--grey-600);text-align:right;border-bottom:1px solid var(--line);}
   .tc th:first-child,.tc td:first-child{padding-left:0;text-align:left;}
@@ -814,9 +815,11 @@
     .top-right{grid-column:2;}
     /* The menu opens as a full page under the top bar (the bar is its containing block) */
     .tmenu{display:block;position:static;}
-    .tmenu-list{top:100%;left:0;right:0;height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;min-width:0;gap:4px;padding:18px var(--gutter);border:0;border-radius:0;box-shadow:none;transform:translateY(-8px);}
-    .tmenu-list a{min-height:56px;gap:14px;padding:0 14px;border-radius:12px;font-size:20px;line-height:26px;}
-    .tmenu-list svg{width:24px;height:24px;}
+    /* Row padding plus the list's side padding equals the page gutter, so the icons line up with the logo */
+    .tmenu-list{top:100%;left:0;right:0;height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;min-width:0;gap:2px;padding:12px calc(var(--gutter) - 12px);border:0;border-radius:0;box-shadow:none;transform:translateY(-8px);}
+    .tmenu-list a{min-height:52px;gap:12px;padding:0 12px;border-radius:12px;font-size:17px;line-height:22px;letter-spacing:-.01em;}
+    .tmenu-list a:active{transform:scale(.98);}
+    .tmenu-list svg{width:22px;height:22px;}
     body.tmenu-open{overflow:hidden;}
     body.tmenu-open #search-btn{display:none;}
     /* Category tags stay on one line and scroll sideways, edge to edge */
@@ -881,6 +884,10 @@
     .cp-cmetrics,.cp-questions{padding-left:16px;padding-right:16px;}
     .cp-creatorcard{padding:0 0 16px;}
     .ff-2,.fin3{grid-template-columns:minmax(0,1fr);}
+    /* Monthly chart: the tooltip spans the chart above the bars and wraps, instead of one long line centred on a bar */
+    .fchart .chart-col{position:static;}
+    .fchart .chart-col .chart-tip,.fchart .chart-col.tl .chart-tip,.fchart .chart-col.tr .chart-tip{left:0;right:0;bottom:calc(100% + 10px);white-space:normal;text-align:center;transform:translateY(4px);}
+    .fchart .chart-col:hover .chart-tip,.fchart .chart-col:focus-visible .chart-tip{transform:none;}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     /* Inbox works like a messaging app: the list, or one open conversation with a back button */
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);padding:0;}
