@@ -636,20 +636,17 @@
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
   /* ================= Financials: built from the campaign dashboard's pieces (dsh, dcard, tiles, adm-budget, chart, tc) ================= */
-  /* Wallet: balance, total added and spent as three wider tiles above the four */
+  /* Wallet: balance, total spent and this month's spend as three wider tiles */
   .fin3{grid-template-columns:repeat(3,minmax(0,1fr));}
-  .fin3+.tiles{margin-top:12px;}
   /* Left card: wallet balance under the heading, label above a large figure */
   .fin-bal{display:flex;flex-direction:column;gap:2px;}
   .fin-bal span{font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
   .fin-bal b{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  /* The balance is the figure that matters most: highlighted in the primary blue */
-  .tile.hl{background:var(--blue-500);border-color:var(--blue-500);}
-  .tile.hl .n,.tile.hl .l{color:#fff;}
-  .tile.hl .d{color:var(--blue-100);}
-  .fin3 .n,.fin3+.tiles .n{white-space:nowrap;}
+  /* The balance is the figure that matters most: its number in the primary blue */
+  .tile.hl .n{color:var(--blue-500);}
+  .fin3 .n{white-space:nowrap;}
   /* Small laptops: the main column is narrow, so the rupee figures take the phone size */
-  @media (min-width:1024px) and (max-width:1279px){.fin3 .n,.fin3+.tiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}}
+  @media (min-width:1024px) and (max-width:1279px){.fin3 .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}}
   /* Monthly chart: the analytics chart frame with a pair of bars per month */
   .fchart .chart-plot{gap:0;}
   .fchart .chart-col{display:flex;align-items:flex-end;justify-content:center;gap:4px;cursor:pointer;}
@@ -1649,15 +1646,9 @@ function finOverview(){
   return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
     <section class="dcard">${dhead('Wallet','One balance that pays for every campaign')}
       <div class="tiles btiles fin3">
-        <div class="tile hl"><span class="n">${RS(t.balance)}</span><span class="l">Balance</span><span class="d">Ready for your campaigns</span></div>
-        <a class="tile" href="#/financials/funds/transfers"><span class="n">${RS(t.added)}</span><span class="l">Total added</span><span class="d">${verified().length} verified transfers</span></a>
-        <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Spent</span><span class="d">${p}% of total added</span></a>
-      </div>
-      <div class="tiles btiles">
-        <div class="tile">${RSK(Math.max(0,free))}<span class="l">Free to spend</span><span class="d">After campaign budgets</span></div>
-        <div class="tile">${RSK(t.reserved)}<span class="l">Committed</span><span class="d">Left in ${EXPLORE.filter(id=>C[id].status!=='completed').length} campaign budgets</span></div>
-        <a class="tile" href="#/financials/monthly">${RSK(now.spent)}<span class="l">Spent in ${mName(cur)}</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs ${mName(cur-1,{month:'short'})}</span></a>
-        <a class="tile" href="#/financials/funds/transfers">${RSK(t.pendSum)}<span class="l">Pending verification</span><span class="d">${t.pend.length?`${t.pend.length} transfer${t.pend.length>1?'s':''}`:'Nothing waiting'}</span></a>
+        <div class="tile hl"><span class="n">${RS(t.balance)}</span><span class="l">Wallet balance</span><span class="d">Ready for your campaigns</span></div>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Total spent</span><span class="d">${p}% of total added</span></a>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(now.spent)}</span><span class="l">Spent in ${mName(cur)}</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs ${mName(cur-1,{month:'short'})}</span></a>
       </div></section>
     <section class="dcard">${dhead('Spend by campaign','Your last 10 campaigns, paid out from your wallet')}
       <div class="tc-wrap"><table class="tc"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
