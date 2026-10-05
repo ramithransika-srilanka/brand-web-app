@@ -305,7 +305,7 @@
 
   .dsh-bar,.dsh-scrim,.dsh-close{display:none;}
   .dsh-main{display:flex;flex-direction:column;gap:18px;min-width:0;}
-  .dsh-main>.dcard{padding:24px;}
+  .dsh-main>.dcard,#fin-month>.dcard{padding:24px;}
   .dh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
   .dh h2{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;color:var(--grey-800);}
   .dh p{margin-top:2px;font-size:14px;line-height:20px;color:var(--grey-600);}
@@ -667,6 +667,19 @@
   .fchart{margin-top:52px;}
   .fchart .chart-tip{bottom:calc(100% + 10px);}
   .dcard>.fleg{justify-content:center;margin-top:16px;}
+  /* Month picker above the month's cards: a year stepper over a grid of months */
+  .mp-bar{display:flex;margin-bottom:-6px;}
+  #fin-month{display:contents;}
+  .mp .mp-menu{left:0;right:auto;width:248px;}
+  .mp-yr{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 8px;}
+  .mp-yr b{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .mp-menu .mp-yr button{width:32px;height:32px;padding:0;justify-content:center;border-radius:100px;}
+  .mp-yr button svg{width:10px;height:10px;transform:rotate(90deg);}
+  .mp-yr button[data-mp-y="1"] svg{transform:rotate(-90deg);}
+  .mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+  .mp-menu .mp-grid button{justify-content:center;}
+  .mp-menu .mp-grid button[aria-checked="true"]{background:var(--blue-500);color:#fff;}
+  .mp-menu button:disabled{color:var(--grey-400);background:none;cursor:default;}
   .fleg{display:flex;gap:16px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .fleg span{display:flex;align-items:center;gap:6px;}
   .fleg i{width:10px;height:10px;border-radius:3px;background:var(--grey-400);}
@@ -800,7 +813,7 @@
     .viewbar .msg{grid-column:2;}
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .dsh-main>.dcard{padding:18px;}
+    .dsh-main>.dcard,#fin-month>.dcard{padding:18px;}
     .ff-2,.fin3{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     /* Inbox works like a messaging app: the list, or one open conversation with a back button */
@@ -1578,7 +1591,9 @@ const BANK=[['Account name','PolySocial (Pvt) Ltd'],['Bank','Commercial Bank of 
 const FIN={
   ref:'PS-UBER-2041',
   since:daysAgo(152),     /* when the brand's account was opened */     /* the brand's payment reference: lets PolySocial match a transfer to this wallet */
-  plats:{fm:'5'},         /* selected month (index into MONTHS), kept in the same shape as the analytics dropdowns */
+  plats:{fm:'5'},         /* selected month as an index into MONTHS, or -1 for a month outside the chart */
+  sel:null,               /* selected month as {y,m}, any month up to now */
+  pickY:0,                /* year showing in the month picker */
   file:null,              /* slip waiting to be submitted */
   transfers:[
     {at:daysAgo(2),amount:1000000,ref:'TRF-88213940',file:'commercial-bank-slip.pdf',status:'pending'},
@@ -1695,21 +1710,39 @@ function finMonthSpend(){
       :empty('Nothing spent this month','Campaign payouts to creators will show up here.'));
 }
 const finMonthHead=()=>dhead(mName(+FIN.plats.fm,{month:'long',year:'numeric'}),'Opening and closing balance for the month');
+const selName=()=>new Date(FIN.sel.y,FIN.sel.m,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+/* Month picker: step through years, pick any month up to this one */
+function mpMenu(){
+  const now=new Date(), y=FIN.pickY;
+  return `<div class="mp-yr"><button type="button" data-mp-y="-1" aria-label="Previous year"${y<=2000?' disabled':''}>${CARET}</button><b>${y}</b><button type="button" data-mp-y="1" aria-label="Next year"${y>=now.getFullYear()?' disabled':''}>${CARET}</button></div>
+    <div class="mp-grid">${Array.from({length:12},(_,m)=>`<button type="button" role="menuitemradio" data-plat="${y}-${m}" aria-checked="${FIN.sel.y===y&&FIN.sel.m===m}"${new Date(y,m,1)>now?' disabled':''}>${new Date(y,m,1).toLocaleDateString('en-GB',{month:'short'})}</button>`).join('')}</div>`;
+}
+const monthPick=()=>`<div class="an-plat mp" data-pk="fmp"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${selName()}${CARET}</button>
+    <div class="an-plat-menu mp-menu" role="menu" aria-label="Month">${mpMenu()}</div></div>`;
+/* The selected month's balance and spend, or a note when there's nothing to show */
+function finMonthBody(){
+  if(+FIN.plats.fm>=0) return `<section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div></section>
+    <section class="dcard" id="fin-spend">${finMonthSpend()}</section>`;
+  const before=new Date(FIN.sel.y,FIN.sel.m+1,1)<=FIN.since, opened=FIN.since.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  return `<section class="dcard">${dhead(selName(),'Opening and closing balance for the month')}
+    ${empty('No data available',before?`Your account was opened on ${opened}, so there’s nothing to show for this month.`:'There was no wallet activity this month.')}</section>`;
+}
 function finMonthly(){
+  if(!FIN.sel){const d=MONTHS[+FIN.plats.fm];FIN.sel={y:d.getFullYear(),m:d.getMonth()};}
   return `<section class="dcard">${dhead('Monthly financials','Money added to your wallet and spent on campaigns')}
       <div id="fin-chart">${finChart()}</div>
       <div class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></div></section>
-    <section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div></section>
-    <section class="dcard" id="fin-spend">${finMonthSpend()}</section>`;
+    <div class="mp-bar">${monthPick()}</div>
+    <div id="fin-month">${finMonthBody()}</div>`;
 }
-function setMonth(i){
-  FIN.plats.fm=String(i);
-  const pm=document.querySelector('[data-pk="fm"]');
-  if(pm){pm.querySelector('[data-plat-btn]').firstChild.textContent=mName(i,{month:'long',year:'numeric'});
-    pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b.dataset.plat===String(i)));}
-  fill('fin-chart',finChart());fill('fin-tiles',finMonthTiles());fill('fin-spend',finMonthSpend());
-  fill('fin-mh',finMonthHead());
+function selectMonth(y,m){
+  const i=mIdx(new Date(y,m,1));
+  FIN.sel={y,m};FIN.plats.fm=String(i>=0&&i<MONTHS.length?i:-1);
+  const pm=document.querySelector('[data-pk="fmp"]');
+  if(pm) pm.querySelector('[data-plat-btn]').firstChild.textContent=selName();
+  fill('fin-chart',finChart());fill('fin-month',finMonthBody());
 }
+const setMonth=i=>selectMonth(MONTHS[i].getFullYear(),MONTHS[i].getMonth());
 
 function finFunds(){
   const today=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
@@ -1989,9 +2022,15 @@ document.addEventListener('click',e=>{
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));cat.scrollIntoView({inline:'nearest',block:'nearest',behavior:'smooth'});renderFeed();return;}
   const pm=t.closest('.an-plat');
   document.querySelectorAll('.an-plat.open').forEach(m=>{if(m!==pm) anMenu(m,false);});
-  if(t.closest('[data-plat-btn]')){const open=!pm.classList.contains('open');anMenu(pm,open);if(open)pm.querySelector('[aria-checked="true"]').focus();return;}
+  const my=t.closest('[data-mp-y]');
+  if(my){FIN.pickY+=+my.dataset.mpY;pm.querySelector('.mp-menu').innerHTML=mpMenu();
+    const nb=pm.querySelector(`[data-mp-y="${my.dataset.mpY}"]`);return (nb.disabled?pm.querySelector('[data-plat]:not(:disabled)'):nb).focus();}
+  if(t.closest('[data-plat-btn]')){const open=!pm.classList.contains('open');
+    if(open&&pm.dataset.pk==='fmp'){FIN.pickY=FIN.sel.y;pm.querySelector('.mp-menu').innerHTML=mpMenu();}
+    anMenu(pm,open);if(open)pm.querySelector('[aria-checked="true"]').focus();return;}
   const pl=t.closest('[data-plat]');
-  if(pl&&pm.dataset.pk==='fm'){setMonth(+pl.dataset.plat);anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
+  if(pl&&pm.dataset.pk==='fmp'){const [y,m]=pl.dataset.plat.split('-').map(Number);selectMonth(y,m);anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
+  if(t.closest('.mp-menu')) return;
   if(pl){const id=parseHash().id, key=pm.dataset.pk;dash(id).plats[key]=pl.dataset.plat;
     pm.querySelector('[data-plat-btn]').firstChild.textContent=pl.textContent;
     pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b===pl));
@@ -2090,7 +2129,7 @@ document.addEventListener('keydown',e=>{
   const pm=document.querySelector('.an-plat.open');
   if(pm){
     if(e.key==='Escape'){e.preventDefault();anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
-    const items=[...pm.querySelectorAll('[data-plat]')], i=items.indexOf(document.activeElement);
+    const items=[...pm.querySelectorAll('[data-plat]:not(:disabled)')], i=items.indexOf(document.activeElement);
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length].focus();return;}
     if(e.key==='Tab') anMenu(pm,false);
   }
