@@ -667,6 +667,10 @@
   .fchart{margin-top:52px;}
   .fchart .chart-tip{bottom:calc(100% + 10px);}
   .dcard>.fleg{justify-content:center;margin-top:16px;}
+  .fday-head{display:flex;flex-direction:column;gap:2px;margin-top:28px;}
+  .fday-head b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
+  .fday-head span{font-size:14px;line-height:20px;color:var(--grey-600);}
+  .fday .chart-col:not([tabindex])::before{display:none;}
   /* Month picker above the month's cards: a year stepper over a grid of months */
   .mp-bar{display:flex;margin-bottom:-6px;}
   #fin-month{display:contents;}
@@ -1700,6 +1704,27 @@ function finMonthTiles(){
     <div class="tile">${RSK(s.spent)}<span class="l">Spent</span><span class="d">${k} campaign${k===1?'':'s'}</span></div>
     <div class="tile">${RSK(s.close)}<span class="l">${cur?'Balance now':'Closing balance'}</span><span class="d">${s.close>=s.open?`<span class="up">▲ ${RS(s.close-s.open)}</span>`:`<span class="down">▼ ${RS(s.open-s.close)}</span>`} in the month</span></div>`;
 }
+/* Spend per day across the whole month: the month's payouts spread over its days, up to today for the current month */
+function finDayChart(){
+  const i=+FIN.plats.fm, mo=MONTHS[i], days=new Date(mo.getFullYear(),mo.getMonth()+1,0).getDate(), cur=i===MONTHS.length-1;
+  const upto=cur?new Date().getDate():days, total=sumOf(SPEND[i]), r=rng('fday'+i);
+  let w=1;const shape=Array.from({length:upto},()=>w=Math.min(1.8,Math.max(.4,w*(.8+r()*.4)))), sum=shape.reduce((a,b)=>a+b,0);
+  let left=total;const vals=shape.map((v,d)=>{const x=d===upto-1?left:Math.round(total*v/sum);left-=x;return x;});
+  const max=Math.max(...vals,1), step=max<1e4?1e3:max<1e5?1e4:1e5, top=Math.ceil(max/step)*step;
+  const label=d=>new Date(mo.getFullYear(),mo.getMonth(),d+1).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const pt=vals.map((v,d)=>[((d+.5)/days*100).toFixed(2),(100-v/top*100).toFixed(2)]), line='M'+pt.map(p=>p.join(' ')).join(' L');
+  return `<div class="fday-head"><b>Spend per day</b><span>${total?'Paid out to creators each day':'Nothing spent this month'}</span></div>
+    <div class="chart fday">
+      <div class="chart-y" aria-hidden="true"><span>${fmtN(top)}</span><span>${fmtN(top/2)}</span><span>0</span></div>
+      <div class="chart-plot" role="list" aria-label="Spend per day">
+        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="fday-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue-500)" stop-opacity=".16"/><stop offset="1" stop-color="var(--blue-500)" stop-opacity="0"/></linearGradient></defs>
+          <path class="ar" style="fill:url(#fday-fill)" d="${line} L${pt[upto-1][0]} 100 L${pt[0][0]} 100Z"/><path class="ln" d="${line}"/></svg>
+        ${Array.from({length:days},(_,d)=>d<upto?`<div class="chart-col${d===upto-1?' r':''}${d<4?' tl':d>days-5?' tr':''}" role="listitem" tabindex="0" style="--h:${(vals[d]/top*100).toFixed(1)}%" aria-label="${label(d)}: ${RS(vals[d])}"><i></i><span class="chart-tip">${label(d)} · <b>${RS(vals[d])}</b></span></div>`:'<div class="chart-col" aria-hidden="true"></div>').join('')}
+      </div>
+      <div class="chart-x" aria-hidden="true"><span>${label(0)}</span><span>${label(14)}</span><span>${label(days-1)}</span></div>
+    </div>`;
+}
 function finMonthSpend(){
   const i=+FIN.plats.fm, total=sumOf(SPEND[i]), rows=Object.entries(SPEND[i]).sort((a,b)=>b[1]-a[1]), top=rows.length?rows[0][1]:1;
   return dhead(`Spend by campaign`,`${mName(i,{month:'long',year:'numeric'})}${i===MONTHS.length-1?' so far':''}`,`<button class="btn btn-sec" type="button" data-act="statement">${DLIC}Statement</button>`)
@@ -1721,7 +1746,7 @@ const monthPick=()=>`<div class="an-plat mp" data-pk="fmp"><button class="an-pla
     <div class="an-plat-menu mp-menu" role="menu" aria-label="Month">${mpMenu()}</div></div>`;
 /* The selected month's balance and spend, or a note when there's nothing to show */
 function finMonthBody(){
-  if(+FIN.plats.fm>=0) return `<section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div></section>
+  if(+FIN.plats.fm>=0) return `<section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div>${finDayChart()}</section>
     <section class="dcard" id="fin-spend">${finMonthSpend()}</section>`;
   const before=new Date(FIN.sel.y,FIN.sel.m+1,1)<=FIN.since, opened=FIN.since.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   return `<section class="dcard">${dhead(selName(),'Opening and closing balance for the month')}
