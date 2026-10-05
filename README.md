@@ -25,17 +25,18 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   - **Inbox** (`/admin/inbox`) — conversations with creators; send replies in the open thread.
 
 - **Financials** — the wallet icon next to Explore in the top menu (`#/financials`). Laid out like the campaign admin
-  dashboard (same left card + sub menu (Overview, Monthly financials, Bank transfers), drawer on phones, cards, tiles and tables). One wallet funds every campaign:
+  dashboard (same left card + sub menu (Overview, Monthly financials), drawer on phones, cards, tiles and tables). One wallet funds every campaign:
   - **Overview** (`/financials/overview`, default) — dismissable "Needs your attention" items (transfer being verified,
     rejected slip, budget shortfall), a Wallet card in the Budget layout (spent vs total added, balance) with tiles for free
     to spend, committed to campaign budgets, spent this month and pending verification, then spend by campaign.
   - **Monthly financials** (`/financials/monthly`) — added vs spent for the last six months in the analytics chart frame
     (click a month or use the dropdown); the month's opening, added, spent and closing balance; spend by campaign with a
     CSV statement download.
-  - **Add funds** (`/financials/funds`, from the outlined button in the left card) — how it works, PolySocial's bank account as spec tiles (click to copy) and the
-    payment reference, then the transfer slip upload (PDF, JPG or PNG up to 10 MB, drag and drop).
-  - **Bank transfers** (`/financials/transfers`) — every uploaded slip with its status; a new upload lands here as Pending.
-    Only verified transfers count towards the wallet. The bank details in `BANK` are placeholders.
+  - **Add funds** (`/financials/funds`, from the outlined button in the left card) — how it works, PolySocial's bank
+    account as spec tiles (click to copy) and the payment reference, the transfer slip upload (PDF, JPG or PNG up to 10 MB,
+    drag and drop), then **Bank transfers**: every uploaded slip with its status (`/financials/funds/transfers` scrolls
+    to it). A new upload lands there as Pending; only verified transfers count towards the wallet. The bank details in
+    `BANK` are placeholders.
 
 ## Assets
 

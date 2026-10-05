@@ -1602,13 +1602,13 @@ function monthStats(i){
   return {open,added,spent,close:open+added-spent};
 }
 
-/* Add funds opens from the button in the left card, so it has no sub menu entry */
+/* Add funds (with the bank transfers list under it) opens from the button in the left card, so it has no sub menu entry */
 /* Financials is laid out like a campaign dashboard: a card with the sub menu on the left (a drawer on phones), sections on the right */
-const FSECTIONS=[['overview','Overview'],['monthly','Monthly financials'],['funds','Add funds'],['transfers','Bank transfers']];
+const FSECTIONS=[['overview','Overview'],['monthly','Monthly financials'],['funds','Add funds']];
 FIN.dismissed=new Set();
 const pct=(a,b)=>b?Math.min(100,Math.round(a/b*100)):0;
 function finSide(sec){
-  const t=finTotals(), pend=t.pend.length;
+  const t=finTotals();
   return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${FSECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
   <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
   <aside class="dcard dsh-side" id="dsh-side">
@@ -1618,7 +1618,7 @@ function finSide(sec){
       <div class="dsh-meta"><span class="dsh-status active">${RS(t.balance)}</span><span>Wallet balance for all your campaigns</span></div>
       <a class="dsh-viewas" href="#/financials/funds"${sec==='funds'?' aria-current="page"':''}>${UPIC}Add funds</a>
     </div>
-    <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.filter(x=>x[0]!=='funds').map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${k==='transfers'&&pend?`<span class="badge-n" aria-label="${pend} pending">${pend}</span>`:''}</a>`).join('')}</nav>
+    <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.filter(x=>x[0]!=='funds').map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span></a>`).join('')}</nav>
   </aside>`;
 }
 
@@ -1626,7 +1626,7 @@ function finOverview(){
   const t=finTotals(), free=t.balance-t.reserved, cur=MONTHS.length-1, now=monthStats(cur), last=monthStats(cur-1);
   const rej=FIN.transfers.filter(x=>x.status==='rejected');
   const att=[
-    t.pend.length&&['pending',`${RS(t.pendSum)} is being verified`,`We add it to your wallet within 1 working day of the transfer. <a class="dlink" href="#/financials/transfers">View transfers</a>`],
+    t.pend.length&&['pending',`${RS(t.pendSum)} is being verified`,`We add it to your wallet within 1 working day of the transfer. <a class="dlink" href="#/financials/funds/transfers">View transfers</a>`],
     rej.length&&['rejected',`${rej.length} transfer slip${rej.length>1?'s were':' was'} rejected`,`${esc(rej[0].note)} <a class="dlink" href="#/financials/funds">Upload again</a>`],
     free<0&&['short',`Top up ${RS(-free)} to cover your campaign budgets`,`Running campaigns pause when the wallet runs out. <a class="dlink" href="#/financials/funds">Add funds</a>`],
   ].filter(a=>a&&!FIN.dismissed.has(a[0]));
@@ -1643,7 +1643,7 @@ function finOverview(){
         <div class="tile">${RSK(Math.max(0,free))}<span class="l">Free to spend</span><span class="d">After campaign budgets</span></div>
         <div class="tile">${RSK(t.reserved)}<span class="l">Committed</span><span class="d">Left in ${EXPLORE.filter(id=>C[id].status!=='completed').length} campaign budgets</span></div>
         <a class="tile" href="#/financials/monthly">${RSK(now.spent)}<span class="l">Spent in ${mName(cur)}</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs ${mName(cur-1,{month:'short'})}</span></a>
-        <a class="tile" href="#/financials/transfers">${RSK(t.pendSum)}<span class="l">Pending verification</span><span class="d">${t.pend.length?`${t.pend.length} transfer${t.pend.length>1?'s':''}`:'Nothing waiting'}</span></a>
+        <a class="tile" href="#/financials/funds/transfers">${RSK(t.pendSum)}<span class="l">Pending verification</span><span class="d">${t.pend.length?`${t.pend.length} transfer${t.pend.length>1?'s':''}`:'Nothing waiting'}</span></a>
       </div></section>
     <section class="dcard">${dhead('Spend by campaign','Paid out from your wallet since each campaign started')}
       <div class="tc-wrap"><table class="tc"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
@@ -1723,7 +1723,7 @@ function finFunds(){
 }
 function finTransfers(newTx){
   const txs=[...FIN.transfers].sort((a,b)=>b.at-a.at);
-  return `<section class="dcard">${dhead('Bank transfers','Slips you’ve uploaded and their status',`<span class="count">${txs.length} transfer${txs.length===1?'':'s'}</span>`)}
+  return `<section class="dcard" id="fin-transfers">${dhead('Bank transfers','Slips you’ve uploaded and their status',`<span class="count">${txs.length} transfer${txs.length===1?'':'s'}</span>`)}
     <div class="tc-wrap"><table class="tc"><thead><tr><th>Date</th><th>Amount</th><th class="pl">Bank reference</th><th class="pl">Transfer slip</th><th class="pl">Status</th></tr></thead>
     <tbody>${txs.map(x=>`<tr${x===newTx?' class="new"':''}><td>${x.at.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'})}</td><td>${RS(x.amount)}</td><td class="pl">${esc(x.ref)}</td>
       <td class="pl">${x.url?`<a href="${x.url}" target="_blank" rel="noopener">${esc(x.file)}</a>`:esc(x.file)}</td>
@@ -1747,7 +1747,7 @@ function pickFile(f){
 
 function viewFinancials(sec){
   const newTx=FIN.newTx;FIN.newTx=null;
-  const body={overview:finOverview,monthly:finMonthly,funds:finFunds,transfers:()=>finTransfers(newTx)}[sec]();
+  const body={overview:finOverview,monthly:finMonthly,funds:()=>finFunds()+finTransfers(newTx)}[sec]();
   return `<div class="dsh">${finSide(sec)}<div class="dsh-main">${body}</div></div>`;
 }
 function downloadStatement(){
@@ -1880,7 +1880,7 @@ const view=document.getElementById('view');
 const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
-  if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',post:null};
+  if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
   return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
 };
 function mountMedia(){
@@ -1900,7 +1900,7 @@ function rerender(){
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
-  const {root,id,admin,sec,post,fsec}=parseHash();
+  const {root,id,admin,sec,post,fsec,toTx}=parseHash();
   const campaign=!!id;
   const notifs=!campaign&&root==='notifications';
   const fin=!campaign&&root==='financials';
@@ -1923,6 +1923,8 @@ function route(){
   bindAssets(view);
   if(admin){mountMedia();scrollThread();}
   if(fin) fileChip();
+  /* Links to the bank transfers land on that card, under the add funds form */
+  if(toTx) requestAnimationFrame(()=>{const tx=document.getElementById('fin-transfers');if(tx) scrollTo({top:tx.getBoundingClientRect().top+scrollY-(document.querySelector('.dsh-bar')?.offsetHeight||0)-document.getElementById('topbar').offsetHeight-18,behavior:'instant'});});
   /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
   const dkey=admin?id:fin?'#fin':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
   const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side,.dsh-bar,.dsh-scrim)')]:[view];
@@ -2046,7 +2048,8 @@ document.addEventListener('submit',e=>{
   const f=FIN.file, tx={at:when,amount,ref:document.getElementById('ff-ref').value.trim()||FIN.ref,file:f.name,url:URL.createObjectURL(f),status:'pending'};
   FIN.transfers.push(tx);FIN.file=null;
   /* Land on Bank transfers with the new slip highlighted at the top */
-  FIN.newTx=tx;location.hash='#/financials/transfers';
+  FIN.newTx=tx;
+  if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
 document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
