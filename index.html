@@ -636,122 +636,75 @@
     padding:9px 15px;border-radius:100px;font-size:14px;font-weight:500;box-shadow:2px 2px 9px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
-  /* ================= Financials: one wallet for every campaign, topped up by bank transfer ================= */
-  body.fin{background:var(--page-bg);}
-  body.fin .subnav{display:none;}
-  .fin{display:flex;flex-direction:column;gap:18px;padding-top:6px;}
-  .fin-head p{margin-top:4px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .fin .dcard{padding:24px;}
-  .fin .tiles{margin-top:0;}
-  .fin .tiles .tile{background:#fff;}
-  .fin-tiles .n{font-size:22px;line-height:30px;}
-  .tile.wal{background:var(--grey-800)!important;border-color:var(--grey-800);}
-  .tile.wal .n,.tile.wal .l{color:#fff;}
-  .tile.wal .d{color:var(--grey-400);}
-  .fin-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start;}
-  .fin-col{display:flex;flex-direction:column;gap:18px;min-width:0;}
-  .fin-col.side{position:sticky;top:calc(var(--header) + 24px);}
-
-  /* Monthly bars: added (grey) and spent (blue) side by side; click a month to open it */
-  .fleg{display:flex;gap:16px;margin-top:16px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  /* ================= Financials: built from the campaign dashboard's pieces (dsh, dcard, tiles, adm-budget, chart, tc) ================= */
+  .fin-av{width:48px;height:48px;border-radius:100px;object-fit:cover;border:1px solid var(--line);}
+  /* Monthly chart: the analytics chart frame with a pair of bars per month */
+  .fchart .chart-plot{gap:0;}
+  .fchart .chart-col{display:flex;align-items:flex-end;justify-content:center;gap:4px;cursor:pointer;}
+  .fchart .chart-col::before{display:none;}
+  .fchart .chart-col:hover,.fchart .chart-col:focus-visible{background:rgba(18,18,18,.03);}
+  .fchart .chart-col b.bar{width:min(22px,30%);height:var(--b);border-radius:4px 4px 0 0;background:var(--grey-200);transform-origin:bottom;animation:barUp .8s cubic-bezier(.16,1,.3,1) both;transition:background .2s ease;}
+  .fchart .chart-col b.bar.sp{background:var(--blue-200);}
+  .fchart .chart-col.on b.bar{background:var(--grey-400);}
+  .fchart .chart-col.on b.bar.sp{background:var(--blue-500);}
+  @keyframes barUp{from{transform:scaleY(0);}to{transform:none;}}
+  .fchart .chart-x{justify-content:space-around;}
+  .fchart .chart-x .on{color:var(--grey-800);font-weight:600;}
+  .fleg{display:flex;gap:16px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .fleg span{display:flex;align-items:center;gap:6px;}
-  .fleg i{width:10px;height:10px;border-radius:3px;background:var(--grey-200);}
+  .fleg i{width:10px;height:10px;border-radius:3px;background:var(--grey-400);}
   .fleg i.sp{background:var(--blue-500);}
-  .fbars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;height:180px;margin-top:12px;border-bottom:1px solid var(--grey-400);
-    background:linear-gradient(var(--grey-100) 1px,transparent 1px) 0 0/100% 50%;}
-  .fbar{position:relative;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px;border-radius:8px 8px 0 0;transition:background .2s ease;}
-  .fbar:hover,.fbar:focus-visible{background:rgba(18,18,18,.03);outline:0;}
-  .fbar i{width:min(22px,38%);height:var(--h);min-height:2px;border-radius:5px 5px 0 0;background:var(--grey-200);transform-origin:bottom;animation:fbarIn .8s cubic-bezier(.16,1,.3,1) both;transition:background .2s ease;}
-  .fbar i.sp{background:var(--blue-200);}
-  .fbar.on i{background:var(--grey-400);} .fbar.on i.sp{background:var(--blue-500);}
-  @keyframes fbarIn{from{transform:scaleY(0);}to{transform:none;}}
-  .fbar .tip{position:absolute;bottom:calc(var(--t) + 10px);left:50%;z-index:2;transform:translate(-50%,4px);padding:6px 10px;border-radius:8px;background:var(--grey-800);color:#fff;font-size:12px;line-height:16px;white-space:nowrap;text-align:left;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .fbar .tip b{font-weight:600;font-variant-numeric:tabular-nums;}
-  .fbar:first-child .tip{left:0;transform:translate(0,4px);} .fbar:last-child .tip{left:auto;right:0;transform:translate(0,4px);}
-  .fbar:hover .tip,.fbar:focus-visible .tip{opacity:1;transform:translate(-50%,0);}
-  .fbar:first-child:hover .tip,.fbar:first-child:focus-visible .tip,.fbar:last-child:hover .tip,.fbar:last-child:focus-visible .tip{transform:none;}
-  .fbars-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);text-align:center;}
-  .fbars-x .on{color:var(--grey-800);font-weight:600;}
-  .fmonth{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);}
-  .fmonth .dh h2{font-size:16px;line-height:22px;}
-  .fmonth .tiles .n{font-size:16px;line-height:24px;letter-spacing:-.01em;white-space:nowrap;}
-  .fmonth .tiles .tile{padding:14px;}
+  /* Spend by campaign: one row per campaign with a budget-style bar */
   .fsp{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
   .fsp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;font-variant-numeric:tabular-nums;}
   .fsp-row .who{display:flex;align-items:center;gap:9px;min-width:0;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
-  .fsp-row .who img{width:24px;height:24px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .fsp-row .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;flex-shrink:0;}
   .fsp-row .who span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .fsp-row .who:hover span{text-decoration:underline;}
   .fsp-row .amt{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;}
   .fsp-row .amt small{margin-left:6px;font-size:12px;font-weight:500;color:var(--grey-600);}
   .fsp-row .adm-bar{grid-column:1/-1;}
-
-  /* Add funds: bank details, then the slip upload */
-  .fsteps{margin-top:16px;}
-  .bank{margin-top:16px;border:1px solid var(--line);border-radius:12px;}
-  .bank-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 8px 9px 14px;}
-  .bank-row+.bank-row{border-top:1px solid var(--line);}
-  .bank-row .k{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .bank-row .v{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .bank-row.hl{background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
-  .bank-row.hl:last-child{border-radius:0 0 11px 11px;}
-  .copy-btn{width:32px;height:32px;flex-shrink:0;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:background .2s ease,color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .copy-btn svg{width:16px;height:16px;}
-  .copy-btn:hover{background:var(--grey-100);color:var(--grey-800);}
-  .copy-btn:active{transform:scale(.92);}
-  .ff{display:flex;flex-direction:column;gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
-  .ff h3{font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  /* Add funds: bank details as the brief's spec tiles, each one copies its value */
+  button.cp-spectile{position:relative;text-align:left;padding-right:36px;transition:border-color .2s ease;}
+  button.cp-spectile:hover{border-color:var(--grey-400);}
+  button.cp-spectile svg{position:absolute;top:10px;right:10px;width:16px;height:16px;color:var(--grey-600);}
+  .ff{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
   .ff-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;}
-  .fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;line-height:18px;color:var(--grey-700);}
+  .fl{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
   .fl small{font-weight:500;color:var(--grey-500);}
-  .fl input,.ff-in{height:40px;width:100%;min-width:0;padding:0 12px;border:1px solid var(--grey-400);border-radius:10px;outline:0;background:#fff;font:500 14px var(--font);color:var(--grey-800);transition:border-color .2s ease;}
+  .fl input,.ff-in{height:40px;width:100%;min-width:0;padding:0 16px;border:1px solid var(--grey-400);border-radius:100px;outline:0;background:#fff;font:500 14px var(--font);color:var(--grey-800);transition:border-color .2s ease;}
   .fl input:focus,.ff-in:focus-within{border-color:var(--blue-300);}
   .ff-in{display:flex;align-items:center;gap:6px;}
   .ff-in em{font-style:normal;color:var(--grey-600);}
   .ff-in input{height:100%;padding:0;border:0;border-radius:0;font-variant-numeric:tabular-nums;}
   .fl input[aria-invalid="true"],.ff-in:has([aria-invalid="true"]),.drop[aria-invalid="true"]{border-color:var(--bad);}
-  .drop{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px;border:1.5px dashed var(--grey-400);border-radius:12px;text-align:center;cursor:pointer;transition:border-color .2s ease,background .2s ease;}
-  .drop:hover{border-color:var(--grey-600);}
-  .drop.over{border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
-  .drop:focus-within{border-color:var(--blue-500);}
+  .drop{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:24px 18px;border:1px dashed var(--grey-400);border-radius:12px;text-align:center;cursor:pointer;transition:border-color .2s ease,background .2s ease;}
+  .drop:hover{border-color:var(--grey-800);}
+  .drop.over,.drop:focus-within{border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
   .drop input{position:absolute;width:1px;height:1px;opacity:0;}
-  .drop svg{width:24px;height:24px;margin-bottom:4px;color:var(--blue-500);}
-  .drop b{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
-  .drop span{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .drop svg{width:22px;height:22px;margin-bottom:6px;color:var(--grey-800);}
+  .drop b{font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .drop span{font-size:14px;line-height:20px;color:var(--grey-600);}
   .drop[hidden],.ff-file[hidden]{display:none;}
-  .ff-file{display:flex;align-items:center;gap:10px;padding:10px 6px 10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--page-bg);}
-  .ff-file>svg{width:22px;height:22px;flex-shrink:0;color:var(--blue-500);}
+  .ff-file{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;}
+  .ff-file>svg{width:22px;height:22px;flex-shrink:0;color:var(--grey-800);}
   .ff-file div{flex:1;min-width:0;}
-  .ff-file b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ff-file small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .ff-file b{display:block;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ff-file small{display:block;margin-top:3px;font-size:14px;line-height:20px;color:var(--grey-700);}
   .ff-file .x-btn{margin:0;}
-  .ferr{font-size:13px;font-weight:500;line-height:18px;color:var(--bad);}
-  .ferr:empty{display:none;}
-  .ff .btn{width:100%;height:42px;}
-
-  /* Bank transfers */
-  .tx{display:flex;flex-direction:column;margin-top:8px;}
-  .tx-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;}
-  .tx-row+.tx-row{border-top:1px solid var(--line);}
-  .tx-row.new{animation:bubIn .45s cubic-bezier(.16,1,.3,1) both;}
-  .tx-ic{width:36px;height:36px;border-radius:100px;display:flex;align-items:center;justify-content:center;background:var(--grey-100);color:var(--grey-700);}
-  .tx-ic svg{width:18px;height:18px;}
-  .tx-row b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .tx-row small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);overflow-wrap:anywhere;}
-  .tx-row small a{color:var(--blue-500);}
-  .tx-row small a:hover{text-decoration:underline;}
-  .tx-row .note{color:var(--bad);white-space:normal;}
-  .st{padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;white-space:nowrap;}
-  .st.verified{color:var(--good);background:#e6f3ec;}
-  .st.pending{color:#8a5300;background:#fdf1dc;}
-  .st.rejected{color:var(--bad);background:#fbe9ec;}
-  .fin .tc{min-width:600px;}
-  .fin .tc td:first-child{white-space:normal;min-width:200px;}
-  .fin .tc .who a:hover{text-decoration:underline;}
-  .tc tbody tr[data-go]{cursor:pointer;}
-  .tc tbody tr[data-go]:hover td{background:var(--page-bg);}
+  .ff-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .ferr{font-size:14px;font-weight:500;line-height:20px;color:var(--bad);}
+  .ff-foot .btn{margin-left:auto;}
+  /* Bank transfers: the analytics table, status as the dashboard's dot + coloured text */
+  .dsh-status.verified{color:var(--good);} .dsh-status.rejected{color:var(--bad);}
   .tc .dsh-status{font-size:12px;line-height:16px;}
-  @media(prefers-reduced-motion:reduce){.fbar i,.tx-row.new{animation:none;}}
+  .tc td a{color:var(--blue-500);font-weight:600;}
+  .tc .who a{color:inherit;}
+  .tc td a:hover{text-decoration:underline;}
+  .tc .sub{display:block;font-size:12px;font-weight:500;color:var(--bad);white-space:normal;}
+  .tc tfoot td{border-top:1px solid var(--line);font-weight:600;}
+  .tc tr.new td{animation:bubIn .45s cubic-bezier(.16,1,.3,1) both;}
+  @media(prefers-reduced-motion:reduce){.fchart .chart-col b.bar,.tc tr.new td{animation:none;}}
 
   /* ================= Responsive ================= */
   @media (max-width:1279px){
@@ -765,8 +718,6 @@
     :root{--gutter:18px;}
     .dsh{grid-template-columns:minmax(0,1fr);}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .fin-grid{grid-template-columns:minmax(0,1fr);}
-    .fin-col.side{position:static;}
     html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .pfeed{grid-column:auto;display:block;}
@@ -833,9 +784,7 @@
     .viewbar .msg{grid-column:2;}
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .dsh-main>.dcard,.fin .dcard{padding:18px;}
-    .fin-tiles .n{font-size:17px;line-height:24px;}
-    .fbars,.fbars-x{gap:4px;}
+    .dsh-main>.dcard{padding:18px;}
     .ff-2{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     /* Inbox works like a messaging app: the list, or one open conversation with a back button */
@@ -1605,6 +1554,8 @@ const COPYIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const DLIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>';
 
 const RS=n=>'Rs. '+Math.round(n).toLocaleString('en-US');
+/* Tile figures use the app's short form for big amounts (Rs. 2.6 M, Rs. 940 K); the exact amount is in the tooltip */
+const RSK=n=>{const a=Math.abs(n), v=a>=1e6?(a/1e6).toFixed(2).replace(/\.?0+$/,'')+' M':a>=1e5?Math.round(a/1e3)+' K':Math.round(a).toLocaleString('en-US');return `<span class="n" title="${RS(n)}">${n<0?'-':''}Rs. ${v}</span>`;};
 const daysAgo=n=>{const t=new Date();t.setHours(12,0,0,0);t.setDate(t.getDate()-n);return t;};
 /* Placeholder account — replace with PolySocial's real collection account before launch */
 const BANK=[['Account name','PolySocial (Pvt) Ltd'],['Bank','Commercial Bank of Ceylon'],['Branch','Colombo 03, Kollupitiya'],['Account number','1000 4821 9930'],['SWIFT code','CCEYLKLX']];
@@ -1652,46 +1603,134 @@ function monthStats(i){
   return {open,added,spent,close:open+added-spent};
 }
 
-function finBars(){
-  const st=MONTHS.map((_,i)=>monthStats(i)), top=Math.max(...st.map(s=>Math.max(s.added,s.spent)),1), sel=+FIN.plats.fm;
-  const h=v=>(v/top*100).toFixed(1)+'%';
-  return `<div class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></div>
-    <div class="fbars" role="list" aria-label="Money added and spent per month">${st.map((s,i)=>`<button class="fbar${i===sel?' on':''}" type="button" role="listitem" data-fm="${i}" style="--t:${h(Math.max(s.added,s.spent))}" aria-label="${mName(i,{month:'long',year:'numeric'})}: added ${RS(s.added)}, spent ${RS(s.spent)}"${i===sel?' aria-current="true"':''}>
-        <i style="--h:${h(s.added)}"></i><i class="sp" style="--h:${h(s.spent)}"></i>
-        <span class="tip">${mName(i,{month:'long',year:'numeric'})}<br>Added <b>${RS(s.added)}</b><br>Spent <b>${RS(s.spent)}</b></span></button>`).join('')}</div>
-    <div class="fbars-x" aria-hidden="true">${MONTHS.map((_,i)=>`<span${i===sel?' class="on"':''}>${mName(i,{month:'short'})}</span>`).join('')}</div>`;
-}
-function finMonth(){
-  const i=+FIN.plats.fm, s=monthStats(i), rows=Object.entries(SPEND[i]).sort((a,b)=>b[1]-a[1]);
-  const top=rows.length?rows[0][1]:1, cur=i===MONTHS.length-1;
-  return `${dhead(`${mName(i,{month:'long',year:'numeric'})}${cur?' so far':''}`,'',`<button class="btn btn-sec" type="button" data-act="statement">${DLIC}Statement</button>`)}
-    <div class="tiles">
-      <div class="tile"><span class="n">${RS(s.open)}</span><span class="l">Opening balance</span><span class="d">1 ${mName(i,{month:'short'})}</span></div>
-      <div class="tile"><span class="n">${RS(s.added)}</span><span class="l">Added</span><span class="d">${verified().filter(t=>mIdx(t.at)===i).length||'No'} verified transfer${verified().filter(t=>mIdx(t.at)===i).length===1?'':'s'}</span></div>
-      <div class="tile"><span class="n">${RS(s.spent)}</span><span class="l">Spent</span><span class="d">${rows.length} campaign${rows.length===1?'':'s'}</span></div>
-      <div class="tile"><span class="n">${RS(s.close)}</span><span class="l">${cur?'Balance now':'Closing balance'}</span><span class="d">${s.close>=s.open?'<span class="up">▲</span>':'<span class="down">▼</span>'} ${RS(Math.abs(s.close-s.open))}</span></div>
+/* Financials is laid out like a campaign dashboard: a card with the sub menu on the left (a drawer on phones), sections on the right */
+const FSECTIONS=[['overview','Overview'],['monthly','Monthly financials'],['funds','Add funds'],['transfers','Bank transfers']];
+FIN.dismissed=new Set();
+const pct=(a,b)=>b?Math.min(100,Math.round(a/b*100)):0;
+function finSide(sec){
+  const t=finTotals(), pend=t.pend.length;
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${FSECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
+    <div class="dsh-id">
+      <img class="fin-av" data-a="uberLogo" data-label="Ub" alt="">
+      <h1 class="dsh-title">Financials</h1>
+      <div class="dsh-meta"><span class="dsh-status active">${RS(t.balance)}</span><span>Wallet balance for all your campaigns</span></div>
+      <a class="dsh-viewas" href="#/financials/funds">${UPIC}Add funds</a>
     </div>
-    ${rows.length?`<div class="fsp" aria-label="Spend by campaign">${rows.map(([id,v])=>`<div class="fsp-row">
+    <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${k==='transfers'&&pend?`<span class="badge-n" aria-label="${pend} pending">${pend}</span>`:''}</a>`).join('')}</nav>
+  </aside>`;
+}
+
+function finOverview(){
+  const t=finTotals(), free=t.balance-t.reserved, cur=MONTHS.length-1, now=monthStats(cur), last=monthStats(cur-1);
+  const rej=FIN.transfers.filter(x=>x.status==='rejected');
+  const att=[
+    t.pend.length&&['pending',`${RS(t.pendSum)} is being verified`,`We add it to your wallet within 1 working day of the transfer. <a class="dlink" href="#/financials/transfers">View transfers</a>`],
+    rej.length&&['rejected',`${rej.length} transfer slip${rej.length>1?'s were':' was'} rejected`,`${esc(rej[0].note)} <a class="dlink" href="#/financials/funds">Upload again</a>`],
+    free<0&&['short',`Top up ${RS(-free)} to cover your campaign budgets`,`Running campaigns pause when the wallet runs out. <a class="dlink" href="#/financials/funds">Add funds</a>`],
+  ].filter(a=>a&&!FIN.dismissed.has(a[0]));
+  const camps=EXPLORE.map(id=>({id,c:C[id],sp:num(C[id].spent)})).sort((a,b)=>b.sp-a.sp);
+  const p=pct(t.spent,t.added), d=now.spent-last.spent;
+  return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
+    <section class="dcard">${dhead('Wallet','One balance that pays for every campaign')}
+      <div class="adm-budget">
+        <div class="row"><span class="kv"><b>${RS(t.spent)}</b>Spent</span><span class="kv">Total added<b>${RS(t.added)}</b></span></div>
+        <div class="adm-bar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="Wallet spent"><i style="--p:${p}%"></i></div>
+        <div class="row"><span class="pct">${p}%</span><span class="kv">Balance<b>${RS(t.balance)}</b></span></div>
+      </div>
+      <div class="tiles btiles">
+        <div class="tile">${RSK(Math.max(0,free))}<span class="l">Free to spend</span><span class="d">After campaign budgets</span></div>
+        <div class="tile">${RSK(t.reserved)}<span class="l">Committed</span><span class="d">Left in ${EXPLORE.filter(id=>C[id].status!=='completed').length} campaign budgets</span></div>
+        <a class="tile" href="#/financials/monthly">${RSK(now.spent)}<span class="l">Spent in ${mName(cur)}</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs ${mName(cur-1,{month:'short'})}</span></a>
+        <a class="tile" href="#/financials/transfers">${RSK(t.pendSum)}<span class="l">Pending verification</span><span class="d">${t.pend.length?`${t.pend.length} transfer${t.pend.length>1?'s':''}`:'Nothing waiting'}</span></a>
+      </div></section>
+    <section class="dcard">${dhead('Spend by campaign','Paid out from your wallet since each campaign started')}
+      <div class="tc-wrap"><table class="tc"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
+      <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/details">${c.title}</a></span></td>
+        <td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${RS(Math.max(0,c.budgetN-sp))}</td><td>${pct(sp,c.budgetN)}%</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td>Total</td><td>${RS(camps.reduce((a,x)=>a+x.c.budgetN,0))}</td><td>${RS(t.spent)}</td><td>${RS(camps.reduce((a,x)=>a+Math.max(0,x.c.budgetN-x.sp),0))}</td><td></td></tr></tfoot></table></div></section>`;
+}
+
+/* Last six months: added vs spent, in the analytics chart frame; click a month to open it */
+function finChart(){
+  const st=MONTHS.map((_,i)=>monthStats(i)), sel=+FIN.plats.fm;
+  const max=Math.max(...st.map(s=>Math.max(s.added,s.spent)),1), top=Math.ceil(max/1e6)*1e6, h=v=>(v/top*100).toFixed(1)+'%';
+  const ax=v=>v?(v/1e6).toFixed(1).replace(/\.0$/,'')+'M':'0';
+  return `<div class="chart fchart">
+      <div class="chart-y" aria-hidden="true"><span>${ax(top)}</span><span>${ax(top/2)}</span><span>0</span></div>
+      <div class="chart-plot" role="list" aria-label="Added and spent per month">${st.map((s,i)=>`<button class="chart-col${i===0?' l':i===st.length-1?' r':''}${i===sel?' on':''}" type="button" role="listitem" data-fm="${i}" style="--h:${h(Math.max(s.added,s.spent))}" aria-label="${mName(i,{month:'long',year:'numeric'})}: added ${RS(s.added)}, spent ${RS(s.spent)}"${i===sel?' aria-current="true"':''}>
+          <b class="bar" style="--b:${h(s.added)}"></b><b class="bar sp" style="--b:${h(s.spent)}"></b>
+          <span class="chart-tip">${mName(i,{month:'short',year:'numeric'})} · Added <b>${RS(s.added)}</b> · Spent <b>${RS(s.spent)}</b></span></button>`).join('')}</div>
+      <div class="chart-x" aria-hidden="true">${MONTHS.map((_,i)=>`<span${i===sel?' class="on"':''}>${mName(i,{month:'short'})}</span>`).join('')}</div>
+    </div>`;
+}
+function finMonthTiles(){
+  const i=+FIN.plats.fm, s=monthStats(i), n=verified().filter(t=>mIdx(t.at)===i).length, k=Object.keys(SPEND[i]).length, cur=i===MONTHS.length-1;
+  return `<div class="tile">${RSK(s.open)}<span class="l">Opening balance</span><span class="d">1 ${mName(i,{month:'short'})}</span></div>
+    <div class="tile">${RSK(s.added)}<span class="l">Added</span><span class="d">${n||'No'} verified transfer${n===1?'':'s'}</span></div>
+    <div class="tile">${RSK(s.spent)}<span class="l">Spent</span><span class="d">${k} campaign${k===1?'':'s'}</span></div>
+    <div class="tile">${RSK(s.close)}<span class="l">${cur?'Balance now':'Closing balance'}</span><span class="d">${s.close>=s.open?`<span class="up">▲ ${RS(s.close-s.open)}</span>`:`<span class="down">▼ ${RS(s.open-s.close)}</span>`} in the month</span></div>`;
+}
+function finMonthSpend(){
+  const i=+FIN.plats.fm, total=sumOf(SPEND[i]), rows=Object.entries(SPEND[i]).sort((a,b)=>b[1]-a[1]), top=rows.length?rows[0][1]:1;
+  return dhead(`Spend by campaign`,`${mName(i,{month:'long',year:'numeric'})}${i===MONTHS.length-1?' so far':''}`,`<button class="btn btn-sec" type="button" data-act="statement">${DLIC}Statement</button>`)
+    +(rows.length?`<div class="fsp">${rows.map(([id,v])=>`<div class="fsp-row">
         <a class="who" href="#/campaign/${id}/admin/details"><img data-a="${C[id].logo}" data-label="${C[id].abbr}" alt=""><span>${C[id].title}</span></a>
-        <span class="amt">${RS(v)}<small>${Math.round(v/s.spent*100)}%</small></span>
+        <span class="amt">${RS(v)}<small>${pct(v,total)}%</small></span>
         <div class="adm-bar"><i style="--p:${(v/top*100).toFixed(1)}%"></i></div></div>`).join('')}</div>`
-      :empty('Nothing spent this month','Campaign payouts to creators will show up here.')}`;
+      :empty('Nothing spent this month','Campaign payouts to creators will show up here.'));
+}
+const finMonthHead=()=>dhead(mName(+FIN.plats.fm,{month:'long',year:'numeric'}),'Opening and closing balance for the month');
+function finMonthly(){
+  const opts=MONTHS.map((_,i)=>[String(i),mName(i,{month:'long',year:'numeric'})]);
+  return `<section class="dcard"><div class="ch-picks">${platPick(null,'fm',opts,'Month')}<span class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></span></div>
+      ${dhead('Monthly financials','Money added to your wallet and spent on campaigns')}
+      <div id="fin-chart">${finChart()}</div></section>
+    <section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div></section>
+    <section class="dcard" id="fin-spend">${finMonthSpend()}</section>`;
 }
 function setMonth(i){
   FIN.plats.fm=String(i);
   const pm=document.querySelector('[data-pk="fm"]');
   if(pm){pm.querySelector('[data-plat-btn]').firstChild.textContent=mName(i,{month:'long',year:'numeric'});
     pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b.dataset.plat===String(i)));}
-  fill('fin-bars',finBars());fill('fin-month',finMonth());
+  fill('fin-chart',finChart());fill('fin-tiles',finMonthTiles());fill('fin-spend',finMonthSpend());
+  fill('fin-mh',finMonthHead());
 }
 
-function txHTML(t,isNew){
-  const d=t.at.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  const file=t.url?`<a href="${t.url}" target="_blank" rel="noopener">${esc(t.file)}</a>`:esc(t.file);
-  return `<div class="tx-row${isNew?' new':''}"><span class="tx-ic">${DOCIC}</span>
-    <div><b>${RS(t.amount)}</b><small>${d} · ${esc(t.ref)}</small><small>${file}</small>${t.note?`<small class="note">${esc(t.note)}</small>`:''}</div>
-    <span class="st ${t.status}">${{verified:'Verified',pending:'Pending',rejected:'Rejected'}[t.status]}</span></div>`;
+function finFunds(){
+  const today=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  return `<section class="dcard">${dhead('Add funds','Campaign budgets are paid to PolySocial by bank transfer')}
+      <div class="brief">
+        <h4>How it works</h4>
+        <ol class="cp-restrict"><li>Transfer the amount to PolySocial’s account below</li><li>Upload the transfer slip or bank confirmation</li><li>We verify it within 1 working day and add it to your wallet</li></ol>
+        <h4>PolySocial bank account</h4>
+        <div class="cp-spec">${[...BANK,['Payment reference',FIN.ref]].map(([k,v])=>`<button class="cp-spectile" type="button" data-act="copy" data-v="${esc(v)}" aria-label="Copy ${k.toLowerCase()}: ${esc(v)}"><span class="k">${k}</span><span class="v">${v}</span>${COPYIC}</button>`).join('')}</div>
+        <div class="cp-ctas"><p>Add <b>${FIN.ref}</b> as the payment reference so we can match the transfer to your wallet.</p></div>
+      </div></section>
+    <section class="dcard">${dhead('Upload transfer slip','Send us the slip once the transfer has gone through')}
+      <form class="ff" id="fin-form" novalidate>
+        <div class="ff-2">
+          <label class="fl">Amount transferred<span class="ff-in"><em>Rs.</em><input id="ff-amt" inputmode="numeric" placeholder="0" autocomplete="off"></span></label>
+          <label class="fl">Transfer date<input id="ff-date" type="date" value="${today}" max="${today}"></label>
+        </div>
+        <label class="fl"><span>Bank reference <small>(optional)</small></span><input id="ff-ref" placeholder="e.g. TRF-88213940" autocomplete="off"></label>
+        <label class="drop" id="ff-drop"><input id="ff-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">${UPIC}<b>Upload transfer slip</b><span>Drag a file here or click to browse · PDF, JPG or PNG, up to 10 MB</span></label>
+        <div class="ff-file" id="ff-chip" hidden></div>
+        <div class="ff-foot"><p class="ferr" id="ff-err" role="alert"></p><button class="btn btn-pri" type="submit">Submit for verification</button></div>
+      </form></section>`;
 }
+function finTransfers(newTx){
+  const txs=[...FIN.transfers].sort((a,b)=>b.at-a.at);
+  return `<section class="dcard">${dhead('Bank transfers','Slips you’ve uploaded and their status',`<span class="count">${txs.length} transfer${txs.length===1?'':'s'}</span>`)}
+    <div class="tc-wrap"><table class="tc"><thead><tr><th>Date</th><th>Amount</th><th class="pl">Bank reference</th><th class="pl">Transfer slip</th><th class="pl">Status</th></tr></thead>
+    <tbody>${txs.map(x=>`<tr${x===newTx?' class="new"':''}><td>${x.at.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'})}</td><td>${RS(x.amount)}</td><td class="pl">${esc(x.ref)}</td>
+      <td class="pl">${x.url?`<a href="${x.url}" target="_blank" rel="noopener">${esc(x.file)}</a>`:esc(x.file)}</td>
+      <td class="pl"><span class="dsh-status ${x.status}">${x.status}</span>${x.note?`<span class="sub">${esc(x.note)}</span>`:''}</td></tr>`).join('')}</tbody></table></div></section>`;
+}
+
 const fmtSize=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1)+' MB';
 function fileChip(){
   const f=FIN.file, drop=document.getElementById('ff-drop'), chip=document.getElementById('ff-chip');
@@ -1707,55 +1746,11 @@ function pickFile(f){
   err.textContent='';FIN.file=f;fileChip();
 }
 
-function viewFinancials(newTx){
-  const t=finTotals(), free=t.balance-t.reserved, cur=MONTHS.length-1;
-  const now=monthStats(cur), last=monthStats(cur-1);
-  const today=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
-  const txs=[...FIN.transfers].sort((a,b)=>b.at-a.at);
-  const camps=EXPLORE.map(id=>({id,c:C[id],sp:num(C[id].spent)})).sort((a,b)=>b.sp-a.sp);
-  const bank=[...BANK,['Payment reference',FIN.ref]];
-  return `<div class="fin">
-    <div class="fin-head"><h1 class="home-title">Financials</h1><p>One wallet for all your campaigns. Top it up by bank transfer.</p></div>
-    <div class="tiles fin-tiles">
-      <div class="tile wal"><span class="n">${RS(t.balance)}</span><span class="l">Wallet balance</span><span class="d">${free>=0?`${RS(free)} free after campaign budgets`:`${RS(-free)} short of campaign budgets`}</span></div>
-      <div class="tile"><span class="n">${RS(t.spent)}</span><span class="l">Total spent</span><span class="d">Across ${camps.filter(x=>x.sp).length} campaigns</span></div>
-      <div class="tile"><span class="n">${RS(now.spent)}</span><span class="l">Spent in ${mName(cur)}</span><span class="d">${RS(last.spent)} in ${mName(cur-1)}</span></div>
-      <div class="tile"><span class="n">${RS(t.pendSum)}</span><span class="l">Pending verification</span><span class="d">${t.pend.length?`${t.pend.length} transfer${t.pend.length>1?'s':''} · within 1 working day`:'Nothing waiting'}</span></div>
-    </div>
-    <div class="fin-grid">
-      <div class="fin-col">
-        <section class="dcard">${dhead('Monthly financials','Money added to your wallet and spent on campaigns',platPick(null,'fm',MONTHS.map((_,i)=>[String(i),mName(i,{month:'long',year:'numeric'})]),'Month'))}
-          <div id="fin-bars">${finBars()}</div>
-          <div class="fmonth" id="fin-month">${finMonth()}</div></section>
-        <section class="dcard">${dhead('Spend by campaign','Paid out from your wallet since each campaign started')}
-          <div class="tc-wrap"><table class="tc"><thead><tr><th>Campaign</th><th class="pl">Status</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
-          <tbody>${camps.map(({id,c,sp})=>`<tr data-go="#/campaign/${id}/admin/details"><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/details">${c.title}</a></span></td>
-            <td class="pl"><span class="dsh-status ${c.status}">${c.status}</span></td><td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${RS(Math.max(0,c.budgetN-sp))}</td><td>${Math.min(100,Math.round(sp/c.budgetN*100))}%</td></tr>`).join('')}</tbody>
-          <tfoot><tr><td><b>Total</b></td><td></td><td>${RS(camps.reduce((a,x)=>a+x.c.budgetN,0))}</td><td>${RS(t.spent)}</td><td>${RS(camps.reduce((a,x)=>a+Math.max(0,x.c.budgetN-x.sp),0))}</td><td></td></tr></tfoot></table></div></section>
-      </div>
-      <div class="fin-col side">
-        <section class="dcard" id="add-funds">${dhead('Add funds','Campaign budgets are paid to PolySocial by bank transfer')}
-          <ol class="cp-restrict fsteps"><li>Transfer the amount to the account below</li><li>Upload the transfer slip or bank confirmation</li><li>We verify it and add it to your wallet</li></ol>
-          <div class="bank">${bank.map(([k,v],i)=>`<div class="bank-row${i===bank.length-1?' hl':''}"><div><span class="k">${k}</span><span class="v">${v}</span></div><button class="copy-btn" type="button" data-act="copy" data-v="${esc(v)}" aria-label="Copy ${k.toLowerCase()}" title="Copy">${COPYIC}</button></div>`).join('')}</div>
-          <form class="ff" id="fin-form" novalidate>
-            <h3>Upload transfer slip</h3>
-            <div class="ff-2">
-              <label class="fl">Amount transferred<span class="ff-in"><em>Rs.</em><input id="ff-amt" inputmode="numeric" placeholder="0" autocomplete="off"></span></label>
-              <label class="fl">Transfer date<input id="ff-date" type="date" value="${today}" max="${today}"></label>
-            </div>
-            <label class="fl"><span>Bank reference <small>(optional)</small></span><input id="ff-ref" placeholder="e.g. TRF-88213940" autocomplete="off"></label>
-            <label class="drop" id="ff-drop"><input id="ff-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">${UPIC}<b>Upload transfer slip</b><span>Drag a file here or click to browse<br>PDF, JPG or PNG, up to 10 MB</span></label>
-            <div class="ff-file" id="ff-chip" hidden></div>
-            <p class="ferr" id="ff-err" role="alert"></p>
-            <button class="btn btn-pri" type="submit">Submit for verification</button>
-          </form></section>
-        <section class="dcard">${dhead('Bank transfers','',`<span class="count">${txs.length}</span>`)}
-          <div class="tx">${txs.map(x=>txHTML(x,x===newTx)).join('')}</div></section>
-      </div>
-    </div>
-  </div>`;
+function viewFinancials(sec){
+  const newTx=FIN.newTx;FIN.newTx=null;
+  const body={overview:finOverview,monthly:finMonthly,funds:finFunds,transfers:()=>finTransfers(newTx)}[sec]();
+  return `<div class="dsh">${finSide(sec)}<div class="dsh-main">${body}</div></div>`;
 }
-function renderFin(newTx){view.innerHTML=viewFinancials(newTx);bindAssets(view);fileChip();}
 function downloadStatement(){
   const i=+FIN.plats.fm, s=monthStats(i), name=mName(i,{month:'long',year:'numeric'});
   const q=v=>`"${String(v).replace(/"/g,'""')}"`;
@@ -1886,6 +1881,7 @@ const view=document.getElementById('view');
 const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
+  if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',post:null};
   return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
 };
 function mountMedia(){
@@ -1905,7 +1901,7 @@ function rerender(){
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
-  const {root,id,admin,sec,post}=parseHash();
+  const {root,id,admin,sec,post,fsec}=parseHash();
   const campaign=!!id;
   const notifs=!campaign&&root==='notifications';
   const fin=!campaign&&root==='financials';
@@ -1913,10 +1909,10 @@ function route(){
   else if(admin) state.tab=C[id].status;
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
-  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials():viewExplore();
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
-  document.body.classList.toggle('dash',admin);
+  document.body.classList.toggle('dash',admin||fin);
   document.body.classList.toggle('notifs',notifs);
   document.body.classList.toggle('fin',fin);
   if(campaign&&!admin){
@@ -1929,7 +1925,7 @@ function route(){
   if(admin){mountMedia();scrollThread();}
   if(fin) fileChip();
   /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
-  const inDash=admin&&lastDash===id;lastDash=admin?id:null;
+  const dkey=admin?id:fin?'#fin':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
   const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side,.dsh-bar,.dsh-scrim)')]:[view];
   view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
   window.scrollTo({top:0,behavior:'instant'});
@@ -1941,7 +1937,7 @@ function route(){
   const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin;
   if(campaign||notifs||fin) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?'Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
   document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   setTopMenu(false);
   document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
@@ -2003,6 +1999,7 @@ function refreshNotifs(){updateBell();if(document.body.classList.contains('notif
 function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
   const h=parseHash(), d=h.admin&&dash(h.id);
+  if(h.root==='financials'&&a==='dismiss'){FIN.dismissed.add(el.dataset.k);view.innerHTML=viewFinancials(h.fsec);return bindAssets(view);}
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
   if(d&&(a==='approve'||a==='reject'||a==='undo')){
     const s=d.pending[+el.closest('[data-i]').dataset.i], box=el.closest('.adm-act');
@@ -2049,7 +2046,8 @@ document.addEventListener('submit',e=>{
   if(bad){bad[0].setAttribute('aria-invalid','true');err.textContent=bad[1];return (bad[0].querySelector('input')||bad[0]).focus();}
   const f=FIN.file, tx={at:when,amount,ref:document.getElementById('ff-ref').value.trim()||FIN.ref,file:f.name,url:URL.createObjectURL(f),status:'pending'};
   FIN.transfers.push(tx);FIN.file=null;
-  renderFin(tx);
+  /* Land on Bank transfers with the new slip highlighted at the top */
+  FIN.newTx=tx;location.hash='#/financials/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
 document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
