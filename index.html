@@ -640,6 +640,10 @@
   /* Wallet: balance, total added and spent as three wider tiles above the four */
   .fin3{grid-template-columns:repeat(3,minmax(0,1fr));}
   .fin3+.tiles{margin-top:12px;}
+  /* Left card: wallet balance under the heading, label above a large figure */
+  .fin-bal{display:flex;flex-direction:column;gap:2px;}
+  .fin-bal span{font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
+  .fin-bal b{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
   /* The balance is the figure that matters most: highlighted in the primary blue */
   .tile.hl{background:var(--blue-500);border-color:var(--blue-500);}
   .tile.hl .n,.tile.hl .l{color:#fff;}
@@ -1625,7 +1629,7 @@ function finSide(sec){
     <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
     <div class="dsh-id">
       <h1 class="dsh-title">Financials</h1>
-      <div class="dsh-meta"><span class="dsh-status active">${RS(t.balance)}</span><span>Wallet balance for all your campaigns</span></div>
+      <div class="fin-bal"><span>Wallet balance</span><b>${RS(t.balance)}</b></div>
       <a class="dsh-viewas" href="#/financials/funds"${sec==='funds'?' aria-current="page"':''}>${UPIC}Add funds</a>
     </div>
     <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.filter(x=>x[0]!=='funds').map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span></a>`).join('')}</nav>
