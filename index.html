@@ -426,6 +426,7 @@
   .tc .pls svg{width:18px;height:18px;}
   .tc td{padding:10px 0 10px 16px;white-space:nowrap;text-align:right;color:var(--grey-800);font-weight:500;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);}
   .tc tr:last-child td{border-bottom:0;}
+  .tc tfoot td{border-top:1px solid var(--line);font-weight:600;}
   .tc .who{display:flex;align-items:center;gap:9px;font-weight:600;}
   .tc .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;}
 
@@ -618,6 +619,123 @@
     padding:9px 15px;border-radius:100px;font-size:14px;font-weight:500;box-shadow:2px 2px 9px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
+  /* ================= Financials: one wallet for every campaign, topped up by bank transfer ================= */
+  body.fin{background:var(--page-bg);}
+  body.fin .subnav{display:none;}
+  .fin{display:flex;flex-direction:column;gap:18px;padding-top:6px;}
+  .fin-head p{margin-top:4px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .fin .dcard{padding:24px;}
+  .fin .tiles{margin-top:0;}
+  .fin .tiles .tile{background:#fff;}
+  .fin-tiles .n{font-size:22px;line-height:30px;}
+  .tile.wal{background:var(--grey-800)!important;border-color:var(--grey-800);}
+  .tile.wal .n,.tile.wal .l{color:#fff;}
+  .tile.wal .d{color:var(--grey-400);}
+  .fin-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start;}
+  .fin-col{display:flex;flex-direction:column;gap:18px;min-width:0;}
+  .fin-col.side{position:sticky;top:calc(var(--header) + 24px);}
+
+  /* Monthly bars: added (grey) and spent (blue) side by side; click a month to open it */
+  .fleg{display:flex;gap:16px;margin-top:16px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .fleg span{display:flex;align-items:center;gap:6px;}
+  .fleg i{width:10px;height:10px;border-radius:3px;background:var(--grey-200);}
+  .fleg i.sp{background:var(--blue-500);}
+  .fbars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;height:180px;margin-top:12px;border-bottom:1px solid var(--grey-400);
+    background:linear-gradient(var(--grey-100) 1px,transparent 1px) 0 0/100% 50%;}
+  .fbar{position:relative;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px;border-radius:8px 8px 0 0;transition:background .2s ease;}
+  .fbar:hover,.fbar:focus-visible{background:rgba(18,18,18,.03);outline:0;}
+  .fbar i{width:min(22px,38%);height:var(--h);min-height:2px;border-radius:5px 5px 0 0;background:var(--grey-200);transform-origin:bottom;animation:fbarIn .8s cubic-bezier(.16,1,.3,1) both;transition:background .2s ease;}
+  .fbar i.sp{background:var(--blue-200);}
+  .fbar.on i{background:var(--grey-400);} .fbar.on i.sp{background:var(--blue-500);}
+  @keyframes fbarIn{from{transform:scaleY(0);}to{transform:none;}}
+  .fbar .tip{position:absolute;bottom:calc(var(--t) + 10px);left:50%;z-index:2;transform:translate(-50%,4px);padding:6px 10px;border-radius:8px;background:var(--grey-800);color:#fff;font-size:12px;line-height:16px;white-space:nowrap;text-align:left;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .fbar .tip b{font-weight:600;font-variant-numeric:tabular-nums;}
+  .fbar:first-child .tip{left:0;transform:translate(0,4px);} .fbar:last-child .tip{left:auto;right:0;transform:translate(0,4px);}
+  .fbar:hover .tip,.fbar:focus-visible .tip{opacity:1;transform:translate(-50%,0);}
+  .fbar:first-child:hover .tip,.fbar:first-child:focus-visible .tip,.fbar:last-child:hover .tip,.fbar:last-child:focus-visible .tip{transform:none;}
+  .fbars-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);text-align:center;}
+  .fbars-x .on{color:var(--grey-800);font-weight:600;}
+  .fmonth{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);}
+  .fmonth .dh h2{font-size:16px;line-height:22px;}
+  .fmonth .tiles .n{font-size:16px;line-height:24px;letter-spacing:-.01em;white-space:nowrap;}
+  .fmonth .tiles .tile{padding:14px;}
+  .fsp{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
+  .fsp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;font-variant-numeric:tabular-nums;}
+  .fsp-row .who{display:flex;align-items:center;gap:9px;min-width:0;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .fsp-row .who img{width:24px;height:24px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .fsp-row .who span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fsp-row .who:hover span{text-decoration:underline;}
+  .fsp-row .amt{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;}
+  .fsp-row .amt small{margin-left:6px;font-size:12px;font-weight:500;color:var(--grey-600);}
+  .fsp-row .adm-bar{grid-column:1/-1;}
+
+  /* Add funds: bank details, then the slip upload */
+  .fsteps{margin-top:16px;}
+  .bank{margin-top:16px;border:1px solid var(--line);border-radius:12px;}
+  .bank-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 8px 9px 14px;}
+  .bank-row+.bank-row{border-top:1px solid var(--line);}
+  .bank-row .k{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .bank-row .v{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .bank-row.hl{background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
+  .bank-row.hl:last-child{border-radius:0 0 11px 11px;}
+  .copy-btn{width:32px;height:32px;flex-shrink:0;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:background .2s ease,color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .copy-btn svg{width:16px;height:16px;}
+  .copy-btn:hover{background:var(--grey-100);color:var(--grey-800);}
+  .copy-btn:active{transform:scale(.92);}
+  .ff{display:flex;flex-direction:column;gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
+  .ff h3{font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .ff-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;}
+  .fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;line-height:18px;color:var(--grey-700);}
+  .fl small{font-weight:500;color:var(--grey-500);}
+  .fl input,.ff-in{height:40px;width:100%;min-width:0;padding:0 12px;border:1px solid var(--grey-400);border-radius:10px;outline:0;background:#fff;font:500 14px var(--font);color:var(--grey-800);transition:border-color .2s ease;}
+  .fl input:focus,.ff-in:focus-within{border-color:var(--blue-300);}
+  .ff-in{display:flex;align-items:center;gap:6px;}
+  .ff-in em{font-style:normal;color:var(--grey-600);}
+  .ff-in input{height:100%;padding:0;border:0;border-radius:0;font-variant-numeric:tabular-nums;}
+  .fl input[aria-invalid="true"],.ff-in:has([aria-invalid="true"]),.drop[aria-invalid="true"]{border-color:var(--bad);}
+  .drop{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px;border:1.5px dashed var(--grey-400);border-radius:12px;text-align:center;cursor:pointer;transition:border-color .2s ease,background .2s ease;}
+  .drop:hover{border-color:var(--grey-600);}
+  .drop.over{border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
+  .drop:focus-within{border-color:var(--blue-500);}
+  .drop input{position:absolute;width:1px;height:1px;opacity:0;}
+  .drop svg{width:24px;height:24px;margin-bottom:4px;color:var(--blue-500);}
+  .drop b{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .drop span{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .drop[hidden],.ff-file[hidden]{display:none;}
+  .ff-file{display:flex;align-items:center;gap:10px;padding:10px 6px 10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--page-bg);}
+  .ff-file>svg{width:22px;height:22px;flex-shrink:0;color:var(--blue-500);}
+  .ff-file div{flex:1;min-width:0;}
+  .ff-file b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ff-file small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .ff-file .x-btn{margin:0;}
+  .ferr{font-size:13px;font-weight:500;line-height:18px;color:var(--bad);}
+  .ferr:empty{display:none;}
+  .ff .btn{width:100%;height:42px;}
+
+  /* Bank transfers */
+  .tx{display:flex;flex-direction:column;margin-top:8px;}
+  .tx-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;}
+  .tx-row+.tx-row{border-top:1px solid var(--line);}
+  .tx-row.new{animation:bubIn .45s cubic-bezier(.16,1,.3,1) both;}
+  .tx-ic{width:36px;height:36px;border-radius:100px;display:flex;align-items:center;justify-content:center;background:var(--grey-100);color:var(--grey-700);}
+  .tx-ic svg{width:18px;height:18px;}
+  .tx-row b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .tx-row small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);overflow-wrap:anywhere;}
+  .tx-row small a{color:var(--blue-500);}
+  .tx-row small a:hover{text-decoration:underline;}
+  .tx-row .note{color:var(--bad);white-space:normal;}
+  .st{padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;white-space:nowrap;}
+  .st.verified{color:var(--good);background:#e6f3ec;}
+  .st.pending{color:#8a5300;background:#fdf1dc;}
+  .st.rejected{color:var(--bad);background:#fbe9ec;}
+  .fin .tc{min-width:600px;}
+  .fin .tc td:first-child{white-space:normal;min-width:200px;}
+  .fin .tc .who a:hover{text-decoration:underline;}
+  .tc tbody tr[data-go]{cursor:pointer;}
+  .tc tbody tr[data-go]:hover td{background:var(--page-bg);}
+  .tc .dsh-status{font-size:12px;line-height:16px;}
+  @media(prefers-reduced-motion:reduce){.fbar i,.tx-row.new{animation:none;}}
+
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -631,6 +749,8 @@
     .dsh-menu a{border-left:0;border-bottom:3px solid transparent;padding:0 12px;min-height:46px;}
     .dsh-menu a.on{border-bottom-color:var(--blue-500);}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .fin-grid{grid-template-columns:minmax(0,1fr);}
+    .fin-col.side{position:static;}
     html:has(.pfeed){scroll-snap-type:none;}
     .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
     .dsh.pend>.dsh-side{width:auto;margin:0;}
@@ -664,7 +784,10 @@
     .viewbar .msg{grid-column:2;}
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .dsh-main>.dcard{padding:18px;}
+    .dsh-main>.dcard,.fin .dcard{padding:18px;}
+    .fin-tiles .n{font-size:17px;line-height:24px;}
+    .fbars,.fbars-x{gap:4px;}
+    .ff-2{grid-template-columns:minmax(0,1fr);}
     .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dsh-main>.ib{grid-template-columns:minmax(0,1fr);height:auto;}
     .ib-list{border-right:0;border-bottom:1px solid var(--line);}
@@ -1310,7 +1433,7 @@ function egStats(id){
 const fill=(el,html)=>{const box=document.getElementById(el);box.innerHTML=html;bindAssets(box);};
 const PANELS={an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
 function platPick(id,key,opts=AN_PLATS,label='Platform'){
-  const cur=opts.find(p=>p[0]===dash(id).plats[key]);
+  const cur=opts.find(p=>p[0]===(key in FIN.plats?FIN.plats:dash(id).plats)[key]);
   return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
     <div class="an-plat-menu" role="menu" aria-label="${label}">${opts.map(([k,l])=>`<button type="button" role="menuitemradio" aria-checked="${k===cur[0]}" data-plat="${k}">${PLAT[k]||''}${l}</button>`).join('')}</div></div>`;
 }
@@ -1399,6 +1522,184 @@ function viewAdmin(id,sec,post){
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
+/* ================= Financials =================
+   The brand tops up one wallet by bank transfer to PolySocial; every campaign is paid from that wallet.
+   A transfer only reaches the wallet once PolySocial has verified the uploaded slip. */
+/* Wallet icon from the pitch file (Figma "Wallet", 462:852); stroke follows the nav colour */
+const WALLETIC=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<path d="M1 9.09302C1 6.88388 2.79086 5.09302 5 5.09302H19C21.2091 5.09302 23 6.88388 23 9.09302V18.4884C23 20.6975 21.2091 22.4884 19 22.4884H5C2.79086 22.4884 1 20.6975 1 18.4884V9.09302Z" stroke="currentColor" stroke-width="2"/>
+<path d="M1.11951 8.16279V5C1.11951 2.79086 2.91037 1 5.11951 1H13.118C14.9438 1 16.4239 2.4801 16.4239 4.3059" stroke="currentColor" stroke-width="2"/>
+<path d="M12.9565 14.0465C12.9565 12.2099 14.4455 10.7209 16.2821 10.7209H23V17.3721H16.2821C14.4455 17.3721 12.9565 15.8832 12.9565 14.0465V14.0465Z" stroke="currentColor" stroke-width="2"/>
+</svg>`;
+const DOCIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>';
+const UPIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>';
+const COPYIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg>';
+const DLIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>';
+
+const RS=n=>'Rs. '+Math.round(n).toLocaleString('en-US');
+const daysAgo=n=>{const t=new Date();t.setHours(12,0,0,0);t.setDate(t.getDate()-n);return t;};
+/* Placeholder account — replace with PolySocial's real collection account before launch */
+const BANK=[['Account name','PolySocial (Pvt) Ltd'],['Bank','Commercial Bank of Ceylon'],['Branch','Colombo 03, Kollupitiya'],['Account number','1000 4821 9930'],['SWIFT code','CCEYLKLX']];
+const FIN={
+  ref:'PS-UBER-2041',     /* the brand's payment reference: lets PolySocial match a transfer to this wallet */
+  plats:{fm:'5'},         /* selected month (index into MONTHS), kept in the same shape as the analytics dropdowns */
+  file:null,              /* slip waiting to be submitted */
+  transfers:[
+    {at:daysAgo(2),amount:1000000,ref:'TRF-88213940',file:'commercial-bank-slip.pdf',status:'pending'},
+    {at:daysAgo(28),amount:2000000,ref:'TRF-87640021',file:'transfer-confirmation.pdf',status:'verified'},
+    {at:daysAgo(70),amount:3000000,ref:'TRF-86120775',file:'hnb-online-transfer.jpg',status:'verified'},
+    {at:daysAgo(96),amount:250000,ref:'TRF-85502113',file:'slip-photo.jpg',status:'rejected',note:'Slip was unreadable. Upload a clearer copy.'},
+    {at:daysAgo(110),amount:1500000,ref:'TRF-85011862',file:'boc-transfer-advice.pdf',status:'verified'},
+    {at:daysAgo(150),amount:2000000,ref:'TRF-83390457',file:'first-top-up.pdf',status:'verified'}],
+};
+/* Last six months, oldest first; the last one is the current month */
+const MONTHS=(()=>{const n=new Date();return Array.from({length:6},(_,i)=>new Date(n.getFullYear(),n.getMonth()-5+i,1));})();
+const mIdx=d=>(d.getFullYear()-MONTHS[0].getFullYear())*12+d.getMonth()-MONTHS[0].getMonth();
+const mName=(i,o={month:'long'})=>MONTHS[i].toLocaleDateString('en-GB',o);
+/* Each campaign's spend spread over the months it ran: completed ones early, active ones lately, upcoming ones on pre-launch payouts */
+const SPEND=(()=>{
+  const out=MONTHS.map(()=>({}));
+  EXPLORE.forEach(id=>{const c=C[id], total=num(c.spent); if(!total) return;
+    const [a,b]={completed:[0,3],active:[2,5],upcoming:[4,5]}[c.status], r=rng(id+'fin');
+    const ws=[];for(let m=a;m<=b;m++) ws.push([m,.4+r()]);
+    const sum=ws.reduce((s,w)=>s+w[1],0);let left=total;
+    ws.forEach(([m,w],i)=>{const v=i===ws.length-1?left:Math.round(total*w/sum);left-=v;out[m][id]=v;});});
+  return out;
+})();
+const verified=()=>FIN.transfers.filter(t=>t.status==='verified');
+const sumOf=o=>Object.values(o).reduce((a,b)=>a+b,0);
+function finTotals(){
+  const added=verified().reduce((a,t)=>a+t.amount,0), spent=EXPLORE.reduce((a,id)=>a+num(C[id].spent),0);
+  /* Budget still committed to campaigns that are running or about to */
+  const reserved=EXPLORE.filter(id=>C[id].status!=='completed').reduce((a,id)=>a+Math.max(0,C[id].budgetN-num(C[id].spent)),0);
+  const pend=FIN.transfers.filter(t=>t.status==='pending');
+  return {added,spent,balance:added-spent,reserved,pend,pendSum:pend.reduce((a,t)=>a+t.amount,0)};
+}
+function monthStats(i){
+  const before=(t)=>mIdx(t.at)<i;
+  const inM=t=>mIdx(t.at)===i;
+  const spentBefore=SPEND.slice(0,i).reduce((a,m)=>a+sumOf(m),0);
+  const open=verified().filter(before).reduce((a,t)=>a+t.amount,0)-spentBefore;
+  const added=verified().filter(inM).reduce((a,t)=>a+t.amount,0), spent=sumOf(SPEND[i]);
+  return {open,added,spent,close:open+added-spent};
+}
+
+function finBars(){
+  const st=MONTHS.map((_,i)=>monthStats(i)), top=Math.max(...st.map(s=>Math.max(s.added,s.spent)),1), sel=+FIN.plats.fm;
+  const h=v=>(v/top*100).toFixed(1)+'%';
+  return `<div class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></div>
+    <div class="fbars" role="list" aria-label="Money added and spent per month">${st.map((s,i)=>`<button class="fbar${i===sel?' on':''}" type="button" role="listitem" data-fm="${i}" style="--t:${h(Math.max(s.added,s.spent))}" aria-label="${mName(i,{month:'long',year:'numeric'})}: added ${RS(s.added)}, spent ${RS(s.spent)}"${i===sel?' aria-current="true"':''}>
+        <i style="--h:${h(s.added)}"></i><i class="sp" style="--h:${h(s.spent)}"></i>
+        <span class="tip">${mName(i,{month:'long',year:'numeric'})}<br>Added <b>${RS(s.added)}</b><br>Spent <b>${RS(s.spent)}</b></span></button>`).join('')}</div>
+    <div class="fbars-x" aria-hidden="true">${MONTHS.map((_,i)=>`<span${i===sel?' class="on"':''}>${mName(i,{month:'short'})}</span>`).join('')}</div>`;
+}
+function finMonth(){
+  const i=+FIN.plats.fm, s=monthStats(i), rows=Object.entries(SPEND[i]).sort((a,b)=>b[1]-a[1]);
+  const top=rows.length?rows[0][1]:1, cur=i===MONTHS.length-1;
+  return `${dhead(`${mName(i,{month:'long',year:'numeric'})}${cur?' so far':''}`,'',`<button class="btn btn-sec" type="button" data-act="statement">${DLIC}Statement</button>`)}
+    <div class="tiles">
+      <div class="tile"><span class="n">${RS(s.open)}</span><span class="l">Opening balance</span><span class="d">1 ${mName(i,{month:'short'})}</span></div>
+      <div class="tile"><span class="n">${RS(s.added)}</span><span class="l">Added</span><span class="d">${verified().filter(t=>mIdx(t.at)===i).length||'No'} verified transfer${verified().filter(t=>mIdx(t.at)===i).length===1?'':'s'}</span></div>
+      <div class="tile"><span class="n">${RS(s.spent)}</span><span class="l">Spent</span><span class="d">${rows.length} campaign${rows.length===1?'':'s'}</span></div>
+      <div class="tile"><span class="n">${RS(s.close)}</span><span class="l">${cur?'Balance now':'Closing balance'}</span><span class="d">${s.close>=s.open?'<span class="up">▲</span>':'<span class="down">▼</span>'} ${RS(Math.abs(s.close-s.open))}</span></div>
+    </div>
+    ${rows.length?`<div class="fsp" aria-label="Spend by campaign">${rows.map(([id,v])=>`<div class="fsp-row">
+        <a class="who" href="#/campaign/${id}/admin/details"><img data-a="${C[id].logo}" data-label="${C[id].abbr}" alt=""><span>${C[id].title}</span></a>
+        <span class="amt">${RS(v)}<small>${Math.round(v/s.spent*100)}%</small></span>
+        <div class="adm-bar"><i style="--p:${(v/top*100).toFixed(1)}%"></i></div></div>`).join('')}</div>`
+      :empty('Nothing spent this month','Campaign payouts to creators will show up here.')}`;
+}
+function setMonth(i){
+  FIN.plats.fm=String(i);
+  const pm=document.querySelector('[data-pk="fm"]');
+  if(pm){pm.querySelector('[data-plat-btn]').firstChild.textContent=mName(i,{month:'long',year:'numeric'});
+    pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b.dataset.plat===String(i)));}
+  fill('fin-bars',finBars());fill('fin-month',finMonth());
+}
+
+function txHTML(t,isNew){
+  const d=t.at.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const file=t.url?`<a href="${t.url}" target="_blank" rel="noopener">${esc(t.file)}</a>`:esc(t.file);
+  return `<div class="tx-row${isNew?' new':''}"><span class="tx-ic">${DOCIC}</span>
+    <div><b>${RS(t.amount)}</b><small>${d} · ${esc(t.ref)}</small><small>${file}</small>${t.note?`<small class="note">${esc(t.note)}</small>`:''}</div>
+    <span class="st ${t.status}">${{verified:'Verified',pending:'Pending',rejected:'Rejected'}[t.status]}</span></div>`;
+}
+const fmtSize=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1)+' MB';
+function fileChip(){
+  const f=FIN.file, drop=document.getElementById('ff-drop'), chip=document.getElementById('ff-chip');
+  if(!drop) return;
+  drop.hidden=!!f;chip.hidden=!f;drop.removeAttribute('aria-invalid');
+  if(f) chip.innerHTML=`${DOCIC}<div><b>${esc(f.name)}</b><small>${fmtSize(f.size)} · ready to submit</small></div><button class="x-btn" type="button" data-act="ff-clear" aria-label="Remove ${esc(f.name)}">${XIC}</button>`;
+}
+function pickFile(f){
+  const err=document.getElementById('ff-err');
+  if(!f) return;
+  if(!/\.(pdf|jpe?g|png)$/i.test(f.name)){err.textContent='Upload a PDF, JPG or PNG.';return;}
+  if(f.size>10*1048576){err.textContent='That file is over 10 MB. Upload a smaller copy.';return;}
+  err.textContent='';FIN.file=f;fileChip();
+}
+
+function viewFinancials(newTx){
+  const t=finTotals(), free=t.balance-t.reserved, cur=MONTHS.length-1;
+  const now=monthStats(cur), last=monthStats(cur-1);
+  const today=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  const txs=[...FIN.transfers].sort((a,b)=>b.at-a.at);
+  const camps=EXPLORE.map(id=>({id,c:C[id],sp:num(C[id].spent)})).sort((a,b)=>b.sp-a.sp);
+  const bank=[...BANK,['Payment reference',FIN.ref]];
+  return `<div class="fin">
+    <div class="fin-head"><h1 class="home-title">Financials</h1><p>One wallet for all your campaigns. Top it up by bank transfer.</p></div>
+    <div class="tiles fin-tiles">
+      <div class="tile wal"><span class="n">${RS(t.balance)}</span><span class="l">Wallet balance</span><span class="d">${free>=0?`${RS(free)} free after campaign budgets`:`${RS(-free)} short of campaign budgets`}</span></div>
+      <div class="tile"><span class="n">${RS(t.spent)}</span><span class="l">Total spent</span><span class="d">Across ${camps.filter(x=>x.sp).length} campaigns</span></div>
+      <div class="tile"><span class="n">${RS(now.spent)}</span><span class="l">Spent in ${mName(cur)}</span><span class="d">${RS(last.spent)} in ${mName(cur-1)}</span></div>
+      <div class="tile"><span class="n">${RS(t.pendSum)}</span><span class="l">Pending verification</span><span class="d">${t.pend.length?`${t.pend.length} transfer${t.pend.length>1?'s':''} · within 1 working day`:'Nothing waiting'}</span></div>
+    </div>
+    <div class="fin-grid">
+      <div class="fin-col">
+        <section class="dcard">${dhead('Monthly financials','Money added to your wallet and spent on campaigns',platPick(null,'fm',MONTHS.map((_,i)=>[String(i),mName(i,{month:'long',year:'numeric'})]),'Month'))}
+          <div id="fin-bars">${finBars()}</div>
+          <div class="fmonth" id="fin-month">${finMonth()}</div></section>
+        <section class="dcard">${dhead('Spend by campaign','Paid out from your wallet since each campaign started')}
+          <div class="tc-wrap"><table class="tc"><thead><tr><th>Campaign</th><th class="pl">Status</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
+          <tbody>${camps.map(({id,c,sp})=>`<tr data-go="#/campaign/${id}/admin/details"><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/details">${c.title}</a></span></td>
+            <td class="pl"><span class="dsh-status ${c.status}">${c.status}</span></td><td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${RS(Math.max(0,c.budgetN-sp))}</td><td>${Math.min(100,Math.round(sp/c.budgetN*100))}%</td></tr>`).join('')}</tbody>
+          <tfoot><tr><td><b>Total</b></td><td></td><td>${RS(camps.reduce((a,x)=>a+x.c.budgetN,0))}</td><td>${RS(t.spent)}</td><td>${RS(camps.reduce((a,x)=>a+Math.max(0,x.c.budgetN-x.sp),0))}</td><td></td></tr></tfoot></table></div></section>
+      </div>
+      <div class="fin-col side">
+        <section class="dcard" id="add-funds">${dhead('Add funds','Campaign budgets are paid to PolySocial by bank transfer')}
+          <ol class="cp-restrict fsteps"><li>Transfer the amount to the account below</li><li>Upload the transfer slip or bank confirmation</li><li>We verify it and add it to your wallet</li></ol>
+          <div class="bank">${bank.map(([k,v],i)=>`<div class="bank-row${i===bank.length-1?' hl':''}"><div><span class="k">${k}</span><span class="v">${v}</span></div><button class="copy-btn" type="button" data-act="copy" data-v="${esc(v)}" aria-label="Copy ${k.toLowerCase()}" title="Copy">${COPYIC}</button></div>`).join('')}</div>
+          <form class="ff" id="fin-form" novalidate>
+            <h3>Upload transfer slip</h3>
+            <div class="ff-2">
+              <label class="fl">Amount transferred<span class="ff-in"><em>Rs.</em><input id="ff-amt" inputmode="numeric" placeholder="0" autocomplete="off"></span></label>
+              <label class="fl">Transfer date<input id="ff-date" type="date" value="${today}" max="${today}"></label>
+            </div>
+            <label class="fl"><span>Bank reference <small>(optional)</small></span><input id="ff-ref" placeholder="e.g. TRF-88213940" autocomplete="off"></label>
+            <label class="drop" id="ff-drop"><input id="ff-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">${UPIC}<b>Upload transfer slip</b><span>Drag a file here or click to browse<br>PDF, JPG or PNG, up to 10 MB</span></label>
+            <div class="ff-file" id="ff-chip" hidden></div>
+            <p class="ferr" id="ff-err" role="alert"></p>
+            <button class="btn btn-pri" type="submit">Submit for verification</button>
+          </form></section>
+        <section class="dcard">${dhead('Bank transfers','',`<span class="count">${txs.length}</span>`)}
+          <div class="tx">${txs.map(x=>txHTML(x,x===newTx)).join('')}</div></section>
+      </div>
+    </div>
+  </div>`;
+}
+function renderFin(newTx){view.innerHTML=viewFinancials(newTx);bindAssets(view);fileChip();}
+function downloadStatement(){
+  const i=+FIN.plats.fm, s=monthStats(i), name=mName(i,{month:'long',year:'numeric'});
+  const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const rows=[['Statement',name],['Opening balance',s.open],['Added',s.added],['Spent',s.spent],['Closing balance',s.close],[],
+    ['Date','Type','Description','Amount (Rs.)'],
+    ...verified().filter(t=>mIdx(t.at)===i).map(t=>[t.at.toISOString().slice(0,10),'Bank transfer',t.ref,t.amount]),
+    ...Object.entries(SPEND[i]).map(([id,v])=>['','Campaign spend',C[id].title,-v])];
+  const url=URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
+  const a=document.createElement('a');a.href=url;a.download=`polysocial-statement-${MONTHS[i].getFullYear()}-${String(MONTHS[i].getMonth()+1).padStart(2,'0')}.csv`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
 /* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
 let media=[];
 function stopMedia(){media.forEach(m=>m.stop());media=[];}
@@ -1479,7 +1780,7 @@ function mountCarousel(el){
 
 /* ================= Top menu ================= */
 function renderTopNav(){
-  const items=[['campaigns','#/active',ICON.explore,'Campaigns']];
+  const items=[['campaigns','#/active',ICON.explore,'Campaigns'],['financials','#/financials',WALLETIC,'Financials']];
   document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
   document.getElementById('search-btn').innerHTML=MICON.search;
   document.getElementById('bell-ic').innerHTML=MICON.bell;
@@ -1531,14 +1832,16 @@ function route(){
   const {root,id,admin,sec,post}=parseHash();
   const campaign=!!id;
   const notifs=!campaign&&root==='notifications';
-  if(!campaign&&!notifs) state.tab=TABS[root]?root:'active';
+  const fin=!campaign&&root==='financials';
+  if(!campaign&&!notifs&&!fin) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
   stopMedia();
-  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():viewExplore();
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials():viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin);
   document.body.classList.toggle('notifs',notifs);
+  document.body.classList.toggle('fin',fin);
   if(campaign&&!admin){
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
     const sw=document.getElementById('viewbar-switch');
@@ -1547,6 +1850,7 @@ function route(){
   }
   bindAssets(view);
   if(admin){mountMedia();scrollThread();}
+  if(fin) fileChip();
   /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
   const inDash=admin&&lastDash===id;lastDash=admin?id:null;
   const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side)')]:[view];
@@ -1556,11 +1860,11 @@ function route(){
   const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) open.scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
   /* The search button only belongs on the Explore page */
-  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs;
-  if(campaign||notifs) sb.classList.remove('on');
+  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin;
+  if(campaign||notifs||fin) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':TABS[state.tab])+' — UGC Platform for Brands';
-  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',!notifs&&n.dataset.root==='campaigns'));
+  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?'Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   const bell=document.getElementById('bell-btn');bell.classList.toggle('on',notifs);if(notifs)bell.setAttribute('aria-current','page');else bell.removeAttribute('aria-current');
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
 }
@@ -1582,10 +1886,13 @@ document.addEventListener('click',e=>{
   document.querySelectorAll('.an-plat.open').forEach(m=>{if(m!==pm) anMenu(m,false);});
   if(t.closest('[data-plat-btn]')){const open=!pm.classList.contains('open');anMenu(pm,open);if(open)pm.querySelector('[aria-checked="true"]').focus();return;}
   const pl=t.closest('[data-plat]');
+  if(pl&&pm.dataset.pk==='fm'){setMonth(+pl.dataset.plat);anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
   if(pl){const id=parseHash().id, key=pm.dataset.pk;dash(id).plats[key]=pl.dataset.plat;
     pm.querySelector('[data-plat-btn]').firstChild.textContent=pl.textContent;
     pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b===pl));
     anMenu(pm,false);PANELS[key](id);return document.querySelector(`[data-pk="${key}"] [data-plat-btn]`).focus();}
+  const fm=t.closest('[data-fm]');
+  if(fm){setMonth(+fm.dataset.fm);return document.querySelector(`[data-fm="${fm.dataset.fm}"]`).focus();}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const th=t.closest('[data-thread]');
@@ -1606,6 +1913,9 @@ function doAct(a,el){
     return box.querySelector('button').focus({preventScroll:true});
   }
   if(a==='share') return toast('Link copied');
+  if(a==='copy'){const v=el.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(`Copied · ${v}`),()=>toast(v));return;}
+  if(a==='statement') return downloadStatement();
+  if(a==='ff-clear'){FIN.file=null;fileChip();const f=document.getElementById('ff-file');f.value='';return f.focus();}
   if(a==='readall'){notifications.forEach(n=>n.read=true);return refreshNotifs();}
   if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
 }
@@ -1629,6 +1939,28 @@ function tickHold(){
 }
 
 /* Inbox: send a message in the open thread */
+/* Financials: a transfer slip goes in as pending until PolySocial verifies it */
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='fin-form') return;
+  e.preventDefault();
+  const amt=document.getElementById('ff-amt'), date=document.getElementById('ff-date'), err=document.getElementById('ff-err');
+  const amount=num(amt.value), when=date.value?new Date(date.value+'T12:00'):null;
+  [amt,date,document.getElementById('ff-drop')].forEach(x=>x.removeAttribute('aria-invalid'));
+  const bad=!amount?[amt,'Enter the amount you transferred.']:!when||date.value>date.max?[date,'Pick the date of the transfer.']:!FIN.file?[document.getElementById('ff-drop'),'Upload the transfer slip so we can verify it.']:null;
+  if(bad){bad[0].setAttribute('aria-invalid','true');err.textContent=bad[1];return (bad[0].querySelector('input')||bad[0]).focus();}
+  const f=FIN.file, tx={at:when,amount,ref:document.getElementById('ff-ref').value.trim()||FIN.ref,file:f.name,url:URL.createObjectURL(f),status:'pending'};
+  FIN.transfers.push(tx);FIN.file=null;
+  renderFin(tx);
+  toast(`${RS(amount)} sent for verification · usually within 1 working day`);
+});
+document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
+/* A file dropped beside the drop zone shouldn't navigate away from the form */
+['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
+['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
+['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(!d) return;
+  if(ev==='dragleave'&&d.contains(e.relatedTarget)) return;
+  d.classList.remove('over');if(ev==='drop'){e.preventDefault();pickFile(e.dataTransfer.files[0]);}}));
+
 document.addEventListener('submit',e=>{
   if(e.target.id!=='ib-form') return;
   e.preventDefault();
@@ -1639,7 +1971,9 @@ document.addEventListener('submit',e=>{
 });
 
 /* Search filters the campaign feed */
-document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
+document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}
+  /* Amount field groups thousands as you type */
+  if(e.target.id==='ff-amt'){const n=num(e.target.value);e.target.value=n?n.toLocaleString('en-US'):'';e.target.removeAttribute('aria-invalid');}});
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
   const pm=document.querySelector('.an-plat.open');

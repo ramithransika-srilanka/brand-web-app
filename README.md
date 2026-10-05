@@ -24,6 +24,16 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   - **Analytics** (`/admin/analytics`) — headline tiles (views, total reach, engagement rate, live posts) and an Engagement card (impressions, reactions, comments, reposts), each with its own platform dropdown (All / Instagram / TikTok / YouTube); a per-day line chart with a metric dropdown (Views / Reach / Engagement rate / Submissions) above its title and its own platform dropdown (hover for each day's value), top creators (platforms, views, reach, engagement rate, paid amount, submission date).
   - **Inbox** (`/admin/inbox`) — conversations with creators; send replies in the open thread.
 
+- **Financials** — the wallet icon next to Explore in the top menu (`#/financials`). One wallet funds every campaign:
+  - Headline tiles: wallet balance (and how much is free after the budgets still committed to active and upcoming campaigns),
+    total spent, spent this month and transfers pending verification.
+  - **Monthly financials** — added vs spent for the last six months (click a bar or use the month dropdown); the selected month
+    shows opening balance, added, spent, closing balance and spend by campaign, with a CSV statement download.
+  - **Spend by campaign** — budget, spent, remaining and % used for every campaign.
+  - **Add funds** — PolySocial's bank account details (copy buttons) and a form to upload the transfer slip (PDF, JPG or PNG,
+    up to 10 MB, drag and drop). A submitted slip appears under **Bank transfers** as Pending; only verified transfers count
+    towards the wallet. The bank details in `BANK` are placeholders.
+
 ## Assets
 
 `assets.js` holds the images and icons shared with the creator web app. It is generated, not edited by hand:
