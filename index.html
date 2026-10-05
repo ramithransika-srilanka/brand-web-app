@@ -732,7 +732,7 @@
   /* Bank transfers: the analytics table, status as the dashboard's dot + coloured text */
   .dsh-status.verified{color:var(--good);} .dsh-status.rejected{color:var(--bad);}
   .tc .dsh-status{font-size:12px;line-height:16px;}
-  /* Bank transfers: slip name with a file icon, a status pill and a download button per row */
+  /* Bank transfers: slip name with a file icon, the status and a download button per row */
   .txt td{padding-top:12px;padding-bottom:12px;}
   .tx-file{display:inline-flex;align-items:center;gap:8px;max-width:240px;vertical-align:middle;}
   .tx-file svg{width:18px;height:18px;flex-shrink:0;color:var(--grey-600);}
@@ -740,8 +740,6 @@
   .tx-ref{color:var(--grey-600);}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   .tc .tx-amt{font-weight:600;}
-  .tx-st{display:inline-block;padding:2px 10px;border-radius:100px;font-size:12px;font-weight:600;line-height:18px;text-transform:capitalize;color:var(--blue-500);background:color-mix(in srgb,currentColor 10%,transparent);}
-  .tx-st.verified{color:var(--good);} .tx-st.rejected{color:var(--bad);}
   .tx-dl{width:32px;height:32px;margin:-6px -6px -6px 0;display:inline-flex;align-items:center;justify-content:center;border-radius:100px;color:var(--grey-800);transition:background .2s ease;}
   .tx-dl:hover{background:var(--grey-100);}
   .tx-dl:focus-visible{outline:2px solid var(--blue-500);outline-offset:1px;}
@@ -1811,7 +1809,7 @@ function finTransfers(newTx){
     <tbody>${txs.map(x=>`<tr${x===newTx?' class="new"':''}><td>${x.at.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</td>
       <td class="pl"><span class="tx-file">${DOCIC}<span>${esc(x.file)}</span></span></td>
       <td class="pl tx-ref">${esc(x.ref)}</td><td class="tx-amt">${RS(x.amount)}</td>
-      <td class="pl"><span class="tx-st ${x.status}">${x.status}</span></td>
+      <td class="pl"><span class="dsh-status ${x.status}">${x.status}</span></td>
       <td><button class="tx-dl" type="button" data-act="slip" data-tx="${FIN.transfers.indexOf(x)}" aria-label="Download ${esc(x.file)}">${DLIC}</button></td></tr>`).join('')}</tbody></table></div></section>`;
 }
 /* Download a transfer slip: the uploaded file itself, or a PDF copy for slips on record */
