@@ -17,7 +17,8 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   best-suited-for tags, event details for events, requirements and "Campaign created by".
 - **Admin dashboard** — "Switch to admin" on a campaign page (`#/campaign/<id>/admin`), laid out like a LinkedIn
   Page admin on a `#f6f6f6` canvas. The left column is a card with the campaign image, title, status and a
-  "View as creator" button, followed by the sub menu (badges show pending submissions and unread messages):
+  "View as creator" button (it slides in the creator web app's campaign drawer under a blue "You are viewing this
+  as a creator" bar; `Esc`, the scrim or "Admin view" closes it; phones go to the creator page instead), followed by the sub menu (badges show pending submissions and unread messages):
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
   - **Invitations** (`/admin/invitations`) — invite-only campaigns only; an empty section for now.
