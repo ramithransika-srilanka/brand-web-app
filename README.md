@@ -20,6 +20,8 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   "View as creator" button, followed by the sub menu (badges show pending submissions and unread messages):
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
+  - **Invitations** (`/admin/invitations`) — invite-only campaigns only; an empty section for now.
+  - **Negotiations** (`/admin/negotiations`) — open flat-fee (slot) campaigns only; an empty section for now.
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
     bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
