@@ -166,8 +166,9 @@
   .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:3px 6px;border-radius:4px;background:var(--grey-100);}
   .home .tags{margin-top:12px;gap:6px;align-items:center;}
   .home .tags .tag-sep{flex-shrink:0;width:1px;height:18px;margin:0 6px;background:var(--grey-400);}
-  /* Access line under the image: open lock for Open, closed lock for Invite only */
-  .card-access{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  /* Access at the start of the timestamp line: open lock for Open, closed lock for Invite only */
+  .card-access{display:flex;align-items:center;gap:4px;}
+  .card-time .vsep{width:1px;height:12px;flex-shrink:0;background:var(--grey-400);}
   .card-access svg{width:14px;height:14px;flex-shrink:0;}
   .tag:active{transform:scale(.96);}
 
@@ -1114,7 +1115,7 @@ const state={tab:'active',cat:'All',access:null,fee:null,q:'',searchOpen:false,l
 
 /* ================= Templates ================= */
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
+const timeHTML=c=>`<div class="card-time"><span class="card-access">${c.access==='invite'?LOCK:UNLOCK}<span>${ACCESS[c.access]}</span></span><span class="vsep" aria-hidden="true"></span><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
 
 /* Flat fee with 20 or fewer slots: one segment per slot; otherwise a continuous bar */
 function barHTML(c){
@@ -1127,7 +1128,7 @@ function cardHTML(id){
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}${c.fee==='performance'?`<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span>`:''}</div><div class="view-btn">View</div></div>
     </div>
-    <div class="card-content"><div class="card-access">${c.access==='invite'?LOCK:UNLOCK}<span>${ACCESS[c.access]}</span></div>
+    <div class="card-content">
       <div class="ctitle" data-go="#/campaign/${id}/admin/details">${c.title}</div>${timeHTML(c)}
       <div class="progress-group">${barHTML(c)}
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.fee==='flat'?`<span>${c.filled} /</span><b>${c.slots} slots</b>`:c.money}</div></div></div>
