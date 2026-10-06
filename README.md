@@ -8,7 +8,8 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser â
   campaigns (`#/active`, `#/completed`, `#/upcoming`). Each tab is the explore page recreated from the creator web app's desktop explore page: category filters
   (All / Price / Mobility / Food / Entertainment / Lifestyle), an Open / Invite only filter (click the active one
   again to show both; each card shows an "Open" (open lock) or "Invite only"
-  (closed lock) line under the image), header search (`/` to open, `Esc` to close),
+  (closed lock) line under the image), a Performance fee / Flat fee filter (flat fee cards
+  drop the per-1K price and show filled / total slots; 20 or fewer slots get a segmented bar, more get a continuous one), header search (`/` to open, `Esc` to close),
   loading skeletons, empty state and the notifications popover.
 - **Campaign page** â€” click any campaign (`#/campaign/<id>`). The status bar turns into a blue
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
