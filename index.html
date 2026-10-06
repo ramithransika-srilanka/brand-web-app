@@ -24,6 +24,10 @@
     --gutter:24px; --page:1128px; --header:52px; --shell:1128px;
     /* brand-only bar under the top menu (status tabs / blue notice) */
     --subbar:36px;
+    /* Explore uses the creator app's page width and gutters so campaign cards come out the same size */
+    --explore-page:1280px; --explore-gutter:40px;
+    /* admin dashboard */
+    --page-bg:#f6f6f6; --line:#e6e6e6; --good:#0a7d3e; --bad:#c8102e;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
   /* Reserve the scrollbar space on every page so short and long pages line up */
@@ -58,6 +62,19 @@
   .hicon:active{transform:scale(.94);}
   .hicon.on{background:var(--grey-800);border-color:var(--grey-800);color:var(--grey-50);}
   .hicon svg{width:17px;height:17px;}
+  .hicon[hidden]{display:none;}
+  .tmenu{display:none;position:relative;}
+  .tmenu-list{position:absolute;top:calc(100% + 8px);right:0;z-index:30;min-width:210px;padding:6px;display:flex;flex-direction:column;background:#fff;border:1px solid var(--grey-200);border-radius:12px;box-shadow:2px 4px 16px rgba(0,0,0,.12);
+    opacity:0;visibility:hidden;transform:translateY(-4px) scale(.98);transform-origin:top right;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1),visibility 0s .2s;}
+  .tmenu.open .tmenu-list{opacity:1;visibility:visible;transform:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1),visibility 0s;}
+  .tmenu-list a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:8px;font-size:15px;font-weight:500;color:var(--grey-700);transition:background .2s ease;}
+  .tmenu-list a:hover{background:var(--grey-100);}
+  .tmenu-list a.on{color:var(--grey-800);font-weight:600;background:var(--grey-100);}
+  .tmenu-list svg{width:18px;height:18px;flex-shrink:0;}
+  .tmenu-list .badge-n{margin-left:auto;}
+  .tmenu-list .badge-n[hidden]{display:none;}
+  #tmenu-dot{top:4px;right:4px;}
+  .tmenu.open #tmenu-dot{display:none;}
   .hicon .dot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:100px;background:var(--pink-500);border:1.5px solid #fff;}
   .top-av{display:block;width:32px;height:32px;border-radius:100px;object-fit:cover;border:1px solid var(--grey-200);transition:transform .2s cubic-bezier(.16,1,.3,1);}
   .top-av:active{transform:scale(.94);}
@@ -72,10 +89,6 @@
   /* On a campaign page the status bar becomes a blue notice */
   .viewbar{display:none;position:sticky;top:var(--header);z-index:19;min-height:var(--subbar);grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;padding:0 max(var(--gutter),calc((100% - var(--shell)) / 2));background:var(--blue-500);font-size:14px;font-weight:500;line-height:20px;color:#fff;text-align:center;}
   .viewbar .msg{grid-column:2;}
-  .viewbar-back{grid-column:1;justify-self:start;display:flex;align-items:center;gap:3px;height:26px;padding:0 9px 0 5px;margin-left:-5px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .viewbar-back svg{width:17px;height:17px;}
-  .viewbar-back:hover{background:rgba(255,255,255,.14);}
-  .viewbar-back:active{transform:scale(.96);}
   .viewbar-btn{grid-column:3;justify-self:end;display:inline-flex;align-items:center;height:26px;padding:0 11px;border:1px solid #fff;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:#fff;white-space:nowrap;transition:background .25s ease,color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .viewbar-btn:hover{background:#fff;color:var(--blue-500);}
   .viewbar-btn:active{transform:scale(.96);}
@@ -86,56 +99,53 @@
 
   /* ================= Shared components ================= */
   .tags{display:flex;gap:9px;flex-wrap:wrap;}
-  .tag{flex-shrink:0;padding:6px 9px;border-radius:75px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);white-space:nowrap;cursor:pointer;transition:background .25s ease,color .25s ease;}
+  .tag{flex-shrink:0;padding:6px 9px;border-radius:100px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);white-space:nowrap;cursor:pointer;transition:background .25s ease,color .25s ease;}
   .tag.active{background:var(--blue-200);}
-  .view-btn{background:var(--grey-50);padding:9px 15px;border-radius:75px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);box-shadow:2px 2px 9px rgba(0,0,0,.08);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+  .view-btn{background:var(--grey-50);padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);box-shadow:2px 2px 12px rgba(0,0,0,.08);cursor:pointer;white-space:nowrap;flex-shrink:0;}
 
-  .progress{height:6px;border-radius:75px;background:#ddd;overflow:hidden;}
-  .progress .fill{height:6px;background:var(--blue-500);border-radius:15px;}
+  .progress{height:6px;border-radius:100px;background:#ddd;overflow:hidden;}
+  .progress .fill{height:6px;background:var(--blue-500);border-radius:20px;}
 
   /* Placeholder / empty state */
   .ph{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px;gap:9px;grid-column:1/-1;}
-  .ph .tag2{background:var(--blue-100);color:var(--blue-700);font-size:12px;font-weight:600;padding:5px 9px;border-radius:75px;}
+  .ph .tag2{background:var(--blue-100);color:var(--blue-700);font-size:12px;font-weight:600;padding:5px 9px;border-radius:100px;}
   .ph h2{font-size:20px;font-weight:600;color:var(--grey-800);line-height:27px;}
   .ph p{font-size:14px;line-height:20px;color:var(--grey-600);max-width:210px;}
 
   /* Skeleton while the feed loads */
-  .sk{background:var(--grey-100);border-radius:9px;position:relative;overflow:hidden;}
+  .sk{background:var(--grey-100);border-radius:8px;position:relative;overflow:hidden;}
   .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:shimmer 1.3s infinite;}
   @keyframes shimmer{to{transform:translateX(100%);}}
-  .sk-card{display:flex;flex-direction:column;gap:6px;padding:9px;}
-  .sk-card .img{height:180px;border-radius:15px;}
-  .sk-card .l1{height:20px;width:80%;margin:12px 12px 0;}
-  .sk-card .l2{height:12px;width:40%;margin:0 12px;}
-  .sk-card .l3{height:6px;margin:3px 12px 12px;border-radius:75px;}
+  .sk-card{display:flex;flex-direction:column;gap:8px;padding:12px;}
+  .sk-card .img{height:240px;border-radius:20px;}
+  .sk-card .l1{height:20px;width:80%;margin:16px 16px 0;}
+  .sk-card .l2{height:12px;width:40%;margin:0 16px;}
+  .sk-card .l3{height:6px;margin:4px 16px 16px;border-radius:100px;}
 
   /* ================= Campaign card ================= */
-  .cardwrap{padding:9px;}
-  .card-img{position:relative;height:180px;border-radius:15px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
+  .cardwrap{padding:12px;}
+  .card-img{position:relative;height:240px;border-radius:20px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
   .card-img>.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-  .card-logobar{position:relative;display:flex;align-items:center;justify-content:space-between;padding:12px;}
-  .card-logobar .logo{width:27px;height:27px;border-radius:75px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
-  .heart{width:24px;height:24px;color:#fff;}
-  .heart path{fill:rgba(18,18,18,.6);}
-  .overlaybar{position:absolute;bottom:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 17px;}
-  .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:15px;z-index:0;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .overlaybar{position:absolute;bottom:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 22px;}
+  .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:20px;z-index:0;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);}
   .overlaybar>*{position:relative;z-index:1;}
-  .details{display:flex;gap:5px;align-items:center;}
+  .details{display:flex;gap:6px;align-items:center;}
   .details svg{width:14px;height:14px;color:#fff;}
-  .price-chip{background:var(--grey-100-20);padding:3px 6px;border-radius:15px;font-size:12px;font-weight:500;color:#fff;line-height:12px;}
-  .card-content{display:flex;flex-direction:column;gap:6px;padding:12px;}
-  .card-content .ctitle{font-size:15px;font-weight:600;line-height:19px;color:#000;cursor:pointer;}
-  .card-time{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
-  .card-time .dot{width:2px;height:2px;border-radius:2px;background:var(--grey-600);}
-  .progress-group{display:flex;flex-direction:column;gap:3px;}
+  .price-chip{background:var(--grey-100-20);padding:4px 8px;border-radius:20px;font-size:12px;font-weight:500;color:#fff;line-height:12px;}
+  .card-content{display:flex;flex-direction:column;gap:8px;padding:16px;}
+  /* Title always takes two lines so the time, progress bar and totals line up across cards */
+  .card-content .ctitle{font-size:16px;font-weight:600;line-height:20px;height:40px;color:#000;cursor:pointer;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;}
+  .card-time{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+  .card-time .dot{width:2px;height:2px;border-radius:4px;background:var(--grey-600);}
+  .progress-group{display:flex;flex-direction:column;gap:4px;}
   /* Flat fee campaigns: one segment per slot (20 or fewer slots) */
   .slots{display:flex;gap:3px;height:6px;}
   .slots i{flex:1;min-width:0;border-radius:75px;background:#ddd;}
   .slots i.on{background:var(--blue-500);}
   .card-foot{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:normal;}
-  .card-foot .joined{display:flex;gap:3px;align-items:center;font-weight:500;color:var(--grey-800);}
+  .card-foot .joined{display:flex;gap:4px;align-items:center;font-weight:500;color:var(--grey-800);}
   .card-foot .joined svg{width:14px;height:14px;color:#131927;}
-  .card-foot .money{display:flex;gap:3px;align-items:center;white-space:nowrap;color:var(--grey-800);font-weight:500;}
+  .card-foot .money{display:flex;gap:4px;align-items:center;white-space:nowrap;color:var(--grey-800);font-weight:500;}
   .card-foot .money b{font-weight:600;color:var(--grey-800);}
 
   /* ================= Explore: Campaigns ================= */
@@ -147,22 +157,23 @@
   .home-search .search{opacity:0;transform:translateY(-6px);transition:opacity .3s ease,transform .45s cubic-bezier(.16,1,.3,1);}
   .home-search.open{grid-template-rows:1fr;margin-top:12px;}
   .home-search.open .search{opacity:1;transform:none;}
-  .search{display:flex;align-items:center;gap:9px;height:36px;margin:1px;padding:0 15px;border:1px solid var(--grey-400);border-radius:75px;background:#fff;transition:border-color .2s ease;}
+  .search{display:flex;align-items:center;gap:9px;height:36px;margin:1px;padding:0 15px;border:1px solid var(--grey-400);border-radius:100px;background:#fff;transition:border-color .2s ease;}
   .search:focus-within{border-color:var(--blue-300);}
   .search svg{width:22px;height:22px;color:var(--grey-800);flex-shrink:0;}
   .search input{flex:1;min-width:0;width:100%;border:0;outline:0;background:none;font:500 14px var(--font);color:var(--grey-800);}
   .search input::placeholder{color:var(--grey-600);}
   .search input::-webkit-search-cancel-button{display:none;}
-  .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:3px 6px;border-radius:6px;background:var(--grey-100);}
+  .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:3px 6px;border-radius:4px;background:var(--grey-100);}
   .home .tags{margin-top:12px;gap:6px;align-items:center;}
-  .home .tags .tag-sep{width:1px;height:18px;margin:0 6px;background:var(--grey-400);}
+  .home .tags .tag-sep{flex-shrink:0;width:1px;height:18px;margin:0 6px;background:var(--grey-400);}
   /* Access line under the image: open lock for Open, closed lock for Invite only */
   .card-access{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .card-access svg{width:14px;height:14px;flex-shrink:0;}
   .tag:active{transform:scale(.96);}
 
-  .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px;}
-  .feedgrid>.cardwrap,.feedgrid>.sk-card{background:#fff;border:1px solid transparent;border-radius:24px;}
+  body.explore{--page:var(--explore-page);--shell:var(--explore-page);--gutter:var(--explore-gutter);}
+  .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px;}
+  .feedgrid>.cardwrap,.feedgrid>.sk-card{background:#fff;border:1px solid transparent;border-radius:32px;}
   .feedgrid>.cardwrap{transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .45s cubic-bezier(.16,1,.3,1);animation:cardIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i,0) * 60ms);}
   .feedgrid>.cardwrap:hover{transform:translateY(-2px);border-color:var(--grey-200);}
   .feedgrid .view-btn{transition:transform .2s cubic-bezier(.16,1,.3,1);}
@@ -176,50 +187,39 @@
   .like-heart.liked path{fill:#FF6B4A;}
   .like-heart.liked svg{animation:heartpop .3s ease;}
   @keyframes heartpop{0%{transform:scale(1);}40%{transform:scale(1.3);}100%{transform:scale(1);}}
-  .btn-questions{background:var(--blue-100);border:2px solid var(--blue-100);padding:9px 0;border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 5px rgba(0,0,0,.08);cursor:pointer;width:100%;font-size:14px;font-weight:500;line-height:20px;color:var(--blue-700);}
-  .cp-list{padding:12px;border-radius:9px;display:flex;flex-direction:column;gap:6px;width:100%;}
+  .btn-questions{background:var(--blue-100);border:2px solid var(--blue-100);padding:9px 0;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 5px rgba(0,0,0,.08);cursor:pointer;width:100%;font-size:14px;font-weight:500;line-height:20px;color:var(--blue-700);}
+  .cp-list{padding:12px;border-radius:8px;display:flex;flex-direction:column;gap:6px;width:100%;}
   .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;line-height:20px;}
   .cp-list .row .k{font-weight:500;color:var(--grey-600);}
   .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;white-space:nowrap;}
   .cp-list .div{height:1px;background:var(--grey-200);margin:3px 0;}
   .cp-list .social{display:flex;gap:6px;align-items:center;}
   .cp-list .social svg{width:16px;height:16px;color:var(--grey-800);}
-  .wcard{background:#fff;border-radius:15px;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.12));}
+  .wcard{background:#fff;border-radius:12px;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.12));}
   .band{background:var(--grey-800);display:flex;flex-direction:column;}
-  .sheet-b{background:var(--grey-50);border-radius:0 0 21px 21px;}
-  .sheet-t{background:var(--grey-50);border-radius:21px 21px 0 0;}
+  .sheet-b{background:var(--grey-50);border-radius:0 0 20px 20px;}
+  .sheet-t{background:var(--grey-50);border-radius:20px 20px 0 0;}
 
   .cp{display:grid;grid-template-columns:minmax(0,555px);justify-content:center;align-items:start;margin:-18px auto -60px;}
   /* Main column sits between two full-height divider lines */
-  .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
-  .cp-main{display:flex;flex-direction:column;min-width:0;padding-bottom:60px;}
-  .cp-hero{position:relative;height:225px;border-radius:15px 15px 0 0;background:var(--grey-200);}
-  .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-27px;width:54px;height:54px;border-radius:75px;border:3px solid #fff;overflow:hidden;background:#fff;}
+  .cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
+  .cp-main{display:flex;flex-direction:column;min-width:0;padding-top:18px;padding-bottom:60px;}
+  .cp-hero{position:relative;height:225px;border-radius:12px 12px 0 0;background:var(--grey-200);}
+  .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-27px;width:54px;height:54px;border-radius:100px;border:3px solid #fff;overflow:hidden;background:#fff;}
   .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
-  /* Top bar above the main image: back link on the left, like + share on the right */
-  .cp-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;padding-bottom:12px;}
-  .cp-back{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 0;font-size:14px;font-weight:500;line-height:19px;color:var(--grey-600);transition:color .2s ease;}
-  .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
-  .cp-back:hover{color:var(--grey-800);}
-  .cp-back:hover svg{transform:translateX(-2px);}
-  .cp-actions{display:flex;gap:9px;align-items:center;}
-  .cp-round{width:30px;height:30px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .cp-round svg{width:20px;height:20px;}
-  .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
-  .cp-round:active{transform:scale(.94);}
   .cp-details{display:flex;flex-direction:column;gap:9px;padding:39px 0 18px;}
   .cp-title{font-size:22px;font-weight:600;line-height:26px;letter-spacing:-.02em;color:var(--grey-800);}
   .cp-details>.cp-list{margin-top:9px;padding:6px 0 0;border-radius:0;}
   .cp-joined{display:flex;gap:6px;align-items:center;}
   .cp-avatars{display:flex;}
-  .cp-avatars img{width:22px;height:22px;border-radius:15px;border:1.5px solid var(--grey-50);object-fit:cover;margin-left:-6px;background:#ddd;}
+  .cp-avatars img{width:22px;height:22px;border-radius:12px;border:1.5px solid var(--grey-50);object-fit:cover;margin-left:-6px;background:#ddd;}
   .cp-avatars img:first-child{margin-left:0;}
   .cp-joined .count{font-size:14px;font-weight:500;color:var(--grey-600);}
   .cp-infotags{padding:18px 8px;display:flex;flex-direction:column;gap:12px;align-items:center;}
   .cp-infotags h3{font-size:15px;font-weight:600;line-height:19px;color:var(--grey-800);text-align:center;}
   .cp-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;}
-  .cp-tag{background:var(--grey-200);display:flex;gap:3px;align-items:center;justify-content:center;padding:5px 9px;border-radius:75px;}
+  .cp-tag{background:var(--grey-200);display:flex;gap:3px;align-items:center;justify-content:center;padding:5px 9px;border-radius:100px;}
   .cp-tag svg{width:20px;height:20px;color:var(--grey-800);}
   .cp-tag span{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);}
   .cp-event{display:flex;justify-content:center;padding:12px 18px;}
@@ -242,17 +242,17 @@
   .cp-reqs p{font-size:14px;line-height:20px;color:#000;max-width:480px;}
   .cp-reqs h4{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);margin-top:9px;}
   .cp-spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;}
-  .cp-spectile{background:var(--grey-100);border:1px solid var(--grey-200);border-radius:9px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;}
+  .cp-spectile{background:var(--grey-100);border:1px solid var(--grey-200);border-radius:8px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;}
   .cp-spectile .k{font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-spectile .v{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
   .cp-plats{display:flex;flex-wrap:wrap;gap:6px;}
-  .cp-plat{display:flex;gap:5px;align-items:center;padding:6px 11px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .cp-plat{display:flex;gap:5px;align-items:center;padding:6px 11px;border-radius:100px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
   .cp-plat svg{width:18px;height:18px;}
-  .cp-ctas{background:var(--blue-100);border-left:2px solid var(--blue-500);border-radius:0 9px 9px 0;padding:12px 15px;display:flex;flex-direction:column;gap:6px;}
+  .cp-ctas{background:var(--blue-100);border-left:2px solid var(--blue-500);border-radius:0 8px 8px 0;padding:12px 15px;display:flex;flex-direction:column;gap:6px;}
   .cp-ctas p{font-style:italic;color:var(--grey-800);}
   .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:8px;}
   .cp-restrict li{counter-increment:r;display:flex;gap:9px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
-  .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:75px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
+  .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:100px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
   .cp-meta{display:flex;gap:6px 15px;align-items:center;flex-wrap:wrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
   .cp-mi{display:flex;gap:5px;align-items:center;white-space:nowrap;}
   .cp-mi svg{width:16px;height:16px;}
@@ -263,7 +263,7 @@
   .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:6px 0 12px;}
   .cp-creatorcard .col{display:flex;flex-direction:column;gap:12px;}
   .cp-identity{display:flex;flex-direction:column;gap:12px;align-items:center;padding:12px 24px 3px;}
-  .cp-identity .av{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
+  .cp-identity .av{width:48px;height:48px;border-radius:100px;object-fit:cover;background:#fff;}
   .cp-idtext{display:flex;flex-direction:column;gap:6px;align-items:center;}
   .cp-identity .name{font-size:18px;font-weight:600;line-height:18px;color:var(--grey-800);}
   .cp-identity .since{font-size:12px;line-height:16px;color:var(--grey-600);}
@@ -280,22 +280,232 @@
   .cp-cmetrics .div{height:1px;background:var(--grey-100);margin:3px 0;}
   .handles{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
   .handle{display:flex;flex-direction:column;gap:3px;align-items:center;padding:6px;position:relative;flex-shrink:0;}
-  .handle .pf{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
-  .handle .badge{position:absolute;left:39px;top:0;background:#fff;padding:5px;border-radius:15px;display:flex;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));color:#121212;}
+  .handle .pf{width:48px;height:48px;border-radius:100px;object-fit:cover;background:#fff;}
+  .handle .badge{position:absolute;left:39px;top:0;background:#fff;padding:5px;border-radius:12px;display:flex;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));color:#121212;}
   .handle .badge svg{width:12px;height:12px;}
   .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
   .cp-questions{padding:6px 18px 0 6px;}
 
-  /* ================= Admin view: campaign · post · creator ================= */
-  .adm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin:-18px auto -60px;min-height:calc(100dvh - var(--header) - var(--subbar));}
-  .adm-col{padding:30px 24px 48px;}
-  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar));align-self:start;display:flex;flex-direction:column;gap:18px;max-width:320px;}
-  .adm-left{justify-self:end;width:100%;}
-  .adm-right{justify-self:start;width:100%;}
-  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;justify-content:center;}
-  .adm-eyebrow{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  /* ================= Admin dashboard: campaign card + sub menu on the left, section on the right ================= */
+  body.dash{background:var(--page-bg);--subbar:0px;}
+  body.dash .subnav{display:none;}
+  .dsh{display:grid;grid-template-columns:264px minmax(0,1fr);gap:24px;align-items:start;padding-top:6px;}
+  .dcard{background:#fff;border:1px solid var(--line);border-radius:12px;}
+  .dsh-side{position:sticky;top:calc(var(--header) + var(--subbar) + 24px);overflow:hidden;}
+  .dsh-cover{position:relative;height:92px;background:var(--grey-200);}
+  .dsh-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+  .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;}
+  .dsh-title{font-size:18px;font-weight:600;line-height:23px;letter-spacing:-.015em;color:var(--grey-800);text-wrap:balance;}
+  .dsh-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
+  .dsh-when{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;}
+  .dsh-when i{width:3px;height:3px;border-radius:100px;background:currentColor;}
+  /* Status as coloured text with a matching dot, no pill */
+  .dsh-status{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);text-transform:capitalize;}
+  .dsh-status::before{content:"";width:8px;height:8px;border-radius:100px;background:currentColor;}
+  .dsh-status.active{color:var(--good);}
+  .dsh-status.completed{color:var(--grey-600);}
+  .dsh-viewas{display:inline-flex;align-items:center;gap:7px;height:34px;margin-top:6px;padding:0 15px 0 12px;border:1px solid var(--grey-800);border-radius:100px;font-size:14px;font-weight:600;color:var(--grey-800);transition:background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .dsh-viewas svg{width:17px;height:17px;}
+  .dsh-viewas:hover{background:var(--grey-100);}
+  .dsh-viewas:active{transform:scale(.96);}
+  .dsh-menu{display:flex;flex-direction:column;padding:8px 0;border-top:1px solid var(--line);}
+  .dsh-menu a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:0 18px 0 15px;border-left:3px solid transparent;font-size:15px;font-weight:500;line-height:20px;color:var(--grey-700);white-space:nowrap;transition:background .2s ease,color .2s ease;}
+  .dsh-menu a:hover{background:var(--page-bg);color:var(--grey-800);}
+  .dsh-menu a.on{border-left-color:var(--blue-500);color:var(--blue-600);font-weight:600;}
+  .badge-n{min-width:20px;height:20px;padding:0 6px;border-radius:100px;display:inline-flex;align-items:center;justify-content:center;background:var(--pink-500);color:#fff;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;}
+
+  .dsh-bar,.dsh-scrim,.dsh-close{display:none;}
+  .dsh-main{display:flex;flex-direction:column;gap:18px;min-width:0;}
+  .dsh-main>.dcard,#fin-month>.dcard{padding:24px;}
+  .dh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .dh h2{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;color:var(--grey-800);}
+  .dh p{margin-top:2px;font-size:14px;line-height:20px;color:var(--grey-600);}
+  .dh .count{font-size:14px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
+  .dlink{font-weight:600;color:var(--blue-500);}
+  .dlink:hover{text-decoration:underline;}
+
+  /* "Needs your attention" rows (dismissable, like LinkedIn's suggestions) */
+  .att-list{display:flex;flex-direction:column;gap:12px;margin-top:18px;}
+  .att{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;}
+  .att b{display:block;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .att span{display:block;margin-top:3px;font-size:14px;line-height:20px;color:var(--grey-700);}
+  .x-btn{width:30px;height:30px;margin:-5px -6px 0 0;flex-shrink:0;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:background .2s ease,color .2s ease;}
+  .x-btn svg{width:18px;height:18px;}
+  .x-btn:hover{background:var(--grey-100);color:var(--grey-800);}
+
+  /* Stat tiles */
+  .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px;}
+  .tile{display:flex;flex-direction:column;gap:2px;padding:16px;border:1px solid var(--line);border-radius:12px;text-align:left;transition:border-color .2s ease;}
+  a.tile:hover,button.tile:hover{border-color:var(--grey-400);}
+  .tile .n{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .tile .l{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  a.tile .l{color:var(--blue-500);}
+  .tile .d{margin-top:2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .up{color:var(--good);} .down{color:var(--bad);}
+
+  .brief{display:flex;flex-direction:column;gap:9px;margin-top:18px;}
+  .brief h4{margin-top:9px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  .brief p{font-size:14px;line-height:21px;color:var(--grey-800);max-width:620px;}
+  .brief .cp-tags{justify-content:flex-start;}
+  .brief .cp-tag{background:var(--grey-100);}
+
+  /* Pending approvals: the original admin view (post fills the centre column, creator on the right), dashboard card on the left */
+  /* Three columns with equal outer tracks so the post sits in the middle of the page */
+  .dsh.pend{grid-template-columns:minmax(288px,1fr) auto minmax(0,1fr);gap:0;margin:-24px 0 -60px;padding-top:0;}
+  .dsh.pend>.dsh-side{align-self:start;width:264px;margin:24px 24px 48px 0;}
+  .pfeed{grid-column:2/4;display:grid;grid-template-columns:subgrid;}
+  /* Feed of submissions: each one is a full-height row (post | creator), snapping like reels */
+  html:has(.pfeed){scroll-snap-type:y mandatory;}
+  .pitem{grid-column:1/-1;display:grid;grid-template-columns:subgrid;}
+  .ppost{min-height:calc(100dvh - var(--header) - var(--subbar));display:flex;justify-content:center;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:calc(var(--header) + var(--subbar));}
+  .pitem+.pitem .adm-center,.ppost+.ppost{border-top:1px solid var(--grey-200);}
+  .adm-center{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);display:flex;flex-direction:column;}
+  /* A creator's other-platform submission: the panel stays, only the per-platform bits crossfade */
+  /* The hidden version is lifted out of the flow, so the panel takes the height of what is showing */
+  .sw{position:relative;}
+  .sw>*{min-width:0;transition:opacity .3s ease,visibility .3s;}
+  .pitem[data-on="0"] .sw>[data-p="1"],.pitem[data-on="1"] .sw>[data-p="0"]{position:absolute;inset:0 0 auto;opacity:0;visibility:hidden;}
+  .sw-av img.crop{object-position:50% 30%;transform:scale(1.35);}
+  .sw-av>div{width:45px;height:45px;border-radius:100px;overflow:hidden;}
+  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),40vw);align-self:start;overflow:hidden;background:#000;}
+  .adm-col{padding:30px 0 48px 24px;}
+  .adm-right{min-width:0;}
+  .adm-side{position:sticky;top:calc(var(--header) + var(--subbar) + 30px);display:flex;flex-direction:column;gap:18px;max-width:320px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 18px;border-radius:100px;font-size:14px;font-weight:600;white-space:nowrap;transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .btn svg{width:17px;height:17px;}
+  .btn:active{transform:scale(.96);}
+  .btn-pri{background:var(--blue-500);color:#fff;}
+  .btn-pri:hover{background:var(--blue-600);}
+  .btn-sec{border:1px solid var(--grey-400);color:var(--grey-800);}
+  .btn-sec:hover{border-color:var(--grey-800);background:var(--grey-100);}
+
+  /* Approved content grid */
+  .aps{margin-top:24px;}
+  .aps+.aps{padding-top:24px;border-top:1px solid var(--line);}
+  .aps-h{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .aps-h svg{width:18px;height:18px;}
+  .aps-h span{margin-left:auto;font-size:14px;font-weight:500;color:var(--grey-600);}
+  .apg{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:18px 12px;margin-top:12px;}
+  .ap{display:flex;flex-direction:column;gap:9px;text-align:left;}
+  .ap-media{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:var(--grey-200);}
+  .ap-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+  .ap:hover .ap-media img{transform:scale(1.03);}
+  .ap-media::after{content:"";position:absolute;inset:auto 0 0;height:64px;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
+  .ap-kind{position:absolute;top:8px;left:8px;z-index:1;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .ap-kind.new{background:var(--blue-500);}
+  .ap-views{position:absolute;left:10px;bottom:9px;z-index:1;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:#fff;font-variant-numeric:tabular-nums;}
+  /* The eye only fills the middle of its 24px box, so 14px draws it at the height of the 12px numerals */
+  .ap-views svg{width:14px;height:14px;}
+  .ap-by{display:flex;align-items:center;gap:8px;min-width:0;}
+  .ap-by img{width:24px;height:24px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .ap-by div{min-width:0;}
+  .ap-by b{display:block;font-size:13px;font-weight:600;line-height:17px;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ap-by small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+
+  /* Analytics */
+  .chart{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;margin-top:22px;}
+  .chart-y{display:flex;flex-direction:column;justify-content:space-between;height:200px;margin-top:-8px;margin-bottom:-8px;font-size:12px;line-height:16px;color:var(--grey-600);text-align:right;font-variant-numeric:tabular-nums;}
+  .chart-plot{position:relative;height:200px;display:flex;border-bottom:1px solid var(--grey-400);
+    background:linear-gradient(var(--grey-100) 1px,transparent 1px) 0 0/100% 50%;}
+  .chart-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;animation:lineIn .9s cubic-bezier(.16,1,.3,1) both;}
+  .chart-line path{vector-effect:non-scaling-stroke;}
+  .chart-line .ln{fill:none;stroke:var(--blue-500);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+  .chart-line .ar{fill:url(#chart-fill);}
+  @keyframes lineIn{from{clip-path:inset(0 100% 0 0);}to{clip-path:inset(0 0 0 0);}}
+  /* One hit column per day: hover shows a guide line, the point and the value */
+  .chart-col{position:relative;z-index:1;flex:1;height:100%;cursor:default;outline:0;}
+  .chart-col::before{content:"";position:absolute;top:0;bottom:0;left:50%;border-left:1px dashed var(--grey-400);opacity:0;transition:opacity .15s ease;}
+  .chart-col i{position:absolute;left:50%;bottom:var(--h);width:10px;height:10px;margin:0 0 -5px -5px;border-radius:100px;background:var(--blue-500);box-shadow:0 0 0 2px #fff;opacity:0;transform:scale(.6);transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .chart-col.r i{opacity:1;transform:none;}
+  .chart-col:hover::before,.chart-col:focus-visible::before{opacity:1;}
+  .chart-col:hover i,.chart-col:focus-visible i{opacity:1;transform:none;}
+  .chart-tip{position:absolute;bottom:calc(var(--h) + 12px);left:50%;z-index:2;transform:translate(-50%,4px);padding:6px 10px;border-radius:8px;background:var(--grey-800);color:#fff;font-size:12px;line-height:16px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  /* Tooltips near either end anchor to that side so they never stick out past the card on narrow screens */
+  .chart-col.tl .chart-tip{left:0;transform:translate(0,4px);}
+  .chart-col.tr .chart-tip{left:auto;right:0;transform:translate(0,4px);}
+  .chart-tip b{font-weight:600;font-variant-numeric:tabular-nums;}
+  .chart-col:hover .chart-tip,.chart-col:focus-visible .chart-tip{opacity:1;transform:translate(-50%,0);}
+  .chart-col.tl:hover .chart-tip,.chart-col.tl:focus-visible .chart-tip,.chart-col.tr:hover .chart-tip,.chart-col.tr:focus-visible .chart-tip{transform:none;}
+  .ch-picks{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
+  .ch-picks .an-plat:first-child .an-plat-menu{left:0;right:auto;}
+  .chart-x{grid-column:2;display:flex;justify-content:space-between;margin-top:8px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .an-plat{position:relative;}
+  .an-plat-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px 0 16px;border-radius:100px;background:var(--blue-500);color:#fff;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;transition:background .2s ease;}
+  .an-plat-btn:hover{background:var(--blue-600);}
+  .an-plat-btn:focus-visible{outline:2px solid var(--blue-500);outline-offset:2px;}
+  .an-plat-btn svg{width:10px;height:10px;transition:transform .2s ease;}
+  .an-plat.open .an-plat-btn svg{transform:rotate(180deg);}
+  .an-plat-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:5;min-width:160px;padding:6px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(18,18,18,.12);
+    opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .an-plat.open .an-plat-menu{opacity:1;transform:none;pointer-events:auto;}
+  .an-plat-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border-radius:8px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);text-align:left;}
+  .an-plat-menu button:hover,.an-plat-menu button:focus-visible{background:var(--page-bg);outline:0;}
+  .an-plat-menu button[aria-checked="true"]{font-weight:600;color:var(--blue-500);}
+  .an-plat-menu svg{width:16px;height:16px;flex-shrink:0;}
+  /* Positioned so absolutely placed children (the screen-reader header label) stay inside the scroll box */
+  .tc-wrap{position:relative;margin-top:12px;overflow-x:auto;}
+  .tc{width:100%;min-width:760px;border-collapse:collapse;font-size:12px;line-height:16px;}
+  .tc th{padding:8px 0 8px 16px;white-space:nowrap;font-size:12px;font-weight:500;color:var(--grey-600);text-align:right;border-bottom:1px solid var(--line);}
+  .tc th:first-child,.tc td:first-child{padding-left:0;text-align:left;}
+  .tc .pl{text-align:left;}
+  .tc .pls{display:flex;gap:8px;color:var(--grey-800);}
+  .tc .pls svg{width:18px;height:18px;}
+  .tc td{padding:10px 0 10px 16px;white-space:nowrap;text-align:right;color:var(--grey-800);font-weight:500;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);}
+  .tc tr:last-child td{border-bottom:0;}
+  .tc .who{display:flex;align-items:center;gap:9px;font-weight:600;}
+  .tc .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;}
+  /* Spend by campaign: titles wrap to two lines so the figures get the room */
+  .tc-camp td:first-child{width:260px;white-space:normal;}
+  .tc-camp .who img{flex-shrink:0;}
+  .tc-camp .who a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+  /* Inbox */
+  .dsh-main>.ib{display:grid;grid-template-columns:280px minmax(0,1fr);height:min(640px,calc(100dvh - var(--header) - var(--subbar) - 48px));padding:0;overflow:hidden;}
+  .ib-list{display:flex;flex-direction:column;border-right:1px solid var(--line);min-height:0;}
+  .ib-list h2{padding:18px 18px 12px;font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;}
+  .ib-scroll{overflow-y:auto;}
+  .ib-item{display:flex;gap:10px;width:100%;padding:12px 18px 12px 15px;border-left:3px solid transparent;text-align:left;transition:background .2s ease;}
+  .ib-item:hover{background:var(--page-bg);}
+  .ib-item.on{border-left-color:var(--blue-500);background:var(--blue-100);background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
+  .ib-item img{width:40px;height:40px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .ib-item .t{flex:1;min-width:0;}
+  .ib-item .r1{display:flex;justify-content:space-between;gap:6px;font-size:14px;line-height:20px;}
+  .ib-item .r1 b{font-weight:600;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ib-item .r1 small{font-size:12px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
+  .ib-item .pv{display:flex;align-items:center;gap:6px;font-size:13px;line-height:18px;color:var(--grey-600);}
+  .ib-item .pv span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ib-item.unread .pv span{color:var(--grey-800);font-weight:600;}
+  .ib-item .udot{width:8px;height:8px;border-radius:100px;background:var(--blue-500);flex-shrink:0;}
+  .ib-thread{display:flex;flex-direction:column;min-height:0;min-width:0;}
+  .ib-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);}
+  .ib-head .adm-creator img{width:40px;height:40px;}
+  .ib-back{display:none;align-items:center;justify-content:center;width:36px;height:36px;margin-right:-4px;border-radius:100px;color:var(--grey-800);flex-shrink:0;transition:background .2s ease;}
+  .ib-back:hover{background:var(--page-bg);}
+  .ib-back svg{width:22px;height:22px;}
+  .ib-msgs{flex:1;display:flex;flex-direction:column;gap:6px;padding:18px;overflow-y:auto;}
+  .ib-day{align-self:center;margin:6px 0;font-size:12px;font-weight:500;color:var(--grey-500);}
+  .bub{max-width:min(75%,440px);padding:9px 13px;border-radius:12px;font-size:14px;line-height:20px;}
+  .bub.them{align-self:flex-start;background:var(--grey-100);color:var(--grey-800);border-bottom-left-radius:4px;}
+  .bub.me{align-self:flex-end;background:var(--blue-500);color:#fff;border-bottom-right-radius:4px;}
+  .bub.new{animation:bubIn .35s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes bubIn{from{opacity:0;transform:translateY(6px) scale(.98);}to{opacity:1;transform:none;}}
+  .ib-form{display:flex;gap:8px;padding:12px 18px 16px;border-top:1px solid var(--line);}
+  .ib-form input{flex:1;min-width:0;height:40px;padding:0 16px;border:1px solid var(--grey-400);border-radius:100px;outline:0;font:500 14px var(--font);color:var(--grey-800);background:#fff;transition:border-color .2s ease;}
+  .ib-form input:focus{border-color:var(--blue-300);}
+  .ib-form .btn{height:40px;}
+
+  .dempty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 12px 18px;text-align:center;}
+  .dempty b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
+  .dempty span{max-width:320px;font-size:14px;line-height:20px;color:var(--grey-600);}
+
+  .dsh>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
+  .dsh>:nth-child(2){animation-delay:60ms;} .dsh>:nth-child(3){animation-delay:120ms;}
+  @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
+
+  /* Shared pieces from the original admin view (post, creator, caption, budget) */
   .adm-sec{display:flex;flex-direction:column;gap:8px;}
-  .adm-sec+.adm-sec{padding-top:18px;border-top:1px solid var(--grey-200);}
+  .adm-sec+.adm-sec{padding-top:18px;border-top:1px solid var(--line);}
+  .adm-eyebrow{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
 
   /* Left: campaign */
   .adm-title{font-size:20px;font-weight:600;line-height:25px;letter-spacing:-.02em;color:var(--grey-800);text-wrap:balance;}
@@ -305,24 +515,46 @@
   .adm-joined{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--grey-800);}
   .adm-joined .cp-avatars img{border-color:#fff;}
   .adm-joined b{font-weight:600;}
-  .adm-budget{display:flex;flex-direction:column;gap:8px;}
-  .adm-budget .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
-  .adm-budget .spent{font-size:18px;font-weight:600;line-height:22px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .adm-budget .of{font-size:14px;font-weight:500;color:var(--grey-600);font-variant-numeric:tabular-nums;}
-  .adm-budget .pct{font-size:14px;font-weight:600;color:var(--blue-600);font-variant-numeric:tabular-nums;}
+  /* Budget: spent and total over the bar, percent and remaining under it; figures match the stat tile numbers */
+  .adm-budget{display:flex;flex-direction:column;gap:8px;margin-top:18px;font-variant-numeric:tabular-nums;}
+  .adm-budget .row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;}
+  .adm-budget .row>:last-child{margin-left:auto;}
+  .adm-budget .kv{display:flex;align-items:baseline;gap:8px;white-space:nowrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .adm-budget .kv b,.adm-budget .pct{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.02em;color:var(--grey-800);}
+  .adm-budget .pct{color:var(--blue-500);}
   .adm-bar{height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
+  .adm-budget .adm-bar{height:10px;}
   .adm-bar i{display:block;height:100%;width:var(--p);border-radius:inherit;background:var(--blue-500);transform-origin:left;animation:barIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
   @keyframes barIn{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-  .adm-budget .foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
 
   /* Centre: the post, framed like a phone */
-  /* The post fills the centre column: full height under the bars, square corners, edge to edge between the dividers */
-  .adm-phone{--w:calc((100dvh - var(--header) - var(--subbar)) * 9 / 16);width:min(var(--w),45vw);align-self:start;position:sticky;top:calc(var(--header) + var(--subbar));overflow:hidden;background:#000;}
   .adm-screen{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
   .adm-screen img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
   /* Scroll-edge scrim instead of a hard bar, so the label stays legible over any photo */
-  .adm-screen::before{content:"";position:absolute;inset:0 0 auto;height:72px;z-index:2;pointer-events:none;background:linear-gradient(rgba(0,0,0,.42),transparent);}
-  .adm-kind{position:absolute;top:12px;left:0;right:0;z-index:3;text-align:center;font-size:14px;font-weight:600;line-height:20px;letter-spacing:-.01em;color:#fff;pointer-events:none;}
+  /* Dark, blurred scrims at both ends: the blur fades out with the gradient so there's no hard edge */
+  .adm-screen::before,.adm-screen::after{content:"";position:absolute;left:0;right:0;z-index:2;pointer-events:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+  .adm-screen::before{top:0;height:96px;background:linear-gradient(rgba(0,0,0,.55),transparent);-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent);}
+  .adm-plat{position:absolute;top:12px;left:12px;right:56px;z-index:3;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;line-height:20px;color:rgba(255,255,255,.85);pointer-events:none;}
+  .adm-plat svg{width:16px;height:16px;flex-shrink:0;color:#fff;}
+  .adm-plat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .adm-plat b{font-weight:600;color:#fff;}
+  /* Approve / Reject sit on the post, over a bottom scrim; reel controls and carousel dots ride above them */
+  .adm-screen::after{bottom:0;height:150px;background:linear-gradient(transparent,rgba(0,0,0,.6));-webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
+  .adm-act{position:absolute;left:12px;right:12px;bottom:14px;z-index:4;display:flex;gap:8px;}
+  .adm-act .btn{flex:1;height:42px;}
+  /* Approve and Reject hold for 30 s: one full-width button whose fill drains; clicking it undoes */
+  .adm-timer{position:relative;overflow:hidden;background:rgba(21,72,235,.45);font-variant-numeric:tabular-nums;}
+  .adm-timer:hover{background:rgba(21,72,235,.6);}
+  .adm-timer em{font-style:normal;font-weight:500;opacity:.8;}
+  .adm-timer::before{content:"";position:absolute;inset:0;background:var(--blue-500);transform-origin:left;animation:admDrain var(--dur) linear var(--delay) forwards;}
+  .adm-timer span{position:relative;}
+  .adm-timer.rej{background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
+  .adm-timer.rej::before{background:rgba(255,255,255,.28);}
+  .adm-timer.rej:hover{background:rgba(18,18,18,.6);}
+  @keyframes admDrain{from{transform:scaleX(1);}to{transform:scaleX(0);}}
+  @media(prefers-reduced-motion:reduce){.adm-timer::before{animation:none;}}
+  .btn-glass{color:#fff;background:rgba(18,18,18,.4);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);}
+  .btn-glass:hover{background:rgba(18,18,18,.6);}
   .adm-count{position:absolute;top:11px;right:11px;z-index:3;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:600;line-height:16px;color:#fff;background:rgba(18,18,18,.45);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);font-variant-numeric:tabular-nums;}
 
   /* Reel */
@@ -336,18 +568,23 @@
   .reel-icon svg{width:24px;height:24px;}
   .adm-screen.paused .reel-icon{opacity:1;transform:scale(1);}
   .adm-screen.flash .reel-icon{opacity:1;transform:scale(1);}
-  .reel-mute{position:absolute;right:11px;bottom:14px;z-index:3;width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
+  .reel-mute{position:absolute;right:11px;bottom:68px;z-index:3;width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:#fff;
     background:rgba(18,18,18,.4);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .1s ease-out;}
   .reel-mute svg{width:15px;height:15px;}
   .reel-mute:active{transform:scale(.9);}
-  .reel-progress{position:absolute;left:11px;right:48px;bottom:27px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
+  .reel-progress{position:absolute;left:11px;right:48px;bottom:81px;z-index:3;height:3px;border-radius:100px;background:rgba(255,255,255,.35);overflow:hidden;pointer-events:none;}
   .reel-progress i{display:block;height:100%;width:100%;background:#fff;transform-origin:left;transform:scaleX(0);}
 
   /* Carousel */
   .car-track{position:absolute;inset:0;display:flex;will-change:transform;cursor:grab;}
   .car-track.dragging{cursor:grabbing;}
   .car-slide{flex:0 0 100%;height:100%;}
-  .car-dots{position:absolute;left:0;right:0;bottom:12px;z-index:3;display:flex;justify-content:center;gap:5px;pointer-events:none;}
+  .car-dots{position:absolute;left:0;right:0;bottom:70px;z-index:3;display:flex;justify-content:center;gap:5px;pointer-events:none;}
+  /* No review buttons (approved feed): the controls drop to the bottom edge, the mute button centred on the progress line */
+  .adm-screen:not(:has(.adm-act)) .reel-mute{bottom:12px;}
+  .adm-screen:not(:has(.adm-act)) .reel-progress{bottom:24.5px;}
+  .adm-screen:not(:has(.adm-act)) .car-dots{bottom:16px;}
+  .adm-screen:not(:has(.adm-act))::after{height:96px;}
   .car-dots i{width:5px;height:5px;border-radius:100px;background:rgba(255,255,255,.5);transition:background .25s ease,width .35s cubic-bezier(.2,.9,.3,1);}
   .car-dots i.on{width:14px;background:#fff;}
   .car-nav{position:absolute;top:50%;z-index:3;width:28px;height:28px;margin-top:-14px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-800);
@@ -363,94 +600,321 @@
   .adm-creator img{width:45px;height:45px;border-radius:100px;object-fit:cover;background:var(--grey-200);flex-shrink:0;}
   .adm-creator .name{font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.012em;color:var(--grey-800);}
   .adm-creator .adm-handle{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-follow{display:flex;flex-wrap:wrap;gap:6px 15px;}
+  .adm-follow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .adm-follow>i{width:3px;height:3px;border-radius:100px;background:var(--grey-800);}
+  .adm-follow>em{font-style:normal;}
   .adm-follow span{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
   .adm-follow span em{font-style:normal;font-weight:500;color:var(--grey-600);}
   .adm-follow svg{width:15px;height:15px;}
-  .adm-total{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .adm-total b{font-weight:600;color:var(--grey-800);}
   .adm-caption{font-size:14px;line-height:21px;color:var(--grey-800);white-space:pre-line;}
   .adm-caption .tag{all:unset;color:var(--blue-600);font-weight:500;}
   .adm-posted{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);}
   .adm-bio{font-size:14px;line-height:21px;color:var(--grey-700);}
 
-  /* Columns settle in left → centre → right */
-  .adm>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
-  .adm>:nth-child(2){animation-delay:60ms;} .adm>:nth-child(3){animation-delay:120ms;}
-  @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
   @media(prefers-reduced-motion:reduce){
-    .adm>*,.adm-bar i{animation:none;}
+    .dsh>*,.adm-bar i,.chart-line,.bub.new{animation:none;}
     .reel-frame img{animation:none;}
     .reel-icon,.car-dots i{transition:opacity .2s ease;}
   }
   @media(prefers-reduced-transparency:reduce){
-    .adm-count,.reel-icon,.reel-mute{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .adm-count,.reel-icon,.reel-mute,.btn-glass{background:rgba(18,18,18,.85);-webkit-backdrop-filter:none;backdrop-filter:none;}
     .car-nav{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
   }
 
-  /* ================= Notifications popover ================= */
-  .pop{position:fixed;top:calc(var(--header) + 8px);right:var(--gutter);width:300px;max-height:min(420px,calc(100dvh - var(--header) - 16px));z-index:40;display:flex;flex-direction:column;
-    background:var(--grey-50);border-radius:21px;box-shadow:0 12px 30px rgba(0,0,0,.18);border:1px solid var(--grey-200);
-    opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
-  .pop.open{opacity:1;transform:none;pointer-events:auto;}
-  .nt-title{padding:18px 18px 0;font-size:18px;font-weight:600;line-height:22px;color:var(--grey-800);}
-  .nt-list{display:flex;flex-direction:column;gap:12px;padding:15px 12px 18px;overflow-y:auto;}
-  .nt-item{display:flex;gap:9px;align-items:flex-start;}
-  .nt-logo{width:24px;height:24px;border-radius:15px;object-fit:cover;flex-shrink:0;background:var(--grey-100);}
-  .nt-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;padding-bottom:12px;border-bottom:1px solid var(--grey-200);}
-  .nt-item:last-child .nt-body{border-bottom:none;padding-bottom:0;}
-  .nt-text{font-size:14px;line-height:20px;color:var(--grey-800);font-weight:600;}
-  .nt-text .med{font-weight:500;}
-  .nt-time{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+  /* ================= Notifications page ================= */
+  .nt-page{max-width:640px;margin:0 auto;padding-top:6px;}
+  .nt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .nt-head .count{margin-top:4px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .nt-markall{flex-shrink:0;height:32px;padding:0 12px;border:1px solid var(--grey-200);border-radius:100px;background:#fff;font:500 14px/20px var(--font);color:var(--grey-800);cursor:pointer;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .nt-markall:hover{background:var(--grey-100);}
+  .nt-markall:active{transform:scale(.96);}
+  .nt-markall:disabled{opacity:.4;cursor:default;background:#fff;transform:none;}
+  .nt-group{margin-top:24px;font-size:12px;font-weight:600;line-height:16px;letter-spacing:.04em;text-transform:uppercase;color:var(--grey-600);}
+  .nt-list{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
+  .nt-item{position:relative;display:flex;gap:12px;align-items:flex-start;width:100%;padding:12px 36px 12px 12px;border:1px solid transparent;border-radius:12px;background:none;text-align:left;font:inherit;cursor:pointer;transition:background .25s ease,border-color .25s ease;}
+  .nt-item:hover{background:var(--grey-100);}
+  .nt-item.unread{background:#eef2fe;border-color:var(--blue-100);}
+  .nt-item.unread:hover{background:#e3e9fd;}
+  .nt-item.unread::after{content:"";position:absolute;top:50%;right:16px;width:8px;height:8px;margin-top:-4px;border-radius:100px;background:var(--blue-500);}
+  .nt-logo{width:40px;height:40px;border-radius:100px;object-fit:cover;flex-shrink:0;background:var(--grey-100);border:1px solid var(--grey-200);}
+  .nt-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+  .nt-text{font-size:14px;line-height:20px;color:var(--grey-600);font-weight:400;}
+  .nt-text b{font-weight:500;color:var(--grey-700);}
+  .nt-item.unread .nt-text{color:var(--grey-800);}
+  .nt-item.unread .nt-text b{font-weight:600;color:var(--grey-800);}
+  .nt-time{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-500);font-variant-numeric:tabular-nums;}
+  .nt-item.unread .nt-time{color:var(--blue-600);}
+  .hicon .dot[hidden]{display:none;}
+  body.notifs .subnav{display:none;}
 
   .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--grey-800);color:var(--grey-50);
-    padding:9px 15px;border-radius:75px;font-size:14px;font-weight:500;box-shadow:2px 2px 9px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
+    padding:9px 15px;border-radius:100px;font-size:14px;font-weight:500;box-shadow:2px 2px 9px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  /* ================= Financials: built from the campaign dashboard's pieces (dsh, dcard, tiles, adm-budget, chart, tc) ================= */
+  /* Wallet: balance, total spent and this month's spend as three wider tiles */
+  .fin3{grid-template-columns:repeat(3,minmax(0,1fr));}
+  /* Left card: wallet balance under the heading, label above a large figure */
+  .fin-bal{display:flex;flex-direction:column;gap:2px;}
+  .fin-bal span{font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
+  .fin-bal b{font-size:24px;font-weight:600;line-height:32px;letter-spacing:-.02em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  /* The balance is the figure that matters most: its number in the primary blue */
+  .tile.hl .n{color:var(--blue-500);}
+  .fin3 .n{white-space:nowrap;}
+  /* Small laptops: the main column is narrow, so the rupee figures take the phone size */
+  @media (min-width:1024px) and (max-width:1279px){.fin3 .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}}
+  /* Monthly chart: the analytics chart frame with a pair of bars per month */
+  .fchart .chart-plot{gap:0;}
+  .fchart .chart-col{display:flex;align-items:flex-end;justify-content:center;gap:4px;cursor:pointer;}
+  .fchart .chart-col::before{display:none;}
+  .fchart .chart-col:hover,.fchart .chart-col:focus-visible{background:rgba(18,18,18,.03);}
+  .fchart .chart-col b.bar{width:min(22px,30%);height:var(--b);border-radius:4px 4px 0 0;background:var(--grey-200);transform-origin:bottom;animation:barUp .8s cubic-bezier(.16,1,.3,1) both;transition:background .2s ease;}
+  .fchart .chart-col b.bar.sp{background:var(--blue-200);}
+  .fchart .chart-col.on b.bar{background:var(--grey-400);}
+  .fchart .chart-col.on b.bar.sp{background:var(--blue-500);}
+  @keyframes barUp{from{transform:scaleY(0);}to{transform:none;}}
+  .fchart .chart-x{justify-content:space-around;}
+  .fchart .chart-x .on{color:var(--grey-800);font-weight:600;}
+  /* The hover readout sits in a fixed row above the plot, not over the bars */
+  .fchart{margin-top:52px;}
+  .fchart .chart-tip{bottom:calc(100% + 10px);}
+  .dcard>.fleg{justify-content:center;margin-top:16px;}
+  .fday-head{display:flex;flex-direction:column;gap:2px;margin-top:28px;}
+  .fday-head b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
+  .fday-head span{font-size:14px;line-height:20px;color:var(--grey-600);}
+  .fday .chart-col:not([tabindex])::before{display:none;}
+  /* Month picker above the month's cards: a year stepper over a grid of months */
+  .mp-bar{display:flex;margin-bottom:-6px;}
+  #fin-month{display:contents;}
+  .mp .mp-menu{left:0;right:auto;width:248px;}
+  .mp-yr{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 8px;}
+  .mp-yr b{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .mp-menu .mp-yr button{width:32px;height:32px;padding:0;justify-content:center;border-radius:100px;}
+  .mp-yr button svg{width:10px;height:10px;transform:rotate(90deg);}
+  .mp-yr button[data-mp-y="1"] svg{transform:rotate(-90deg);}
+  .mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+  .mp-menu .mp-grid button{justify-content:center;}
+  .mp-menu .mp-grid button[aria-checked="true"]{background:var(--blue-500);color:#fff;}
+  .mp-menu button:disabled{color:var(--grey-400);background:none;cursor:default;}
+  .fleg{display:flex;gap:16px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .fleg span{display:flex;align-items:center;gap:6px;}
+  .fleg i{width:10px;height:10px;border-radius:3px;background:var(--grey-400);}
+  .fleg i.sp{background:var(--blue-500);}
+  /* Spend by campaign: one row per campaign with a budget-style bar */
+  .fsp{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
+  .fsp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;font-variant-numeric:tabular-nums;}
+  .fsp-row .who{display:flex;align-items:center;gap:9px;min-width:0;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .fsp-row .who img{width:28px;height:28px;border-radius:100px;object-fit:cover;flex-shrink:0;}
+  .fsp-row .who span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fsp-row .who:hover span{text-decoration:underline;}
+  .fsp-row .amt{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;}
+  .fsp-row .amt small{margin-left:6px;font-size:12px;font-weight:500;color:var(--grey-600);}
+  .fsp-row .adm-bar{grid-column:1/-1;}
+  /* Add funds: bank details as the brief's spec tiles, each one copies its value */
+  button.cp-spectile{position:relative;text-align:left;padding-right:36px;transition:border-color .2s ease;}
+  button.cp-spectile:hover{border-color:var(--grey-400);}
+  button.cp-spectile svg{position:absolute;top:10px;right:10px;width:16px;height:16px;color:var(--grey-600);}
+  .ff{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
+  .ff-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;}
+  .fl{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  .fl small{font-weight:500;color:var(--grey-500);}
+  .fl input,.ff-in{height:40px;width:100%;min-width:0;padding:0 16px;border:1px solid var(--grey-400);border-radius:100px;outline:0;background:#fff;font:500 14px var(--font);color:var(--grey-800);transition:border-color .2s ease;}
+  .fl input:focus,.ff-in:focus-within{border-color:var(--blue-300);}
+  .ff-in{display:flex;align-items:center;gap:6px;}
+  .ff-in em{font-style:normal;color:var(--grey-600);}
+  .ff-in input{height:100%;padding:0;border:0;border-radius:0;font-variant-numeric:tabular-nums;}
+  .fl input[aria-invalid="true"],.ff-in:has([aria-invalid="true"]),.drop[aria-invalid="true"]{border-color:var(--bad);}
+  .drop{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:24px 18px;border:1px dashed var(--grey-400);border-radius:12px;text-align:center;cursor:pointer;transition:border-color .2s ease,background .2s ease;}
+  .drop:hover{border-color:var(--grey-800);}
+  .drop.over,.drop:focus-within{border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 45%,#fff);}
+  .drop input{position:absolute;width:1px;height:1px;opacity:0;}
+  .drop svg{width:22px;height:22px;margin-bottom:6px;color:var(--grey-800);}
+  .drop b{font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .drop span{font-size:14px;line-height:20px;color:var(--grey-600);}
+  .drop[hidden],.ff-file[hidden]{display:none;}
+  .ff-file{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;}
+  .ff-file>svg{width:22px;height:22px;flex-shrink:0;color:var(--grey-800);}
+  .ff-file div{flex:1;min-width:0;}
+  .ff-file b{display:block;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ff-file small{display:block;margin-top:3px;font-size:14px;line-height:20px;color:var(--grey-700);}
+  .ff-file .x-btn{margin:0;}
+  .ff-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .ferr{font-size:14px;font-weight:500;line-height:20px;color:var(--bad);}
+  .ff-foot .btn{margin-left:auto;}
+  /* Bank transfers: the analytics table, status as the dashboard's dot + coloured text */
+  .dsh-status.verified{color:var(--good);} .dsh-status.rejected{color:var(--bad);}
+  .tc .dsh-status{font-size:12px;line-height:16px;}
+  /* Bank transfers: slip name with a file icon, the status and a download button per row */
+  .txt td{padding-top:12px;padding-bottom:12px;}
+  .tx-file{display:inline-flex;align-items:center;gap:8px;max-width:240px;vertical-align:middle;}
+  .tx-file svg{width:18px;height:18px;flex-shrink:0;color:var(--grey-600);}
+  .tx-file span{overflow:hidden;text-overflow:ellipsis;}
+  .tx-ref{color:var(--grey-600);}
+  .txt .dsh-status::before{display:none;}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .tc .tx-amt{font-weight:600;}
+  .tx-dl{width:32px;height:32px;margin:-6px -6px -6px 0;display:inline-flex;align-items:center;justify-content:center;border-radius:100px;color:var(--grey-800);transition:background .2s ease;}
+  .tx-dl:hover{background:var(--grey-100);}
+  .tx-dl:focus-visible{outline:2px solid var(--blue-500);outline-offset:1px;}
+  .tx-dl svg{width:18px;height:18px;}
+  .tc td a{color:var(--blue-500);font-weight:600;}
+  .tc .who a{color:inherit;}
+  .tc td a:hover{text-decoration:underline;}
+  .tc tr.new td{animation:bubIn .45s cubic-bezier(.16,1,.3,1) both;}
+  @media(prefers-reduced-motion:reduce){.fchart .chart-col b.bar,.tc tr.new td{animation:none;}}
 
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .adm-col{padding-left:18px;padding-right:18px;}
   }
-  /* Tablet portrait: just the post and the creator, side by side (landscape keeps all three columns) */
-  @media (min-width:768px) and (max-width:1279px) and (orientation:portrait){
-    .adm{grid-template-columns:auto minmax(0,320px);justify-content:center;}
-    .adm-left{display:none;}
-    .adm-center{border-left:0;}
-    .adm-phone{width:min(var(--w),calc(100vw - var(--gutter) * 2 - 344px));}
-    .adm-col{padding:30px 0 48px 24px;}
+  /* Phone and portrait tablet: cards are wider than on desktop, so the image keeps the card design's 3:2 proportions; landscape tablet keeps the creator app's 240px */
+  @media (max-width:1023px){
+    .feedgrid .card-img,.feedgrid .sk-card .img{height:auto;aspect-ratio:3/2;}
   }
   @media (max-width:1023px){
-    :root{--gutter:18px;}
+    :root{--gutter:18px;--explore-gutter:24px;}
+    .dsh{grid-template-columns:minmax(0,1fr);}
+    .tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+    html:has(.pfeed){scroll-snap-type:none;}
+    .dsh.pend{grid-template-columns:minmax(0,1fr);gap:18px;margin:0;}
+    .pfeed{grid-column:auto;display:block;}
+    .pitem{grid-template-columns:minmax(0,1fr);gap:18px;padding-bottom:18px;}
+    /* Full-width row, so the reel's size never depends on how far its image has loaded: every reel is the same fixed width */
+    .ppost{min-height:0;align-self:stretch;}
+    .ppost+.ppost{border-top:0;padding-top:18px;}
+    .pitem+.pitem{padding-top:18px;border-top:1px solid var(--grey-200);}
+    .adm-center,.pitem+.pitem .adm-center{border:0;align-items:center;}
+    .adm-phone{position:static;width:min(100%,400px);flex:none;border-radius:12px;}
+    .adm-col{padding:0 0 12px;}
+    /* Pending approvals and approved posts: creator details first, then the reel */
+    .pitem .adm-right{order:-1;}
+    .pitem{scroll-margin-top:calc(var(--header) + 54px);}
+    .adm-side{position:static;max-width:none;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
+    /* Left column becomes a drawer, opened from a bar pinned under the top menu */
+    .dsh,.dsh.pend{gap:12px;padding-top:0;}
+    .dsh-bar{display:flex;position:sticky;top:var(--header);z-index:15;margin:-18px calc(var(--gutter) * -1) 0;padding:9px var(--gutter);background:var(--page-bg);animation:none;}
+    .dsh-toggle{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px 0 12px;border-radius:100px;background:var(--grey-800);color:#fff;font-size:15px;font-weight:500;line-height:20px;transition:transform .2s cubic-bezier(.16,1,.3,1);}
+    .dsh-toggle svg{width:20px;height:20px;}
+    .dsh-toggle:active{transform:scale(.96);}
+    .dsh-scrim{display:block;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s ease;animation:none;}
+    .dsh-side,.dsh.pend>.dsh-side{position:fixed;z-index:41;top:0;bottom:0;left:0;align-self:stretch;width:min(320px,86vw);margin:0;display:block;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:0 16px 16px 0;
+      transform:translateX(-100%);visibility:hidden;animation:none;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s .4s;}
+    body.side-open{overflow:hidden;}
+    body.side-open .dsh-scrim{opacity:1;pointer-events:auto;}
+    body.side-open .dsh-side,body.side-open .dsh.pend>.dsh-side{transform:none;visibility:visible;box-shadow:4px 0 24px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
+    .dsh-close{display:flex;align-items:center;justify-content:center;position:absolute;z-index:2;top:12px;right:12px;width:32px;height:32px;border-radius:100px;background:#fff;color:var(--grey-800);}
+    .dsh-close svg{width:18px;height:18px;}
+    .dsh-side .dsh-menu a{min-height:48px;}
+    @media(prefers-reduced-motion:reduce){.dsh-side,.dsh.pend>.dsh-side,body.side-open .dsh-side,body.side-open .dsh.pend>.dsh-side{transition:none;}}
+    /* Inbox fills the screen below the menu button (54px bar + 12px gap) with an 18px margin under it */
+    .dsh-main>.ib{height:calc(100dvh - var(--header) - 84px);min-height:420px;}
+    .content:has(.ib){padding-bottom:18px;}
   }
   @media (max-width:767px){
-    :root{--gutter:12px;}
-    .topbar{grid-template-columns:auto auto minmax(0,1fr);gap:6px;}
+    /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
+    .adm-budget .kv b,.adm-budget .pct,.btiles .n{font-size:18px;line-height:24px;letter-spacing:-.015em;}
+    :root{--gutter:16px;--explore-gutter:16px;}
+    .topbar{grid-template-columns:auto minmax(0,1fr);gap:6px;}
     .brand svg{height:16px;}
-    .tnav{gap:0;}
-    .tnav a{width:30px;}
+    /* Campaigns and Notifications live in the menu at the top right; search sits to its left */
+    .tnav,#bell-btn{display:none;}
+    .top-right{grid-column:2;}
+    /* The menu opens as a full page under the top bar (the bar is its containing block) */
+    .tmenu{display:block;position:static;}
+    /* Row padding plus the list's side padding equals the page gutter, so the icons line up with the logo */
+    .tmenu-list{top:100%;left:0;right:0;height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;min-width:0;gap:2px;padding:12px calc(var(--gutter) - 12px);border:0;border-radius:0;box-shadow:none;transform:translateY(-8px);}
+    .tmenu-list a{min-height:52px;gap:12px;padding:0 12px;border-radius:12px;font-size:17px;line-height:22px;letter-spacing:-.01em;}
+    .tmenu-list a:active{transform:scale(.98);}
+    .tmenu-list svg{width:22px;height:22px;}
+    body.tmenu-open{overflow:hidden;}
+    body.tmenu-open #search-btn{display:none;}
+    /* Category tags stay on one line and scroll sideways, edge to edge */
+    .home .tags{flex-wrap:nowrap;overflow-x:auto;margin-left:calc(var(--gutter) * -1);margin-right:calc(var(--gutter) * -1);padding:0 var(--gutter);scroll-padding:0 var(--gutter);scrollbar-width:none;}
+    .home .tags::-webkit-scrollbar{display:none;}
     .top-right{gap:6px;}
     .top-av{display:none;}
-    .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
-    .pop{left:var(--gutter);width:auto;}
-    .adm{grid-template-columns:minmax(0,1fr);margin-bottom:0;}
-    .adm-left{display:block;}
-    .adm-center{order:-1;border:0;margin:0 calc(var(--gutter) * -1);}
-    .adm-phone{position:static;width:100%;}
-    .adm-side{position:static;max-width:420px;margin:0 auto;}
-    .adm-col{padding:18px 0;}
-    .adm-right{border-top:1px solid var(--grey-200);}
+    .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
+    /* Cards run edge to edge within the page gutter on phones */
+    .feedgrid>.cardwrap,.feedgrid>.sk-card{padding:0;border-radius:12px;}
+    .feedgrid .card-content{padding:12px 3px 18px;}
+    .feedgrid .card-content .ctitle{height:auto;}
+    .feedgrid .sk-card .l1,.feedgrid .sk-card .l2,.feedgrid .sk-card .l3{margin-left:3px;margin-right:3px;}
     .cp-hero{height:180px;}
     .cp{margin-bottom:0;}
     .cp-main{padding-bottom:24px;}
     .viewbar{grid-template-columns:auto minmax(0,1fr) auto;gap:6px;padding-top:6px;padding-bottom:6px;text-align:left;}
     .viewbar .msg{grid-column:2;}
-    .viewbar-back .lbl{display:none;}
-    .viewbar-back{padding:0 5px;}
     .viewbar-btn{grid-column:3;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dsh-main>.dcard,#fin-month>.dcard{padding:18px;}
+    /* Campaign details: sections run edge to edge as flat panels so their content uses the full phone width */
+    .dsh-main{gap:8px;}
+    .dsh-main>.dcard:not(.ib){margin:0 calc(var(--gutter) * -1);padding:24px var(--gutter);border-left:0;border-right:0;border-radius:0;}
+    .dh h2{font-size:18px;line-height:24px;}
+    .dh p{font-size:14px;line-height:20px;}
+    .att-list{gap:8px;margin-top:16px;}
+    .att{padding:14px 16px;}
+    .tiles{gap:8px;margin-top:16px;}
+    .tile{padding:14px;}
+    .tile .n{font-size:22px;line-height:28px;}
+    .tile .l{font-size:14px;line-height:19px;}
+    .brief{gap:8px;margin-top:16px;}
+    .brief h4{margin-top:12px;}
+    .brief p{font-size:15px;line-height:23px;}
+    /* Creator view of the campaign: no side rules, the page gutter is the only inset */
+    .cp{margin-top:-18px;}
+    .cp-main{border:0;padding:16px 0 32px;}
+    .cp-hero{border-radius:12px;}
+    .cp-details{gap:10px;padding:40px 0 20px;}
+    .cp-title{font-size:22px;line-height:28px;}
+    .cp-details>.cp-list{margin-top:8px;}
+    .cp-infotags{align-items:flex-start;padding:24px 0;border-top:1px solid var(--grey-200);}
+    .cp-infotags h3,.cp-reqs h3,.cp-createdby>h3{font-size:17px;line-height:22px;letter-spacing:-.01em;text-align:left;color:var(--grey-800);}
+    .cp-tags{justify-content:flex-start;}
+    .cp-tag{padding:6px 10px;}
+    .cp-tag span{font-size:13px;line-height:16px;}
+    .cp-reqs{gap:32px;padding:24px 0 8px;border-top:1px solid var(--grey-200);}
+    .band{margin:0 calc(var(--gutter) * -1);}
+    .band .cp-reqs,.band .cp-infotags{padding-left:var(--gutter);padding-right:var(--gutter);border-top:0;}
+    .cp-sec{gap:10px;}
+    .cp-reqs p{font-size:15px;line-height:23px;color:var(--grey-800);}
+    .cp-reqs h4{margin-top:12px;}
+    .cp-spec{gap:8px;}
+    .cp-ctas{gap:8px;padding:14px 16px;}
+    .cp-restrict{gap:10px;}
+    .cp-restrict li{font-size:15px;line-height:24px;align-items:flex-start;}
+    .cp-createdby{gap:16px;padding:32px 0 0;border-top:1px solid var(--grey-200);margin-top:24px;}
+    .cp-identity{padding:20px 16px 0;}
+    .cp-cdesc{padding:0 16px;font-size:15px;line-height:22px;color:var(--grey-800);}
+    .cp-stats{padding:8px 16px;}
+    .cp-cmetrics,.cp-questions{padding-left:16px;padding-right:16px;}
+    .cp-creatorcard{padding:0 0 16px;}
+    .ff-2,.fin3{grid-template-columns:minmax(0,1fr);}
+    /* Notifications: rows run edge to edge so logos line up with the heading; unread rows are tinted bands, not boxes */
+    .nt-head .home-title{font-size:22px;line-height:28px;}
+    .nt-group{margin-top:28px;}
+    .nt-list{gap:0;margin:8px calc(var(--gutter) * -1) 0;}
+    .nt-item{padding:14px 40px 14px var(--gutter);border:0;border-radius:0;}
+    .nt-item.unread{border:0;}
+    .nt-item.unread+.nt-item.unread{box-shadow:inset 0 1px 0 #fff;}
+    .nt-item.unread::after{right:var(--gutter);}
+    .nt-item:active{background:var(--grey-100);}
+    .nt-text{font-size:15px;line-height:21px;}
+    .nt-time{font-size:13px;line-height:18px;}
+    /* Monthly chart: the tooltip spans the chart above the bars and wraps, instead of one long line centred on a bar */
+    .fchart .chart-col{position:static;}
+    .fchart .chart-col .chart-tip,.fchart .chart-col.tl .chart-tip,.fchart .chart-col.tr .chart-tip{left:0;right:0;bottom:calc(100% + 10px);white-space:normal;text-align:center;transform:translateY(4px);}
+    .fchart .chart-col:hover .chart-tip,.fchart .chart-col:focus-visible .chart-tip{transform:none;}
+    .apg{grid-template-columns:repeat(2,minmax(0,1fr));}
+    /* Inbox works like a messaging app: the list, or one open conversation with a back button */
+    .dsh-main>.ib{grid-template-columns:minmax(0,1fr);padding:0;}
+    .ib:not(.open) .ib-item.on{background:none;border-left-color:transparent;}
+    .ib-list{border-right:0;}
+    .ib:not(.open) .ib-thread,.ib.open .ib-list{display:none;}
+    .ib-back{display:flex;}
+    .ib-head{justify-content:flex-start;padding-left:9px;}
   }
 </style>
 </head>
@@ -460,8 +924,13 @@
   <nav class="tnav" id="tnav" aria-label="Main"></nav>
   <div class="top-right">
     <button class="hicon" id="search-btn" data-search aria-label="Search" aria-expanded="false"></button>
-    <button class="hicon" data-pop="notifs" aria-label="Notifications"><span id="bell-ic"></span><i class="dot"></i></button>
-    <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="pfAvatar" data-label="B" alt=""></a>
+    <a class="hicon" id="bell-btn" href="#/notifications" aria-label="Notifications"><span id="bell-ic"></span><i class="dot" id="bell-dot"></i></a>
+    <!-- Phones: Campaigns and Notifications move into this menu -->
+    <div class="tmenu" id="tmenu">
+      <button class="hicon" id="tmenu-btn" data-tmenu aria-label="Menu" aria-expanded="false" aria-controls="tmenu-list"><span id="tmenu-ic"></span><i class="dot" id="tmenu-dot"></i></button>
+      <nav class="tmenu-list" id="tmenu-list" aria-label="Main menu"></nav>
+    </div>
+    <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="uberLogo" data-label="Ub" alt="Uber"></a>
   </div>
 </header>
 <nav class="subnav" id="subnav" aria-label="Campaign status">
@@ -469,10 +938,9 @@
   <a href="#/completed" data-tab="completed">Completed</a>
   <a href="#/upcoming" data-tab="upcoming">Upcoming</a>
 </nav>
-<div class="viewbar"><a class="viewbar-back" id="viewbar-back" href="#/active" aria-label="Back to campaigns"><span id="viewbar-back-ic"></span><span class="lbl">Back to campaigns</span></a><span class="msg" role="status" id="viewbar-msg">You are viewing this page as a creator</span><a class="viewbar-btn" id="viewbar-switch" href="#/active">Switch to admin</a></div>
+<div class="viewbar"><span class="msg" role="status" id="viewbar-msg">You are viewing this page as a creator</span><a class="viewbar-btn" id="viewbar-switch" href="#/active">Switch to admin</a></div>
 <main class="content" id="view"></main>
 
-<div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
 <div class="toast" id="toast"></div>
 
 <!-- Design assets shared with the creator web app (generated by scripts/sync-assets.js) -->
@@ -628,17 +1096,18 @@ const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'
 /* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
 A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
 
+/* ago = minutes before now; read = already seen */
 const notifications=[
-  {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'logo1',type:'approved',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'uberLogo',type:'reply',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'legoLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'dominos',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'pepsi',type:'reply',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'card1',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'avatar',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
-  {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
-  {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:12,read:false},
+  {logo:'logo1',type:'approved',brand:'PickMe',ago:95,read:false},
+  {logo:'uberLogo',type:'reply',brand:'PickMe',ago:300,read:false},
+  {logo:'legoLogo',type:'approved',brand:'PickMe',ago:320,read:true},
+  {logo:'dominos',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:1560,read:true},
+  {logo:'pepsi',type:'reply',brand:'PickMe',ago:1840,read:true},
+  {logo:'card1',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:2940,read:true},
+  {logo:'avatar',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',ago:4520,read:true},
+  {logo:'logo2',type:'approved',brand:'PickMe',ago:8640,read:true},
+  {logo:'pickmeLogo',type:'approved',brand:'PickMe',ago:12960,read:true},
 ];
 
 const state={tab:'active',cat:'All',access:null,fee:null,q:'',searchOpen:false,loaded:false};
@@ -654,13 +1123,12 @@ function barHTML(c){
 }
 function cardHTML(id){
   const c=C[id];
-  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}">
+  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/details">
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
-      <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}${c.fee==='performance'?`<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span>`:''}</div><div class="view-btn">View</div></div>
     </div>
     <div class="card-content"><div class="card-access">${c.access==='invite'?LOCK:UNLOCK}<span>${ACCESS[c.access]}</span></div>
-      <div class="ctitle" data-go="#/campaign/${id}">${c.title}</div>${timeHTML(c)}
+      <div class="ctitle" data-go="#/campaign/${id}/admin/details">${c.title}</div>${timeHTML(c)}
       <div class="progress-group">${barHTML(c)}
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.fee==='flat'?`<span>${c.filled} /</span><b>${c.slots} slots</b>`:c.money}</div></div></div>
     </div></div>`;
@@ -677,6 +1145,36 @@ function viewExplore(){
     <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}${Object.entries(FILTERS).map(([f,opts])=>`<span class="tag-sep" aria-hidden="true"></span>${Object.entries(opts).map(([k,v])=>`<div class="tag${state[f]===k?' active':''}" data-filter="${f}" data-val="${k}">${v}</div>`).join('')}`).join('')}</div>
     <div class="feedgrid" id="feed"></div>
   </div>`;
+}
+function viewNotifs(){
+  const unread=notifications.filter(n=>!n.read).length;
+  const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b> got approved`
+    :n.type==='reply'?`Check out the <b>reply from ${n.brand}</b>`
+    :`<b>+ Rs. ${n.amount}</b> from <b>${n.brand}</b>, ${n.detail}`;
+  const item=(n,i)=>{const d=new Date(Date.now()-n.ago*60000);
+    return `<button class="nt-item${n.read?'':' unread'}" data-nt="${i}" aria-label="${n.read?'':'Unread: '}${esc(text(n).replace(/<[^>]+>/g,''))}"><img class="nt-logo" data-a="${n.logo}" data-label="${n.brand}" alt=""><span class="nt-body"><span class="nt-text">${text(n)}</span><time class="nt-time" datetime="${d.toISOString()}" title="${d.toLocaleString()}">${stamp(n.ago,d)}</time></span></button>`;};
+  const groups=[['New',notifications.map((n,i)=>[n,i]).filter(([n])=>!n.read)],['Earlier',notifications.map((n,i)=>[n,i]).filter(([n])=>n.read)]].filter(g=>g[1].length);
+  return `<div class="nt-page">
+    <div class="nt-head"><div><h1 class="home-title">Notifications</h1><p class="count">${unread?`${unread} unread`:'You\u2019re all caught up'}</p></div>
+    <button class="nt-markall" data-act="readall"${unread?'':' disabled'}>Mark all as read</button></div>
+    ${groups.map(([g,list])=>`<h2 class="nt-group">${g}</h2><div class="nt-list">${list.map(([n,i])=>item(n,i)).join('')}</div>`).join('')}
+  </div>`;
+}
+/* "12 min ago · Today, 1:42 PM" — relative time first, exact time after */
+function stamp(ago,d){
+  const rel=ago<60?`${ago} min ago`:ago<1440?`${Math.floor(ago/60)} hr${ago<120?'':'s'} ago`:ago<2880?'Yesterday':`${Math.floor(ago/1440)} days ago`;
+  const t=d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+  const today=new Date(),y=new Date(today-864e5);
+  const day=d.toDateString()===today.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([], {month:'short',day:'numeric'});
+  return rel==='Yesterday'?`Yesterday, ${t}`:`${rel} · ${day}, ${t}`;
+}
+function updateBell(){
+  const n=notifications.filter(x=>!x.read).length;
+  document.getElementById('bell-dot').hidden=!n;
+  document.getElementById('bell-btn').setAttribute('aria-label',n?`Notifications, ${n} unread`:'Notifications');
+  document.getElementById('tmenu-dot').hidden=!n;
+  document.getElementById('tmenu-btn').setAttribute('aria-label',n?`Menu, ${n} unread notifications`:'Menu');
+  const c=document.getElementById('tmenu-n');c.textContent=n;c.hidden=!n;
 }
 function renderFeed(){
   const f=document.getElementById('feed'); if(!f) return;
@@ -699,7 +1197,6 @@ function renderFeed(){
 
 /* ---------- Campaign page (middle column of the creator campaign page) ---------- */
 const CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
 function viewCampaign(id){
   const c=C[id];
   const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
@@ -718,10 +1215,6 @@ function viewCampaign(id){
       </div></div>`
     : '';
   return `<div class="cp">
-    <div class="cp-top">
-      <a class="cp-back" href="#/${c.status}" aria-label="Back to Campaigns">${BACKARROW}<span>Campaigns</span></a>
-      <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
-    </div>
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
         <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
@@ -811,73 +1304,675 @@ const SUB={
     caption:'Shakira at City of Dreams. In Colombo. I’m still not over it 💃 Who’s getting tickets? #ShakiraColombo #HiruTV',
     bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
 };
+/* Every other post uploaded to the campaign; the admin view scrolls through SUB[id] first, then these */
+const N={name:'Nethmi Perera',handle:'@nethmi.eats',av:'av1',followers:[['insta','31K'],['tiktok','14.2K']],bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'};
+const K={name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],bio:'Coffee, cafés and slow mornings. Rating every new seasonal drink in Sri Lanka, one sip at a time.'};
+const D={name:'Dilan Fernando',handle:'@dilan.bites',av:'av3',followers:[['tiktok','41K'],['insta','9.8K']],bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'};
+const S={name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',followers:[['insta','26.5K'],['facebook','12K']],bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'};
+const MORE={
+  uber:[
+    {...N,posted:'4 hrs ago',media:{type:'carousel',items:['card1','card2']},caption:'Book festival day out, sorted by Uber Moto 🏍️📚 Swipe for the haul. #UberMoto #ColomboBookFestival #ad'},
+    {...D,posted:'Yesterday',media:{type:'reel',items:['card1'],length:'0:18'},caption:'Galle Face to the Book Festival in under 15 minutes. Uber Moto, you legend 🏍️ #UberMoto #ad'}],
+  eats:[
+    {...S,posted:'June 25',media:{type:'image',items:['card2']},caption:'Reading break, Uber Eats edition 🍕📖 #UberEatsLK #ColomboBookFestival'},
+    {...D,posted:'June 24',media:{type:'reel',items:['card2'],length:'0:20'},caption:'Rating festival food delivered straight to the queue 🍔 #UberEatsLK'}],
+  starbucks:[
+    {...S,posted:'Yesterday',media:{type:'image',items:['sbHero']},caption:'Holiday cups are back and so am I ☕✨ #StarbucksLK #ChristmasMocha'},
+    {...N,posted:'2 d ago',media:{type:'reel',items:['sbContent1'],length:'0:16'},caption:'Christmas Mocha taste test, honest review in 15 seconds 🎄 #StarbucksLK'}],
+  burgerking:[
+    {...K,posted:'2 d ago',media:{type:'image',items:['burgerPhoto']},caption:'Whopper and a coffee? Don’t judge me 🍔☕ #WhopperWednesday #BurgerKingLK'},
+    {...N,posted:'3 d ago',media:{type:'reel',items:['burgerPhoto'],length:'0:17'},caption:'Whopper Wednesday, ranked bite by bite 🍔 #WhopperWednesday'}],
+  dominos:[
+    {...D,posted:'4 d ago',media:{type:'reel',items:['grid3'],length:'0:24'},caption:'Polos Pizza in one bite? Watch till the end 🍕 #DominosLK #PolosPizza'},
+    {...K,posted:'5 d ago',media:{type:'image',items:['grid3']},caption:'Movie night menu: Polos Pizza, no notes 🍕🎬 #DominosLK'}],
+  kfc:[
+    {...S,posted:'June 29',media:{type:'reel',items:['grid2'],length:'0:19'},caption:'Hot & Crispy with the girls, who cried first? 🔥 #KFCSriLanka #HotAndCrispy'},
+    {...D,posted:'June 28',media:{type:'image',items:['grid2']},caption:'Spice level: yes 🔥 #KFCSriLanka'}],
+  hiru:[
+    {...S,posted:'Scheduled',media:{type:'image',items:['card3']},caption:'Outfit ready for Akon at Port City 🎤 #AkonColombo #HiruTV'},
+    {...N,posted:'Scheduled',media:{type:'carousel',items:['card3','grid6']},caption:'Akon week on the podcast, swipe for the episode → #AkonColombo #HiruTV'}],
+  shakira:[
+    {...K,posted:'Scheduled',media:{type:'reel',items:['grid6'],length:'0:21'},caption:'Shakira in Colombo. Hips don’t lie and neither do I: I’m going 💃 #ShakiraColombo #HiruTV'},
+    {...N,posted:'Scheduled',media:{type:'image',items:['grid6']},caption:'Pre-show dinner plans for Shakira night ✨ #ShakiraColombo'}],
+};
+const POSTS=id=>[SUB[id],...(MORE[id]||[])];
 const PLAYIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.1-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>';
 const PAUSEIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
 const MUTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
 const SOUNDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
 const src=k=>A[k]?`data-a="${k}"`:`src="${k}"`;
 
-function viewAdmin(id){
-  const c=C[id], s=SUB[id], m=s.media;
-  const num=v=>+String(v).replace(/[^0-9]/g,'');
-  const spent=num(c.spent), total=c.budgetN, pct=Math.min(100,Math.round(spent/total*100));
-  const kind={reel:'Reels',image:'Post',carousel:'Carousel'}[m.type];
-  let screen;
-  if(m.type==='reel') screen=`<div class="adm-screen" id="reel" data-len="${m.length}">
+/* ---------- Admin dashboard: campaign card + sub menu, one section at a time ---------- */
+const EYEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const MENUIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+const PHONE=matchMedia('(max-width:767px)');
+const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
+const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+
+/* Creators who post for brands (taken from the submissions above) */
+const POOL=Object.values(SUB).filter((s,i,a)=>a.findIndex(o=>o.name===s.name)===i)
+  .map(({name,handle,av,followers,bio})=>({name,handle,av,followers,bio}));
+const PICS=['card1','card2','card3','grid2','grid3','grid6','sbContent1','sbContent2','burgerPhoto','sbHero'];
+const fmtN=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n);
+const num=v=>+String(v).replace(/[^0-9]/g,'');
+function rng(id){let x=[...id].reduce((h,ch)=>(h*31+ch.charCodeAt(0))>>>0,7);return ()=>(x=(x*1664525+1013904223)>>>0)/4294967296;}
+
+const DASH={};
+function dash(id){
+  if(DASH[id]) return DASH[id];
+  const c=C[id], s=SUB[id], r=rng(id);
+  const others=POOL.filter(p=>p.name!==s.name);
+  const pics=[c.img,...PICS.filter(p=>p!==c.img)];
+  /* One pending item per platform: a creator who submits for two platforms shows up twice in a row, once per platform */
+  const pending=c.status==='completed'?[]:POSTS(id).flatMap((p,i)=>{
+    const submitted=p.posted==='Scheduled'?['1 hr ago','3 hrs ago','5 hrs ago'][i%3]:p.posted;
+    const plats=(i%2===0&&p.followers.length>1?p.followers.slice(0,2):p.followers.slice(0,1)).map(f=>f[0]);
+    return plats.map((pl,n)=>({...p,submitted,platform:pl,part:n+1,parts:plats.length,other:plats[1-n]}));});
+  const kinds=['Reel','Post','Carousel'];
+  const approved=c.status==='upcoming'?[]:Array.from({length:c.status==='completed'?8:6},(_,i)=>{
+    const p=POOL[(i+2)%POOL.length];
+    return {...p,img:pics[(i+3)%pics.length],kind:kinds[i%3],platform:p.followers[i%p.followers.length][0],
+      views:Math.round(2500+r()*42000),eng:+(3+r()*6).toFixed(1),posted:i?`${i+1} d ago`:'Yesterday'};});
+  const threads=[
+    {who:s,unread:true,time:'12 min',msgs:[['them','Hi! Just submitted my post for review 🙌'],['them','Let me know if you want a different caption or a shorter cut.']]},
+    {who:others[0],unread:true,time:'1 hr',msgs:[['me','Thanks for joining the campaign!'],['them','Excited for this one. Is it okay to film indoors?']]},
+    {who:others[2]||others[1],unread:false,time:'2 d',msgs:[['them','When do approved posts get paid?'],['me','Within 3 working days of the post going live.'],['them','Perfect, thank you!']]}];
+  return DASH[id]={pending,approved,threads,thread:0,dismissed:new Set(),plats:{an:'all',eg:'all',cm:'views',cp:'all'}};
+}
+const unreadN=d=>d.threads.filter(t=>t.unread).length;
+
+function sideHTML(id,sec){
+  const c=C[id], d=dash(id);
+  const badge={pending:d.pending.length,inbox:unreadN(d)};
+  /* On phones the left column becomes a drawer, opened from this bar under the top menu */
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${SECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
+    <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
+    <div class="dsh-id">
+      <h1 class="dsh-title">${c.title}</h1>
+      <div class="dsh-meta"><span class="dsh-status ${c.status}">${c.status}</span><span class="dsh-when">${[c.time,c.right].filter(Boolean).map(t=>`<span>${t}</span>`).join('<i aria-hidden="true"></i>')}</span></div>
+      <a class="dsh-viewas" href="#/campaign/${id}">${EYEIC}View as creator</a>
+    </div>
+    <nav class="dsh-menu" aria-label="Campaign admin">${SECTIONS.map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
+  </aside>`;
+}
+const empty=(t,m)=>`<div class="dempty"><b>${t}</b><span>${m}</span></div>`;
+const dhead=(t,p,right='')=>`<div class="dh"><div><h2>${t}</h2>${p?`<p>${p}</p>`:''}</div>${right}</div>`;
+
+function secDetails(id){
+  const c=C[id], d=dash(id), base=`#/campaign/${id}/admin/`;
+  const spent=num(c.spent), pct=Math.min(100,Math.round(spent/c.budgetN*100));
+  const views=d.approved.reduce((a,p)=>a+p.views,0);
+  /* Budget figures from the posts: payout = base price + performance rate per 1K views, capped at the max earning */
+  const subs=d.pending.length+d.approved.length, engs=Math.round(d.approved.reduce((a,p)=>a+p.views*p.eng/100,0));
+  const [basePay,capPay,perfPay]=c.list.map(r=>num(String(r[1]).split('/')[0]));
+  const maxPaid=d.approved.reduce((m,p)=>Math.max(m,Math.min(capPay,basePay+Math.round(p.views/1000*perfPay))),0);
+  const rs=n=>'Rs. '+n.toLocaleString('en-US');
+  const att=[
+    d.pending.length&&['review',`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,`Creators are waiting on you. <a class="dlink" href="${base}pending">Review now</a>`],
+    unreadN(d)&&['inbox',`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,`Quick replies keep your response time badge. <a class="dlink" href="${base}inbox">Open inbox</a>`],
+    c.status==='upcoming'&&['brief','Share the brief before launch','Creators can read it and save the campaign ahead of time. <a class="dlink" href="#/campaign/'+id+'">View as creator</a>'],
+  ].filter(a=>a&&!d.dismissed.has(a[0]));
+  return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
+    <section class="dcard">${dhead('Track performance','How this campaign is doing across every creator')}
+      <div class="tiles">
+        <div class="tile"><span class="n">${d.pending.length+d.approved.length}</span><span class="l">Content submitted</span><span class="d">${c.joinedShort} creators joined</span></div>
+        <a class="tile" href="${base}pending"><span class="n">${d.pending.length}</span><span class="l">Pending approvals</span><span class="d">${d.pending.length?'Oldest '+d.pending[d.pending.length-1].submitted:'All caught up'}</span></a>
+        <a class="tile" href="${base}approved"><span class="n">${d.approved.length}</span><span class="l">Approved content</span><span class="d">${d.approved.length?'Live on '+new Set(d.approved.map(p=>p.platform)).size+' platforms':'Nothing live yet'}</span></a>
+        <a class="tile" href="${base}analytics"><span class="n">${fmtN(views)}</span><span class="l">Total views</span><span class="d">${views?'<span class="up">▲ 32%</span> last 7 days':'N/A'}</span></a>
+      </div></section>
+    <section class="dcard">${dhead('Budget')}
+      <div class="adm-budget">
+        <div class="row"><span class="kv"><b>${c.spent}</b>Spent</span><span class="kv">Total<b>${c.budget}</b></span></div>
+        <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
+        <div class="row"><span class="pct">${pct}%</span><span class="kv">Remaining<b>${rs(Math.max(0,c.budgetN-spent))}</b></span></div>
+      </div>
+      <div class="tiles btiles">
+        <div class="tile"><span class="n">${subs?rs(Math.round(spent/subs)):'N/A'}</span><span class="l">Avg per content</span><span class="d">${subs} submission${subs===1?'':'s'}</span></div>
+        <div class="tile"><span class="n">${views?rs(Math.round(spent/views*1000)):'N/A'}</span><span class="l">Per 1000 reach</span><span class="d">Avg on all platforms</span></div>
+        <div class="tile"><span class="n">${engs?rs(Math.round(spent/engs)):'N/A'}</span><span class="l">Cost per engagement</span><span class="d">Avg on all platforms</span></div>
+        <div class="tile"><span class="n">${maxPaid?rs(maxPaid):'N/A'}</span><span class="l">Max paid for content</span><span class="d">${maxPaid?`<a class="dlink" href="${base}approved">View content</a>`:'Nothing live yet'}</span></div>
+      </div></section>
+    <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign')}
+      <div class="brief">
+        <p>${c.reqDesc}</p>
+        <h4>Best suited for</h4><div class="cp-tags">${c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('')}</div>
+        <h4>Platforms to post on</h4><div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
+        <h4>Requirements</h4><div class="cp-spec">${[...SPEC,['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+      </div></section>`;
+}
+
+/* Approve and Reject wait HOLD ms before they go through, so the brand can change their mind */
+const HOLD=30000;
+let sidN=0;const sid=s=>s.sid||(s.sid=++sidN);
+const holdLeft=s=>Math.max(0,Math.ceil((s.hold.at-Date.now())/1000));
+function actHTML(s){
+  if(!s.hold) return `<button class="btn btn-pri" type="button" data-act="approve">Approve</button><button class="btn btn-glass" type="button" data-act="reject">Reject</button>`;
+  const left=s.hold.at-Date.now(), rej=s.hold.act==='reject';
+  return `<button class="btn ${rej?'btn-glass rej':'btn-pri'} adm-timer" type="button" data-act="undo" style="--dur:${HOLD}ms;--delay:${left-HOLD}ms"><span>${rej?'Rejecting':'Approving'} in <b data-left>${holdLeft(s)}</b>s · <em>Tap to undo</em></span></button>`;
+}
+function mediaHTML(s,review=true){
+  const m=s.media;
+  const label=`<div class="adm-plat">${PLAT[s.platform]}<span>${s.lbl}</span></div>`;
+  const actions=label+(review?`<div class="adm-act" data-sid="${sid(s)}">${actHTML(s)}</div>`:'');
+  if(m.type==='reel') return `<div class="adm-screen" data-media="reel" data-len="${m.length}">
       <div class="reel-frame"><img ${src(m.items[0])} alt="Reel by ${s.name}"></div>
       <button class="reel-hit" type="button" aria-label="Pause reel"></button>
-      <span class="adm-kind">${kind}</span>
-      <span class="reel-icon" id="reel-icon">${PAUSEIC}</span>
-      <div class="reel-progress"><i id="reel-bar"></i></div>
-      <button class="reel-mute" type="button" id="reel-mute" aria-label="Unmute">${MUTEIC}</button></div>`;
-  else if(m.type==='carousel') screen=`<div class="adm-screen" id="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
-      <div class="car-track" id="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
-      <span class="adm-kind">${kind}</span><span class="adm-count" id="car-count">1/${m.items.length}</span>
+      <span class="reel-icon">${PAUSEIC}</span>
+      <div class="reel-progress"><i></i></div>
+      <button class="reel-mute" type="button" aria-label="Unmute">${MUTEIC}</button>${actions}</div>`;
+  if(m.type==='carousel') return `<div class="adm-screen" data-media="car" tabindex="0" aria-roledescription="carousel" aria-label="Carousel by ${s.name}, ${m.items.length} slides">
+      <div class="car-track">${m.items.map((k,i)=>`<div class="car-slide" aria-label="Slide ${i+1} of ${m.items.length}"><img ${src(k)} alt=""></div>`).join('')}</div>
+      <span class="adm-count">1/${m.items.length}</span>
       <button class="car-nav prev" type="button" data-car="-1" aria-label="Previous slide">${CPICON.chevL}</button>
       <button class="car-nav next" type="button" data-car="1" aria-label="Next slide">${CPICON.chevL}</button>
-      <div class="car-dots" id="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`;
-  else screen=`<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}"><span class="adm-kind">${kind}</span></div>`;
-  const caption=esc(s.caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`);
-  const totalF=s.followers.reduce((a,f)=>a+parseFloat(f[1])*(/K/.test(f[1])?1000:1),0);
-  return `<div class="adm">
-    <div class="adm-col adm-left"><div class="adm-side">
-      <div class="adm-sec">
-        <h1 class="adm-title">${c.title}</h1>
-        <div class="adm-meta">
-          ${c.event?`<span>${CPICON.calendar}${c.time}</span>`:`<span>${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
-          ${c.right?`<span>${CLOCK}${c.right}</span>`:''}
+      <div class="car-dots">${m.items.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div>${actions}</div>`;
+  return `<div class="adm-screen"><img ${src(m.items[0])} alt="Post by ${s.name}">${actions}</div>`;
+}
+
+/* Industry tiers by followers on the platform the content is for */
+const tier=n=>n>=1e6?'Mega':n>=5e5?'Macro':n>=1e5?'Mid':n>=1e4?'Micro':'Nano';
+/* Each platform account has its own handle and photo; the other account's photo is a tighter crop of the same one */
+const ACCOUNTS={
+  'Ramith Hewavithan':{tiktok:'@ramith.hewa'},'Nethmi Perera':{tiktok:'@nethmieats'},
+  'Kavindu Jayasuriya':{tiktok:'@kavindusips',youtube:'@KavinduSips'},'Dilan Fernando':{insta:'@dilanbites_'},
+  'Sachini Wickramasinghe':{facebook:'Sachini W.'}};
+const acct=s=>{const h=(ACCOUNTS[s.name]||{})[s.platform];return {handle:h||s.handle,crop:!!h};};
+/* The second platform's caption: the opening line plus that platform's usual tags */
+const PLATTAGS={tiktok:'#fyp #foryou',youtube:'#shorts',facebook:'',insta:'',linkedin:''};
+const capFor=s=>{if(s.part!==2) return s.caption;
+  const tags=s.caption.match(/#\w+/g)||[], first=s.caption.replace(/#\w+/g,'').trim().split(/(?<=[.!?])\s/)[0];
+  return `${first} ${[...tags,PLATTAGS[s.platform]].filter(Boolean).join(' ')}`;};
+const fN=v=>parseFloat(v)*(/K/i.test(v)?1000:/M/i.test(v)?1e6:1);
+function secPending(id){
+  const d=dash(id);
+  if(!d.pending.length) return null;
+  /* Consecutive submissions from one creator for different platforms share one creator panel */
+  const groups=[];
+  d.pending.forEach((s,i)=>{const g=groups[groups.length-1];
+    if(g&&s.part===2&&g[0].s.name===s.name&&g[0].s.part===1) g.push({s,i}); else groups.push([{s,i}]);});
+  /* Only what differs per platform swaps: photo, handle, follower line, caption */
+  const sw=(g,fn,c='')=>`<div class="sw${c}">${g.map((x,p)=>`<div data-p="${p}">${fn(x.s)}</div>`).join('')}</div>`;
+  return `<div class="pfeed">${groups.map(g=>{
+    g.forEach((x,p)=>x.s.lbl=p?`Same creator · <b>${PLATNAME[x.s.platform]} submission</b>`:`<b>${PLATNAME[x.s.platform]} submission</b>${g[1]?` · ${PLATNAME[g[1].s.platform]} next`:''}`);
+    const s=g[0].s;
+    return `<article class="pitem${g[1]?' pgroup':''}" data-on="0" aria-label="Submission${g[1]?'s':''} by ${s.name}">
+      <div class="adm-center">${g.map((x,p)=>`<div class="ppost" data-i="${x.i}" data-p="${p}"><div class="adm-phone">${mediaHTML(x.s)}</div></div>`).join('')}</div>
+      <div class="adm-col adm-right"><div class="adm-side">
+        <div class="adm-sec">
+          <div class="adm-creator">${sw(g,x=>`<img data-a="${x.av}" data-label="${x.name}" alt=""${acct(x).crop?' class="crop"':''}>`,' sw-av')}<div><div class="name">${s.name}</div>${sw(g,x=>`<div class="adm-handle">${acct(x).handle}</div>`)}</div></div>
+          ${sw(g,x=>{const f=x.followers.find(f=>f[0]===x.platform);return `<div class="adm-follow"><span title="${PLATNAME[x.platform]}">${PLAT[x.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN(f[1]))} creator tier</em></div>`;})}
         </div>
-        <div class="adm-joined"><div class="cp-avatars">${AVSET}</div><span><b>${c.joinedShort}</b> creators joined</span></div>
-      </div>
-      <div class="adm-sec"><span class="adm-eyebrow">Budget</span>
-        <div class="adm-budget">
-          <div class="row"><span class="spent">${c.spent}</span><span class="pct">${pct}%</span></div>
-          <div class="adm-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Budget spent"><i style="--p:${pct}%"></i></div>
-          <div class="foot"><span>Total ${c.budget}</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span>${sw(g,x=>`<p class="adm-caption">${esc(capFor(x)).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`)}</p>`)}<span class="adm-posted">Submitted ${s.submitted}</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
+      </div></div>
+    </article>`;}).join('')}</div>`;
+}
+
+/* Approved posts grouped by platform, busiest platform first: the grid and the post feed share this order */
+function approvedOrder(d){
+  const n=k=>d.approved.filter(p=>p.platform===k).length;
+  return Object.keys(PLATNAME).filter(n).sort((a,b)=>n(b)-n(a)).map(k=>[k,d.approved.map((p,i)=>i).filter(i=>d.approved[i].platform===k)]);
+}
+function secApproved(id){
+  const d=dash(id);
+  const card=i=>{const p=d.approved[i];return `<a class="ap" href="#/campaign/${id}/admin/approved/${i}" aria-label="${PLATNAME[p.platform]} post by ${p.name}">
+      <div class="ap-media"><img ${src(p.img)} data-label="${p.name}" alt="">${p.isNew?'<span class="ap-kind new">Just approved</span>':''}
+        <span class="ap-views">${EYEIC}${p.isNew?'Going live':fmtN(p.views)}</span></div>
+      <div class="ap-by"><img data-a="${p.av}" data-label="${p.name}" alt=""><div><b>${p.name}</b><small>${p.posted}</small></div></div></a>`;};
+  return `<section class="dcard">${dhead('Approved content','Posts that are live for this campaign',`<span class="count">${d.approved.length} posts</span>`)}
+    ${d.approved.length?approvedOrder(d).map(([k,is])=>
+      `<div class="aps"><h3 class="aps-h">${PLAT[k]}${PLATNAME[k]}<span>${is.length} post${is.length>1?'s':''}</span></h3><div class="apg">${is.map(card).join('')}</div></div>`).join('')
+      :empty('Nothing approved yet','Approved posts land here with their views once they go live.')}</section>`;
+}
+/* Opened from the grid: every approved post in a scrolling feed, laid out like Pending approvals without the review buttons */
+function secApprovedFeed(id){
+  const d=dash(id), c=C[id], caps=POSTS(id).map(p=>p.caption);
+  if(!d.approved.length) return null;
+  const items=approvedOrder(d).flatMap(([,is])=>is);
+  return `<div class="pfeed">${items.map((i,n)=>{
+    const p=d.approved[i];
+    /* A just-approved post keeps the submission as sent; older ones are built from the grid image */
+    const media=p.isNew?p.media:{Reel:{type:'reel',items:[p.img],length:'0:20'},Post:{type:'image',items:[p.img]},Carousel:{type:'carousel',items:[p.img,c.img]}}[p.kind];
+    const caption=p.isNew?p.caption:caps[i%caps.length];
+    const s={...p,media,lbl:`<b>${PLATNAME[p.platform]}</b> · ${p.isNew?'Going live':'Posted '+p.posted}`};
+    const f=p.followers.find(f=>f[0]===p.platform)||p.followers[0], a=acct(p);
+    return `<article class="pitem" aria-label="${PLATNAME[p.platform]} post by ${p.name}"><div class="adm-center"><div class="ppost" data-k="${i}"><div class="adm-phone">${mediaHTML(s,false)}</div></div></div>
+      <div class="adm-col adm-right"><div class="adm-side">
+        <div class="adm-sec">
+          <div class="adm-creator"><div class="sw-av"><div><img data-a="${p.av}" data-label="${p.name}" alt=""${a.crop?' class="crop"':''}></div></div><div><div class="name">${p.name}</div><div class="adm-handle">${a.handle}</div></div></div>
+          <div class="adm-follow"><span title="${PLATNAME[p.platform]}">${PLAT[p.platform]}${f[1]} <em>Followers</em></span><i aria-hidden="true"></i><em>${tier(fN(f[1]))} creator tier</em></div>
         </div>
+        <div class="adm-sec"><span class="adm-eyebrow">Performance</span>
+          <div class="adm-follow">${p.isNew?'<em>Stats show up once the post goes live</em>':`<span>${fmtN(p.views)} <em>views</em></span><i aria-hidden="true"></i><span>${p.eng}% <em>engagement</em></span>`}</div></div>
+        <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${esc(caption).replace(/#\w+/g,t=>`<span class="tag">${t}</span>`)}</p><span class="adm-posted">${n+1} of ${items.length} approved</span></div>
+        <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${p.bio}</p></div>
+      </div></div>
+    </article>`;}).join('')}</div>`;
+}
+
+/* Reach: unique accounts, a share of each post's views */
+const postReach=p=>Math.round(p.views*(.55+rng(p.name+p.views)()*.25));
+/* What a post earned: base price plus performance pay per 1K views, up to the max per content */
+function postPaid(c,p){
+  const rs=i=>+c.list[i][1].match(/Rs\. ([\d,]+)/)[1].replace(/,/g,'');
+  return Math.min(rs(0)+Math.round(p.views/1000*rs(2)),rs(1));
+}
+/* Headline tiles for the analytics card, filtered by the platform dropdown */
+const AN_PLATS=[['all','All'],['insta','Instagram'],['tiktok','TikTok'],['youtube','YouTube']];
+const CARET='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3h8L5 8z" fill="currentColor"/></svg>';
+function anTiles(id){
+  const d=dash(id), plat=d.plats.an;
+  const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
+  if(!live.length) return `<div class="tile" style="grid-column:1/-1"><span class="l">No live posts on ${AN_PLATS.find(p=>p[0]===plat)[1]} yet</span><span class="d">Numbers show up once an approved post goes live there.</span></div>`;
+  const views=live.reduce((a,p)=>a+p.views,0), eng=(live.reduce((a,p)=>a+p.eng,0)/live.length).toFixed(1);
+  const reach=live.reduce((a,p)=>a+postReach(p),0);
+  const r=rng(id+plat), pct=(lo,hi)=>Math.round(lo+r()*(hi-lo));
+  const who=new Set(live.map(p=>p.name)).size;
+  return `<div class="tile"><span class="n">${fmtN(views)}</span><span class="l">Views</span><span class="d"><span class="up">▲ ${pct(12,40)}%</span> last 7 days</span></div>
+        <div class="tile"><span class="n">${fmtN(reach)}</span><span class="l">Total reach</span><span class="d"><span class="up">▲ ${pct(8,30)}%</span> last 7 days</span></div>
+        <div class="tile"><span class="n">${eng}%</span><span class="l">Engagement rate</span><span class="d"><span class="up">▲ ${(.2+r()*1.2).toFixed(1)} pts</span> last 7 days</span></div>
+        <div class="tile"><span class="n">${live.length}</span><span class="l">Live posts</span><span class="d">${who} creator${who===1?'':'s'}</span></div>`;
+}
+/* Engagement card: impressions and the actions people took on the posts */
+function egStats(id){
+  const d=dash(id), plat=d.plats.eg;
+  const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
+  if(!live.length) return `<div class="tile" style="grid-column:1/-1"><span class="l">No live posts on ${AN_PLATS.find(p=>p[0]===plat)[1]} yet</span><span class="d">Numbers show up once an approved post goes live there.</span></div>`;
+  /* Each post's engagements (views × engagement rate) split into reactions, comments and reposts */
+  const t={imp:0,re:0,co:0,rp:0};
+  live.forEach(p=>{const r=rng(p.name+p.views+'e'), e=p.views*p.eng/100;
+    t.imp+=Math.round(p.views*(1.2+r()*.4));t.re+=Math.round(e*.8);t.co+=Math.round(e*.12);t.rp+=Math.round(e*.08);});
+  const r=rng(id+plat+'e'), delta=()=>{const v=Math.round(r()*30)-4;return v>0?`<span class="up">▲ ${v}%</span>`:v<0?`<span class="down">▼ ${-v}%</span>`:'No change';};
+  return [['imp','Impressions'],['re','Reactions'],['co','Comments'],['rp','Reposts']].map(([k,l])=>
+    `<div class="tile"><span class="n">${fmtN(t[k])}</span><span class="l">${l}</span><span class="d">${delta()} last 7 days</span></div>`).join('');
+}
+/* Platform dropdown: each card keeps its own choice; PANELS says what to redraw */
+/* Analytics dropdowns: each one keeps its own choice in dash(id).plats; PANELS redraws what it filters */
+const fill=(el,html)=>{const box=document.getElementById(el);box.innerHTML=html;bindAssets(box);};
+const PANELS={an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
+function platPick(id,key,opts=AN_PLATS,label='Platform'){
+  const cur=opts.find(p=>p[0]===(key in FIN.plats?FIN.plats:dash(id).plats)[key]);
+  return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
+    <div class="an-plat-menu" role="menu" aria-label="${label}">${opts.map(([k,l])=>`<button type="button" role="menuitemradio" aria-checked="${k===cur[0]}" data-plat="${k}">${PLAT[k]||''}${l}</button>`).join('')}</div></div>`;
+}
+
+/* Per-day chart: one metric over the last 14 days, for one platform or all */
+const METRICS=[['views','Views'],['reach','Reach'],['eng','Engagement rate'],['subs','Submissions']];
+const MDESC={views:['Views per day','Across every live post'],reach:['Reach per day','Unique accounts reached each day'],
+  eng:['Engagement rate per day','Average across live posts'],subs:['Submissions per day','Posts creators sent in for review']};
+function chartBody(id){
+  const d=dash(id), m=d.plats.cm, plat=d.plats.cp, [title,sub]=MDESC[m];
+  const live=d.approved.filter(p=>!p.isNew&&(plat==='all'||p.platform===plat));
+  const head=dhead(title,sub);
+  if(!live.length) return head+empty('No data yet',`Nothing on ${AN_PLATS.find(p=>p[0]===plat)[1]} so far.`);
+  const r=rng(id+m+plat), shape=Array.from({length:14},(_,i)=>.4+i/14+r()*.5), sum=shape.reduce((a,b)=>a+b,0);
+  const views=live.reduce((a,p)=>a+p.views,0), eng=live.reduce((a,p)=>a+p.eng,0)/live.length;
+  const vals={views:()=>shape.map(v=>Math.round(v/sum*views)),
+    reach:()=>shape.map(v=>Math.round(v/sum*views*(.6+r()*.12))),
+    eng:()=>shape.map(()=>+Math.max(.5,eng-1+r()*2).toFixed(1)),
+    subs:()=>shape.map(v=>Math.round(v*(plat==='all'?3:1.4)*r()+(r()<.3?0:1)))}[m]();
+  const max=Math.max(...vals,1);
+  const top=m==='eng'?Math.ceil(max+.5):m==='subs'?Math.max(2,Math.ceil(max/2)*2):max<1000?Math.ceil(max/100)*100:Math.ceil(max/1000)*1000;
+  const fmt=m==='eng'?v=>v.toFixed(1).replace(/\.0$/,'')+'%':m==='subs'?String:fmtN;
+  const unit={views:' views',reach:' accounts',eng:' engagement',subs:v=>v===1?' submission':' submissions'}[m];
+  const say=v=>(m==='eng'?fmt(v):v.toLocaleString('en-US'))+(typeof unit==='function'?unit(v):unit);
+  const today=new Date(), label=i=>{const t=new Date(today);t.setDate(t.getDate()-(13-i));return t.toLocaleDateString('en-GB',{day:'numeric',month:'short'});};
+  /* Points sit in the middle of each day's column; the SVG stretches to the plot, the stroke doesn't */
+  const pt=vals.map((v,i)=>[((i+.5)/14*100).toFixed(2),(100-v/top*100).toFixed(2)]);
+  const line='M'+pt.map(p=>p.join(' ')).join(' L');
+  return head+`<div class="chart">
+      <div class="chart-y" aria-hidden="true"><span>${fmt(top)}</span><span>${fmt(top/2)}</span><span>${fmt(0)}</span></div>
+      <div class="chart-plot" role="list" aria-label="${title}">
+        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue-500)" stop-opacity=".16"/><stop offset="1" stop-color="var(--blue-500)" stop-opacity="0"/></linearGradient></defs>
+          <path class="ar" d="${line} L${pt[13][0]} 100 L${pt[0][0]} 100Z"/><path class="ln" d="${line}"/></svg>
+        ${vals.map((v,i)=>`<div class="chart-col${i===13?' r':''}${i<3?' tl':i>10?' tr':''}" role="listitem" tabindex="0" style="--h:${(v/top*100).toFixed(1)}%" aria-label="${label(i)}: ${say(v)}"><i></i><span class="chart-tip">${label(i)} · <b>${say(v)}</b></span></div>`).join('')}
       </div>
-    </div></div>
-    <div class="adm-center"><div class="adm-phone">${screen}</div></div>
-    <div class="adm-col adm-right"><div class="adm-side">
-      <div class="adm-sec">
-        <div class="adm-creator"><img data-a="${s.av}" data-label="${s.name}" alt=""><div><div class="name">${s.name}</div><div class="adm-handle">${s.handle}</div></div></div>
-        <div class="adm-follow">${s.followers.map(f=>`<span title="${PLATNAME[f[0]]}">${PLAT[f[0]]}${f[1]} <em>followers</em></span>`).join('')}</div>
-        <div class="adm-total"><b>${totalF>=1000?(totalF/1000).toFixed(1).replace(/\.0$/,'')+'K':totalF}</b> followers across ${s.followers.length} platforms</div>
+      <div class="chart-x" aria-hidden="true"><span>${label(0)}</span><span>${label(7)}</span><span>Today</span></div>
+    </div>`;
+}
+function anMenu(m,open){if(!m) return;m.classList.toggle('open',open);m.querySelector('[data-plat-btn]').setAttribute('aria-expanded',open);}
+
+function secAnalytics(id){
+  const d=dash(id), live=d.approved.filter(p=>!p.isNew);
+  if(!live.length) return `<section class="dcard">${dhead('Analytics')}${empty('No data yet','Analytics start as soon as the first approved post goes live.')}</section>`;
+  /* One row per creator: totals across their live posts; engagement weighted by views; latest submission */
+  const c=C[id], ago=p=>p.posted==='Yesterday'?1:parseInt(p.posted)||0;
+  const byWho={};live.forEach(p=>{const w=byWho[p.name]||(byWho[p.name]={p,plats:new Set(),views:0,reach:0,engN:0,paid:0,ago:99});
+    w.plats.add(p.platform);w.views+=p.views;w.reach+=postReach(p);w.engN+=p.views*p.eng;w.paid+=postPaid(c,p);w.ago=Math.min(w.ago,ago(p)+1);});
+  const who=Object.values(byWho).sort((a,b)=>b.views-a.views);
+  const subDate=n=>{const t=new Date();t.setDate(t.getDate()-n);return t.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'});};
+  return `<section class="dcard">${dhead('Analytics','Since the campaign started',platPick(id,'an'))}
+      <div class="tiles" id="an-tiles">${anTiles(id)}</div></section>
+    <section class="dcard">${dhead('Engagement','',platPick(id,'eg'))}
+      <div class="tiles" id="eg-stats">${egStats(id)}</div></section>
+    <section class="dcard"><div class="ch-picks">${platPick(id,'cm',METRICS,'Metric')}${platPick(id,'cp')}</div>
+      <div id="an-chart">${chartBody(id)}</div></section>
+    <section class="dcard">${dhead('Top creators')}
+        <div class="tc-wrap"><table class="tc"><thead><tr><th>Creator</th><th class="pl">Platforms</th><th>Views</th><th>Reach</th><th>Engagement rate</th><th>Paid amount</th><th>Submission date</th></tr></thead>
+        <tbody>${who.map(w=>`<tr><td><span class="who"><img data-a="${w.p.av}" data-label="${w.p.name}" alt="">${w.p.name}</span></td>
+          <td class="pl"><span class="pls">${[...w.plats].map(k=>`<span title="${PLATNAME[k]}" aria-label="${PLATNAME[k]}">${PLAT[k]}</span>`).join('')}</span></td>
+          <td>${fmtN(w.views)}</td><td>${fmtN(w.reach)}</td><td>${(w.engN/w.views).toFixed(1)}%</td><td>Rs. ${w.paid.toLocaleString('en-US')}</td><td>${subDate(w.ago)}</td></tr>`).join('')}</tbody></table></div></section>`;
+}
+
+function secInbox(id){
+  const d=dash(id), t=d.threads[d.thread];
+  /* On phones the thread only counts as read once it is opened from the list */
+  if(d.ibOpen||!PHONE.matches) t.unread=false;
+  return `<section class="dcard ib${d.ibOpen?' open':''}">
+    <div class="ib-list"><h2>Inbox</h2><div class="ib-scroll">${d.threads.map((th,i)=>{const last=th.msgs[th.msgs.length-1];
+      return `<button class="ib-item${i===d.thread?' on':''}${th.unread?' unread':''}" type="button" data-thread="${i}"><img data-a="${th.who.av}" data-label="${th.who.name}" alt=""><span class="t"><span class="r1"><b>${th.who.name}</b><small>${th.time}</small></span><span class="pv"><span>${last[0]==='me'?'You: ':''}${esc(last[1])}</span>${th.unread?'<i class="udot" aria-label="Unread"></i>':''}</span></span></button>`;}).join('')}</div></div>
+    <div class="ib-thread">
+      <div class="ib-head"><button class="ib-back" type="button" data-ib-back aria-label="Back to all messages">${BACKIC}</button><div class="adm-creator"><img data-a="${t.who.av}" data-label="${t.who.name}" alt=""><div><div class="name">${t.who.name}</div><div class="adm-handle">${t.who.handle}</div></div></div></div>
+      <div class="ib-msgs" id="ib-msgs"><span class="ib-day">Today</span>${t.msgs.map(m=>`<div class="bub ${m[0]}${m[2]?' new':''}">${esc(m[1])}</div>`).join('')}</div>
+      <form class="ib-form" id="ib-form"><input id="ib-input" placeholder="Write a message…" autocomplete="off" aria-label="Message ${t.who.name}"><button class="btn btn-pri" type="submit">Send</button></form>
+    </div></section>`;
+}
+
+function viewAdmin(id,sec,post){
+  const feed=sec==='approved'&&post!=null&&secApprovedFeed(id);
+  if(feed) return `<div class="dsh pend">${sideHTML(id,sec)}${feed}</div>`;
+  if(sec==='pending'){
+    const review=secPending(id);
+    return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
+      :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
+  }
+  const body={details:secDetails,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
+}
+
+/* ================= Financials =================
+   The brand tops up one wallet by bank transfer to PolySocial; every campaign is paid from that wallet.
+   A transfer only reaches the wallet once PolySocial has verified the uploaded slip. */
+/* Wallet icon from the pitch file (Figma "Wallet", 462:852); stroke follows the nav colour */
+const WALLETIC=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<path d="M1 9.09302C1 6.88388 2.79086 5.09302 5 5.09302H19C21.2091 5.09302 23 6.88388 23 9.09302V18.4884C23 20.6975 21.2091 22.4884 19 22.4884H5C2.79086 22.4884 1 20.6975 1 18.4884V9.09302Z" stroke="currentColor" stroke-width="2"/>
+<path d="M1.11951 8.16279V5C1.11951 2.79086 2.91037 1 5.11951 1H13.118C14.9438 1 16.4239 2.4801 16.4239 4.3059" stroke="currentColor" stroke-width="2"/>
+<path d="M12.9565 14.0465C12.9565 12.2099 14.4455 10.7209 16.2821 10.7209H23V17.3721H16.2821C14.4455 17.3721 12.9565 15.8832 12.9565 14.0465V14.0465Z" stroke="currentColor" stroke-width="2"/>
+</svg>`;
+const DOCIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>';
+const UPIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>';
+const COPYIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg>';
+const DLIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>';
+
+const RS=n=>'Rs. '+Math.round(n).toLocaleString('en-US');
+/* Tile figures use the app's short form for big amounts (Rs. 2.6 M, Rs. 940 K); the exact amount is in the tooltip */
+const RSK=n=>{const a=Math.abs(n), v=a>=1e6?(a/1e6).toFixed(2).replace(/\.?0+$/,'')+' M':a>=1e5?Math.round(a/1e3)+' K':Math.round(a).toLocaleString('en-US');return `<span class="n" title="${RS(n)}">${n<0?'-':''}Rs. ${v}</span>`;};
+const daysAgo=n=>{const t=new Date();t.setHours(12,0,0,0);t.setDate(t.getDate()-n);return t;};
+/* Placeholder account — replace with PolySocial's real collection account before launch */
+const BANK=[['Account name','PolySocial (Pvt) Ltd'],['Bank','Commercial Bank of Ceylon'],['Branch','Colombo 03, Kollupitiya'],['Account number','1000 4821 9930'],['SWIFT code','CCEYLKLX']];
+const FIN={
+  ref:'PS-UBER-2041',
+  since:daysAgo(152),     /* when the brand's account was opened */     /* the brand's payment reference: lets PolySocial match a transfer to this wallet */
+  plats:{fm:'5'},         /* selected month as an index into MONTHS, or -1 for a month outside the chart */
+  sel:null,               /* selected month as {y,m}, any month up to now */
+  pickY:0,                /* year showing in the month picker */
+  file:null,              /* slip waiting to be submitted */
+  transfers:[
+    {at:daysAgo(2),amount:1000000,ref:'TRF-88213940',file:'commercial-bank-slip.pdf',status:'pending'},
+    {at:daysAgo(28),amount:2000000,ref:'TRF-87640021',file:'transfer-confirmation.pdf',status:'verified'},
+    {at:daysAgo(70),amount:3000000,ref:'TRF-86120775',file:'hnb-online-transfer.jpg',status:'verified'},
+    {at:daysAgo(96),amount:250000,ref:'TRF-85502113',file:'slip-photo.jpg',status:'rejected',note:'Slip was unreadable. Upload a clearer copy.'},
+    {at:daysAgo(110),amount:1500000,ref:'TRF-85011862',file:'boc-transfer-advice.pdf',status:'verified'},
+    {at:daysAgo(150),amount:2000000,ref:'TRF-83390457',file:'first-top-up.pdf',status:'verified'}],
+};
+/* Last six months, oldest first; the last one is the current month */
+const MONTHS=(()=>{const n=new Date();return Array.from({length:6},(_,i)=>new Date(n.getFullYear(),n.getMonth()-5+i,1));})();
+const mIdx=d=>(d.getFullYear()-MONTHS[0].getFullYear())*12+d.getMonth()-MONTHS[0].getMonth();
+const mName=(i,o={month:'long'})=>MONTHS[i].toLocaleDateString('en-GB',o);
+/* Each campaign's spend spread over the months it ran: completed ones early, active ones lately, upcoming ones on pre-launch payouts */
+const SPEND=(()=>{
+  const out=MONTHS.map(()=>({}));
+  EXPLORE.forEach(id=>{const c=C[id], total=num(c.spent); if(!total) return;
+    const [a,b]={completed:[0,3],active:[2,5],upcoming:[4,5]}[c.status], r=rng(id+'fin');
+    const ws=[];for(let m=a;m<=b;m++) ws.push([m,.4+r()]);
+    const sum=ws.reduce((s,w)=>s+w[1],0);let left=total;
+    ws.forEach(([m,w],i)=>{const v=i===ws.length-1?left:Math.round(total*w/sum);left-=v;out[m][id]=v;});});
+  return out;
+})();
+const verified=()=>FIN.transfers.filter(t=>t.status==='verified');
+const sumOf=o=>Object.values(o).reduce((a,b)=>a+b,0);
+function finTotals(){
+  const added=verified().reduce((a,t)=>a+t.amount,0), spent=EXPLORE.reduce((a,id)=>a+num(C[id].spent),0);
+  /* Budget still committed to campaigns that are running or about to */
+  const reserved=EXPLORE.filter(id=>C[id].status!=='completed').reduce((a,id)=>a+Math.max(0,C[id].budgetN-num(C[id].spent)),0);
+  const pend=FIN.transfers.filter(t=>t.status==='pending');
+  return {added,spent,balance:added-spent,reserved,pend,pendSum:pend.reduce((a,t)=>a+t.amount,0)};
+}
+function monthStats(i){
+  const before=(t)=>mIdx(t.at)<i;
+  const inM=t=>mIdx(t.at)===i;
+  const spentBefore=SPEND.slice(0,i).reduce((a,m)=>a+sumOf(m),0);
+  const open=verified().filter(before).reduce((a,t)=>a+t.amount,0)-spentBefore;
+  const added=verified().filter(inM).reduce((a,t)=>a+t.amount,0), spent=sumOf(SPEND[i]);
+  return {open,added,spent,close:open+added-spent};
+}
+
+/* Add funds (with the bank transfers list under it) opens from the button in the left card, so it has no sub menu entry */
+/* Financials is laid out like a campaign dashboard: a card with the sub menu on the left (a drawer on phones), sections on the right */
+const FSECTIONS=[['overview','Overview'],['monthly','Monthly financials'],['funds','Add funds']];
+FIN.dismissed=new Set();
+const pct=(a,b)=>b?Math.min(100,Math.round(a/b*100)):0;
+function finSide(sec){
+  const t=finTotals();
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${FSECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
+    <div class="dsh-id">
+      <h1 class="dsh-title">Financials</h1>
+      <div class="fin-bal"><span>Wallet balance</span><b>${RS(t.balance)}</b></div>
+      <a class="dsh-viewas" href="#/financials/funds"${sec==='funds'?' aria-current="page"':''}>${UPIC}Add funds</a>
+    </div>
+    <nav class="dsh-menu" aria-label="Financials">${FSECTIONS.filter(x=>x[0]!=='funds').map(([k,l])=>`<a href="#/financials/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span></a>`).join('')}</nav>
+  </aside>`;
+}
+
+function finOverview(){
+  const t=finTotals(), free=t.balance-t.reserved, cur=MONTHS.length-1, now=monthStats(cur), last=monthStats(cur-1);
+  const rej=FIN.transfers.filter(x=>x.status==='rejected');
+  const att=[
+    t.pend.length&&['pending',`${RS(t.pendSum)} is being verified`,`We add it to your wallet within 1 working day of the transfer. <a class="dlink" href="#/financials/funds/transfers">View transfers</a>`],
+    rej.length&&['rejected',`${rej.length} transfer slip${rej.length>1?'s were':' was'} rejected`,`${esc(rej[0].note)} <a class="dlink" href="#/financials/funds">Upload again</a>`],
+    free<0&&['short',`Top up ${RS(-free)} to cover your campaign budgets`,`Running campaigns pause when the wallet runs out. <a class="dlink" href="#/financials/funds">Add funds</a>`],
+  ].filter(a=>a&&!FIN.dismissed.has(a[0]));
+  /* The 10 most recent campaigns: upcoming first, then running, then finished */
+  const RECENT={upcoming:0,active:1,completed:2};
+  const camps=EXPLORE.map(id=>({id,c:C[id],sp:num(C[id].spent)})).sort((a,b)=>RECENT[a.c.status]-RECENT[b.c.status]).slice(0,10);
+  const d=now.spent-last.spent;
+  return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
+    <section class="dcard">${dhead('Wallet','One balance that pays for every campaign')}
+      <div class="tiles btiles fin3">
+        <div class="tile hl"><span class="n">${RS(t.balance)}</span><span class="l">Wallet balance</span><span class="d">Ready for your campaigns</span></div>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(t.spent)}</span><span class="l">Total spent</span><span class="d">Since ${FIN.since.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span></a>
+        <a class="tile" href="#/financials/monthly"><span class="n">${RS(now.spent)}</span><span class="l">Spent this month</span><span class="d">${d>=0?`<span class="down">▲ ${RS(d)}</span>`:`<span class="up">▼ ${RS(-d)}</span>`} vs last month</span></a>
+      </div></section>
+    <section class="dcard">${dhead('Spend by campaign','Your last 10 campaigns, paid out from your wallet')}
+      <div class="tc-wrap"><table class="tc tc-camp"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
+      <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/details">${c.title}</a></span></td>
+        <td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${RS(Math.max(0,c.budgetN-sp))}</td><td>${pct(sp,c.budgetN)}%</td></tr>`).join('')}</tbody></table></div></section>`;
+}
+
+/* Last six months: added vs spent, in the analytics chart frame; click a month to open it */
+function finChart(){
+  const st=MONTHS.map((_,i)=>monthStats(i)), sel=+FIN.plats.fm;
+  const max=Math.max(...st.map(s=>Math.max(s.added,s.spent)),1), top=Math.ceil(max/1e6)*1e6, h=v=>(v/top*100).toFixed(1)+'%';
+  const ax=v=>v?(v/1e6).toFixed(1).replace(/\.0$/,'')+'M':'0';
+  return `<div class="chart fchart">
+      <div class="chart-y" aria-hidden="true"><span>${ax(top)}</span><span>${ax(top/2)}</span><span>0</span></div>
+      <div class="chart-plot" role="list" aria-label="Added and spent per month">${st.map((s,i)=>`<button class="chart-col${i===0?' l tl':i===st.length-1?' r tr':''}${i===sel?' on':''}" type="button" role="listitem" data-fm="${i}" style="--h:${h(Math.max(s.added,s.spent))}" aria-label="${mName(i,{month:'long',year:'numeric'})}: added ${RS(s.added)}, spent ${RS(s.spent)}"${i===sel?' aria-current="true"':''}>
+          <b class="bar" style="--b:${h(s.added)}"></b><b class="bar sp" style="--b:${h(s.spent)}"></b>
+          <span class="chart-tip">${mName(i,{month:'short',year:'numeric'})} · Added <b>${RS(s.added)}</b> · Spent <b>${RS(s.spent)}</b></span></button>`).join('')}</div>
+      <div class="chart-x" aria-hidden="true">${MONTHS.map((_,i)=>`<span${i===sel?' class="on"':''}>${mName(i,{month:'short'})}</span>`).join('')}</div>
+    </div>`;
+}
+function finMonthTiles(){
+  const i=+FIN.plats.fm, s=monthStats(i), n=verified().filter(t=>mIdx(t.at)===i).length, k=Object.keys(SPEND[i]).length, cur=i===MONTHS.length-1;
+  return `<div class="tile">${RSK(s.open)}<span class="l">Opening balance</span><span class="d">1 ${mName(i,{month:'short'})}</span></div>
+    <div class="tile">${RSK(s.added)}<span class="l">Added</span><span class="d">${n||'No'} verified transfer${n===1?'':'s'}</span></div>
+    <div class="tile">${RSK(s.spent)}<span class="l">Spent</span><span class="d">${k} campaign${k===1?'':'s'}</span></div>
+    <div class="tile">${RSK(s.close)}<span class="l">${cur?'Balance now':'Closing balance'}</span><span class="d">${s.close>=s.open?`<span class="up">▲ ${RS(s.close-s.open)}</span>`:`<span class="down">▼ ${RS(s.open-s.close)}</span>`} in the month</span></div>`;
+}
+/* Spend per day across the whole month: the month's payouts spread over its days, up to today for the current month */
+function finDayChart(){
+  const i=+FIN.plats.fm, mo=MONTHS[i], days=new Date(mo.getFullYear(),mo.getMonth()+1,0).getDate(), cur=i===MONTHS.length-1;
+  const upto=cur?new Date().getDate():days, total=sumOf(SPEND[i]), r=rng('fday'+i);
+  let w=1;const shape=Array.from({length:upto},()=>w=Math.min(1.8,Math.max(.4,w*(.8+r()*.4)))), sum=shape.reduce((a,b)=>a+b,0);
+  let left=total;const vals=shape.map((v,d)=>{const x=d===upto-1?left:Math.round(total*v/sum);left-=x;return x;});
+  const max=Math.max(...vals,1), step=max<1e4?1e3:max<1e5?1e4:1e5, top=Math.ceil(max/step)*step;
+  const label=d=>new Date(mo.getFullYear(),mo.getMonth(),d+1).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const pt=vals.map((v,d)=>[((d+.5)/days*100).toFixed(2),(100-v/top*100).toFixed(2)]), line='M'+pt.map(p=>p.join(' ')).join(' L');
+  return `<div class="fday-head"><b>Spend per day</b><span>${total?'Paid out to creators each day':'Nothing spent this month'}</span></div>
+    <div class="chart fday">
+      <div class="chart-y" aria-hidden="true"><span>${fmtN(top)}</span><span>${fmtN(top/2)}</span><span>0</span></div>
+      <div class="chart-plot" role="list" aria-label="Spend per day">
+        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="fday-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue-500)" stop-opacity=".16"/><stop offset="1" stop-color="var(--blue-500)" stop-opacity="0"/></linearGradient></defs>
+          <path class="ar" style="fill:url(#fday-fill)" d="${line} L${pt[upto-1][0]} 100 L${pt[0][0]} 100Z"/><path class="ln" d="${line}"/></svg>
+        ${Array.from({length:days},(_,d)=>d<upto?`<div class="chart-col${d===upto-1?' r':''}${d<4?' tl':d>days-5?' tr':''}" role="listitem" tabindex="0" style="--h:${(vals[d]/top*100).toFixed(1)}%" aria-label="${label(d)}: ${RS(vals[d])}"><i></i><span class="chart-tip">${label(d)} · <b>${RS(vals[d])}</b></span></div>`:'<div class="chart-col" aria-hidden="true"></div>').join('')}
       </div>
-      <div class="adm-sec"><span class="adm-eyebrow">Caption</span><p class="adm-caption">${caption}</p><span class="adm-posted">${s.posted==='Scheduled'?'Scheduled to post':'Posted '+s.posted}</span></div>
-      <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${s.bio}</p></div>
-    </div></div>
-  </div>`;
+      <div class="chart-x" aria-hidden="true"><span>${label(0)}</span><span>${label(14)}</span><span>${label(days-1)}</span></div>
+    </div>`;
+}
+function finMonthSpend(){
+  const i=+FIN.plats.fm, total=sumOf(SPEND[i]), rows=Object.entries(SPEND[i]).sort((a,b)=>b[1]-a[1]), top=rows.length?rows[0][1]:1;
+  return dhead(`Spend by campaign`,`${mName(i,{month:'long',year:'numeric'})}${i===MONTHS.length-1?' so far':''}`,`<button class="btn btn-sec" type="button" data-act="statement">${DLIC}Statement</button>`)
+    +(rows.length?`<div class="fsp">${rows.map(([id,v])=>`<div class="fsp-row">
+        <a class="who" href="#/campaign/${id}/admin/details"><img data-a="${C[id].logo}" data-label="${C[id].abbr}" alt=""><span>${C[id].title}</span></a>
+        <span class="amt">${RS(v)}<small>${pct(v,total)}%</small></span>
+        <div class="adm-bar"><i style="--p:${(v/top*100).toFixed(1)}%"></i></div></div>`).join('')}</div>`
+      :empty('Nothing spent this month','Campaign payouts to creators will show up here.'));
+}
+const finMonthHead=()=>dhead(mName(+FIN.plats.fm,{month:'long',year:'numeric'}),'Opening and closing balance for the month');
+const selName=()=>new Date(FIN.sel.y,FIN.sel.m,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+/* Month picker: step through years, pick any month up to this one */
+function mpMenu(){
+  const now=new Date(), y=FIN.pickY;
+  return `<div class="mp-yr"><button type="button" data-mp-y="-1" aria-label="Previous year"${y<=2000?' disabled':''}>${CARET}</button><b>${y}</b><button type="button" data-mp-y="1" aria-label="Next year"${y>=now.getFullYear()?' disabled':''}>${CARET}</button></div>
+    <div class="mp-grid">${Array.from({length:12},(_,m)=>`<button type="button" role="menuitemradio" data-plat="${y}-${m}" aria-checked="${FIN.sel.y===y&&FIN.sel.m===m}"${new Date(y,m,1)>now?' disabled':''}>${new Date(y,m,1).toLocaleDateString('en-GB',{month:'short'})}</button>`).join('')}</div>`;
+}
+const monthPick=()=>`<div class="an-plat mp" data-pk="fmp"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${selName()}${CARET}</button>
+    <div class="an-plat-menu mp-menu" role="menu" aria-label="Month">${mpMenu()}</div></div>`;
+/* The selected month's balance and spend, or a note when there's nothing to show */
+function finMonthBody(){
+  if(+FIN.plats.fm>=0) return `<section class="dcard"><div id="fin-mh">${finMonthHead()}</div><div class="tiles btiles" id="fin-tiles">${finMonthTiles()}</div>${finDayChart()}</section>
+    <section class="dcard" id="fin-spend">${finMonthSpend()}</section>`;
+  const before=new Date(FIN.sel.y,FIN.sel.m+1,1)<=FIN.since, opened=FIN.since.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  return `<section class="dcard">${dhead(selName(),'Opening and closing balance for the month')}
+    ${empty('No data available',before?`Your account was opened on ${opened}, so there’s nothing to show for this month.`:'There was no wallet activity this month.')}</section>`;
+}
+function finMonthly(){
+  if(!FIN.sel){const d=MONTHS[+FIN.plats.fm];FIN.sel={y:d.getFullYear(),m:d.getMonth()};}
+  return `<section class="dcard">${dhead('Monthly financials','Money added to your wallet and spent on campaigns')}
+      <div id="fin-chart">${finChart()}</div>
+      <div class="fleg" aria-hidden="true"><span><i></i>Added to wallet</span><span><i class="sp"></i>Spent on campaigns</span></div></section>
+    <div class="mp-bar">${monthPick()}</div>
+    <div id="fin-month">${finMonthBody()}</div>`;
+}
+function selectMonth(y,m){
+  const i=mIdx(new Date(y,m,1));
+  FIN.sel={y,m};FIN.plats.fm=String(i>=0&&i<MONTHS.length?i:-1);
+  const pm=document.querySelector('[data-pk="fmp"]');
+  if(pm) pm.querySelector('[data-plat-btn]').firstChild.textContent=selName();
+  fill('fin-chart',finChart());fill('fin-month',finMonthBody());
+}
+const setMonth=i=>selectMonth(MONTHS[i].getFullYear(),MONTHS[i].getMonth());
+
+function finFunds(){
+  const today=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  return `<section class="dcard">${dhead('Add funds','Campaign budgets are paid to PolySocial by bank transfer')}
+      <div class="brief">
+        <h4>How it works</h4>
+        <ol class="cp-restrict"><li>Transfer the amount to PolySocial’s account below</li><li>Upload the transfer slip or bank confirmation</li><li>We verify it within 1 working day and add it to your wallet</li></ol>
+        <h4>PolySocial bank account</h4>
+        <div class="cp-spec">${[...BANK,['Payment reference',FIN.ref]].map(([k,v])=>`<button class="cp-spectile" type="button" data-act="copy" data-v="${esc(v)}" aria-label="Copy ${k.toLowerCase()}: ${esc(v)}"><span class="k">${k}</span><span class="v">${v}</span>${COPYIC}</button>`).join('')}</div>
+        <div class="cp-ctas"><p>Add <b>${FIN.ref}</b> as the payment reference so we can match the transfer to your wallet.</p></div>
+      </div></section>
+    <section class="dcard">${dhead('Upload transfer slip','Send us the slip once the transfer has gone through')}
+      <form class="ff" id="fin-form" novalidate>
+        <div class="ff-2">
+          <label class="fl">Amount transferred<span class="ff-in"><em>Rs.</em><input id="ff-amt" inputmode="numeric" placeholder="0" autocomplete="off"></span></label>
+          <label class="fl">Transfer date<input id="ff-date" type="date" value="${today}" max="${today}"></label>
+        </div>
+        <label class="fl"><span>Bank reference <small>(optional)</small></span><input id="ff-ref" placeholder="e.g. TRF-88213940" autocomplete="off"></label>
+        <label class="drop" id="ff-drop"><input id="ff-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">${UPIC}<b>Upload transfer slip</b><span>Drag a file here or click to browse · PDF, JPG or PNG, up to 10 MB</span></label>
+        <div class="ff-file" id="ff-chip" hidden></div>
+        <div class="ff-foot"><p class="ferr" id="ff-err" role="alert"></p><button class="btn btn-pri" type="submit">Submit for verification</button></div>
+      </form></section>`;
+}
+function finTransfers(newTx){
+  const txs=[...FIN.transfers].sort((a,b)=>b.at-a.at);
+  return `<section class="dcard" id="fin-transfers">${dhead('Bank transfers','Slips you’ve uploaded and their status',`<span class="count">${txs.length} transfer${txs.length===1?'':'s'}</span>`)}
+    <div class="tc-wrap"><table class="tc txt"><thead><tr><th>Date</th><th class="pl">Transfer slip</th><th class="pl">Bank reference</th><th>Amount</th><th class="pl">Status</th><th><span class="sr">Download</span></th></tr></thead>
+    <tbody>${txs.map(x=>`<tr${x===newTx?' class="new"':''}><td>${x.at.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</td>
+      <td class="pl"><span class="tx-file">${DOCIC}<span>${esc(x.file)}</span></span></td>
+      <td class="pl tx-ref">${esc(x.ref)}</td><td class="tx-amt">${RS(x.amount)}</td>
+      <td class="pl"><span class="dsh-status ${x.status}">${x.status}</span></td>
+      <td><button class="tx-dl" type="button" data-act="slip" data-tx="${FIN.transfers.indexOf(x)}" aria-label="Download ${esc(x.file)}">${DLIC}</button></td></tr>`).join('')}</tbody></table></div></section>`;
+}
+/* Download a transfer slip: the uploaded file itself, or a PDF copy for slips on record */
+function downloadSlip(x){
+  let url=x.url, name=x.file;
+  if(!url){
+    const lines=['PolySocial - bank transfer slip','',`Date: ${x.at.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`,`Amount: ${RS(x.amount)}`,`Bank reference: ${x.ref}`,`Payment reference: ${FIN.ref}`,`Status: ${x.status[0].toUpperCase()+x.status.slice(1)}`,`Original file: ${x.file}`];
+    const txt=lines.map((l,i)=>`BT /F1 ${i?12:16} Tf 56 ${780-i*22} Td (${l.replace(/[\\()]/g,'\\$&')}) Tj ET`).join('\n');
+    const objs=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+      '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',`<< /Length ${txt.length} >>\nstream\n${txt}\nendstream`];
+    let pdf='%PDF-1.4\n';const off=objs.map((o,i)=>{const at=pdf.length;pdf+=`${i+1} 0 obj\n${o}\nendobj\n`;return at;});
+    const xref=pdf.length;
+    pdf+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n${off.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')}trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+    url=URL.createObjectURL(new Blob([pdf],{type:'application/pdf'}));name=x.file.replace(/\.[^.]+$/,'')+'.pdf';
+  }
+  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  if(!x.url) setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+const fmtSize=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1)+' MB';
+function fileChip(){
+  const f=FIN.file, drop=document.getElementById('ff-drop'), chip=document.getElementById('ff-chip');
+  if(!drop) return;
+  drop.hidden=!!f;chip.hidden=!f;drop.removeAttribute('aria-invalid');
+  if(f) chip.innerHTML=`${DOCIC}<div><b>${esc(f.name)}</b><small>${fmtSize(f.size)} · ready to submit</small></div><button class="x-btn" type="button" data-act="ff-clear" aria-label="Remove ${esc(f.name)}">${XIC}</button>`;
+}
+function pickFile(f){
+  const err=document.getElementById('ff-err');
+  if(!f) return;
+  if(!/\.(pdf|jpe?g|png)$/i.test(f.name)){err.textContent='Upload a PDF, JPG or PNG.';return;}
+  if(f.size>10*1048576){err.textContent='That file is over 10 MB. Upload a smaller copy.';return;}
+  err.textContent='';FIN.file=f;fileChip();
+}
+
+function viewFinancials(sec){
+  const newTx=FIN.newTx;FIN.newTx=null;
+  const body={overview:()=>finOverview()+finTransfers(),monthly:finMonthly,funds:()=>finFunds()+finTransfers(newTx)}[sec]();
+  return `<div class="dsh">${finSide(sec)}<div class="dsh-main">${body}</div></div>`;
+}
+function downloadStatement(){
+  const i=+FIN.plats.fm, s=monthStats(i), name=mName(i,{month:'long',year:'numeric'});
+  const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const rows=[['Statement',name],['Opening balance',s.open],['Added',s.added],['Spent',s.spent],['Closing balance',s.close],[],
+    ['Date','Type','Description','Amount (Rs.)'],
+    ...verified().filter(t=>mIdx(t.at)===i).map(t=>[t.at.toISOString().slice(0,10),'Bank transfer',t.ref,t.amount]),
+    ...Object.entries(SPEND[i]).map(([id,v])=>['','Campaign spend',C[id].title,-v])];
+  const url=URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
+  const a=document.createElement('a');a.href=url;a.download=`polysocial-statement-${MONTHS[i].getFullYear()}-${String(MONTHS[i].getMonth()+1).padStart(2,'0')}.csv`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 /* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
-let media=null;
-function stopMedia(){if(media){media.stop();media=null;}}
+let media=[];
+function stopMedia(){media.forEach(m=>m.stop());media=[];}
 function mountReel(el){
-  const bar=el.querySelector('#reel-bar'), icon=el.querySelector('#reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('#reel-mute');
+  const bar=el.querySelector('.reel-progress i'), icon=el.querySelector('.reel-icon'), hit=el.querySelector('.reel-hit'), mute=el.querySelector('.reel-mute');
   const [mm,ss]=el.dataset.len.split(':').map(Number), dur=(mm*60+ss)*1000;
   let t=0,last=performance.now(),playing=true,raf,flashT;
-  const tick=now=>{if(playing){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
+  const tick=now=>{if(playing&&el.dataset.vis!=='0'){t=(t+now-last)%dur;bar.style.transform=`scaleX(${t/dur})`;}last=now;raf=requestAnimationFrame(tick);};
   raf=requestAnimationFrame(tick);
   /* Feedback on press, not release */
   hit.addEventListener('pointerdown',()=>{
@@ -895,7 +1990,7 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 function rubberband(over,dim,k=0.55){return (over*dim*k)/(dim+k*Math.abs(over));}
 function project(v,d=0.998){return (v/1000)*d/(1-d);}
 function mountCarousel(el){
-  const track=el.querySelector('#car-track'), n=track.children.length, dots=[...el.querySelectorAll('#car-dots i')], count=el.querySelector('#car-count');
+  const track=el.querySelector('.car-track'), n=track.children.length, dots=[...el.querySelectorAll('.car-dots i')], count=el.querySelector('.adm-count');
   const prev=el.querySelector('.car-nav.prev'), next=el.querySelector('.car-nav.next');
   let x=0, v=0, idx=0, raf=null, drag=null;
   const W=()=>el.clientWidth;
@@ -917,7 +2012,7 @@ function mountCarousel(el){
   }
   const go=(i,vel=0)=>{setIdx(Math.max(0,Math.min(n-1,i)));springTo(-idx*W(),vel);};
   el.addEventListener('pointerdown',e=>{
-    if(e.button!==0||e.target.closest('.car-nav')) return;
+    if(e.button!==0||e.target.closest('.car-nav,.adm-act')) return;
     cancelAnimationFrame(raf);raf=null;                      /* grab it mid-flight: keep the on-screen x */
     drag={id:e.pointerId,startX:e.clientX,baseX:x,hist:[[e.clientX,e.timeStamp]],locked:false};
   });
@@ -950,11 +2045,20 @@ function mountCarousel(el){
 
 /* ================= Top menu ================= */
 function renderTopNav(){
-  const items=[['campaigns','#/active',ICON.explore,'Campaigns']];
+  const items=[['campaigns','#/active',ICON.explore,'Campaigns'],['financials','#/financials',WALLETIC,'Financials']];
   document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
   document.getElementById('search-btn').innerHTML=MICON.search;
   document.getElementById('bell-ic').innerHTML=MICON.bell;
-  document.getElementById('viewbar-back-ic').innerHTML=CPICON.chevL;
+  document.getElementById('tmenu-ic').innerHTML=MENUIC;
+  document.getElementById('tmenu-list').innerHTML=`<a href="#/active" data-root="campaigns">${ICON.explore}<span>Campaigns</span></a><a href="#/financials" data-root="financials">${WALLETIC}<span>Financials</span></a><a href="#/notifications" data-root="notifications">${MICON.bell}<span>Notifications</span><span class="badge-n" id="tmenu-n"></span></a>`;
+}
+function setTopMenu(open){
+  const m=document.getElementById('tmenu'),was=m.classList.contains('open');
+  m.classList.toggle('open',open);document.body.classList.toggle('tmenu-open',open);
+  const btn=document.getElementById('tmenu-btn');btn.setAttribute('aria-expanded',open);
+  if(open!==was) document.getElementById('tmenu-ic').innerHTML=open?XIC:MENUIC;
+  if(open) m.querySelector('.tmenu-list a').focus({preventScroll:true});
+  else if(was&&m.contains(document.activeElement)) btn.focus({preventScroll:true});
 }
 
 /* Search lives under the Campaigns heading; the header icon opens and closes it */
@@ -970,88 +2074,237 @@ function setSearch(open){
   else if(state.q){state.q='';input.value='';renderFeed();}
 }
 function toggleSearch(){
-  if(!document.getElementById('home-search')){state.searchOpen=true;location.hash='#/'+state.tab;return;}
+  if(!document.getElementById('home-search')) return;
   setSearch(!state.searchOpen);
 }
 
 /* ================= Router ================= */
 const view=document.getElementById('view');
+const parseHash=()=>{
+  const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
+  const campaign=root==='campaign'&&C[id]?id:null;
+  if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
+  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
+};
+function mountMedia(){
+  const els=[...view.querySelectorAll('[data-media]')];
+  media=els.map(el=>el.dataset.media==='reel'?mountReel(el):mountCarousel(el));
+  /* In the pending feed, a reel only plays while it is on screen */
+  const io=new IntersectionObserver(es=>es.forEach(e=>e.target.dataset.vis=e.isIntersecting?'1':'0'),{threshold:.6});
+  els.forEach(el=>io.observe(el));media.push({stop:()=>io.disconnect()});
+  const po=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) e.target.closest('.pitem').dataset.on=e.target.dataset.p;}),{threshold:.6});
+  view.querySelectorAll('.pgroup .ppost').forEach(el=>po.observe(el));media.push({stop:()=>po.disconnect()});
+}
+/* Re-render the admin section in place (after approve, send, …) without the page transition */
+function rerender(){
+  const h=parseHash(); if(!h.admin) return;
+  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
+}
+function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
+let lastDash=null;
 function route(){
-  const [root,id,mode]=location.hash.replace(/^#\/?/,'').split('/');
-  const campaign=root==='campaign'&&C[id];
-  const admin=campaign&&mode==='admin';
-  if(!campaign) state.tab=TABS[root]?root:'active';
-  stopMedia();
-  view.innerHTML=admin?viewAdmin(id):campaign?viewCampaign(id):viewExplore();
-  document.body.classList.toggle('viewing',!!campaign);
-  if(campaign){
-    document.getElementById('viewbar-back').href='#/'+C[id].status;
+  const {root,id,admin,sec,post,fsec,toTx}=parseHash();
+  const campaign=!!id;
+  const notifs=!campaign&&root==='notifications';
+  const fin=!campaign&&root==='financials';
+  if(!campaign&&!notifs&&!fin) state.tab=TABS[root]?root:'active';
+  else if(admin) state.tab=C[id].status;
+  stopMedia();setSide(false);
+  if(admin) dash(id).ibOpen=false;
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
+  /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
+  document.body.classList.toggle('viewing',campaign&&!admin);
+  document.body.classList.toggle('dash',admin||fin);
+  document.body.classList.toggle('notifs',notifs);
+  document.body.classList.toggle('fin',fin);
+  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin);
+  if(campaign&&!admin){
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
     const sw=document.getElementById('viewbar-switch');
     sw.textContent=admin?'Switch to creator':'Switch to admin';
     sw.href=admin?`#/campaign/${id}`:`#/campaign/${id}/admin`;
   }
   bindAssets(view);
-  if(admin){const r=document.getElementById('reel'),k=document.getElementById('car');media=r?mountReel(r):k?mountCarousel(k):null;}
-  view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});
+  if(admin){mountMedia();scrollThread();}
+  if(fin) fileChip();
+  /* Links to the bank transfers land on that card, under the add funds form */
+  if(toTx) requestAnimationFrame(()=>{const tx=document.getElementById('fin-transfers');if(tx) scrollTo({top:tx.getBoundingClientRect().top+scrollY-(document.querySelector('.dsh-bar')?.offsetHeight||0)-document.getElementById('topbar').offsetHeight-18,behavior:'instant'});});
+  /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
+  const dkey=admin?id:fin?'#fin':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
+  const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side,.dsh-bar,.dsh-scrim)')]:[view];
+  view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
+  window.scrollTo({top:0,behavior:'instant'});
+  /* Opening an approved post lands on it inside the feed */
+  /* When stacked, the post's creator details sit above its reel, so land on the whole item */
+  const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) (matchMedia('(max-width:1023px)').matches?open.closest('.pitem'):open).scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
-  if(campaign) document.getElementById('search-btn').classList.remove('on');
+  /* The search button only belongs on the Explore page */
+  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin;
+  if(campaign||notifs||fin) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(campaign?C[id].title:TABS[state.tab])+' — UGC Platform for Brands';
-  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root==='campaigns'));
+  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
+  setTopMenu(false);
+  document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  const bell=document.getElementById('bell-btn');bell.classList.toggle('on',notifs);if(notifs)bell.setAttribute('aria-current','page');else bell.removeAttribute('aria-current');
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
-  closePop();
 }
 window.addEventListener('hashchange',route);
+/* A finished transition keeps filter:blur(0) on #view, which would trap the fixed phone drawer inside it */
+view.addEventListener('animationend',e=>e.target.classList.remove('nav-in'));
+
+/* Phone drawer for the dashboard's left column */
+function setSide(open){
+  const was=document.body.classList.contains('side-open');
+  document.body.classList.toggle('side-open',open);
+  const btn=document.querySelector('.dsh-toggle');if(!btn) return;
+  btn.setAttribute('aria-expanded',open);
+  if(open) (document.querySelector('.dsh-menu a.on')||document.querySelector('.dsh-side a')).focus({preventScroll:true});
+  else if(was) btn.focus({preventScroll:true});
+}
 
 /* ================= Interactions ================= */
 const toastEl=document.getElementById('toast');let toastT;
 function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),2200);}
-const pop=document.getElementById('pop-notifs');
-function closePop(){pop.classList.remove('open');}
-function renderNotifs(){
-  const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b><span class="med"> got approved</span>`
-    :n.type==='reply'?`<span class="med">Check out the </span><b>reply from ${n.brand}</b>`
-    :`<b>+ Rs. ${n.amount}</b><span class="med"> from </span><b>${n.brand}</b><span class="med">, ${n.detail}</span>`;
-  const l=document.getElementById('nt-list');
-  l.innerHTML=notifications.map(n=>`<div class="nt-item"><img class="nt-logo" data-a="${n.logo}" alt=""><div class="nt-body"><p class="nt-text">${text(n)}</p><span class="nt-time">${n.time}</span></div></div>`).join('');
-  bindAssets(l);
-}
-
 document.addEventListener('click',e=>{
   const t=e.target;
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
+  if(t.closest('[data-tmenu]')){setTopMenu(!document.getElementById('tmenu').classList.contains('open'));return;}
+  if(!t.closest('#tmenu')) setTopMenu(false);
+  const side=t.closest('[data-side]');
+  if(side){setSide(side.dataset.side==='open');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
-  if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
-  if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
+  const nt=t.closest('[data-nt]');
+  if(nt){const n=notifications[nt.dataset.nt];if(!n.read){n.read=true;refreshNotifs();}return;}
   const cat=t.closest('[data-cat]');
-  if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
+  if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));cat.scrollIntoView({inline:'nearest',block:'nearest',behavior:'smooth'});renderFeed();return;}
   /* Open / Invite only and Performance / Flat fee: click the active one again to show both */
   const flt=t.closest('[data-filter]');
   if(flt){const f=flt.dataset.filter;state[f]=state[f]===flt.dataset.val?null:flt.dataset.val;document.querySelectorAll(`[data-filter="${f}"]`).forEach(c=>c.classList.toggle('active',c.dataset.val===state[f]));renderFeed();return;}
+  const pm=t.closest('.an-plat');
+  document.querySelectorAll('.an-plat.open').forEach(m=>{if(m!==pm) anMenu(m,false);});
+  const my=t.closest('[data-mp-y]');
+  if(my){FIN.pickY+=+my.dataset.mpY;pm.querySelector('.mp-menu').innerHTML=mpMenu();
+    const nb=pm.querySelector(`[data-mp-y="${my.dataset.mpY}"]`);return (nb.disabled?pm.querySelector('[data-plat]:not(:disabled)'):nb).focus();}
+  if(t.closest('[data-plat-btn]')){const open=!pm.classList.contains('open');
+    if(open&&pm.dataset.pk==='fmp'){FIN.pickY=FIN.sel.y;pm.querySelector('.mp-menu').innerHTML=mpMenu();}
+    anMenu(pm,open);if(open)pm.querySelector('[aria-checked="true"]').focus();return;}
+  const pl=t.closest('[data-plat]');
+  if(pl&&pm.dataset.pk==='fmp'){const [y,m]=pl.dataset.plat.split('-').map(Number);selectMonth(y,m);anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
+  if(t.closest('.mp-menu')) return;
+  if(pl){const id=parseHash().id, key=pm.dataset.pk;dash(id).plats[key]=pl.dataset.plat;
+    pm.querySelector('[data-plat-btn]').firstChild.textContent=pl.textContent;
+    pm.querySelectorAll('[data-plat]').forEach(b=>b.setAttribute('aria-checked',b===pl));
+    anMenu(pm,false);PANELS[key](id);return document.querySelector(`[data-pk="${key}"] [data-plat-btn]`).focus();}
+  const fm=t.closest('[data-fm]');
+  if(fm){setMonth(+fm.dataset.fm);return document.querySelector(`[data-fm="${fm.dataset.fm}"]`).focus();}
   const act=t.closest('[data-act]');
-  if(act){e.preventDefault();return doAct(act.dataset.act);}
+  if(act){e.preventDefault();return doAct(act.dataset.act,act);}
+  const th=t.closest('[data-thread]');
+  if(th){const d=dash(parseHash().id);d.thread=+th.dataset.thread;d.ibOpen=true;rerender();
+    /* On phones, don't pop the keyboard over the conversation just opened */
+    return PHONE.matches?document.querySelector('.ib-back').focus({preventScroll:true}):document.getElementById('ib-input').focus({preventScroll:true});}
+  if(t.closest('[data-ib-back]')){const d=dash(parseHash().id),i=d.thread;d.ibOpen=false;rerender();return document.querySelector(`[data-thread="${i}"]`).focus({preventScroll:true});}
   const go=t.closest('[data-go]');
   if(go) location.hash=go.dataset.go;
 });
-function doAct(a){
+function refreshNotifs(){updateBell();if(document.body.classList.contains('notifs')){view.innerHTML=viewNotifs();bindAssets(view);}}
+function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
+  const h=parseHash(), d=h.admin&&dash(h.id);
+  if(h.root==='financials'&&a==='dismiss'){FIN.dismissed.add(el.dataset.k);view.innerHTML=viewFinancials(h.fsec);return bindAssets(view);}
+  if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
+  if(d&&(a==='approve'||a==='reject'||a==='undo')){
+    const s=d.pending[+el.closest('[data-i]').dataset.i], box=el.closest('.adm-act');
+    if(a==='undo'){delete s.hold;holding=holding.filter(x=>x.s!==s);}
+    else{s.hold={act:a,at:Date.now()+HOLD};holding.push({d,s});startHold();}
+    box.innerHTML=actHTML(s);
+    return box.querySelector('button').focus({preventScroll:true});
+  }
   if(a==='share') return toast('Link copied');
+  if(a==='copy'){const v=el.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(`Copied · ${v}`),()=>toast(v));return;}
+  if(a==='statement') return downloadStatement();
+  if(a==='slip') return downloadSlip(FIN.transfers[+el.dataset.tx]);
+  if(a==='ff-clear'){FIN.file=null;fileChip();const f=document.getElementById('ff-file');f.value='';return f.focus();}
+  if(a==='readall'){notifications.forEach(n=>n.read=true);return refreshNotifs();}
   if(a==='clear'){state.cat='All';state.access=null;state.fee=null;state.q='';document.querySelectorAll('[data-filter]').forEach(c=>c.classList.remove('active'));const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
 }
 
+/* Decisions on hold: one ticker updates every countdown and approves or rejects a post once its time runs out */
+let holding=[],holdT=null;
+function startHold(){if(!holdT) holdT=setInterval(tickHold,250);}
+function tickHold(){
+  const done=holding.filter(x=>x.s.hold.at<=Date.now());
+  holding=holding.filter(x=>!done.includes(x));
+  if(!holding.length){clearInterval(holdT);holdT=null;}
+  document.querySelectorAll('.adm-act[data-sid]').forEach(box=>{const x=holding.find(x=>x.s.sid===+box.dataset.sid),b=x&&box.querySelector('[data-left]');if(b) b.textContent=holdLeft(x.s);});
+  if(!done.length) return;
+  done.forEach(({d,s})=>{const i=d.pending.indexOf(s);if(i<0) return;
+    d.pending.splice(i,1);
+    if(s.hold.act==='approve') d.approved.unshift({...s,img:s.media.items[0],kind:{reel:'Reel',image:'Post',carousel:'Carousel'}[s.media.type],platform:s.platform,views:0,eng:0,posted:'Just now',isNew:true});});
+  if(parseHash().admin) rerender();
+  const verb=x=>x.s.hold.act==='approve'?'Approved':'Rejected';
+  toast(done.length>1?`${done.length} decisions sent · creators have been notified`:`${verb(done[0])} · ${done[0].s.name} has been notified`);
+  done.forEach(x=>delete x.s.hold);
+}
+
+/* Inbox: send a message in the open thread */
+/* Financials: a transfer slip goes in as pending until PolySocial verifies it */
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='fin-form') return;
+  e.preventDefault();
+  const amt=document.getElementById('ff-amt'), date=document.getElementById('ff-date'), err=document.getElementById('ff-err');
+  const amount=num(amt.value), when=date.value?new Date(date.value+'T12:00'):null;
+  [amt,date,document.getElementById('ff-drop')].forEach(x=>x.removeAttribute('aria-invalid'));
+  const bad=!amount?[amt,'Enter the amount you transferred.']:!when||date.value>date.max?[date,'Pick the date of the transfer.']:!FIN.file?[document.getElementById('ff-drop'),'Upload the transfer slip so we can verify it.']:null;
+  if(bad){bad[0].setAttribute('aria-invalid','true');err.textContent=bad[1];return (bad[0].querySelector('input')||bad[0]).focus();}
+  const f=FIN.file, tx={at:when,amount,ref:document.getElementById('ff-ref').value.trim()||FIN.ref,file:f.name,url:URL.createObjectURL(f),status:'pending'};
+  FIN.transfers.push(tx);FIN.file=null;
+  /* Land on Bank transfers with the new slip highlighted at the top */
+  FIN.newTx=tx;
+  if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
+  toast(`${RS(amount)} sent for verification · usually within 1 working day`);
+});
+document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
+/* A file dropped beside the drop zone shouldn't navigate away from the form */
+['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
+['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
+['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(!d) return;
+  if(ev==='dragleave'&&d.contains(e.relatedTarget)) return;
+  d.classList.remove('over');if(ev==='drop'){e.preventDefault();pickFile(e.dataTransfer.files[0]);}}));
+
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='ib-form') return;
+  e.preventDefault();
+  const input=document.getElementById('ib-input'), text=input.value.trim(); if(!text) return;
+  const d=dash(parseHash().id), t=d.threads[d.thread];
+  t.msgs.forEach(m=>m.length=2);t.msgs.push(['me',text,1]);t.time='now';
+  rerender();document.getElementById('ib-input').focus({preventScroll:true});
+});
+
 /* Search filters the campaign feed */
-document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
+document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}
+  /* Amount field groups thousands as you type */
+  if(e.target.id==='ff-amt'){const n=num(e.target.value);e.target.value=n?n.toLocaleString('en-US'):'';e.target.removeAttribute('aria-invalid');}});
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
-  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}closePop();}
+  const pm=document.querySelector('.an-plat.open');
+  if(pm){
+    if(e.key==='Escape'){e.preventDefault();anMenu(pm,false);return pm.querySelector('[data-plat-btn]').focus();}
+    const items=[...pm.querySelectorAll('[data-plat]:not(:disabled)')], i=items.indexOf(document.activeElement);
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length].focus();return;}
+    if(e.key==='Tab') anMenu(pm,false);
+  }
+  if(e.key==='Escape'&&document.getElementById('tmenu').classList.contains('open')){setTopMenu(false);return;}
+  if(e.key==='Escape'&&document.body.classList.contains('side-open')){setSide(false);return;}
+  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
 });
 
 /* ===== Init ===== */
 renderTopNav();
 bindAssets(document.body);
-renderNotifs();
+updateBell();
 route();
 </script>
 </body>

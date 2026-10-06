@@ -15,9 +15,31 @@ Desktop web app for brands on the UGC Platform. Open `index.html` in a browser �
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
   web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,
   best-suited-for tags, event details for events, requirements and "Campaign created by".
-- **Admin view** — "Switch to admin" on a campaign page (`#/campaign/<id>/admin`). Three columns: the campaign
-  (name, timestamps, creators joined, budget progress), the creator's post in a phone frame (reel, image or
-  swipeable carousel), and the creator (name, photo, followers, caption, short bio). "Switch to creator" goes back.
+- **Admin dashboard** — "Switch to admin" on a campaign page (`#/campaign/<id>/admin`), laid out like a LinkedIn
+  Page admin on a `#f6f6f6` canvas. The left column is a card with the campaign image, title, status and a
+  "View as creator" button, followed by the sub menu (badges show pending submissions and unread messages):
+  - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
+    budget and the campaign brief.
+  - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
+    full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
+    bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
+  - **Approved content** (`/admin/approved`) — grid of live posts with views; newly approved posts appear first.
+  - **Analytics** (`/admin/analytics`) — headline tiles (views, total reach, engagement rate, live posts) and an Engagement card (impressions, reactions, comments, reposts), each with its own platform dropdown (All / Instagram / TikTok / YouTube); a per-day line chart with a metric dropdown (Views / Reach / Engagement rate / Submissions) above its title and its own platform dropdown (hover for each day's value), top creators (platforms, views, reach, engagement rate, paid amount, submission date).
+  - **Inbox** (`/admin/inbox`) — conversations with creators; send replies in the open thread.
+
+- **Financials** — the wallet icon next to Explore in the top menu (`#/financials`). Laid out like the campaign admin
+  dashboard (same left card + sub menu (Overview, Monthly financials), drawer on phones, cards, tiles and tables). One wallet funds every campaign:
+  - **Overview** (`/financials/overview`, default) — dismissable "Needs your attention" items (transfer being verified,
+    rejected slip, budget shortfall), a Wallet card of tiles (balance, total added, spent; then free
+    to spend, committed to campaign budgets, spent this month and pending verification), then spend by campaign for the last 10 campaigns.
+  - **Monthly financials** (`/financials/monthly`) — added vs spent for the last six months in the analytics chart frame
+    (click a month or use the dropdown); the month's opening, added, spent and closing balance; spend by campaign with a
+    CSV statement download.
+  - **Add funds** (`/financials/funds`, from the outlined button in the left card) — how it works, PolySocial's bank
+    account as spec tiles (click to copy) and the payment reference, the transfer slip upload (PDF, JPG or PNG up to 10 MB,
+    drag and drop), then **Bank transfers**: every uploaded slip with its status (`/financials/funds/transfers` scrolls
+    to it). A new upload lands there as Pending; only verified transfers count towards the wallet. The bank details in
+    `BANK` are placeholders.
 
 ## Assets
 
