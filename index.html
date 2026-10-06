@@ -1349,9 +1349,10 @@ const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
-const SECTIONS=[['details','Campaign details'],['invitations','Invitations'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
-/* Invitations only applies to invite-only campaigns */
-const secsFor=id=>SECTIONS.filter(x=>x[0]!=='invitations'||C[id].access==='invite');
+const SECTIONS=[['details','Campaign details'],['invitations','Invitations'],['negotiations','Negotiations'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+/* Invitations only applies to invite-only campaigns; Negotiations to open campaigns paid per slot */
+const SECWHEN={invitations:c=>c.access==='invite',negotiations:c=>c.access==='open'&&c.fee==='flat'};
+const secsFor=id=>SECTIONS.filter(x=>!SECWHEN[x[0]]||SECWHEN[x[0]](C[id]));
 
 /* Creators who post for brands (taken from the submissions above) */
 const POOL=Object.values(SUB).filter((s,i,a)=>a.findIndex(o=>o.name===s.name)===i)
@@ -1666,6 +1667,10 @@ function secInvitations(id){
   return `<section class="dcard">${dhead('Invitations')}</section>`;
 }
 
+function secNegotiations(id){
+  return `<section class="dcard">${dhead('Negotiations')}</section>`;
+}
+
 function secInbox(id){
   const d=dash(id), t=d.threads[d.thread];
   /* On phones the thread only counts as read once it is opened from the list */
@@ -1688,7 +1693,7 @@ function viewAdmin(id,sec,post){
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
       :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
-  const body={details:secDetails,invitations:secInvitations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  const body={details:secDetails,invitations:secInvitations,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
