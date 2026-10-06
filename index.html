@@ -138,6 +138,10 @@
   .card-time{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
   .card-time .dot{width:2px;height:2px;border-radius:4px;background:var(--grey-600);}
   .progress-group{display:flex;flex-direction:column;gap:4px;}
+  /* Flat fee campaigns: one segment per slot (20 or fewer slots) */
+  .slots{display:flex;gap:3px;height:6px;}
+  .slots i{flex:1;min-width:0;border-radius:75px;background:#ddd;}
+  .slots i.on{background:var(--blue-500);}
   .card-foot{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:normal;}
   .card-foot .joined{display:flex;gap:4px;align-items:center;font-weight:500;color:var(--grey-800);}
   .card-foot .joined svg{width:14px;height:14px;color:#131927;}
@@ -160,7 +164,11 @@
   .search input::placeholder{color:var(--grey-600);}
   .search input::-webkit-search-cancel-button{display:none;}
   .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:3px 6px;border-radius:4px;background:var(--grey-100);}
-  .home .tags{margin-top:12px;gap:6px;}
+  .home .tags{margin-top:12px;gap:6px;align-items:center;}
+  .home .tags .tag-sep{flex-shrink:0;width:1px;height:18px;margin:0 6px;background:var(--grey-400);}
+  /* Access line under the image: open lock for Open, closed lock for Invite only */
+  .card-access{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .card-access svg{width:14px;height:14px;flex-shrink:0;}
   .tag:active{transform:scale(.96);}
 
   body.explore{--page:var(--explore-page);--shell:var(--explore-page);--gutter:var(--explore-gutter);}
@@ -1063,6 +1071,25 @@ Object.assign(C.eats,{status:'completed',time:'Ended on June 28',right:null,mone
 Object.assign(C.kfc,{status:'completed',time:'Ended on July 1',right:null,progress:100,money:'<span>Rs. 280,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 280,000',available:'Rs. 0'});
 Object.assign(C.hiru,{status:'upcoming'});
 Object.assign(C.shakira,{status:'upcoming'});
+/* Who can join: open to every creator, or invite only */
+Object.keys(C).forEach(id=>C[id].access='open');
+['starbucks','dominos','kfc','shakira'].forEach(id=>C[id].access='invite');
+const ACCESS={open:'Open',invite:'Invite only'};
+/* How creators are paid: performance fee (base + per 1K views) or a flat fee for a fixed number of slots */
+Object.keys(C).forEach(id=>C[id].fee='performance');
+const flat=(id,o)=>{const budgetN=o.slots*o.rate,spentN=o.filled*o.rate,rs=n=>'Rs. '+n.toLocaleString('en-US');
+  Object.assign(C[id],{fee:'flat',slots:o.slots,filled:o.filled,progress:Math.round(o.filled/o.slots*100),
+    joined:C[id].joined&&o.filled+' joined',joinedShort:String(o.filled),
+    budget:rs(budgetN),budgetN,spent:rs(spentN),available:rs(budgetN-spentN),
+    list:[['Flat fee per content',rs(o.rate)],['Slots',String(o.slots)],['Slots filled',String(o.filled)],['Total budget',rs(budgetN)]]});};
+flat('burgerking',{slots:12,filled:5,rate:25000});
+flat('dominos',{slots:30,filled:18,rate:15000});
+flat('kfc',{slots:10,filled:10,rate:20000});
+flat('shakira',{slots:8,filled:3,rate:50000});
+const FEE={performance:'Performance fee',flat:'Flat fee'};
+const FILTERS={access:ACCESS,fee:FEE};
+const UNLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="11" width="13" height="10" rx="2"/><path d="M13 11V7a4 4 0 00-8 0v2"/></svg>';
+const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
@@ -1083,22 +1110,27 @@ const notifications=[
   {logo:'pickmeLogo',type:'approved',brand:'PickMe',ago:12960,read:true},
 ];
 
-const state={tab:'active',cat:'All',q:'',searchOpen:false,loaded:false};
+const state={tab:'active',cat:'All',access:null,fee:null,q:'',searchOpen:false,loaded:false};
 
 /* ================= Templates ================= */
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
 
+/* Flat fee with 20 or fewer slots: one segment per slot; otherwise a continuous bar */
+function barHTML(c){
+  if(c.fee==='flat'&&c.slots<=20) return `<div class="slots" role="progressbar" aria-label="${c.filled} of ${c.slots} slots filled">${Array.from({length:c.slots},(_,i)=>`<i${i<c.filled?' class="on"':''}></i>`).join('')}</div>`;
+  return `<div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>`;
+}
 function cardHTML(id){
   const c=C[id];
   return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/details">
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
-      <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
+      <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}${c.fee==='performance'?`<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span>`:''}</div><div class="view-btn">View</div></div>
     </div>
-    <div class="card-content">
+    <div class="card-content"><div class="card-access">${c.access==='invite'?LOCK:UNLOCK}<span>${ACCESS[c.access]}</span></div>
       <div class="ctitle" data-go="#/campaign/${id}/admin/details">${c.title}</div>${timeHTML(c)}
-      <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
-        <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
+      <div class="progress-group">${barHTML(c)}
+        <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.fee==='flat'?`<span>${c.filled} /</span><b>${c.slots} slots</b>`:c.money}</div></div></div>
     </div></div>`;
 }
 
@@ -1110,7 +1142,7 @@ function viewExplore(){
     <div class="home-search${state.searchOpen?' open':''}" id="home-search"><div>
       <label class="search">${MICON.search}<input id="q" type="search" placeholder="Search" value="${esc(state.q)}" autocomplete="off" aria-label="Search campaigns and brands"${state.searchOpen?'':' tabindex="-1"'}><kbd>Esc</kbd></label>
     </div></div>
-    <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}</div>
+    <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}${Object.entries(FILTERS).map(([f,opts])=>`<span class="tag-sep" aria-hidden="true"></span>${Object.entries(opts).map(([k,v])=>`<div class="tag${state[f]===k?' active':''}" data-filter="${f}" data-val="${k}">${v}</div>`).join('')}`).join('')}</div>
     <div class="feedgrid" id="feed"></div>
   </div>`;
 }
@@ -1154,10 +1186,12 @@ function renderFeed(){
   let ids=EXPLORE.filter(id=>{const c=C[id];
     if(c.status!==state.tab) return false;
     if(!['All','Price'].includes(state.cat)&&c.cat!==state.cat) return false;
+    if(state.access&&c.access!==state.access) return false;
+    if(state.fee&&c.fee!==state.fee) return false;
     return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
   if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
   f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
-    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||state.cat)}”</h2><p>Try another brand name or clear the search to see every ${state.tab} campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
+    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||[state.access&&ACCESS[state.access],state.fee&&FEE[state.fee]].filter(Boolean).join(' · ')||state.cat)}”</h2><p>Try another brand name or clear the search to see every ${state.tab} campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
   bindAssets(f);
 }
 
@@ -2145,6 +2179,9 @@ document.addEventListener('click',e=>{
   if(nt){const n=notifications[nt.dataset.nt];if(!n.read){n.read=true;refreshNotifs();}return;}
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));cat.scrollIntoView({inline:'nearest',block:'nearest',behavior:'smooth'});renderFeed();return;}
+  /* Open / Invite only and Performance / Flat fee: click the active one again to show both */
+  const flt=t.closest('[data-filter]');
+  if(flt){const f=flt.dataset.filter;state[f]=state[f]===flt.dataset.val?null:flt.dataset.val;document.querySelectorAll(`[data-filter="${f}"]`).forEach(c=>c.classList.toggle('active',c.dataset.val===state[f]));renderFeed();return;}
   const pm=t.closest('.an-plat');
   document.querySelectorAll('.an-plat.open').forEach(m=>{if(m!==pm) anMenu(m,false);});
   const my=t.closest('[data-mp-y]');
@@ -2191,7 +2228,7 @@ function doAct(a,el){
   if(a==='slip') return downloadSlip(FIN.transfers[+el.dataset.tx]);
   if(a==='ff-clear'){FIN.file=null;fileChip();const f=document.getElementById('ff-file');f.value='';return f.focus();}
   if(a==='readall'){notifications.forEach(n=>n.read=true);return refreshNotifs();}
-  if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
+  if(a==='clear'){state.cat='All';state.access=null;state.fee=null;state.q='';document.querySelectorAll('[data-filter]').forEach(c=>c.classList.remove('active'));const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
 }
 
 /* Decisions on hold: one ticker updates every countdown and approves or rejects a post once its time runs out */
