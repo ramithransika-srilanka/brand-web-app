@@ -1349,7 +1349,9 @@ const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
-const SECTIONS=[['details','Campaign details'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+const SECTIONS=[['details','Campaign details'],['invitations','Invitations'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+/* Invitations only applies to invite-only campaigns */
+const secsFor=id=>SECTIONS.filter(x=>x[0]!=='invitations'||C[id].access==='invite');
 
 /* Creators who post for brands (taken from the submissions above) */
 const POOL=Object.values(SUB).filter((s,i,a)=>a.findIndex(o=>o.name===s.name)===i)
@@ -1387,7 +1389,7 @@ function sideHTML(id,sec){
   const c=C[id], d=dash(id);
   const badge={pending:d.pending.length,inbox:unreadN(d)};
   /* On phones the left column becomes a drawer, opened from this bar under the top menu */
-  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${SECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${secsFor(id).find(x=>x[0]===sec)[1]}</span></button></div>
   <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
   <aside class="dcard dsh-side" id="dsh-side">
     <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
@@ -1397,7 +1399,7 @@ function sideHTML(id,sec){
       <div class="dsh-meta"><span class="dsh-status ${c.status}">${c.status}</span><span class="dsh-when">${[c.time,c.right].filter(Boolean).map(t=>`<span>${t}</span>`).join('<i aria-hidden="true"></i>')}</span></div>
       <a class="dsh-viewas" href="#/campaign/${id}">${EYEIC}View as creator</a>
     </div>
-    <nav class="dsh-menu" aria-label="Campaign admin">${SECTIONS.map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
+    <nav class="dsh-menu" aria-label="Campaign admin">${secsFor(id).map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
   </aside>`;
 }
 const empty=(t,m)=>`<div class="dempty"><b>${t}</b><span>${m}</span></div>`;
@@ -1660,6 +1662,10 @@ function secAnalytics(id){
           <td>${fmtN(w.views)}</td><td>${fmtN(w.reach)}</td><td>${(w.engN/w.views).toFixed(1)}%</td><td>Rs. ${w.paid.toLocaleString('en-US')}</td><td>${subDate(w.ago)}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
+function secInvitations(id){
+  return `<section class="dcard">${dhead('Invitations')}</section>`;
+}
+
 function secInbox(id){
   const d=dash(id), t=d.threads[d.thread];
   /* On phones the thread only counts as read once it is opened from the list */
@@ -1682,7 +1688,7 @@ function viewAdmin(id,sec,post){
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
       :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
-  const body={details:secDetails,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  const body={details:secDetails,invitations:secInvitations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
@@ -2084,7 +2090,7 @@ const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
   if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
-  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:SECTIONS.some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
+  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:campaign&&secsFor(campaign).some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
 };
 function mountMedia(){
   const els=[...view.querySelectorAll('[data-media]')];
@@ -2142,7 +2148,7 @@ function route(){
   const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin;
   if(campaign||notifs||fin) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(admin?SECTIONS.find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.title=(admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
   document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   setTopMenu(false);
   document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
