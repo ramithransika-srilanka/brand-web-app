@@ -150,7 +150,11 @@
   .search input::placeholder{color:var(--grey-600);}
   .search input::-webkit-search-cancel-button{display:none;}
   .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:3px 6px;border-radius:6px;background:var(--grey-100);}
-  .home .tags{margin-top:12px;gap:6px;}
+  .home .tags{margin-top:12px;gap:6px;align-items:center;}
+  .home .tags .tag-sep{width:1px;height:18px;margin:0 6px;background:var(--grey-400);}
+  /* Invite-only campaigns carry a lock line under the image; open campaigns show nothing */
+  .card-access{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;line-height:19px;color:var(--grey-600);}
+  .card-access svg{width:16px;height:16px;flex-shrink:0;}
   .tag:active{transform:scale(.96);}
 
   .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px;}
@@ -595,6 +599,11 @@ Object.assign(C.eats,{status:'completed',time:'Ended on June 28',right:null,mone
 Object.assign(C.kfc,{status:'completed',time:'Ended on July 1',right:null,progress:100,money:'<span>Rs. 280,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 280,000',available:'Rs. 0'});
 Object.assign(C.hiru,{status:'upcoming'});
 Object.assign(C.shakira,{status:'upcoming'});
+/* Who can join: open to every creator, or invite only */
+Object.keys(C).forEach(id=>C[id].access='open');
+['starbucks','dominos','kfc','shakira'].forEach(id=>C[id].access='invite');
+const ACCESS={open:'Open',invite:'Invite only'};
+const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
@@ -614,7 +623,7 @@ const notifications=[
   {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
 ];
 
-const state={tab:'active',cat:'All',q:'',searchOpen:false,loaded:false};
+const state={tab:'active',cat:'All',access:null,q:'',searchOpen:false,loaded:false};
 
 /* ================= Templates ================= */
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -627,7 +636,7 @@ function cardHTML(id){
       <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
     </div>
-    <div class="card-content">
+    <div class="card-content">${c.access==='invite'?`<div class="card-access">${LOCK}<span>Invite only</span></div>`:''}
       <div class="ctitle" data-go="#/campaign/${id}">${c.title}</div>${timeHTML(c)}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
@@ -642,7 +651,7 @@ function viewExplore(){
     <div class="home-search${state.searchOpen?' open':''}" id="home-search"><div>
       <label class="search">${MICON.search}<input id="q" type="search" placeholder="Search" value="${esc(state.q)}" autocomplete="off" aria-label="Search campaigns and brands"${state.searchOpen?'':' tabindex="-1"'}><kbd>Esc</kbd></label>
     </div></div>
-    <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}</div>
+    <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}<span class="tag-sep" aria-hidden="true"></span>${Object.entries(ACCESS).map(([k,v])=>`<div class="tag${state.access===k?' active':''}" data-access="${k}">${v}</div>`).join('')}</div>
     <div class="feedgrid" id="feed"></div>
   </div>`;
 }
@@ -656,10 +665,11 @@ function renderFeed(){
   let ids=EXPLORE.filter(id=>{const c=C[id];
     if(c.status!==state.tab) return false;
     if(!['All','Price'].includes(state.cat)&&c.cat!==state.cat) return false;
+    if(state.access&&c.access!==state.access) return false;
     return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
   if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
   f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
-    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||state.cat)}”</h2><p>Try another brand name or clear the search to see every ${state.tab} campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
+    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||(state.access?ACCESS[state.access]:state.cat))}”</h2><p>Try another brand name or clear the search to see every ${state.tab} campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
   bindAssets(f);
 }
 
@@ -993,6 +1003,9 @@ document.addEventListener('click',e=>{
   if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
+  /* Open / Invite only: click again to show both */
+  const acc=t.closest('[data-access]');
+  if(acc){state.access=state.access===acc.dataset.access?null:acc.dataset.access;document.querySelectorAll('[data-access]').forEach(c=>c.classList.toggle('active',c.dataset.access===state.access));renderFeed();return;}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act);}
   const go=t.closest('[data-go]');
@@ -1001,7 +1014,7 @@ document.addEventListener('click',e=>{
 function doAct(a){
   if(a==='soon') return toast('This screen is next to build');
   if(a==='share') return toast('Link copied');
-  if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
+  if(a==='clear'){state.cat='All';state.access=null;state.q='';document.querySelectorAll('[data-access]').forEach(c=>c.classList.remove('active'));const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
 }
 
 /* Search filters the campaign feed */
