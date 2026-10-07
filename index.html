@@ -525,8 +525,6 @@
   /* Flat fee campaigns: the amount agreed with each creator, in a fixed-width column after the pending invite */
   .inv-amt{width:120px;flex-shrink:0;text-align:right;white-space:nowrap;}
   .inv-amt b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  /* Pending creators have no price yet: the fee is still being agreed */
-  .inv-amt.pend b{font-weight:500;color:var(--grey-600);}
   .inv-amt span{display:block;margin-top:1px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .inv-bar .an-plat+.an-plat{margin-left:-12px;}
   .inv-del{width:40px;height:40px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#f6f6f6;color:var(--bad);transition:background .2s ease,border-color .2s ease;}
@@ -2046,7 +2044,7 @@ function invRows(id){
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
     <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a><span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span></div>
     ${c.pending?`<div class="inv-pend"><span>Pending</span>${C[id].access==='invite'?`<button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button>`:''}</div>`:'<div class="inv-pend"></div>'}
-    ${C[id].fee==='flat'?(c.pending?`<div class="inv-amt pend"><b>Not agreed yet</b><span>Agreed amount</span></div>`:`<div class="inv-amt"><b>${agreed(id,c)}</b><span>Agreed amount</span></div>`):''}
+    ${C[id].fee==='flat'?(c.pending?'<div class="inv-amt"></div>':`<div class="inv-amt"><b>${agreed(id,c)}</b><span>Agreed amount</span></div>`):''}
     <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
 }
 /* Creator profile drawer: who they are, where they post, and their track record */
