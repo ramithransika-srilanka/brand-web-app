@@ -1002,8 +1002,6 @@
   /* Setup cards */
   .neg-req{display:inline-block;margin-left:8px;padding:3px 8px;border-radius:100px;background:var(--blue-100);font-size:12px;font-weight:600;line-height:14px;color:var(--blue-700);vertical-align:3px;letter-spacing:0;}
   .neg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 12px;margin-top:18px;}
-  .neg-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));}
-  .neg-sep{margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
   .fl .hint{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .fl select{height:40px;width:100%;min-width:0;padding:0 38px 0 16px;border:1px solid var(--grey-400);border-radius:100px;outline:0;appearance:none;-webkit-appearance:none;cursor:pointer;
     background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 3h8L5 8z' fill='%23121212'/%3E%3C/svg%3E") no-repeat right 16px center/10px;
@@ -1019,17 +1017,6 @@
   .neg-opt input{flex-shrink:0;width:18px;height:18px;margin-top:1px;accent-color:var(--blue-500);}
   .neg-opt b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
   .neg-opt span{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--grey-600);}
-  .neg-checks{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
-  .neg-check{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);cursor:pointer;}
-  .neg-check input{flex-shrink:0;width:18px;height:18px;margin-top:1px;accent-color:var(--blue-500);cursor:pointer;}
-  .neg-inline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:18px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
-  .neg-inline .ff-in input{flex:1;width:100%;min-width:0;border:0;outline:0;background:none;font:500 14px var(--font);color:var(--grey-800);}
-  .neg-inline .ff-in.rs{width:180px;}
-  .neg-lock{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
-  .neg-lock span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;border-radius:100px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:16px;color:var(--grey-800);}
-  .neg-lock svg{width:14px;height:14px;}
-  .neg-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;}
-  .neg-cols .neg-sub{margin-top:20px;}
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -1038,15 +1025,11 @@
   @media (max-width:1279px){
     .feedgrid .card-img,.feedgrid .sk-card .img{height:auto;aspect-ratio:3/2;}
   }
-  @media (max-width:1279px){
-    .neg-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-  }
   @media (max-width:1023px){
-    .neg-plan,.neg-cols{grid-template-columns:minmax(0,1fr);}
-    .neg-cols{gap:0;}
+    .neg-plan{grid-template-columns:minmax(0,1fr);}
   }
   @media (max-width:767px){
-    .neg-grid,.neg-grid.two{grid-template-columns:minmax(0,1fr);}
+    .neg-grid{grid-template-columns:minmax(0,1fr);}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;--explore-gutter:24px;}
@@ -2143,18 +2126,12 @@ const NEG_REPLY=[['3','3 hours per round'],['6','6 hours per round'],['12','12 h
 const NEG_END=[['final','Final offer at maximum, then close','One last offer at your maximum with a short window. If declined, the negotiation ends.'],
   ['none','Close with no deal','The agent thanks the creator and ends the negotiation.'],
   ['me','Hand over to me','The agent pauses and you decide what to do next.']];
-const NEG_HAND=[['terms','The creator asks to change campaign terms'],['near','The ask is within 10% above my maximum'],['rival','The creator mentions a competing offer'],['sour','The conversation turns negative']];
-const NEG_WHY=[['budget','This campaign has a fixed budget'],['views','Our rate is based on recent median views'],['pay','We pay within 7 days of posting']];
-const NEG_SECRET=['Maximum price','Target price','Campaign budget','Other creators’ rates'];
-const NEG_TONE=['Warm and friendly','Professional','Short and direct'];
-const NEG_NOTIFY=['In-app and email','In-app only','Email only'];
 const agreedN=(id,c)=>Math.round(C[id].rate*TIER_X[c.tier]/5000)*5000;
 /* One set of rules per campaign: the platform's agent follows them with every collaborator */
 function negState(id){
   const t=C[id].rate, r5=n=>Math.round(n/5000)*5000;
   return dash(id).neg??={open:r5(t*.75),target:t,max:r5(t*1.45),
-    final:'48',reply:'6',rounds:4,end:'final',approve:r5(t*1.25),
-    hand:{terms:true,near:true,rival:true,sour:true},why:{budget:true,views:true,pay:false},tone:NEG_TONE[0],notify:NEG_NOTIFY[0]};
+    final:'48',reply:'6',rounds:4,end:'final'};
 }
 /* Offers step evenly from the opening offer to the maximum, which is the final offer */
 function negPlan(n){
@@ -2174,7 +2151,6 @@ function negSummary(id){
   const notes=[
     bad&&['bad',bad],
     need>win&&['bad',`${n.rounds} rounds at ${n.reply} hours each need ${need} hours, longer than the ${NEG_FINAL.find(f=>f[0]===n.final)[1]} deadline. Cut the rounds or shorten the reply window.`],
-    n.approve&&n.approve<n.max&&['info',`Any deal above ${RS(n.approve)} will wait for your approval before it is confirmed.`],
   ].filter(Boolean);
   const endTxt={final:'Final offer at maximum, then close',none:'Close with no deal',me:'Hands over to you'}[n.end];
   return `<div class="neg-range" aria-hidden="true"><span class="fill" style="left:${pos(Math.min(n.open,n.max))};right:calc(100% - ${pos(Math.max(n.open,n.max))})"></span>${key.map(k=>`<i class="c-${k[0]}" style="left:${pos(k[2])}"></i>`).join('')}</div>
@@ -2190,7 +2166,6 @@ function negSummary(id){
 }
 const negRs=(k,v)=>`<span class="ff-in"><em>Rs.</em><input data-neg="${k}" data-rs inputmode="numeric" value="${v?v.toLocaleString('en-US'):''}" placeholder="0" autocomplete="off"></span>`;
 const negSel=(k,opts,v)=>`<select data-neg="${k}">${opts.map(o=>{const[val,l]=Array.isArray(o)?o:[o,o];return `<option value="${val}"${val===v?' selected':''}>${l}</option>`;}).join('')}</select>`;
-const negChk=(k,on,l)=>`<label class="neg-check"><input type="checkbox" data-neg="${k}"${on?' checked':''}>${l}</label>`;
 const negOpenHint=n=>n.target?`${Math.round(n.open/n.target*100)||0}% of target`:'Your first offer';
 function secNegotiations(id){
   const n=negState(id);
@@ -2210,28 +2185,14 @@ function secNegotiations(id){
       </div>
       <p class="neg-sub">If there’s no agreement by the deadline</p>
       <div class="neg-opts" role="radiogroup" aria-label="If there’s no agreement by the deadline">${NEG_END.map(([k,t,d])=>`<label class="neg-opt"><input type="radio" name="neg-end" data-neg="end" value="${k}"${n.end===k?' checked':''}><div><b>${t}</b><span>${d}</span></div></label>`).join('')}</div></section>
-    <section class="dcard">${dhead(step('Guardrails'),'Hard rules the agent can’t break, and when it hands over to you.')}
-      <p class="neg-sub">Never shared with the creator</p>
-      <div class="neg-lock">${NEG_SECRET.map(s=>`<span>${LOCK}${s}</span>`).join('')}</div>
-      <div class="neg-inline"><span>Ask for my approval before accepting above</span><span class="ff-in rs"><em>Rs.</em><input data-neg="approve" data-rs inputmode="numeric" value="${n.approve?n.approve.toLocaleString('en-US'):''}" placeholder="0" autocomplete="off" aria-label="Approval threshold"></span></div>
-      <div class="neg-cols">
-        <div><p class="neg-sub">Hand over to me when</p><div class="neg-checks">${NEG_HAND.map(([k,l])=>negChk('hand.'+k,n.hand[k],l)).join('')}</div></div>
-        <div><p class="neg-sub">Reasons the agent may give</p><div class="neg-checks">${NEG_WHY.map(([k,l])=>negChk('why.'+k,n.why[k],l)).join('')}</div></div>
-      </div>
-      <div class="neg-grid two neg-sep">
-        <label class="fl">Tone${negSel('tone',NEG_TONE,n.tone)}</label>
-        <label class="fl">Notify me by${negSel('notify',NEG_NOTIFY,n.notify)}</label>
-      </div></section>
     <section class="dcard">${dhead('What the agent will do','The plan the agent follows with each creator, from the settings above.')}
       <div id="neg-sum">${negSummary(id)}</div></section>`;
 }
 /* Every change updates the summary at the top straight away */
 function negInput(el){
   const id=parseHash().id, n=negState(id);
-  const [k,sub]=el.dataset.neg.split('.');
+  const k=el.dataset.neg;
   if(el.dataset.rs!=null){const v=num(el.value);el.value=v?v.toLocaleString('en-US'):'';n[k]=v;}
-  else if(sub) n[k][sub]=el.checked;
-  else if(el.type==='checkbox') n[k]=el.checked;
   else if(k==='rounds') n[k]=Math.min(10,Math.max(1,num(el.value)||1));
   else n[k]=el.value;
   const h=document.getElementById('neg-open-hint');if(h) h.textContent=negOpenHint(n);
@@ -2878,7 +2839,7 @@ document.addEventListener('submit',e=>{
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
 document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
-  if(e.target.dataset.neg&&(e.target.type==='checkbox'||e.target.type==='radio'||e.target.tagName==='SELECT')) negInput(e.target);});
+  if(e.target.dataset.neg&&(e.target.type==='radio'||e.target.tagName==='SELECT')) negInput(e.target);});
 /* A file dropped beside the drop zone shouldn't navigate away from the form */
 ['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
@@ -2897,7 +2858,7 @@ document.addEventListener('submit',e=>{
 
 /* Search filters the campaign feed */
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}
-  if(e.target.dataset.neg&&e.target.type!=='checkbox'&&e.target.type!=='radio'&&e.target.tagName!=='SELECT') negInput(e.target);
+  if(e.target.dataset.neg&&e.target.type!=='radio'&&e.target.tagName!=='SELECT') negInput(e.target);
   if(e.target.id==='inv-q'){const id=parseHash().id;invState(id).q=e.target.value;invRedraw(id);}
   /* Amount field groups thousands as you type */
   if(e.target.id==='ff-amt'){const n=num(e.target.value);e.target.value=n?n.toLocaleString('en-US'):'';e.target.removeAttribute('aria-invalid');}});
