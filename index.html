@@ -1659,7 +1659,7 @@ const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
 const SECTIONS=[['details','Campaign details'],['collaborators','Collaborators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
-/* Collaborators applies to invite-only campaigns (the invite list) and open campaigns paid per slot (negotiations) */
+/* Collaborators applies to invite-only campaigns and open campaigns paid per slot */
 const SECWHEN={collaborators:c=>c.access==='invite'||c.fee==='flat'};
 const secsFor=id=>SECTIONS.filter(x=>!SECWHEN[x[0]]||SECWHEN[x[0]](C[id]));
 
@@ -2022,7 +2022,7 @@ function invRows(id){
   return list.map(c=>`<div class="inv-row">
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
     <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a><span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span></div>
-    ${c.pending?`<div class="inv-pend"><span>Pending</span><button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button></div>`:'<div class="inv-pend"></div>'}
+    ${c.pending?`<div class="inv-pend"><span>Pending</span>${C[id].access==='invite'?`<button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button>`:''}</div>`:'<div class="inv-pend"></div>'}
     ${C[id].fee==='flat'?`<div class="inv-amt"><b>${agreed(id,c)}</b><span>Agreed amount</span></div>`:''}
     <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
 }
@@ -2060,18 +2060,13 @@ function closeProfile(){
   pdReturn=null;
 }
 function invRedraw(id){fill('inv-rows',invRows(id));}
-function secInvitations(id){
+function secCollaborators(id){
   const v=invState(id);
-  return `<section class="dcard">${dhead('Collaborators','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
+  return `<section class="dcard">${dhead('Collaborators','',C[id].access==='invite'?`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`:'')}
     <div class="inv-list"><div class="inv-bar">
       ${platPick(id,'invs',INV_STATUS,'Status')}${platPick(id,'inv',INV_TIERS,'Tier')}
       <label class="search">${MICON.search}<input id="inv-q" type="search" placeholder="Find a creator…" value="${esc(v.q)}" autocomplete="off" aria-label="Find a creator"></label></div>
     <div id="inv-rows">${invRows(id)}</div></div></section>`;
-}
-
-function secCollaborators(id){return C[id].access==='invite'?secInvitations(id):secNegotiations(id);}
-function secNegotiations(id){
-  return `<section class="dcard">${dhead('Collaborators')}${empty('Coming soon','Creator rate negotiations for this campaign will show up here.')}</section>`;
 }
 
 function secInbox(id){
