@@ -42,6 +42,15 @@
   @keyframes screenIn{from{opacity:0;transform:translateY(17px) scale(.988);filter:blur(5px);}to{opacity:1;transform:none;filter:blur(0);}}
   .nav-in{animation:screenIn .46s cubic-bezier(.16,1,.3,1) both;}
   @media(prefers-reduced-motion:reduce){.nav-in{animation:none;}}
+  /* Phones get a "use a desktop" screen instead of the app; the mobile styles below are kept for later */
+  .desk-only{display:none;}
+  @media (max-width:767px){
+    html{scrollbar-gutter:auto;}
+    body>:not(.desk-only){display:none !important;}
+    .desk-only{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:100vh;min-height:100dvh;padding:32px 24px;text-align:center;background:#fff;}
+    .desk-only h1{font-size:22px;font-weight:600;line-height:28px;letter-spacing:-.015em;color:var(--grey-800);}
+    .desk-only p{max-width:300px;font-size:15px;line-height:22px;color:var(--grey-600);}
+  }
 
   /* ================= App shell: top menu ================= */
   .topbar{position:sticky;top:0;z-index:20;height:var(--header);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:0 max(var(--gutter),calc((100% - var(--shell)) / 2));
@@ -429,7 +438,30 @@
     .cd-body .cp.cp-solo{grid-template-columns:minmax(0,1fr);}
     .cd-body .cp-rail{grid-column:1;grid-row:2;border-left:0;border-top:1px solid var(--grey-200);}
   }
-  @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
+  @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel,.pd-panel{transition:none;}}
+
+  /* ================= Creator profile drawer (from the right) ================= */
+  .pdrawer{position:fixed;inset:0;z-index:40;}
+  .pdrawer[hidden]{display:none;}
+  .pdrawer.open .cd-scrim{opacity:1;}
+  .pd-panel{position:absolute;top:0;right:0;bottom:0;width:min(440px,calc(100% - 64px));background:#fff;display:flex;flex-direction:column;
+    box-shadow:-8px 0 32px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .45s cubic-bezier(.16,1,.3,1);outline:none;}
+  .pdrawer.open .pd-panel{transform:none;}
+  /* Built from the dashboard's own parts: .dh heading, .hicon close, .adm-sec sections, .adm-creator rows, .adm-follow counts, .tiles */
+  .pd-head{flex-shrink:0;align-items:center;padding:20px 24px;border-bottom:1px solid var(--line);}
+  .pd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:24px 24px 32px;display:flex;flex-direction:column;gap:18px;}
+  .pd-who{flex-direction:column;text-align:center;}
+  .pd-panel .pd-who img{width:96px;height:96px;border-radius:100px;object-fit:cover;background:var(--grey-200);}
+  .pd-panel .pd-who .name{margin-top:4px;font-size:20px;line-height:26px;}
+  .pd-who .adm-handle:hover{color:var(--blue-500);text-decoration:underline;}
+  .pd-who .adm-follow{justify-content:center;}
+  .pd-body .tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin-top:0;}
+  /* No boxes in the drawer: the two numbers sit side by side with a vertical line between them */
+  .pd-body .tile{padding:4px 0 4px 20px;border:0;border-radius:0;}
+  .pd-body .tile:first-child{padding-left:0;}
+  .pd-body .tile+.tile{border-left:1px solid var(--line);}
+  .pd-brands{display:flex;flex-direction:column;gap:12px;}
+  .pd-brands img{border:1px solid var(--line);background:#fff;}
 
   /* ================= Admin dashboard: campaign card + sub menu on the left, section on the right ================= */
   body.dash{background:var(--page-bg);--subbar:0px;}
@@ -466,6 +498,38 @@
   .dh h2{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;color:var(--grey-800);}
   .dh p{margin-top:2px;font-size:14px;line-height:20px;color:var(--grey-600);}
   .dh .count{font-size:14px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
+  /* Invitations: creator list with select all, tier filter and search, one row per creator */
+  .inv-list{margin-top:18px;border:1px solid var(--line);border-radius:12px;}
+  .inv-bar{border-radius:11px 11px 0 0;}
+  #inv-rows>:last-child{border-radius:0 0 11px 11px;}
+  .inv-bar{display:flex;align-items:center;gap:16px;min-height:62px;padding:10px 12px 10px 18px;background:#f6f6f6;border-bottom:1px solid var(--line);}
+  .inv-bar .lbl{flex:1;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;}
+  .inv-chk{width:16px;height:16px;flex-shrink:0;margin:0;accent-color:var(--blue-500);cursor:pointer;}
+  .inv-bar .an-plat-btn{background:none;color:var(--grey-800);padding:0 10px;}
+  .inv-bar .an-plat-btn:hover{background:var(--grey-100);}
+  .inv-bar .search{width:260px;flex-shrink:1;margin:0;background:#fff;}
+  .inv-bar .search svg{width:16px;height:16px;flex-shrink:0;color:var(--grey-600);}
+  .inv-row{display:flex;align-items:center;gap:14px;min-height:76px;padding:12px 12px 12px 18px;background:#fff;}
+  .inv-row+.inv-row{border-top:1px solid var(--line);}
+  .inv-row.sel{background:#f5f8ff;}
+  .inv-row img{width:42px;height:42px;flex-shrink:0;border-radius:50%;object-fit:cover;background:var(--grey-100);}
+  .inv-row .t{flex:1;min-width:0;}
+  .inv-row .t a{display:block;font-size:16px;font-weight:600;line-height:22px;color:var(--blue-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .inv-row .t a:hover{text-decoration:underline;}
+  /* Email and tier on one line: a long email shortens, the tier always shows */
+  .inv-row .t .sub{display:flex;margin-top:1px;font-size:14px;line-height:20px;color:var(--grey-600);white-space:nowrap;}
+  .inv-row .t .sub span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .inv-row .t .sub span+span{flex-shrink:0;}
+  /* Pending invites: label in the middle of the row, with a button to copy the invite link */
+  .inv-pend{flex:1;display:flex;align-items:center;gap:6px;min-width:0;font-size:14px;line-height:20px;color:var(--grey-600);white-space:nowrap;}
+  .inv-pend button{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;color:var(--grey-700);transition:background .2s ease;}
+  .inv-pend button:hover{background:var(--grey-100);}
+  .inv-pend svg{width:18px;height:18px;}
+  .inv-bar .an-plat+.an-plat{margin-left:-12px;}
+  .inv-del{width:40px;height:40px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#f6f6f6;color:var(--bad);transition:background .2s ease,border-color .2s ease;}
+  .inv-del:hover{background:#fdecee;border-color:#f5c2c9;}
+  .inv-del svg{width:18px;height:18px;}
+  .inv-none{padding:36px 18px;background:#fff;text-align:center;font-size:14px;color:var(--grey-600);}
   .dlink{font-weight:600;color:var(--blue-500);}
   .dlink:hover{text-decoration:underline;}
 
@@ -998,6 +1062,16 @@
     .dsh-main{gap:8px;}
     .dsh-main>.dcard:not(.ib){margin:0 calc(var(--gutter) * -1);padding:24px var(--gutter);border-left:0;border-right:0;border-radius:0;}
     .dh h2{font-size:18px;line-height:24px;}
+    .inv-bar{flex-wrap:wrap;gap:10px 12px;padding:12px 14px;}
+    .inv-bar .search{order:3;width:100%;}
+    .inv-row{gap:12px;min-height:68px;padding:10px 12px 10px 14px;}
+    .inv-row img{width:38px;height:38px;}
+    .inv-row .t a{font-size:15px;line-height:20px;}
+    .inv-row .t .sub{font-size:13px;line-height:18px;}
+    .inv-del{width:36px;height:36px;}
+    .inv-pend{flex:none;gap:2px;font-size:12px;}
+    .inv-pend span{display:none;}
+    .inv-bar .an-plat-btn{padding:0 6px;}
     .dh p{font-size:14px;line-height:20px;}
     .att-list{gap:8px;margin-top:16px;}
     .att{padding:14px 16px;}
@@ -1064,6 +1138,11 @@
 </style>
 </head>
 <body>
+<!-- Phones: the brand app is desktop only for now. The mobile layout stays in the code, hidden behind this screen. -->
+<div class="desk-only" role="alert">
+  <h1>Log in from a desktop</h1>
+  <p>The brand dashboard is built for larger screens. Open it on your laptop or desktop computer to manage your campaigns.</p>
+</div>
 <header class="topbar" id="topbar">
   <a class="brand" href="#/active" aria-label="UGC Platform home"><svg viewBox="0 0 269 184" fill="none" aria-hidden="true"><path d="M121.556 4.06404C141.556 -7.48297 166.556 6.9505 166.556 30.0445C166.556 31.0921 165.899 32.0212 164.936 32.4319C152.062 37.9179 143.037 50.6867 143.037 65.564V116.564C143.037 131.086 151.636 143.598 164.02 149.29C165.519 149.979 166.556 151.435 166.556 153.085C166.555 176.178 141.556 190.612 121.556 179.065L15 117.545C-5 105.998 -5 77.1306 15 65.5836L121.556 4.06404Z" fill="currentColor"/><path d="M227.969 0.278931C250.418 0.27893 268.617 18.478 268.617 40.9274V140.409C268.617 162.858 250.418 181.056 227.969 181.056C210.666 181.056 195.891 170.245 190.025 155.01C189.233 152.955 190.505 150.769 192.546 149.942C205.734 144.6 215.037 131.669 215.037 116.564V65.5641C215.037 50.3684 205.621 37.3734 192.306 32.0911C190.279 31.2867 188.994 29.1414 189.737 27.0903C195.397 11.453 210.378 0.278951 227.969 0.278931Z" fill="currentColor"/></svg></a>
   <nav class="tnav" id="tnav" aria-label="Main"></nav>
@@ -1094,6 +1173,14 @@
       <span class="cd-as" role="status">You are viewing this as a creator</span>
     </div>
     <div class="cd-body" id="cd-body"></div>
+  </aside>
+</div>
+<!-- Creator profile: slides in from the right when a name in Invitations is clicked -->
+<div class="pdrawer" id="pdrawer" hidden>
+  <div class="cd-scrim" data-pdrawer-close></div>
+  <aside class="pd-panel" id="pd-panel" role="dialog" aria-modal="true" aria-label="Creator profile" tabindex="-1">
+    <div class="dh pd-head"><h2>Creator profile</h2><button class="hicon" type="button" data-pdrawer-close aria-label="Close profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="pd-body" id="pd-body"></div>
   </aside>
 </div>
 <div class="toast" id="toast"></div>
@@ -1818,7 +1905,7 @@ function egStats(id){
 /* Platform dropdown: each card keeps its own choice; PANELS says what to redraw */
 /* Analytics dropdowns: each one keeps its own choice in dash(id).plats; PANELS redraws what it filters */
 const fill=(el,html)=>{const box=document.getElementById(el);box.innerHTML=html;bindAssets(box);};
-const PANELS={an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
+const PANELS={inv:invRedraw,invs:invRedraw,an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
 function platPick(id,key,opts=AN_PLATS,label='Platform'){
   const cur=opts.find(p=>p[0]===(key in FIN.plats?FIN.plats:dash(id).plats)[key]);
   return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
@@ -1884,8 +1971,108 @@ function secAnalytics(id){
           <td>${fmtN(w.views)}</td><td>${fmtN(w.reach)}</td><td>${(w.engN/w.views).toFixed(1)}%</td><td>Rs. ${w.paid.toLocaleString('en-US')}</td><td>${subDate(w.ago)}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
+/* Creators a brand can invite to an invite-only campaign */
+const INVITE=[
+  {name:'Shehani Kahandawala',handle:'@shehani.k',tier:'Micro',src:'images/creator-shehani.jpg',campaigns:14,views:1.2e6,
+    followers:[['insta','48.2K'],['tiktok','31K']],bio:'Streetwear, thrift finds and weekend fits around Colombo. I style one outfit three ways so you can shop smarter.'},
+  {name:'Nethmi Perera',handle:'@nethmi.eats',tier:'Micro',av:'av1',campaigns:22,views:2.4e6,
+    followers:[['insta','31K'],['tiktok','14.2K']],bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'},
+  {name:'Kavindu Jayasuriya',handle:'@kavindu.sips',tier:'Micro',av:'av2',campaigns:9,views:640e3,
+    followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],bio:'Coffee, cafés and slow mornings. Rating every new seasonal drink in Sri Lanka, one sip at a time.'},
+  {name:'Dilan Fernando',handle:'@dilan.bites',tier:'Micro',av:'av3',campaigns:17,views:3.1e6,
+    followers:[['tiktok','41K'],['insta','9.8K']],bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'},
+  {name:'Sachini Wickramasinghe',handle:'@sachini.w',tier:'Micro',av:'av4',campaigns:12,views:980e3,
+    followers:[['insta','26.5K'],['facebook','12K']],bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
+  {name:'Ravindu Silva',handle:'@ravindu.creates',tier:'Mid',av:'avatar',campaigns:31,views:6.8e6,
+    followers:[['youtube','142K'],['insta','64K'],['tiktok','38K']],bio:'Tech and gadget reviews in Sinhala and English. Phones, laptops and the apps that make life in Sri Lanka easier.'},
+  {name:'Tharushi Gunawardena',handle:'@tharu.g',tier:'Nano',av:'av1',campaigns:4,views:120e3,
+    followers:[['insta','8.4K'],['tiktok','5.1K']],bio:'Uni student sharing study-day outfits, budget eats and the odd skincare haul.'},
+  {name:'Isuru Bandara',handle:'@isuru.b',tier:'Micro',av:'pfAvatar',campaigns:8,views:450e3,
+    followers:[['tiktok','27K'],['insta','11K']],bio:'Bike rides, road trips and hidden spots up-country. Short travel films with a lot of tea stops.'},
+  {name:'Chamodi Rajapaksha',handle:'@chamodi.r',tier:'Mid',av:'av4',campaigns:26,views:5.2e6,
+    followers:[['insta','118K'],['tiktok','46K']],bio:'Beauty and makeup for South Asian skin. Honest swatches, everyday looks and bridal season tips.'},
+  {name:'Pasindu Herath',handle:'@pasindu.h',tier:'Nano',av:'av2',campaigns:3,views:86e3,
+    followers:[['tiktok','6.9K'],['insta','3.2K']],bio:'Gym, meal prep and protein on a budget. Documenting my fitness journey one rep at a time.'},
+  {name:'Hiruni Dissanayake',handle:'@hiruni.d',tier:'Micro',av:'av1',campaigns:11,views:720e3,
+    followers:[['insta','35K'],['youtube','12K']],bio:'Home cook sharing quick Sri Lankan recipes, from weekday rice and curry to festive sweets.'},
+  {name:'Sahan Weerasinghe',handle:'@sahan.w',tier:'Nano',av:'avatar',campaigns:5,views:160e3,
+    followers:[['tiktok','9.1K'],['insta','4.6K']],bio:'Comedy skits about office life and family WhatsApp groups. If it’s awkward, I’ve filmed it.'}];
+/* Brands a creator may have worked with; each creator's last five are picked from here */
+const PAST_BRANDS=[['starbucks','Starbucks'],['burgerking','Burger King'],['dominos','Domino’s'],['pickmeLogo','PickMe'],['legoLogo','LEGO'],['pepsi','Pepsi'],['logo2','Uber Eats'],['logo3','Hiru TV']];
+/* Creators sign up with their email, so that's what the brand sees under the name */
+INVITE.forEach(c=>c.email=c.name.toLowerCase().replace(' ','.')+'@gmail.com');
+/* Some invites haven't been answered yet; the rest have been accepted */
+[2,5,7,10].forEach(i=>INVITE[i].pending=true);
+const INV_STATUS=[['all','Status'],['pending','Pending'],['approved','Approved']];
+const INV_TIERS=[['all','Tier'],['Nano','Nano'],['Micro','Micro'],['Mid','Mid']];
+const TRASHIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>';
+function invState(id){const d=dash(id);d.plats.inv??='all';d.plats.invs??='all';return d.inv??={q:'',sel:new Set(),gone:new Set()};}
+/* The creators still on the list that match the tier filter and the search */
+function invShown(id){
+  const v=invState(id), {inv:t,invs:st}=dash(id).plats, q=v.q.trim().toLowerCase();
+  return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(st==='all'||(st==='pending')===!!c.pending)&&(!q||(c.name+' '+c.email).toLowerCase().includes(q)));
+}
+function invRows(id){
+  const v=invState(id), list=invShown(id);
+  if(!list.length) return `<div class="inv-none">No creators match.</div>`;
+  return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
+    <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
+    ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
+    <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a>${c.pending
+      ?`<span class="sub"><span>Awaiting ${c.name.split(' ')[0]}’s response</span></span>`
+      :`<span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span>`}</div>
+    ${c.pending?`<div class="inv-pend"><span>Pending invite</span><button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button></div>`:''}
+    <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
+}
+/* Select all reflects the visible rows: checked when all are picked, a dash when only some are */
+function invSync(id){
+  const v=invState(id), shown=invShown(id), n=shown.filter(c=>v.sel.has(c.i)).length, all=document.getElementById('inv-all');
+  if(!all) return;
+  all.checked=!!shown.length&&n===shown.length;all.indeterminate=n>0&&n<shown.length;all.disabled=!shown.length;
+  document.getElementById('inv-lbl').textContent=n?`${n} selected`:'Select all';
+}
+/* Creator profile drawer: who they are, where they post, and their track record */
+/* Link to the creator's account on each platform */
+const SOCIAL_URL={insta:h=>`https://www.instagram.com/${h}/`,tiktok:h=>`https://www.tiktok.com/@${h}`,youtube:h=>`https://www.youtube.com/@${h}`,facebook:h=>`https://www.facebook.com/${h}`,linkedin:h=>`https://www.linkedin.com/in/${h}/`};
+const socialURL=(k,handle)=>SOCIAL_URL[k](handle.replace(/^@/,''));
+function profileHTML(i){
+  const c=INVITE[i], last=[0,1,2,3,4].map(n=>PAST_BRANDS[(i*3+n)%PAST_BRANDS.length]);
+  const months=['Sep 2026','Aug 2026','Jul 2026','May 2026','Apr 2026'];
+  return `<div class="adm-sec adm-creator pd-who">${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
+      <div><div class="name">${c.name}</div><a class="adm-handle" href="mailto:${c.email}">${c.email}</a></div></div>
+    <div class="adm-sec"><span class="adm-eyebrow">Social profiles</span>${c.followers.map(([k,n])=>`<div class="adm-follow"><span title="${PLATNAME[k]}">${PLAT[k]}${n} <em>Followers</em></span><i aria-hidden="true"></i><a class="dlink" href="${socialURL(k,c.handle)}" target="_blank" rel="noopener" aria-label="${c.handle} on ${PLATNAME[k]} (opens in a new tab)">${c.handle}</a></div>`).join('')}</div>
+    <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${c.bio}</p></div>
+    <div class="adm-sec"><div class="tiles"><div class="tile"><span class="n">${c.campaigns}</span><span class="l">Total campaigns</span></div><div class="tile"><span class="n">${fmtN(c.views)}</span><span class="l">Total views generated</span></div></div></div>
+    <div class="adm-sec"><span class="adm-eyebrow">Last 5 brands</span><div class="pd-brands">${last.map(([logo,name],n)=>`<div class="adm-creator"><img data-a="${logo}" data-label="${name}" alt=""><div><div class="name">${name}</div><div class="adm-handle">${months[n]}</div></div></div>`).join('')}</div></div>`;
+}
+const pdrawer=document.getElementById('pdrawer'),pdPanel=document.getElementById('pd-panel'),pdBody=document.getElementById('pd-body');
+let pdReturn=null,pdHideT;
+function openProfile(i){
+  clearTimeout(pdHideT);
+  if(pdrawer.hidden) pdReturn=document.activeElement;
+  pdBody.innerHTML=profileHTML(i);bindAssets(pdBody);pdBody.scrollTop=0;
+  pdPanel.setAttribute('aria-label',`${INVITE[i].name}’s profile`);
+  pdrawer.hidden=false;document.body.classList.add('cdrawer-open');
+  void pdrawer.offsetWidth;pdrawer.classList.add('open');
+  pdPanel.focus({preventScroll:true});
+}
+function closeProfile(){
+  if(pdrawer.hidden) return;
+  pdrawer.classList.remove('open');document.body.classList.remove('cdrawer-open');
+  const done=()=>{pdrawer.hidden=true;pdBody.innerHTML='';};
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) done(); else pdHideT=setTimeout(done,450);
+  if(pdReturn&&document.contains(pdReturn)) pdReturn.focus({preventScroll:true});
+  pdReturn=null;
+}
+function invRedraw(id){fill('inv-rows',invRows(id));invSync(id);}
 function secInvitations(id){
-  return `<section class="dcard">${dhead('Invitations')}</section>`;
+  const v=invState(id);
+  return `<section class="dcard">${dhead('Invitations','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
+    <div class="inv-list"><div class="inv-bar">
+      <label class="lbl"><input class="inv-chk" type="checkbox" id="inv-all"><span id="inv-lbl">Select all</span></label>
+      ${platPick(id,'invs',INV_STATUS,'Status')}${platPick(id,'inv',INV_TIERS,'Tier')}
+      <label class="search">${MICON.search}<input id="inv-q" type="search" placeholder="Find a creator…" value="${esc(v.q)}" autocomplete="off" aria-label="Find a creator"></label></div>
+    <div id="inv-rows">${invRows(id)}</div></div></section>`;
 }
 
 function secNegotiations(id){
@@ -2330,7 +2517,7 @@ function mountMedia(){
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
-  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
+  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();if(h.sec==='invitations') invSync(h.id);
 }
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
@@ -2344,6 +2531,7 @@ function route(){
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
   view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
+  if(admin&&sec==='invitations') invSync(id);
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin||fin);
@@ -2427,6 +2615,9 @@ document.addEventListener('click',e=>{
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
   if(t.closest('[data-tmenu]')){setTopMenu(!document.getElementById('tmenu').classList.contains('open'));return;}
   if(!t.closest('#tmenu')) setTopMenu(false);
+  const prof=t.closest('[data-profile]');
+  if(prof){e.preventDefault();return openProfile(+prof.dataset.profile);}
+  if(t.closest('[data-pdrawer-close]')){e.preventDefault();closeProfile();return;}
   if(t.closest('[data-cdrawer-close]')){e.preventDefault();closeCampaignDrawer();return;}
   const cd=t.closest('[data-cdrawer]');
   /* Phones keep the full creator page (the link's href); the drawer is for wider screens */
@@ -2458,6 +2649,9 @@ document.addEventListener('click',e=>{
     anMenu(pm,false);PANELS[key](id);return document.querySelector(`[data-pk="${key}"] [data-plat-btn]`).focus();}
   const fm=t.closest('[data-fm]');
   if(fm){setMonth(+fm.dataset.fm);return document.querySelector(`[data-fm="${fm.dataset.fm}"]`).focus();}
+  const del=t.closest('[data-inv-del]');
+  if(del){const id=parseHash().id, v=invState(id), i=+del.dataset.invDel;v.gone.add(i);v.sel.delete(i);invRedraw(id);
+    return toast(`${INVITE[i].name} removed`);}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const th=t.closest('[data-thread]');
@@ -2482,7 +2676,7 @@ function doAct(a,el){
     return box.querySelector('button').focus({preventScroll:true});
   }
   if(a==='share') return toast('Link copied');
-  if(a==='copy'){const v=el.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(`Copied · ${v}`),()=>toast(v));return;}
+  if(a==='copy'){const v=el.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(el.dataset.done||`Copied · ${v}`),()=>toast(v));return;}
   if(a==='statement') return downloadStatement();
   if(a==='slip') return downloadSlip(FIN.transfers[+el.dataset.tx]);
   if(a==='ff-clear'){FIN.file=null;fileChip();const f=document.getElementById('ff-file');f.value='';return f.focus();}
@@ -2525,7 +2719,13 @@ document.addEventListener('submit',e=>{
   if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
-document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
+document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
+  /* Invitations: tick one creator, or every creator currently shown */
+  const ck=e.target.closest('[data-inv-chk],#inv-all');
+  if(ck){const id=parseHash().id, v=invState(id);
+    const ids=ck.id==='inv-all'?invShown(id).map(c=>c.i):[+ck.dataset.invChk];
+    ids.forEach(i=>ck.checked?v.sel.add(i):v.sel.delete(i));
+    invRedraw(id);}});
 /* A file dropped beside the drop zone shouldn't navigate away from the form */
 ['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
@@ -2544,6 +2744,7 @@ document.addEventListener('submit',e=>{
 
 /* Search filters the campaign feed */
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}
+  if(e.target.id==='inv-q'){const id=parseHash().id;invState(id).q=e.target.value;invRedraw(id);}
   /* Amount field groups thousands as you type */
   if(e.target.id==='ff-amt'){const n=num(e.target.value);e.target.value=n?n.toLocaleString('en-US'):'';e.target.removeAttribute('aria-invalid');}});
 document.addEventListener('keydown',e=>{
@@ -2556,6 +2757,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Tab') anMenu(pm,false);
   }
   if(e.key==='Escape'&&document.getElementById('tmenu').classList.contains('open')){setTopMenu(false);return;}
+  if(e.key==='Escape'&&!pdrawer.hidden){closeProfile();return;}
   if(e.key==='Escape'&&!cdrawer.hidden){closeCampaignDrawer();return;}
   if(e.key==='Escape'&&document.body.classList.contains('side-open')){setSide(false);return;}
   if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
