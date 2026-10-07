@@ -24,16 +24,14 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   as a creator" bar; `Esc`, the scrim or "Admin view" closes it; phones go to the creator page instead), followed by the sub menu (badges show pending submissions and unread messages):
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
-  - **Collaborators** (`/admin/collaborators`) — invite-only and flat-fee (slot) campaigns: a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending label (12px) and a copy-link button. Flat fee (slot) campaigns add an Agreed amount column after it (e.g. Rs. 65,000; the campaign’s flat fee scaled by tier). Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
+  - **Collaborators** (`/admin/collaborators`) — invite-only and flat-fee (slot) campaigns: a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending label (12px) and a copy-link button. Flat fee (slot) campaigns add an Agreed amount column after it (e.g. Rs. 65,000; the campaign’s flat fee scaled by tier); pending creators show “Not agreed yet” there, since their price is still open. Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
     profiles with followers, About the creator, total campaigns and views, last 5 brands); `Esc` or the scrim closes it.
     Invite-only campaigns add a blue Invite button at the top right and the copy-invite-link button on pending rows;
     open slot campaigns show the same list without them.
   - **Negotiations** (`/admin/negotiations`) — flat-fee (slot) campaigns only: the rules the platform's negotiation agent
     follows when it agrees the flat fee with every collaborator on the campaign (one set of rules per campaign, also for
-    creators who join later). "What the agent will do" closes the section and updates as you type: a price range bar,
-    opening / target / maximum per slot, the planned offer to each creator per round, timing, and notes (rounds that don't fit
-    the deadline, prices out of order). Above it: Price limits and Time limit (deadline, reply window, rounds, what
-    happens at the deadline).
+    creators who join later): Price limits (opening offer, target and maximum per slot) and Time limit (deadline, reply
+    window, rounds, what happens at the deadline).
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
     bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
