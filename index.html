@@ -503,15 +503,12 @@
   .inv-bar{border-radius:11px 11px 0 0;}
   #inv-rows>:last-child{border-radius:0 0 11px 11px;}
   .inv-bar{display:flex;align-items:center;gap:16px;min-height:62px;padding:10px 12px 10px 18px;background:#f6f6f6;border-bottom:1px solid var(--line);}
-  .inv-bar .lbl{flex:1;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;}
-  .inv-chk{width:16px;height:16px;flex-shrink:0;margin:0;accent-color:var(--blue-500);cursor:pointer;}
   .inv-bar .an-plat-btn{background:none;color:var(--grey-800);padding:0 10px;}
   .inv-bar .an-plat-btn:hover{background:var(--grey-100);}
-  .inv-bar .search{width:260px;flex-shrink:1;margin:0;background:#fff;}
+  .inv-bar .search{width:260px;flex-shrink:1;margin:0 0 0 auto;background:#fff;}
   .inv-bar .search svg{width:16px;height:16px;flex-shrink:0;color:var(--grey-600);}
   .inv-row{display:flex;align-items:center;gap:14px;min-height:76px;padding:12px 12px 12px 18px;background:#fff;}
   .inv-row+.inv-row{border-top:1px solid var(--line);}
-  .inv-row.sel{background:#f5f8ff;}
   .inv-row img{width:42px;height:42px;flex-shrink:0;border-radius:50%;object-fit:cover;background:var(--grey-100);}
   .inv-row .t{flex:1;min-width:0;}
   .inv-row .t a{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -2004,28 +2001,20 @@ INVITE.forEach(c=>c.email=c.name.toLowerCase().replace(' ','.')+'@gmail.com');
 const INV_STATUS=[['all','Status'],['pending','Pending'],['approved','Approved']];
 const INV_TIERS=[['all','Tier'],['Nano','Nano'],['Micro','Micro'],['Mid','Mid']];
 const TRASHIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>';
-function invState(id){const d=dash(id);d.plats.inv??='all';d.plats.invs??='all';return d.inv??={q:'',sel:new Set(),gone:new Set()};}
+function invState(id){const d=dash(id);d.plats.inv??='all';d.plats.invs??='all';return d.inv??={q:'',gone:new Set()};}
 /* The creators still on the list that match the tier filter and the search */
 function invShown(id){
   const v=invState(id), {inv:t,invs:st}=dash(id).plats, q=v.q.trim().toLowerCase();
   return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(st==='all'||(st==='pending')===!!c.pending)&&(!q||(c.name+' '+c.email).toLowerCase().includes(q)));
 }
 function invRows(id){
-  const v=invState(id), list=invShown(id);
+  const list=invShown(id);
   if(!list.length) return `<div class="inv-none">No creators match.</div>`;
-  return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
-    <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
+  return list.map(c=>`<div class="inv-row">
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
     <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a><span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span></div>
     ${c.pending?`<div class="inv-pend"><span>Pending invite</span><button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button></div>`:''}
     <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
-}
-/* Select all reflects the visible rows: checked when all are picked, a dash when only some are */
-function invSync(id){
-  const v=invState(id), shown=invShown(id), n=shown.filter(c=>v.sel.has(c.i)).length, all=document.getElementById('inv-all');
-  if(!all) return;
-  all.checked=!!shown.length&&n===shown.length;all.indeterminate=n>0&&n<shown.length;all.disabled=!shown.length;
-  document.getElementById('inv-lbl').textContent=n?`${n} selected`:'Select all';
 }
 /* Creator profile drawer: who they are, where they post, and their track record */
 /* Link to the creator's account on each platform */
@@ -2060,12 +2049,11 @@ function closeProfile(){
   if(pdReturn&&document.contains(pdReturn)) pdReturn.focus({preventScroll:true});
   pdReturn=null;
 }
-function invRedraw(id){fill('inv-rows',invRows(id));invSync(id);}
+function invRedraw(id){fill('inv-rows',invRows(id));}
 function secInvitations(id){
   const v=invState(id);
   return `<section class="dcard">${dhead('Invitations','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
     <div class="inv-list"><div class="inv-bar">
-      <label class="lbl"><input class="inv-chk" type="checkbox" id="inv-all"><span id="inv-lbl">Select all</span></label>
       ${platPick(id,'invs',INV_STATUS,'Status')}${platPick(id,'inv',INV_TIERS,'Tier')}
       <label class="search">${MICON.search}<input id="inv-q" type="search" placeholder="Find a creator…" value="${esc(v.q)}" autocomplete="off" aria-label="Find a creator"></label></div>
     <div id="inv-rows">${invRows(id)}</div></div></section>`;
@@ -2513,7 +2501,7 @@ function mountMedia(){
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
-  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();if(h.sec==='invitations') invSync(h.id);
+  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
 }
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
@@ -2527,7 +2515,6 @@ function route(){
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
   view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
-  if(admin&&sec==='invitations') invSync(id);
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin||fin);
@@ -2646,7 +2633,7 @@ document.addEventListener('click',e=>{
   const fm=t.closest('[data-fm]');
   if(fm){setMonth(+fm.dataset.fm);return document.querySelector(`[data-fm="${fm.dataset.fm}"]`).focus();}
   const del=t.closest('[data-inv-del]');
-  if(del){const id=parseHash().id, v=invState(id), i=+del.dataset.invDel;v.gone.add(i);v.sel.delete(i);invRedraw(id);
+  if(del){const id=parseHash().id, v=invState(id), i=+del.dataset.invDel;v.gone.add(i);invRedraw(id);
     return toast(`${INVITE[i].name} removed`);}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
@@ -2715,13 +2702,7 @@ document.addEventListener('submit',e=>{
   if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
-document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
-  /* Invitations: tick one creator, or every creator currently shown */
-  const ck=e.target.closest('[data-inv-chk],#inv-all');
-  if(ck){const id=parseHash().id, v=invState(id);
-    const ids=ck.id==='inv-all'?invShown(id).map(c=>c.i):[+ck.dataset.invChk];
-    ids.forEach(i=>ck.checked?v.sel.add(i):v.sel.delete(i));
-    invRedraw(id);}});
+document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
 /* A file dropped beside the drop zone shouldn't navigate away from the form */
 ['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
