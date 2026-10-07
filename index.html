@@ -438,7 +438,26 @@
     .cd-body .cp.cp-solo{grid-template-columns:minmax(0,1fr);}
     .cd-body .cp-rail{grid-column:1;grid-row:2;border-left:0;border-top:1px solid var(--grey-200);}
   }
-  @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
+  @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel,.pd-panel{transition:none;}}
+
+  /* ================= Creator profile drawer (from the left) ================= */
+  .pdrawer{position:fixed;inset:0;z-index:40;}
+  .pdrawer[hidden]{display:none;}
+  .pdrawer.open .cd-scrim{opacity:1;}
+  .pd-panel{position:absolute;top:0;left:0;bottom:0;width:min(440px,calc(100% - 64px));background:#fff;display:flex;flex-direction:column;
+    box-shadow:8px 0 32px rgba(0,0,0,.16);transform:translateX(-100%);transition:transform .45s cubic-bezier(.16,1,.3,1);outline:none;}
+  .pdrawer.open .pd-panel{transform:none;}
+  /* Built from the dashboard's own parts: .dh heading, .hicon close, .adm-sec sections, .adm-creator rows, .adm-follow counts, .tiles */
+  .pd-head{flex-shrink:0;align-items:center;padding:20px 24px;border-bottom:1px solid var(--line);}
+  .pd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:24px 24px 32px;display:flex;flex-direction:column;gap:18px;}
+  .pd-who{flex-direction:column;text-align:center;}
+  .pd-panel .pd-who img{width:96px;height:96px;border-radius:100px;object-fit:cover;background:var(--grey-200);}
+  .pd-panel .pd-who .name{margin-top:4px;font-size:20px;line-height:26px;}
+  .pd-who .adm-handle:hover{color:var(--blue-500);text-decoration:underline;}
+  .pd-who .adm-follow{justify-content:center;}
+  .pd-body .tiles{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0;}
+  .pd-brands{display:flex;flex-direction:column;gap:12px;}
+  .pd-brands img{border:1px solid var(--line);background:#fff;}
 
   /* ================= Admin dashboard: campaign card + sub menu on the left, section on the right ================= */
   body.dash{background:var(--page-bg);--subbar:0px;}
@@ -1150,6 +1169,14 @@
       <span class="cd-as" role="status">You are viewing this as a creator</span>
     </div>
     <div class="cd-body" id="cd-body"></div>
+  </aside>
+</div>
+<!-- Creator profile: slides in from the left when a name in Invitations is clicked -->
+<div class="pdrawer" id="pdrawer" hidden>
+  <div class="cd-scrim" data-pdrawer-close></div>
+  <aside class="pd-panel" id="pd-panel" role="dialog" aria-modal="true" aria-label="Creator profile" tabindex="-1">
+    <div class="dh pd-head"><h2>Creator profile</h2><button class="hicon" type="button" data-pdrawer-close aria-label="Close profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="pd-body" id="pd-body"></div>
   </aside>
 </div>
 <div class="toast" id="toast"></div>
@@ -1942,18 +1969,32 @@ function secAnalytics(id){
 
 /* Creators a brand can invite to an invite-only campaign */
 const INVITE=[
-  {name:'Shehani Kahandawala',handle:'@shehani.k',tier:'Micro',src:'images/creator-shehani.jpg'},
-  {name:'Nethmi Perera',handle:'@nethmi.eats',tier:'Micro',av:'av1'},
-  {name:'Kavindu Jayasuriya',handle:'@kavindu.sips',tier:'Micro',av:'av2'},
-  {name:'Dilan Fernando',handle:'@dilan.bites',tier:'Micro',av:'av3'},
-  {name:'Sachini Wickramasinghe',handle:'@sachini.w',tier:'Micro',av:'av4'},
-  {name:'Ravindu Silva',handle:'@ravindu.creates',tier:'Mid',av:'avatar'},
-  {name:'Tharushi Gunawardena',handle:'@tharu.g',tier:'Nano',av:'av1'},
-  {name:'Isuru Bandara',handle:'@isuru.b',tier:'Micro',av:'pfAvatar'},
-  {name:'Chamodi Rajapaksha',handle:'@chamodi.r',tier:'Mid',av:'av4'},
-  {name:'Pasindu Herath',handle:'@pasindu.h',tier:'Nano',av:'av2'},
-  {name:'Hiruni Dissanayake',handle:'@hiruni.d',tier:'Micro',av:'av1'},
-  {name:'Sahan Weerasinghe',handle:'@sahan.w',tier:'Nano',av:'avatar'}];
+  {name:'Shehani Kahandawala',handle:'@shehani.k',tier:'Micro',src:'images/creator-shehani.jpg',campaigns:14,views:1.2e6,
+    followers:[['insta','48.2K'],['tiktok','31K']],bio:'Streetwear, thrift finds and weekend fits around Colombo. I style one outfit three ways so you can shop smarter.'},
+  {name:'Nethmi Perera',handle:'@nethmi.eats',tier:'Micro',av:'av1',campaigns:22,views:2.4e6,
+    followers:[['insta','31K'],['tiktok','14.2K']],bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'},
+  {name:'Kavindu Jayasuriya',handle:'@kavindu.sips',tier:'Micro',av:'av2',campaigns:9,views:640e3,
+    followers:[['insta','18.7K'],['tiktok','22K'],['youtube','4.3K']],bio:'Coffee, cafés and slow mornings. Rating every new seasonal drink in Sri Lanka, one sip at a time.'},
+  {name:'Dilan Fernando',handle:'@dilan.bites',tier:'Micro',av:'av3',campaigns:17,views:3.1e6,
+    followers:[['tiktok','41K'],['insta','9.8K']],bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'},
+  {name:'Sachini Wickramasinghe',handle:'@sachini.w',tier:'Micro',av:'av4',campaigns:12,views:980e3,
+    followers:[['insta','26.5K'],['facebook','12K']],bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
+  {name:'Ravindu Silva',handle:'@ravindu.creates',tier:'Mid',av:'avatar',campaigns:31,views:6.8e6,
+    followers:[['youtube','142K'],['insta','64K'],['tiktok','38K']],bio:'Tech and gadget reviews in Sinhala and English. Phones, laptops and the apps that make life in Sri Lanka easier.'},
+  {name:'Tharushi Gunawardena',handle:'@tharu.g',tier:'Nano',av:'av1',campaigns:4,views:120e3,
+    followers:[['insta','8.4K'],['tiktok','5.1K']],bio:'Uni student sharing study-day outfits, budget eats and the odd skincare haul.'},
+  {name:'Isuru Bandara',handle:'@isuru.b',tier:'Micro',av:'pfAvatar',campaigns:8,views:450e3,
+    followers:[['tiktok','27K'],['insta','11K']],bio:'Bike rides, road trips and hidden spots up-country. Short travel films with a lot of tea stops.'},
+  {name:'Chamodi Rajapaksha',handle:'@chamodi.r',tier:'Mid',av:'av4',campaigns:26,views:5.2e6,
+    followers:[['insta','118K'],['tiktok','46K']],bio:'Beauty and makeup for South Asian skin. Honest swatches, everyday looks and bridal season tips.'},
+  {name:'Pasindu Herath',handle:'@pasindu.h',tier:'Nano',av:'av2',campaigns:3,views:86e3,
+    followers:[['tiktok','6.9K'],['insta','3.2K']],bio:'Gym, meal prep and protein on a budget. Documenting my fitness journey one rep at a time.'},
+  {name:'Hiruni Dissanayake',handle:'@hiruni.d',tier:'Micro',av:'av1',campaigns:11,views:720e3,
+    followers:[['insta','35K'],['youtube','12K']],bio:'Home cook sharing quick Sri Lankan recipes, from weekday rice and curry to festive sweets.'},
+  {name:'Sahan Weerasinghe',handle:'@sahan.w',tier:'Nano',av:'avatar',campaigns:5,views:160e3,
+    followers:[['tiktok','9.1K'],['insta','4.6K']],bio:'Comedy skits about office life and family WhatsApp groups. If it’s awkward, I’ve filmed it.'}];
+/* Brands a creator may have worked with; each creator's last five are picked from here */
+const PAST_BRANDS=[['starbucks','Starbucks'],['burgerking','Burger King'],['dominos','Domino’s'],['pickmeLogo','PickMe'],['legoLogo','LEGO'],['pepsi','Pepsi'],['logo2','Uber Eats'],['logo3','Hiru TV']];
 /* Creators sign up with their email, so that's what the brand sees under the name */
 INVITE.forEach(c=>c.email=c.name.toLowerCase().replace(' ','.')+'@gmail.com');
 /* Some invites haven't been answered yet; the rest have been accepted */
@@ -1973,7 +2014,7 @@ function invRows(id){
   return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
     <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
-    <div class="t"><a data-act="soon">${c.name}</a>${c.pending
+    <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a>${c.pending
       ?`<span class="sub"><span>Awaiting ${c.name.split(' ')[0]}’s response</span></span>`
       :`<span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span>`}</div>
     ${c.pending?`<div class="inv-pend"><span>Pending invite</span><button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button></div>`:''}
@@ -1985,6 +2026,36 @@ function invSync(id){
   if(!all) return;
   all.checked=!!shown.length&&n===shown.length;all.indeterminate=n>0&&n<shown.length;all.disabled=!shown.length;
   document.getElementById('inv-lbl').textContent=n?`${n} selected`:'Select all';
+}
+/* Creator profile drawer: who they are, where they post, and their track record */
+function profileHTML(i){
+  const c=INVITE[i], last=[0,1,2,3,4].map(n=>PAST_BRANDS[(i*3+n)%PAST_BRANDS.length]);
+  const months=['Sep 2026','Aug 2026','Jul 2026','May 2026','Apr 2026'];
+  return `<div class="adm-sec adm-creator pd-who">${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
+      <div><div class="name">${c.name}</div><a class="adm-handle" href="mailto:${c.email}">${c.email}</a></div></div>
+    <div class="adm-sec"><span class="adm-eyebrow">Social profiles</span>${c.followers.map(([k,n])=>`<div class="adm-follow"><span title="${PLATNAME[k]}">${PLAT[k]}${n} <em>Followers</em></span><i aria-hidden="true"></i><em>${c.handle}</em></div>`).join('')}</div>
+    <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${c.bio}</p></div>
+    <div class="adm-sec"><div class="tiles"><div class="tile"><span class="n">${c.campaigns}</span><span class="l">Total campaigns</span></div><div class="tile"><span class="n">${fmtN(c.views)}</span><span class="l">Total views generated</span></div></div></div>
+    <div class="adm-sec"><span class="adm-eyebrow">Last 5 brands</span><div class="pd-brands">${last.map(([logo,name],n)=>`<div class="adm-creator"><img data-a="${logo}" data-label="${name}" alt=""><div><div class="name">${name}</div><div class="adm-handle">${months[n]}</div></div></div>`).join('')}</div></div>`;
+}
+const pdrawer=document.getElementById('pdrawer'),pdPanel=document.getElementById('pd-panel'),pdBody=document.getElementById('pd-body');
+let pdReturn=null,pdHideT;
+function openProfile(i){
+  clearTimeout(pdHideT);
+  if(pdrawer.hidden) pdReturn=document.activeElement;
+  pdBody.innerHTML=profileHTML(i);bindAssets(pdBody);pdBody.scrollTop=0;
+  pdPanel.setAttribute('aria-label',`${INVITE[i].name}’s profile`);
+  pdrawer.hidden=false;document.body.classList.add('cdrawer-open');
+  void pdrawer.offsetWidth;pdrawer.classList.add('open');
+  pdPanel.focus({preventScroll:true});
+}
+function closeProfile(){
+  if(pdrawer.hidden) return;
+  pdrawer.classList.remove('open');document.body.classList.remove('cdrawer-open');
+  const done=()=>{pdrawer.hidden=true;pdBody.innerHTML='';};
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) done(); else pdHideT=setTimeout(done,450);
+  if(pdReturn&&document.contains(pdReturn)) pdReturn.focus({preventScroll:true});
+  pdReturn=null;
 }
 function invRedraw(id){fill('inv-rows',invRows(id));invSync(id);}
 function secInvitations(id){
@@ -2537,6 +2608,9 @@ document.addEventListener('click',e=>{
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
   if(t.closest('[data-tmenu]')){setTopMenu(!document.getElementById('tmenu').classList.contains('open'));return;}
   if(!t.closest('#tmenu')) setTopMenu(false);
+  const prof=t.closest('[data-profile]');
+  if(prof){e.preventDefault();return openProfile(+prof.dataset.profile);}
+  if(t.closest('[data-pdrawer-close]')){e.preventDefault();closeProfile();return;}
   if(t.closest('[data-cdrawer-close]')){e.preventDefault();closeCampaignDrawer();return;}
   const cd=t.closest('[data-cdrawer]');
   /* Phones keep the full creator page (the link's href); the drawer is for wider screens */
@@ -2676,6 +2750,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Tab') anMenu(pm,false);
   }
   if(e.key==='Escape'&&document.getElementById('tmenu').classList.contains('open')){setTopMenu(false);return;}
+  if(e.key==='Escape'&&!pdrawer.hidden){closeProfile();return;}
   if(e.key==='Escape'&&!cdrawer.hidden){closeCampaignDrawer();return;}
   if(e.key==='Escape'&&document.body.classList.contains('side-open')){setSide(false);return;}
   if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}}
