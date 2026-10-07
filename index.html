@@ -28,7 +28,6 @@
     --explore-page:1128px; --explore-gutter:24px;
     /* admin dashboard */
     --page-bg:#f6f6f6; --line:#e6e6e6; --good:#0a7d3e; --bad:#c8102e;
-    --warn:#a34a00; --warn-bg:#fdf4ea; --warn-line:#f4d9bc;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
   /* Reserve the scrollbar space on every page so short and long pages line up */
@@ -974,32 +973,7 @@
   .tc tr.new td{animation:bubIn .45s cubic-bezier(.16,1,.3,1) both;}
   @media(prefers-reduced-motion:reduce){.fchart .chart-col b.bar,.tc tr.new td{animation:none;}}
 
-  /* ================= Negotiations: the agent that agrees a flat fee with one creator (flat fee / slot campaigns) ================= */
-  /* Price range: opening offer → maximum filled, a tick per price */
-  .neg-range{position:relative;height:8px;margin:24px 6px 0;border-radius:100px;background:var(--grey-100);}
-  .neg-range .fill{position:absolute;top:0;bottom:0;border-radius:100px;background:var(--blue-100);}
-  .neg-range i{position:absolute;top:-5px;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:currentColor;}
-  .neg-key{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px;}
-  .neg-key>div{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;}
-  .neg-key span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .neg-key span i{width:8px;height:8px;border-radius:2px;background:currentColor;flex-shrink:0;}
-  .neg-key b{font-size:18px;font-weight:600;line-height:24px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
-  .c-open{color:var(--grey-500);} .c-target{color:var(--blue-500);} .c-max{color:var(--grey-800);}
-  .neg-plan{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:22px;}
-  .neg-plan h4{margin-bottom:8px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
-  .neg-rows{border:1px solid var(--line);border-radius:12px;}
-  .neg-rows>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-height:44px;padding:12px 16px;font-size:14px;line-height:20px;color:var(--grey-600);}
-  .neg-rows>div+div{border-top:1px solid var(--line);}
-  .neg-rows b{font-weight:600;color:var(--grey-800);text-align:right;font-variant-numeric:tabular-nums;}
-  .neg-rows small{margin-left:6px;font-size:12px;font-weight:600;color:var(--warn);}
-  .neg-rows .late,.neg-rows .late b{color:var(--bad);}
-  /* Notes under the plan: info (blue), heads-up (amber), problem (red) */
-  .neg-notes{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
-  .neg-notes:empty{display:none;}
-  .neg-note{padding:12px 16px;border:1px solid var(--blue-100);border-radius:12px;background:color-mix(in srgb,var(--blue-100) 40%,#fff);font-size:14px;line-height:20px;color:var(--blue-700);}
-  .neg-note.warn{border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn);}
-  .neg-note.bad{border-color:#f5c2c9;background:#fdecee;color:var(--bad);}
-  /* Setup cards */
+  /* ================= Negotiations: the rules the platform's agent follows to agree the flat fee (flat fee / slot campaigns) ================= */
   .neg-req{display:inline-block;margin-left:8px;padding:3px 8px;border-radius:100px;background:var(--blue-100);font-size:12px;font-weight:600;line-height:14px;color:var(--blue-700);vertical-align:3px;letter-spacing:0;}
   .neg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 12px;margin-top:18px;}
   .fl .hint{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
@@ -1024,9 +998,6 @@
   /* Tablet and phone: cards are wider than on desktop, so the image keeps the card design's 3:2 proportions instead of a short 180px strip */
   @media (max-width:1279px){
     .feedgrid .card-img,.feedgrid .sk-card .img{height:auto;aspect-ratio:3/2;}
-  }
-  @media (max-width:1023px){
-    .neg-plan{grid-template-columns:minmax(0,1fr);}
   }
   @media (max-width:767px){
     .neg-grid{grid-template-columns:minmax(0,1fr);}
@@ -2133,37 +2104,6 @@ function negState(id){
   return dash(id).neg??={open:r5(t*.75),target:t,max:r5(t*1.45),
     final:'48',reply:'6',rounds:4,end:'final'};
 }
-/* Offers step evenly from the opening offer to the maximum, which is the final offer */
-function negPlan(n){
-  const R=Math.max(1,n.rounds), step=+n.reply;
-  return Array.from({length:R},(_,r)=>{const f=R>1?r/(R-1):1;
-    return {r:r+1,at:r*step,amt:r===R-1?n.max:Math.round((n.open+(n.max-n.open)*f)/500)*500};});
-}
-function negSummary(id){
-  const n=negState(id);
-  const lo=Math.min(n.open,n.target,n.max), hi=Math.max(n.open,n.target,n.max);
-  const pad=(hi-lo)*.06||1, pos=v=>((v-lo+pad)/(hi-lo+pad*2)*100).toFixed(2)+'%';
-  const plan=negPlan(n), need=n.rounds*+n.reply, win=+n.final;
-  const key=[['open','Opening offer',n.open],['target','Target',n.target],['max','Maximum',n.max]].filter(k=>k[2]);
-  const bad=!n.open||!n.target||!n.max?'Fill in the opening offer, target and maximum.'
-    :n.open>n.target?'Your opening offer is above your target. Start lower than what you hope to pay.'
-    :n.target>n.max?'Your target is above your maximum. The maximum is your walk-away point.':null;
-  const notes=[
-    bad&&['bad',bad],
-    need>win&&['bad',`${n.rounds} rounds at ${n.reply} hours each need ${need} hours, longer than the ${NEG_FINAL.find(f=>f[0]===n.final)[1]} deadline. Cut the rounds or shorten the reply window.`],
-  ].filter(Boolean);
-  const endTxt={final:'Final offer at maximum, then close',none:'Close with no deal',me:'Hands over to you'}[n.end];
-  return `<div class="neg-range" aria-hidden="true"><span class="fill" style="left:${pos(Math.min(n.open,n.max))};right:calc(100% - ${pos(Math.max(n.open,n.max))})"></span>${key.map(k=>`<i class="c-${k[0]}" style="left:${pos(k[2])}"></i>`).join('')}</div>
-    <div class="neg-key">${key.map(k=>`<div><span><i class="c-${k[0]}"></i>${k[1]}</span><b>${RS(k[2])}</b></div>`).join('')}</div>
-    <div class="neg-plan">
-      <div><h4>Planned offers to each creator</h4><div class="neg-rows">${plan.map(p=>`<div${p.at>=win?' class="late"':''}><span>Round ${p.r} · ${p.at?`hour ${p.at}`:'at start'}</span><b>${RS(p.amt)}${p.r===plan.length?'<small>final</small>':''}</b></div>`).join('')}</div></div>
-      <div><h4>Timing</h4><div class="neg-rows">
-        <div><span>Closes</span><b>${NEG_FINAL.find(f=>f[0]===n.final)[1]} after the first offer</b></div>
-        <div${need>win?' class="late"':''}><span>Time needed</span><b>${need} of ${win} hours</b></div>
-        <div><span>At deadline</span><b>${endTxt}</b></div></div></div>
-    </div>
-    <div class="neg-notes">${notes.map(([k,m])=>`<p class="neg-note${k==='info'?'':' '+k}"${k==='info'?'':' role="status"'}>${m}</p>`).join('')}</div>`;
-}
 const negRs=(k,v)=>`<span class="ff-in"><em>Rs.</em><input data-neg="${k}" data-rs inputmode="numeric" value="${v?v.toLocaleString('en-US'):''}" placeholder="0" autocomplete="off"></span>`;
 const negSel=(k,opts,v)=>`<select data-neg="${k}">${opts.map(o=>{const[val,l]=Array.isArray(o)?o:[o,o];return `<option value="${val}"${val===v?' selected':''}>${l}</option>`;}).join('')}</select>`;
 const negOpenHint=n=>n.target?`${Math.round(n.open/n.target*100)||0}% of target`:'Your first offer';
@@ -2184,11 +2124,9 @@ function secNegotiations(id){
         <label class="fl">Maximum rounds<input data-neg="rounds" type="number" min="1" max="10" value="${n.rounds}" inputmode="numeric"></label>
       </div>
       <p class="neg-sub">If there’s no agreement by the deadline</p>
-      <div class="neg-opts" role="radiogroup" aria-label="If there’s no agreement by the deadline">${NEG_END.map(([k,t,d])=>`<label class="neg-opt"><input type="radio" name="neg-end" data-neg="end" value="${k}"${n.end===k?' checked':''}><div><b>${t}</b><span>${d}</span></div></label>`).join('')}</div></section>
-    <section class="dcard">${dhead('What the agent will do','The plan the agent follows with each creator, from the settings above.')}
-      <div id="neg-sum">${negSummary(id)}</div></section>`;
+      <div class="neg-opts" role="radiogroup" aria-label="If there’s no agreement by the deadline">${NEG_END.map(([k,t,d])=>`<label class="neg-opt"><input type="radio" name="neg-end" data-neg="end" value="${k}"${n.end===k?' checked':''}><div><b>${t}</b><span>${d}</span></div></label>`).join('')}</div></section>`;
 }
-/* Every change updates the summary at the top straight away */
+/* Keep the brand's settings as they change */
 function negInput(el){
   const id=parseHash().id, n=negState(id);
   const k=el.dataset.neg;
@@ -2196,7 +2134,6 @@ function negInput(el){
   else if(k==='rounds') n[k]=Math.min(10,Math.max(1,num(el.value)||1));
   else n[k]=el.value;
   const h=document.getElementById('neg-open-hint');if(h) h.textContent=negOpenHint(n);
-  fill('neg-sum',negSummary(id));
 }
 
 function secInbox(id){
