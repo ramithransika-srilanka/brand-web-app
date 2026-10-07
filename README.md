@@ -30,12 +30,10 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     open slot campaigns show the same list without them.
   - **Negotiations** (`/admin/negotiations`) — flat-fee (slot) campaigns only: the rules the platform's negotiation agent
     follows when it agrees the flat fee with every collaborator on the campaign (one set of rules per campaign, also for
-    creators who join later). "What the agent will do" sits at the top and updates as you type: a price range bar,
-    opening / target / maximum per slot, the planned offer to each creator per round, timing, and notes (approval threshold,
-    all slots at the maximum going over the fee budget, rounds that don't fit the deadline, prices out of order). Below it:
-    Price limits, Time limit (deadline, reply window, rounds, what happens at the deadline), Negotiation strategy
-    (Firm / Steady / Flexible concessions) and Guardrails (never-shared items, approval threshold, hand-over rules,
-    reasons, tone, notifications).
+    creators who join later). "What the agent will do" closes the section and updates as you type: a price range bar,
+    opening / target / maximum per slot, the planned offer to each creator per round, timing, and notes (rounds that don't fit
+    the deadline, prices out of order). Above it: Price limits and Time limit (deadline, reply window, rounds, what
+    happens at the deadline).
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
     bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
