@@ -466,18 +466,29 @@
   .dh h2{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;color:var(--grey-800);}
   .dh p{margin-top:2px;font-size:14px;line-height:20px;color:var(--grey-600);}
   .dh .count{font-size:14px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
-  /* Invitations: creator cards on a grey well (photo with name over a soft blur, See profile below) */
-  .inv-well{margin-top:18px;padding:16px;border-radius:12px;background:#f6f6f6;display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:16px;}
-  .inv-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 8px 12px;border-radius:22px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.05);}
-  .inv-photo{position:relative;width:100%;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--grey-100);}
-  .inv-photo img{width:100%;height:100%;object-fit:cover;display:block;}
-  .inv-photo::before{content:"";position:absolute;inset:auto 0 0;height:50%;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
-  .inv-photo::after{content:"";position:absolute;inset:auto 0 0;height:55%;background:linear-gradient(transparent,rgba(0,0,0,.6));}
-  .inv-who{position:absolute;inset:auto 8px 12px;z-index:1;text-align:center;color:#fff;}
-  .inv-who b{display:block;font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.01em;text-wrap:balance;}
-  .inv-who span{display:block;margin-top:1px;font-size:13px;line-height:18px;color:rgba(255,255,255,.8);}
-  .inv-card .btn{width:68%;min-width:128px;height:38px;}
-  .inv-card .btn svg{width:16px;height:16px;flex-shrink:0;}
+  /* Invitations: creator list with select all, tier filter and search, one row per creator */
+  .inv-list{margin-top:18px;border:1px solid var(--line);border-radius:12px;}
+  .inv-bar{border-radius:11px 11px 0 0;}
+  #inv-rows>:last-child{border-radius:0 0 11px 11px;}
+  .inv-bar{display:flex;align-items:center;gap:16px;min-height:62px;padding:10px 12px 10px 18px;background:#f6f6f6;border-bottom:1px solid var(--line);}
+  .inv-bar .lbl{flex:1;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);white-space:nowrap;}
+  .inv-chk{width:16px;height:16px;flex-shrink:0;margin:0;accent-color:var(--blue-500);cursor:pointer;}
+  .inv-bar .an-plat-btn{background:none;color:var(--grey-800);padding:0 10px;}
+  .inv-bar .an-plat-btn:hover{background:var(--grey-100);}
+  .inv-bar .search{width:260px;flex-shrink:1;margin:0;background:#fff;}
+  .inv-bar .search svg{width:16px;height:16px;flex-shrink:0;color:var(--grey-600);}
+  .inv-row{display:flex;align-items:center;gap:14px;min-height:76px;padding:12px 12px 12px 18px;background:#fff;}
+  .inv-row+.inv-row{border-top:1px solid var(--line);}
+  .inv-row.sel{background:#f5f8ff;}
+  .inv-row img{width:42px;height:42px;flex-shrink:0;border-radius:50%;object-fit:cover;background:var(--grey-100);}
+  .inv-row .t{flex:1;min-width:0;}
+  .inv-row .t a{display:block;font-size:16px;font-weight:600;line-height:22px;color:var(--blue-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .inv-row .t a:hover{text-decoration:underline;}
+  .inv-row .t span{display:block;margin-top:1px;font-size:14px;line-height:20px;color:var(--grey-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .inv-del{width:40px;height:40px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#f6f6f6;color:var(--bad);transition:background .2s ease,border-color .2s ease;}
+  .inv-del:hover{background:#fdecee;border-color:#f5c2c9;}
+  .inv-del svg{width:18px;height:18px;}
+  .inv-none{padding:36px 18px;background:#fff;text-align:center;font-size:14px;color:var(--grey-600);}
   .dlink{font-weight:600;color:var(--blue-500);}
   .dlink:hover{text-decoration:underline;}
 
@@ -1010,12 +1021,13 @@
     .dsh-main{gap:8px;}
     .dsh-main>.dcard:not(.ib){margin:0 calc(var(--gutter) * -1);padding:24px var(--gutter);border-left:0;border-right:0;border-radius:0;}
     .dh h2{font-size:18px;line-height:24px;}
-    .inv-well{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px;}
-    .inv-card{gap:8px;padding:6px 6px 10px;border-radius:18px;}
-    .inv-photo{border-radius:13px;}
-    .inv-who b{font-size:14px;line-height:18px;}
-    .inv-who span{font-size:12px;line-height:16px;}
-    .inv-card .btn{width:auto;min-width:0;align-self:stretch;margin:0 4px;height:36px;font-size:13px;}
+    .inv-bar{flex-wrap:wrap;gap:10px 12px;padding:12px 14px;}
+    .inv-bar .search{order:3;width:100%;}
+    .inv-row{gap:12px;min-height:68px;padding:10px 12px 10px 14px;}
+    .inv-row img{width:38px;height:38px;}
+    .inv-row .t a{font-size:15px;line-height:20px;}
+    .inv-row .t span{font-size:13px;line-height:18px;}
+    .inv-del{width:36px;height:36px;}
     .dh p{font-size:14px;line-height:20px;}
     .att-list{gap:8px;margin-top:16px;}
     .att{padding:14px 16px;}
@@ -1836,7 +1848,7 @@ function egStats(id){
 /* Platform dropdown: each card keeps its own choice; PANELS says what to redraw */
 /* Analytics dropdowns: each one keeps its own choice in dash(id).plats; PANELS redraws what it filters */
 const fill=(el,html)=>{const box=document.getElementById(el);box.innerHTML=html;bindAssets(box);};
-const PANELS={an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
+const PANELS={inv:invRedraw,an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
 function platPick(id,key,opts=AN_PLATS,label='Platform'){
   const cur=opts.find(p=>p[0]===(key in FIN.plats?FIN.plats:dash(id).plats)[key]);
   return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
@@ -1904,23 +1916,51 @@ function secAnalytics(id){
 
 /* Creators a brand can invite to an invite-only campaign */
 const INVITE=[
-  {name:'Shehani Kahandawala',tier:'Micro',src:'images/creator-shehani.jpg'},
-  {name:'Nethmi Perera',tier:'Micro',av:'av1'},
-  {name:'Kavindu Jayasuriya',tier:'Micro',av:'av2'},
-  {name:'Dilan Fernando',tier:'Micro',av:'av3'},
-  {name:'Sachini Wickramasinghe',tier:'Micro',av:'av4'},
-  {name:'Ravindu Silva',tier:'Mid',av:'avatar'},
-  {name:'Tharushi Gunawardena',tier:'Nano',av:'av1'},
-  {name:'Isuru Bandara',tier:'Micro',av:'pfAvatar'},
-  {name:'Chamodi Rajapaksha',tier:'Mid',av:'av4'},
-  {name:'Pasindu Herath',tier:'Nano',av:'av2'},
-  {name:'Hiruni Dissanayake',tier:'Micro',av:'av1'},
-  {name:'Sahan Weerasinghe',tier:'Nano',av:'avatar'}];
+  {name:'Shehani Kahandawala',handle:'@shehani.k',tier:'Micro',src:'images/creator-shehani.jpg'},
+  {name:'Nethmi Perera',handle:'@nethmi.eats',tier:'Micro',av:'av1'},
+  {name:'Kavindu Jayasuriya',handle:'@kavindu.sips',tier:'Micro',av:'av2'},
+  {name:'Dilan Fernando',handle:'@dilan.bites',tier:'Micro',av:'av3'},
+  {name:'Sachini Wickramasinghe',handle:'@sachini.w',tier:'Micro',av:'av4'},
+  {name:'Ravindu Silva',handle:'@ravindu.creates',tier:'Mid',av:'avatar'},
+  {name:'Tharushi Gunawardena',handle:'@tharu.g',tier:'Nano',av:'av1'},
+  {name:'Isuru Bandara',handle:'@isuru.b',tier:'Micro',av:'pfAvatar'},
+  {name:'Chamodi Rajapaksha',handle:'@chamodi.r',tier:'Mid',av:'av4'},
+  {name:'Pasindu Herath',handle:'@pasindu.h',tier:'Nano',av:'av2'},
+  {name:'Hiruni Dissanayake',handle:'@hiruni.d',tier:'Micro',av:'av1'},
+  {name:'Sahan Weerasinghe',handle:'@sahan.w',tier:'Nano',av:'avatar'}];
+const INV_TIERS=[['all','Tier'],['Nano','Nano'],['Micro','Micro'],['Mid','Mid']];
+const TRASHIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>';
+function invState(id){const d=dash(id);d.plats.inv??='all';return d.inv??={q:'',sel:new Set(),gone:new Set()};}
+/* The creators still on the list that match the tier filter and the search */
+function invShown(id){
+  const v=invState(id), t=dash(id).plats.inv, q=v.q.trim().toLowerCase();
+  return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(!q||(c.name+' '+c.handle).toLowerCase().includes(q)));
+}
+function invRows(id){
+  const v=invState(id), list=invShown(id);
+  if(!list.length) return `<div class="inv-none">No creators match.</div>`;
+  return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
+    <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
+    ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
+    <div class="t"><a data-act="soon">${c.name}</a><span>${c.handle} • ${c.tier} tier</span></div>
+    <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
+}
+/* Select all reflects the visible rows: checked when all are picked, a dash when only some are */
+function invSync(id){
+  const v=invState(id), shown=invShown(id), n=shown.filter(c=>v.sel.has(c.i)).length, all=document.getElementById('inv-all');
+  if(!all) return;
+  all.checked=!!shown.length&&n===shown.length;all.indeterminate=n>0&&n<shown.length;all.disabled=!shown.length;
+  document.getElementById('inv-lbl').textContent=n?`${n} selected`:'Select all';
+}
+function invRedraw(id){fill('inv-rows',invRows(id));invSync(id);}
 function secInvitations(id){
+  const v=invState(id);
   return `<section class="dcard">${dhead('Invitations','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
-    <div class="inv-well">${INVITE.map(c=>`<div class="inv-card">
-      <div class="inv-photo">${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}<div class="inv-who"><b>${c.name}</b><span>${c.tier} tier</span></div></div>
-      <a class="btn btn-pri" data-act="soon">${CPICON.extlink}<span>See profile</span></a></div>`).join('')}</div></section>`;
+    <div class="inv-list"><div class="inv-bar">
+      <label class="lbl"><input class="inv-chk" type="checkbox" id="inv-all"><span id="inv-lbl">Select all</span></label>
+      ${platPick(id,'inv',INV_TIERS,'Tier')}
+      <label class="search">${MICON.search}<input id="inv-q" type="search" placeholder="Find a creator…" value="${esc(v.q)}" autocomplete="off" aria-label="Find a creator"></label></div>
+    <div id="inv-rows">${invRows(id)}</div></div></section>`;
 }
 
 function secNegotiations(id){
@@ -2365,7 +2405,7 @@ function mountMedia(){
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
-  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
+  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();if(h.sec==='invitations') invSync(h.id);
 }
 function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
@@ -2379,6 +2419,7 @@ function route(){
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
   view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
+  if(admin&&sec==='invitations') invSync(id);
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin||fin);
@@ -2493,6 +2534,9 @@ document.addEventListener('click',e=>{
     anMenu(pm,false);PANELS[key](id);return document.querySelector(`[data-pk="${key}"] [data-plat-btn]`).focus();}
   const fm=t.closest('[data-fm]');
   if(fm){setMonth(+fm.dataset.fm);return document.querySelector(`[data-fm="${fm.dataset.fm}"]`).focus();}
+  const del=t.closest('[data-inv-del]');
+  if(del){const id=parseHash().id, v=invState(id), i=+del.dataset.invDel;v.gone.add(i);v.sel.delete(i);invRedraw(id);
+    return toast(`${INVITE[i].name} removed`);}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const th=t.closest('[data-thread]');
@@ -2560,7 +2604,13 @@ document.addEventListener('submit',e=>{
   if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
-document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
+document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
+  /* Invitations: tick one creator, or every creator currently shown */
+  const ck=e.target.closest('[data-inv-chk],#inv-all');
+  if(ck){const id=parseHash().id, v=invState(id);
+    const ids=ck.id==='inv-all'?invShown(id).map(c=>c.i):[+ck.dataset.invChk];
+    ids.forEach(i=>ck.checked?v.sel.add(i):v.sel.delete(i));
+    invRedraw(id);}});
 /* A file dropped beside the drop zone shouldn't navigate away from the form */
 ['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
@@ -2579,6 +2629,7 @@ document.addEventListener('submit',e=>{
 
 /* Search filters the campaign feed */
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}
+  if(e.target.id==='inv-q'){const id=parseHash().id;invState(id).q=e.target.value;invRedraw(id);}
   /* Amount field groups thousands as you type */
   if(e.target.id==='ff-amt'){const n=num(e.target.value);e.target.value=n?n.toLocaleString('en-US'):'';e.target.removeAttribute('aria-invalid');}});
 document.addEventListener('keydown',e=>{
