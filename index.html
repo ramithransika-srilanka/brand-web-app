@@ -484,7 +484,10 @@
   .inv-row .t{flex:1;min-width:0;}
   .inv-row .t a{display:block;font-size:16px;font-weight:600;line-height:22px;color:var(--blue-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .inv-row .t a:hover{text-decoration:underline;}
-  .inv-row .t span{display:block;margin-top:1px;font-size:14px;line-height:20px;color:var(--grey-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  /* Email and tier on one line: a long email shortens, the tier always shows */
+  .inv-row .t .sub{display:flex;margin-top:1px;font-size:14px;line-height:20px;color:var(--grey-600);white-space:nowrap;}
+  .inv-row .t .sub span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .inv-row .t .sub span:last-child{flex-shrink:0;}
   .inv-del{width:40px;height:40px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#f6f6f6;color:var(--bad);transition:background .2s ease,border-color .2s ease;}
   .inv-del:hover{background:#fdecee;border-color:#f5c2c9;}
   .inv-del svg{width:18px;height:18px;}
@@ -1026,7 +1029,7 @@
     .inv-row{gap:12px;min-height:68px;padding:10px 12px 10px 14px;}
     .inv-row img{width:38px;height:38px;}
     .inv-row .t a{font-size:15px;line-height:20px;}
-    .inv-row .t span{font-size:13px;line-height:18px;}
+    .inv-row .t .sub{font-size:13px;line-height:18px;}
     .inv-del{width:36px;height:36px;}
     .dh p{font-size:14px;line-height:20px;}
     .att-list{gap:8px;margin-top:16px;}
@@ -1928,13 +1931,15 @@ const INVITE=[
   {name:'Pasindu Herath',handle:'@pasindu.h',tier:'Nano',av:'av2'},
   {name:'Hiruni Dissanayake',handle:'@hiruni.d',tier:'Micro',av:'av1'},
   {name:'Sahan Weerasinghe',handle:'@sahan.w',tier:'Nano',av:'avatar'}];
+/* Creators sign up with their email, so that's what the brand sees under the name */
+INVITE.forEach(c=>c.email=c.name.toLowerCase().replace(' ','.')+'@gmail.com');
 const INV_TIERS=[['all','Tier'],['Nano','Nano'],['Micro','Micro'],['Mid','Mid']];
 const TRASHIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>';
 function invState(id){const d=dash(id);d.plats.inv??='all';return d.inv??={q:'',sel:new Set(),gone:new Set()};}
 /* The creators still on the list that match the tier filter and the search */
 function invShown(id){
   const v=invState(id), t=dash(id).plats.inv, q=v.q.trim().toLowerCase();
-  return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(!q||(c.name+' '+c.handle).toLowerCase().includes(q)));
+  return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(!q||(c.name+' '+c.email).toLowerCase().includes(q)));
 }
 function invRows(id){
   const v=invState(id), list=invShown(id);
@@ -1942,7 +1947,7 @@ function invRows(id){
   return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
     <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
-    <div class="t"><a data-act="soon">${c.name}</a><span>${c.handle} • ${c.tier} tier</span></div>
+    <div class="t"><a data-act="soon">${c.name}</a><span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span></div>
     <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
 }
 /* Select all reflects the visible rows: checked when all are picked, a dash when only some are */
