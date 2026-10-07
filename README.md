@@ -2,6 +2,9 @@
 
 Desktop web app for brands on the UGC Platform. Open `index.html` in a browser — no build step needed.
 
+On phones (767px wide and below) the app shows a "Log in from a desktop" screen instead. The mobile layout is still in
+the code, just hidden behind that screen (`.desk-only` in `index.html`), so it can be switched back on later.
+
 ## Pages
 
 - **Campaigns** — a dark secondary bar under the top menu switches between Active, Completed and Upcoming
