@@ -32,7 +32,7 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     follows when it agrees the flat fee with every collaborator on the campaign (one set of rules per campaign, also for
     creators who join later). "What the agent will do" closes the section and updates as you type: a price range bar,
     opening / target / maximum per slot, the planned offer to each creator per round, timing, and notes (approval threshold,
-    all slots at the maximum going over the fee budget, rounds that don't fit the deadline, prices out of order). Above it:
+    rounds that don't fit the deadline, prices out of order). Above it:
     Price limits, Time limit (deadline, reply window, rounds, what happens at the deadline), Negotiation strategy
     (Firm / Steady / Flexible concessions) and Guardrails (never-shared items, approval threshold, hand-over rules,
     reasons, tone, notifications).

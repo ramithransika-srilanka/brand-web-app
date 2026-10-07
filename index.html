@@ -2156,7 +2156,7 @@ const agreedN=(id,c)=>Math.round(C[id].rate*TIER_X[c.tier]/5000)*5000;
 /* One set of rules per campaign: the platform's agent follows them with every collaborator */
 function negState(id){
   const t=C[id].rate, r5=n=>Math.round(n/5000)*5000;
-  return dash(id).neg??={open:r5(t*.75),target:t,max:r5(t*1.45),budget:C[id].budgetN,
+  return dash(id).neg??={open:r5(t*.75),target:t,max:r5(t*1.45),
     final:'48',reply:'6',rounds:4,end:'final',remind:true,style:'firm',acceptTarget:true,tellFinal:true,far:50,approve:r5(t*1.25),
     hand:{terms:true,near:true,rival:true,sour:true},why:{budget:true,views:true,pay:false},tone:NEG_TONE[0],notify:NEG_NOTIFY[0]};
 }
@@ -2168,7 +2168,7 @@ function negPlan(n){
 }
 function negSummary(id){
   const n=negState(id);
-  const c=C[id], lo=Math.min(n.open,n.target,n.max), hi=Math.max(n.open,n.target,n.max);
+  const lo=Math.min(n.open,n.target,n.max), hi=Math.max(n.open,n.target,n.max);
   const pad=(hi-lo)*.06||1, pos=v=>((v-lo+pad)/(hi-lo+pad*2)*100).toFixed(2)+'%';
   const plan=negPlan(n), need=n.rounds*+n.reply, win=+n.final;
   const key=[['open','Opening offer',n.open],['target','Target',n.target],['max','Maximum',n.max]].filter(k=>k[2]);
@@ -2179,7 +2179,6 @@ function negSummary(id){
     bad&&['bad',bad],
     need>win&&['bad',`${n.rounds} rounds at ${n.reply} hours each need ${need} hours, longer than the ${NEG_FINAL.find(f=>f[0]===n.final)[1]} deadline. Cut the rounds or shorten the reply window.`],
     n.approve&&n.approve<n.max&&['info',`Any deal above ${RS(n.approve)} will wait for your approval before it is confirmed.`],
-    n.budget&&n.max*c.slots>n.budget&&['warn',`If all ${c.slots} creators settle at your maximum, the fees come to ${RS(n.max*c.slots)}, above your ${RS(n.budget)} budget. Once the budget is used up, the agent offers no more than what is left.`],
   ].filter(Boolean);
   const endTxt={final:'Final offer at maximum, then close',none:'Close with no deal',me:'Hands over to you'}[n.end];
   return `<div class="neg-range" aria-hidden="true"><span class="fill" style="left:${pos(Math.min(n.open,n.max))};right:calc(100% - ${pos(Math.max(n.open,n.max))})"></span>${key.map(k=>`<i class="c-${k[0]}" style="left:${pos(k[2])}"></i>`).join('')}</div>
@@ -2194,7 +2193,7 @@ function negSummary(id){
     </div>
     <div class="neg-notes">${notes.map(([k,m])=>`<p class="neg-note${k==='info'?'':' '+k}"${k==='info'?'':' role="status"'}>${m}</p>`).join('')}</div>`;
 }
-const negRs=(k,v,ph='0')=>`<span class="ff-in"><em>Rs.</em><input data-neg="${k}" data-rs inputmode="numeric" value="${v?v.toLocaleString('en-US'):''}" placeholder="${ph}" autocomplete="off"></span>`;
+const negRs=(k,v)=>`<span class="ff-in"><em>Rs.</em><input data-neg="${k}" data-rs inputmode="numeric" value="${v?v.toLocaleString('en-US'):''}" placeholder="0" autocomplete="off"></span>`;
 const negSel=(k,opts,v)=>`<select data-neg="${k}">${opts.map(o=>{const[val,l]=Array.isArray(o)?o:[o,o];return `<option value="${val}"${val===v?' selected':''}>${l}</option>`;}).join('')}</select>`;
 const negChk=(k,on,l)=>`<label class="neg-check"><input type="checkbox" data-neg="${k}"${on?' checked':''}>${l}</label>`;
 const negOpenHint=n=>n.target?`${Math.round(n.open/n.target*100)||0}% of target`:'Your first offer';
@@ -2207,9 +2206,6 @@ function secNegotiations(id){
         <label class="fl">Opening offer${negRs('open',n.open)}<span class="hint" id="neg-open-hint">${negOpenHint(n)}</span></label>
         <label class="fl">Target price${negRs('target',n.target)}<span class="hint">What you hope to pay</span></label>
         <label class="fl">Maximum price${negRs('max',n.max)}<span class="hint">Walk-away point</span></label>
-      </div>
-      <div class="neg-grid neg-sep">
-        <label class="fl"><span>Total fee budget <small>(optional)</small></span>${negRs('budget',n.budget,'No cap')}<span class="hint">Caps the fees across all ${C[id].slots} slots</span></label>
       </div></section>
     <section class="dcard">${dhead(step('Time limit',1),'Every negotiation closes at the deadline, with or without a deal.')}
       <div class="neg-grid">
