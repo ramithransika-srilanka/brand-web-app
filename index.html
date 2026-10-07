@@ -466,6 +466,18 @@
   .dh h2{font-size:20px;font-weight:600;line-height:26px;letter-spacing:-.015em;color:var(--grey-800);}
   .dh p{margin-top:2px;font-size:14px;line-height:20px;color:var(--grey-600);}
   .dh .count{font-size:14px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
+  /* Invitations: creator cards on a grey well (photo with name over a soft blur, See profile below) */
+  .inv-well{margin-top:18px;padding:16px;border-radius:12px;background:#f6f6f6;display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:16px;}
+  .inv-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 8px 12px;border-radius:22px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.05);}
+  .inv-photo{position:relative;width:100%;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--grey-100);}
+  .inv-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .inv-photo::before{content:"";position:absolute;inset:auto 0 0;height:50%;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
+  .inv-photo::after{content:"";position:absolute;inset:auto 0 0;height:55%;background:linear-gradient(transparent,rgba(0,0,0,.6));}
+  .inv-who{position:absolute;inset:auto 8px 12px;z-index:1;text-align:center;color:#fff;}
+  .inv-who b{display:block;font-size:16px;font-weight:600;line-height:20px;letter-spacing:-.01em;text-wrap:balance;}
+  .inv-who span{display:block;margin-top:1px;font-size:13px;line-height:18px;color:rgba(255,255,255,.8);}
+  .inv-card .btn{width:68%;min-width:128px;height:38px;}
+  .inv-card .btn svg{width:16px;height:16px;flex-shrink:0;}
   .dlink{font-weight:600;color:var(--blue-500);}
   .dlink:hover{text-decoration:underline;}
 
@@ -998,6 +1010,12 @@
     .dsh-main{gap:8px;}
     .dsh-main>.dcard:not(.ib){margin:0 calc(var(--gutter) * -1);padding:24px var(--gutter);border-left:0;border-right:0;border-radius:0;}
     .dh h2{font-size:18px;line-height:24px;}
+    .inv-well{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px;}
+    .inv-card{gap:8px;padding:6px 6px 10px;border-radius:18px;}
+    .inv-photo{border-radius:13px;}
+    .inv-who b{font-size:14px;line-height:18px;}
+    .inv-who span{font-size:12px;line-height:16px;}
+    .inv-card .btn{width:auto;min-width:0;align-self:stretch;margin:0 4px;height:36px;font-size:13px;}
     .dh p{font-size:14px;line-height:20px;}
     .att-list{gap:8px;margin-top:16px;}
     .att{padding:14px 16px;}
@@ -1884,8 +1902,25 @@ function secAnalytics(id){
           <td>${fmtN(w.views)}</td><td>${fmtN(w.reach)}</td><td>${(w.engN/w.views).toFixed(1)}%</td><td>Rs. ${w.paid.toLocaleString('en-US')}</td><td>${subDate(w.ago)}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
+/* Creators a brand can invite to an invite-only campaign */
+const INVITE=[
+  {name:'Shehani Kahandawala',tier:'Micro',src:'images/creator-shehani.jpg'},
+  {name:'Nethmi Perera',tier:'Micro',av:'av1'},
+  {name:'Kavindu Jayasuriya',tier:'Micro',av:'av2'},
+  {name:'Dilan Fernando',tier:'Micro',av:'av3'},
+  {name:'Sachini Wickramasinghe',tier:'Micro',av:'av4'},
+  {name:'Ravindu Silva',tier:'Mid',av:'avatar'},
+  {name:'Tharushi Gunawardena',tier:'Nano',av:'av1'},
+  {name:'Isuru Bandara',tier:'Micro',av:'pfAvatar'},
+  {name:'Chamodi Rajapaksha',tier:'Mid',av:'av4'},
+  {name:'Pasindu Herath',tier:'Nano',av:'av2'},
+  {name:'Hiruni Dissanayake',tier:'Micro',av:'av1'},
+  {name:'Sahan Weerasinghe',tier:'Nano',av:'avatar'}];
 function secInvitations(id){
-  return `<section class="dcard">${dhead('Invitations','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}<div class="dempty"><span>Coming soon</span></div></section>`;
+  return `<section class="dcard">${dhead('Invitations','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
+    <div class="inv-well">${INVITE.map(c=>`<div class="inv-card">
+      <div class="inv-photo">${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}<div class="inv-who"><b>${c.name}</b><span>${c.tier} tier</span></div></div>
+      <a class="btn btn-pri" data-act="soon">${CPICON.extlink}<span>See profile</span></a></div>`).join('')}</div></section>`;
 }
 
 function secNegotiations(id){
