@@ -28,6 +28,7 @@
     --explore-page:1128px; --explore-gutter:24px;
     /* admin dashboard */
     --page-bg:#f6f6f6; --line:#e6e6e6; --good:#0a7d3e; --bad:#c8102e;
+    --warn:#a34a00; --warn-bg:#fdf4ea; --warn-line:#f4d9bc;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
   /* Reserve the scrollbar space on every page so short and long pages line up */
@@ -973,6 +974,72 @@
   .tc tr.new td{animation:bubIn .45s cubic-bezier(.16,1,.3,1) both;}
   @media(prefers-reduced-motion:reduce){.fchart .chart-col b.bar,.tc tr.new td{animation:none;}}
 
+  /* ================= Negotiations: the agent that agrees a flat fee with one creator (flat fee / slot campaigns) ================= */
+  .neg-who{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;}
+  .neg-who .adm-creator img{width:40px;height:40px;}
+  .neg-who .adm-handle{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .neg-who .an-plat-btn{background:none;color:var(--grey-800);border:1px solid var(--grey-400);padding:0 12px 0 14px;}
+  .neg-who .an-plat-btn:hover{background:var(--grey-100);}
+  .neg-h3{margin-top:22px;font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
+  /* Price range: opening offer → maximum filled, a tick per price */
+  .neg-range{position:relative;height:8px;margin:16px 6px 0;border-radius:100px;background:var(--grey-100);}
+  .neg-range .fill{position:absolute;top:0;bottom:0;border-radius:100px;background:var(--blue-100);}
+  .neg-range i{position:absolute;top:-5px;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:currentColor;}
+  .neg-key{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px;}
+  .neg-key>div{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;}
+  .neg-key span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .neg-key span i{width:8px;height:8px;border-radius:2px;background:currentColor;flex-shrink:0;}
+  .neg-key b{font-size:18px;font-weight:600;line-height:24px;letter-spacing:-.015em;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .c-open{color:var(--grey-500);} .c-target{color:var(--blue-500);} .c-max{color:var(--grey-800);} .c-ask{color:var(--warn);}
+  .neg-plan{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:22px;}
+  .neg-plan h4{margin-bottom:8px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  .neg-rows{border:1px solid var(--line);border-radius:12px;}
+  .neg-rows>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-height:44px;padding:12px 16px;font-size:14px;line-height:20px;color:var(--grey-600);}
+  .neg-rows>div+div{border-top:1px solid var(--line);}
+  .neg-rows b{font-weight:600;color:var(--grey-800);text-align:right;font-variant-numeric:tabular-nums;}
+  .neg-rows small{margin-left:6px;font-size:12px;font-weight:600;color:var(--warn);}
+  .neg-rows .late,.neg-rows .late b{color:var(--bad);}
+  /* Notes under the plan: info (blue), heads-up (amber), problem (red) */
+  .neg-notes{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+  .neg-notes:empty{display:none;}
+  .neg-note{padding:12px 16px;border:1px solid var(--blue-100);border-radius:12px;background:color-mix(in srgb,var(--blue-100) 40%,#fff);font-size:14px;line-height:20px;color:var(--blue-700);}
+  .neg-note.warn{border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn);}
+  .neg-note.bad{border-color:#f5c2c9;background:#fdecee;color:var(--bad);}
+  /* Setup cards: numbered steps */
+  .neg-n{margin-right:8px;font-size:14px;font-weight:500;color:var(--grey-500);font-variant-numeric:tabular-nums;}
+  .neg-req{display:inline-block;margin-left:8px;padding:3px 8px;border-radius:100px;background:var(--blue-100);font-size:12px;font-weight:600;line-height:14px;color:var(--blue-700);vertical-align:3px;letter-spacing:0;}
+  .neg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 12px;margin-top:18px;}
+  .neg-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .neg-sep{margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
+  .fl .hint{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .fl select{height:40px;width:100%;min-width:0;padding:0 38px 0 16px;border:1px solid var(--grey-400);border-radius:100px;outline:0;appearance:none;-webkit-appearance:none;cursor:pointer;
+    background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 3h8L5 8z' fill='%23121212'/%3E%3C/svg%3E") no-repeat right 16px center/10px;
+    font:500 14px var(--font);color:var(--grey-800);transition:border-color .2s ease;}
+  .fl select:focus{border-color:var(--blue-300);}
+  .neg-sub{margin-top:20px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  /* Choice cards: a radio or a style, the picked one outlined in blue */
+  .neg-opts{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .neg-opts.row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  .neg-opt{position:relative;display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .2s ease,background .2s ease;}
+  .neg-opt:hover{border-color:var(--grey-400);}
+  .neg-opt:has(input:checked){border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 40%,#fff);}
+  .neg-opt:has(input:focus-visible){outline:2px solid var(--blue-500);outline-offset:2px;}
+  .neg-opt input{flex-shrink:0;width:18px;height:18px;margin-top:1px;accent-color:var(--blue-500);}
+  .neg-opts.row .neg-opt input{position:absolute;opacity:0;pointer-events:none;}
+  .neg-opt b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .neg-opt span{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .neg-checks{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+  .neg-check{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);cursor:pointer;}
+  .neg-check input{flex-shrink:0;width:18px;height:18px;margin-top:1px;accent-color:var(--blue-500);cursor:pointer;}
+  .neg-inline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:18px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .neg-inline .ff-in{width:96px;}
+  .neg-inline .ff-in input{flex:1;width:100%;min-width:0;border:0;outline:0;background:none;font:500 14px var(--font);color:var(--grey-800);}
+  .neg-inline .ff-in.rs{width:180px;}
+  .neg-lock{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .neg-lock span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;border-radius:100px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:16px;color:var(--grey-800);}
+  .neg-lock svg{width:14px;height:14px;}
+  .neg-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;}
+  .neg-cols .neg-sub{margin-top:20px;}
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -980,6 +1047,18 @@
   /* Tablet and phone: cards are wider than on desktop, so the image keeps the card design's 3:2 proportions instead of a short 180px strip */
   @media (max-width:1279px){
     .feedgrid .card-img,.feedgrid .sk-card .img{height:auto;aspect-ratio:3/2;}
+  }
+  @media (max-width:1279px){
+    .neg-key{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .neg-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  @media (max-width:1023px){
+    .neg-plan,.neg-cols,.neg-opts.row{grid-template-columns:minmax(0,1fr);}
+    .neg-cols{gap:0;}
+  }
+  @media (max-width:767px){
+    .neg-grid,.neg-grid.two{grid-template-columns:minmax(0,1fr);}
+    .neg-who{flex-wrap:wrap;}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;--explore-gutter:24px;}
@@ -1658,9 +1737,9 @@ const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
-const SECTIONS=[['details','Campaign details'],['collaborators','Collaborators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
-/* Collaborators applies to invite-only campaigns and open campaigns paid per slot */
-const SECWHEN={collaborators:c=>c.access==='invite'||c.fee==='flat'};
+const SECTIONS=[['details','Campaign details'],['collaborators','Collaborators'],['negotiations','Negotiations'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+/* Collaborators applies to invite-only campaigns and open campaigns paid per slot; Negotiations only to slot (flat fee) campaigns */
+const SECWHEN={collaborators:c=>c.access==='invite'||c.fee==='flat',negotiations:c=>c.fee==='flat'};
 const secsFor=id=>SECTIONS.filter(x=>!SECWHEN[x[0]]||SECWHEN[x[0]](C[id]));
 
 /* Creators who post for brands (taken from the submissions above) */
@@ -1906,7 +1985,7 @@ function egStats(id){
 /* Platform dropdown: each card keeps its own choice; PANELS says what to redraw */
 /* Analytics dropdowns: each one keeps its own choice in dash(id).plats; PANELS redraws what it filters */
 const fill=(el,html)=>{const box=document.getElementById(el);box.innerHTML=html;bindAssets(box);};
-const PANELS={inv:invRedraw,invs:invRedraw,an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
+const PANELS={neg:()=>rerender(),inv:invRedraw,invs:invRedraw,an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
 function platPick(id,key,opts=AN_PLATS,label='Platform'){
   const cur=opts.find(p=>p[0]===(key in FIN.plats?FIN.plats:dash(id).plats)[key]);
   return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
@@ -2006,7 +2085,7 @@ INVITE.forEach(c=>c.email=c.name.toLowerCase().replace(' ','.')+'@gmail.com');
 [2,5,7,10].forEach(i=>INVITE[i].pending=true);
 /* Flat fee campaigns: the fee agreed with each creator, higher for bigger tiers (rounded to Rs. 5,000) */
 const TIER_X={Nano:1,Micro:1.3,Mid:2};
-const agreed=(id,c)=>{const n=Math.round(C[id].rate*TIER_X[c.tier]/5000)*5000;return 'Rs. '+n.toLocaleString('en-US');};
+const agreed=(id,c)=>RS(agreedN(id,c));
 const INV_STATUS=[['all','Status'],['pending','Pending'],['approved','Approved']];
 const INV_TIERS=[['all','Tier'],['Nano','Nano'],['Micro','Micro'],['Mid','Mid']];
 const TRASHIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>';
@@ -2069,6 +2148,132 @@ function secCollaborators(id){
     <div id="inv-rows">${invRows(id)}</div></div></section>`;
 }
 
+/* ---------- Negotiations: an agent agrees the flat fee with one creator, within the brand's limits and a deadline ---------- */
+/* Deliverables, usage and timeline are already agreed; only the fee is open */
+const NEG_FINAL=[['24','24 hours'],['48','48 hours'],['72','72 hours'],['120','5 days']];
+const NEG_REPLY=[['3','3 hours per round'],['6','6 hours per round'],['12','12 hours per round'],['24','24 hours per round']];
+const NEG_END=[['final','Final offer at maximum, then close','One last offer at your maximum with a short window. If declined, the negotiation ends.'],
+  ['none','Close with no deal','The agent thanks the creator and ends the negotiation.'],
+  ['me','Hand over to me','The agent pauses and you decide what to do next.']];
+const NEG_STYLE=[['firm','Firm','Holds near the opening offer and concedes late.',2.3],['steady','Steady','Moves in even steps each round.',1],['flex','Flexible','Concedes early to close quickly.',.5]];
+const NEG_HAND=[['terms','The creator asks to change campaign terms'],['near','The ask is within 10% above my maximum'],['rival','The creator mentions a competing offer'],['sour','The conversation turns negative']];
+const NEG_WHY=[['budget','This campaign has a fixed budget'],['views','Our rate is based on recent median views'],['pay','We pay within 7 days of posting']];
+const NEG_SECRET=['Maximum price','Target price','Campaign budget','Other creators’ rates'];
+const NEG_TONE=['Warm and friendly','Professional','Short and direct'];
+const NEG_NOTIFY=['In-app and email','In-app only','Email only'];
+const agreedN=(id,c)=>Math.round(C[id].rate*TIER_X[c.tier]/5000)*5000;
+/* Creators who accepted and are still on the campaign */
+const negCreators=id=>INVITE.map((c,i)=>({...c,i})).filter(c=>!c.pending&&!invState(id).gone.has(c.i));
+function negState(id){
+  const d=dash(id), list=negCreators(id);
+  if(!list.some(c=>String(c.i)===d.plats.neg)) d.plats.neg=list[0]?String(list[0].i):null;
+  if(d.plats.neg==null) return null;
+  d.neg??={};
+  const i=+d.plats.neg, t=agreedN(id,INVITE[i]), r5=n=>Math.round(n/5000)*5000;
+  return d.neg[i]??={open:r5(t*.75),target:t,max:r5(t*1.45),ask:r5(t*1.75),budget:'',
+    final:'48',reply:'6',rounds:4,end:'final',remind:true,style:'firm',acceptTarget:true,tellFinal:true,far:50,approve:r5(t*1.25),
+    hand:{terms:true,near:true,rival:true,sour:true},why:{budget:true,views:true,pay:false},tone:NEG_TONE[0],notify:NEG_NOTIFY[0]};
+}
+/* Offers step from the opening offer to the maximum; the style bends the curve (firm holds back, flexible gives early) */
+function negPlan(n){
+  const k=NEG_STYLE.find(s=>s[0]===n.style)[3], R=Math.max(1,n.rounds), step=+n.reply;
+  return Array.from({length:R},(_,r)=>{const f=R>1?Math.pow(r/(R-1),k):1;
+    return {r:r+1,at:r*step,amt:r===R-1?n.max:Math.round((n.open+(n.max-n.open)*f)/500)*500};});
+}
+function negSummary(id){
+  const n=negState(id);
+  const lo=Math.min(n.open,n.target,n.max,n.ask||Infinity), hi=Math.max(n.open,n.target,n.max,n.ask||0);
+  const pad=(hi-lo)*.06||1, pos=v=>((v-lo+pad)/(hi-lo+pad*2)*100).toFixed(2)+'%';
+  const plan=negPlan(n), need=n.rounds*+n.reply, win=+n.final;
+  const key=[['open','Opening offer',n.open],['target','Target',n.target],['max','Maximum',n.max],['ask','Creator’s ask',n.ask]].filter(k=>k[2]);
+  const bad=!n.open||!n.target||!n.max?'Fill in the opening offer, target and maximum.'
+    :n.open>n.target?'Your opening offer is above your target. Start lower than what you hope to pay.'
+    :n.target>n.max?'Your target is above your maximum. The maximum is your walk-away point.':null;
+  const notes=[
+    bad&&['bad',bad],
+    need>win&&['bad',`${n.rounds} rounds at ${n.reply} hours each need ${need} hours, longer than the ${NEG_FINAL.find(f=>f[0]===n.final)[1]} deadline. Cut the rounds or shorten the reply window.`],
+    n.approve&&n.approve<n.max&&['info',`Any deal above ${RS(n.approve)} will wait for your approval before it is confirmed.`],
+    n.far&&n.ask>n.max*(1+n.far/100)?['warn',`The creator’s ask is more than ${n.far}% above your maximum, so the agent sends one final offer at ${RS(n.max)} and closes.`]
+      :n.ask>n.max&&['warn',`The creator’s ask is above your maximum. A deal needs them to come down by at least ${RS(n.ask-n.max)}.`],
+  ].filter(Boolean);
+  const endTxt={final:'Final offer at maximum, then close',none:'Close with no deal',me:'Hands over to you'}[n.end];
+  return `<h3 class="neg-h3">What the agent will do</h3>
+    <div class="neg-range" aria-hidden="true"><span class="fill" style="left:${pos(Math.min(n.open,n.max))};right:calc(100% - ${pos(Math.max(n.open,n.max))})"></span>${key.map(k=>`<i class="c-${k[0]}" style="left:${pos(k[2])}"></i>`).join('')}</div>
+    <div class="neg-key">${key.map(k=>`<div><span><i class="c-${k[0]}"></i>${k[1]}</span><b>${RS(k[2])}</b></div>`).join('')}</div>
+    <div class="neg-plan">
+      <div><h4>Planned offers</h4><div class="neg-rows">${plan.map(p=>`<div${p.at>=win?' class="late"':''}><span>Round ${p.r} · ${p.at?`hour ${p.at}`:'at start'}</span><b>${RS(p.amt)}${p.r===plan.length&&n.tellFinal?'<small>final</small>':''}</b></div>`).join('')}</div></div>
+      <div><h4>Timing</h4><div class="neg-rows">
+        <div><span>Closes</span><b>${NEG_FINAL.find(f=>f[0]===n.final)[1]} after you start</b></div>
+        <div${need>win?' class="late"':''}><span>Time needed</span><b>${need} of ${win} hours</b></div>
+        <div><span>At deadline</span><b>${endTxt}</b></div>
+        <div><span>Reminder</span><b>${n.remind?'6 hours before the deadline':'None'}</b></div></div></div>
+    </div>
+    <div class="neg-notes">${notes.map(([k,m])=>`<p class="neg-note${k==='info'?'':' '+k}"${k==='info'?'':' role="status"'}>${m}</p>`).join('')}</div>`;
+}
+const negRs=(k,v,ph='0')=>`<span class="ff-in"><em>Rs.</em><input data-neg="${k}" data-rs inputmode="numeric" value="${v?v.toLocaleString('en-US'):''}" placeholder="${ph}" autocomplete="off"></span>`;
+const negSel=(k,opts,v)=>`<select data-neg="${k}">${opts.map(o=>{const[val,l]=Array.isArray(o)?o:[o,o];return `<option value="${val}"${val===v?' selected':''}>${l}</option>`;}).join('')}</select>`;
+const negChk=(k,on,l)=>`<label class="neg-check"><input type="checkbox" data-neg="${k}"${on?' checked':''}>${l}</label>`;
+const negOpenHint=n=>n.target?`${Math.round(n.open/n.target*100)||0}% of target`:'Your first offer';
+function secNegotiations(id){
+  const n=negState(id);
+  if(!n) return `<section class="dcard">${dhead('Negotiations')}${empty('No creators to negotiate with','Once a creator joins this campaign you can set up an agent to agree their fee.')}</section>`;
+  const list=negCreators(id), c=INVITE[+dash(id).plats.neg];
+  const step=(no,t,req)=>`<span class="neg-n">${no}</span>${t}${req?'<span class="neg-req">Required</span>':''}`;
+  return `<section class="dcard">${dhead('Negotiations','Deliverables, usage and timeline are already agreed with the creator. The agent negotiates only the flat fee, within the limits below, and must finish before the deadline.')}
+      <div class="neg-who"><div class="adm-creator">${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}<div><div class="name">${c.name}</div><div class="adm-handle">Campaign terms agreed · price open</div></div></div>
+        ${platPick(id,'neg',list.map(x=>[String(x.i),x.name]),'Creator')}</div>
+      <div id="neg-sum">${negSummary(id)}</div></section>
+    <section class="dcard">${dhead(step('01','Price limits'),'Only the agent sees these. The maximum is never revealed to the creator.')}
+      <div class="neg-grid">
+        <label class="fl">Opening offer${negRs('open',n.open)}<span class="hint" id="neg-open-hint">${negOpenHint(n)}</span></label>
+        <label class="fl">Target price${negRs('target',n.target)}<span class="hint">What you hope to pay</span></label>
+        <label class="fl">Maximum price${negRs('max',n.max)}<span class="hint">Walk-away point</span></label>
+      </div>
+      <div class="neg-grid two neg-sep">
+        <label class="fl"><span>Creator’s quoted rate <small>(optional)</small></span>${negRs('ask',n.ask)}</label>
+        <label class="fl"><span>Total campaign budget <small>(optional)</small></span>${negRs('budget',n.budget,'No cap')}<span class="hint">Caps spend across all creators</span></label>
+      </div></section>
+    <section class="dcard">${dhead(step('02','Time limit',1),'Every negotiation closes at the deadline, with or without a deal.')}
+      <div class="neg-grid">
+        <label class="fl">Finalize within${negSel('final',NEG_FINAL,n.final)}</label>
+        <label class="fl">Creator reply window${negSel('reply',NEG_REPLY,n.reply)}</label>
+        <label class="fl">Maximum rounds<input data-neg="rounds" type="number" min="1" max="10" value="${n.rounds}" inputmode="numeric"></label>
+      </div>
+      <p class="neg-sub">If there’s no agreement by the deadline</p>
+      <div class="neg-opts" role="radiogroup" aria-label="If there’s no agreement by the deadline">${NEG_END.map(([k,t,d])=>`<label class="neg-opt"><input type="radio" name="neg-end" data-neg="end" value="${k}"${n.end===k?' checked':''}><div><b>${t}</b><span>${d}</span></div></label>`).join('')}</div>
+      <div class="neg-checks">${negChk('remind',n.remind,'Remind the creator 6 hours before the deadline')}</div></section>
+    <section class="dcard">${dhead(step('03','Negotiation strategy'),'How the agent moves from your opening offer toward your maximum.')}
+      <p class="neg-sub">Concession style</p>
+      <div class="neg-opts row" role="radiogroup" aria-label="Concession style">${NEG_STYLE.map(([k,t,d])=>`<label class="neg-opt"><input type="radio" name="neg-style" data-neg="style" value="${k}"${n.style===k?' checked':''}><div><b>${t}</b><span>${d}</span></div></label>`).join('')}</div>
+      <div class="neg-checks">${negChk('acceptTarget',n.acceptTarget,'Accept immediately if the creator asks for target or less')}${negChk('tellFinal',n.tellFinal,'Tell the creator when an offer is final')}</div>
+      <div class="neg-inline"><span>If the creator asks more than</span><span class="ff-in"><input data-neg="far" inputmode="numeric" value="${n.far}" aria-label="Percent above maximum"><em>%</em></span><span>above max, send one final offer and close.</span></div></section>
+    <section class="dcard">${dhead(step('04','Guardrails'),'Hard rules the agent can’t break, and when it hands over to you.')}
+      <p class="neg-sub">Never shared with the creator</p>
+      <div class="neg-lock">${NEG_SECRET.map(s=>`<span>${LOCK}${s}</span>`).join('')}</div>
+      <div class="neg-inline"><span>Ask for my approval before accepting above</span><span class="ff-in rs"><em>Rs.</em><input data-neg="approve" data-rs inputmode="numeric" value="${n.approve?n.approve.toLocaleString('en-US'):''}" placeholder="0" autocomplete="off" aria-label="Approval threshold"></span></div>
+      <div class="neg-cols">
+        <div><p class="neg-sub">Hand over to me when</p><div class="neg-checks">${NEG_HAND.map(([k,l])=>negChk('hand.'+k,n.hand[k],l)).join('')}</div></div>
+        <div><p class="neg-sub">Reasons the agent may give</p><div class="neg-checks">${NEG_WHY.map(([k,l])=>negChk('why.'+k,n.why[k],l)).join('')}</div></div>
+      </div>
+      <div class="neg-grid two neg-sep">
+        <label class="fl">Tone${negSel('tone',NEG_TONE,n.tone)}</label>
+        <label class="fl">Notify me by${negSel('notify',NEG_NOTIFY,n.notify)}</label>
+      </div></section>`;
+}
+/* Every change updates the summary at the top straight away */
+function negInput(el){
+  const id=parseHash().id, n=negState(id); if(!n) return;
+  const [k,sub]=el.dataset.neg.split('.');
+  if(el.dataset.rs!=null){const v=num(el.value);el.value=v?v.toLocaleString('en-US'):'';n[k]=v;}
+  else if(sub) n[k][sub]=el.checked;
+  else if(el.type==='checkbox') n[k]=el.checked;
+  else if(k==='rounds') n[k]=Math.min(10,Math.max(1,num(el.value)||1));
+  else if(k==='far'){const v=Math.min(999,num(el.value));el.value=v?String(v):'';n[k]=v;}
+  else n[k]=el.value;
+  const h=document.getElementById('neg-open-hint');if(h) h.textContent=negOpenHint(n);
+  fill('neg-sum',negSummary(id));
+}
+
 function secInbox(id){
   const d=dash(id), t=d.threads[d.thread];
   /* On phones the thread only counts as read once it is opened from the list */
@@ -2091,7 +2296,7 @@ function viewAdmin(id,sec,post){
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
       :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
-  const body={details:secDetails,collaborators:secCollaborators,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  const body={details:secDetails,collaborators:secCollaborators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
@@ -2708,7 +2913,8 @@ document.addEventListener('submit',e=>{
   if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
-document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);});
+document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
+  if(e.target.dataset.neg&&(e.target.type==='checkbox'||e.target.type==='radio'||e.target.tagName==='SELECT')) negInput(e.target);});
 /* A file dropped beside the drop zone shouldn't navigate away from the form */
 ['dragover','drop'].forEach(ev=>addEventListener(ev,e=>{if(document.body.classList.contains('fin')) e.preventDefault();}));
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#ff-drop');if(d){e.preventDefault();d.classList.add('over');}}));
@@ -2727,6 +2933,7 @@ document.addEventListener('submit',e=>{
 
 /* Search filters the campaign feed */
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}
+  if(e.target.dataset.neg&&e.target.type!=='checkbox'&&e.target.type!=='radio'&&e.target.tagName!=='SELECT') negInput(e.target);
   if(e.target.id==='inv-q'){const id=parseHash().id;invState(id).q=e.target.value;invRedraw(id);}
   /* Amount field groups thousands as you type */
   if(e.target.id==='ff-amt'){const n=num(e.target.value);e.target.value=n?n.toLocaleString('en-US'):'';e.target.removeAttribute('aria-invalid');}});
