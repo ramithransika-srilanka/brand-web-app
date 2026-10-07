@@ -980,9 +980,8 @@
   .neg-ic svg{width:20px;height:20px;}
   .neg-who b{display:block;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
   .neg-who div>span{display:block;margin-top:2px;font-size:13px;line-height:18px;color:var(--grey-600);}
-  .neg-h3{margin-top:22px;font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
   /* Price range: opening offer → maximum filled, a tick per price */
-  .neg-range{position:relative;height:8px;margin:16px 6px 0;border-radius:100px;background:var(--grey-100);}
+  .neg-range{position:relative;height:8px;margin:24px 6px 0;border-radius:100px;background:var(--grey-100);}
   .neg-range .fill{position:absolute;top:0;bottom:0;border-radius:100px;background:var(--blue-100);}
   .neg-range i{position:absolute;top:-5px;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:currentColor;}
   .neg-key{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px;}
@@ -2189,8 +2188,7 @@ function negSummary(id){
     n.budget&&n.max*c.slots>n.budget&&['warn',`If all ${c.slots} creators settle at your maximum, the fees come to ${RS(n.max*c.slots)}, above your ${RS(n.budget)} budget. Once the budget is used up, the agent offers no more than what is left.`],
   ].filter(Boolean);
   const endTxt={final:'Final offer at maximum, then close',none:'Close with no deal',me:'Hands over to you'}[n.end];
-  return `<h3 class="neg-h3">What the agent will do</h3>
-    <div class="neg-range" aria-hidden="true"><span class="fill" style="left:${pos(Math.min(n.open,n.max))};right:calc(100% - ${pos(Math.max(n.open,n.max))})"></span>${key.map(k=>`<i class="c-${k[0]}" style="left:${pos(k[2])}"></i>`).join('')}</div>
+  return `<div class="neg-range" aria-hidden="true"><span class="fill" style="left:${pos(Math.min(n.open,n.max))};right:calc(100% - ${pos(Math.max(n.open,n.max))})"></span>${key.map(k=>`<i class="c-${k[0]}" style="left:${pos(k[2])}"></i>`).join('')}</div>
     <div class="neg-key">${key.map(k=>`<div><span><i class="c-${k[0]}"></i>${k[1]}</span><b>${RS(k[2])}</b></div>`).join('')}</div>
     <div class="neg-plan">
       <div><h4>Planned offers to each creator</h4><div class="neg-rows">${plan.map(p=>`<div${p.at>=win?' class="late"':''}><span>Round ${p.r} · ${p.at?`hour ${p.at}`:'at start'}</span><b>${RS(p.amt)}${p.r===plan.length&&n.tellFinal?'<small>final</small>':''}</b></div>`).join('')}</div></div>
@@ -2211,8 +2209,7 @@ function secNegotiations(id){
   const joined=INVITE.filter((c,i)=>!c.pending&&!invState(id).gone.has(i)).length;
   const step=(t,req)=>`${t}${req?'<span class="neg-req">Required</span>':''}`;
   return `<section class="dcard">${dhead('Negotiations','Tell the platform how to agree the flat fee with your creators. Deliverables, usage and timeline are already set by the campaign; the agent negotiates only the fee, within these limits, and must finish before the deadline.')}
-      <div class="neg-who"><span class="neg-ic">${USERSIC}</span><div><b>Applies to all collaborators</b><span>${joined} creator${joined===1?'':'s'} on this campaign now. Creators who join later follow the same rules.</span></div></div>
-      <div id="neg-sum">${negSummary(id)}</div></section>
+      <div class="neg-who"><span class="neg-ic">${USERSIC}</span><div><b>Applies to all collaborators</b><span>${joined} creator${joined===1?'':'s'} on this campaign now. Creators who join later follow the same rules.</span></div></div></section>
     <section class="dcard">${dhead(step('Price limits'),'Per creator, for one slot. Only the agent sees these; the maximum is never revealed to creators.')}
       <div class="neg-grid">
         <label class="fl">Opening offer${negRs('open',n.open)}<span class="hint" id="neg-open-hint">${negOpenHint(n)}</span></label>
@@ -2247,7 +2244,9 @@ function secNegotiations(id){
       <div class="neg-grid two neg-sep">
         <label class="fl">Tone${negSel('tone',NEG_TONE,n.tone)}</label>
         <label class="fl">Notify me by${negSel('notify',NEG_NOTIFY,n.notify)}</label>
-      </div></section>`;
+      </div></section>
+    <section class="dcard">${dhead('What the agent will do','The plan the agent follows with each creator, from the settings above.')}
+      <div id="neg-sum">${negSummary(id)}</div></section>`;
 }
 /* Every change updates the summary at the top straight away */
 function negInput(el){
