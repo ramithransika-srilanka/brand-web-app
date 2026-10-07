@@ -28,6 +28,13 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     profiles with followers, About the creator, total campaigns and views, last 5 brands); `Esc` or the scrim closes it.
     Invite-only campaigns add a blue Invite button at the top right and the copy-invite-link button on pending rows;
     open slot campaigns show the same list without them.
+  - **Negotiations** (`/admin/negotiations`) — flat-fee (slot) campaigns only: set up an agent that agrees the flat fee with
+    one creator (picked from the accepted collaborators). "What the agent will do" sits at the top and updates as you type:
+    a price range bar, opening / target / maximum / creator's ask, the planned offer for each round, timing, and notes
+    (approval threshold, ask above maximum, rounds that don't fit the deadline, prices out of order). Below it: 01 Price
+    limits, 02 Time limit (deadline, reply window, rounds, what happens at the deadline), 03 Negotiation strategy
+    (Firm / Steady / Flexible concessions) and 04 Guardrails (never-shared items, approval threshold, hand-over rules,
+    reasons, tone, notifications). Settings are kept per creator.
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
     bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
