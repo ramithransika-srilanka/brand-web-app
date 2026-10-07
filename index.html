@@ -975,11 +975,6 @@
   @media(prefers-reduced-motion:reduce){.fchart .chart-col b.bar,.tc tr.new td{animation:none;}}
 
   /* ================= Negotiations: the agent that agrees a flat fee with one creator (flat fee / slot campaigns) ================= */
-  .neg-who{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;}
-  .neg-ic{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:100px;background:var(--blue-100);color:var(--blue-700);}
-  .neg-ic svg{width:20px;height:20px;}
-  .neg-who b{display:block;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
-  .neg-who div>span{display:block;margin-top:2px;font-size:13px;line-height:18px;color:var(--grey-600);}
   /* Price range: opening offer → maximum filled, a tick per price */
   .neg-range{position:relative;height:8px;margin:24px 6px 0;border-radius:100px;background:var(--grey-100);}
   .neg-range .fill{position:absolute;top:0;bottom:0;border-radius:100px;background:var(--blue-100);}
@@ -2157,7 +2152,6 @@ const NEG_WHY=[['budget','This campaign has a fixed budget'],['views','Our rate 
 const NEG_SECRET=['Maximum price','Target price','Campaign budget','Other creators’ rates'];
 const NEG_TONE=['Warm and friendly','Professional','Short and direct'];
 const NEG_NOTIFY=['In-app and email','In-app only','Email only'];
-const USERSIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14.5a6.5 6.5 0 013.5 5.5"/></svg>';
 const agreedN=(id,c)=>Math.round(C[id].rate*TIER_X[c.tier]/5000)*5000;
 /* One set of rules per campaign: the platform's agent follows them with every collaborator */
 function negState(id){
@@ -2206,10 +2200,8 @@ const negChk=(k,on,l)=>`<label class="neg-check"><input type="checkbox" data-neg
 const negOpenHint=n=>n.target?`${Math.round(n.open/n.target*100)||0}% of target`:'Your first offer';
 function secNegotiations(id){
   const n=negState(id);
-  const joined=INVITE.filter((c,i)=>!c.pending&&!invState(id).gone.has(i)).length;
   const step=(t,req)=>`${t}${req?'<span class="neg-req">Required</span>':''}`;
-  return `<section class="dcard">${dhead('Negotiations','Tell the platform how to agree the flat fee with your creators. Deliverables, usage and timeline are already set by the campaign; the agent negotiates only the fee, within these limits, and must finish before the deadline.')}
-      <div class="neg-who"><span class="neg-ic">${USERSIC}</span><div><b>Applies to all collaborators</b><span>${joined} creator${joined===1?'':'s'} on this campaign now. Creators who join later follow the same rules.</span></div></div></section>
+  return `<section class="dcard">${dhead('Negotiations','Tell the platform how to agree the flat fee with your creators. Deliverables, usage and timeline are already set by the campaign; the agent negotiates only the fee, within these limits, and must finish before the deadline.')}</section>
     <section class="dcard">${dhead(step('Price limits'),'Per creator, for one slot. Only the agent sees these; the maximum is never revealed to creators.')}
       <div class="neg-grid">
         <label class="fl">Opening offer${negRs('open',n.open)}<span class="hint" id="neg-open-hint">${negOpenHint(n)}</span></label>
