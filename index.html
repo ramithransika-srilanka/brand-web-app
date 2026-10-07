@@ -487,7 +487,13 @@
   /* Email and tier on one line: a long email shortens, the tier always shows */
   .inv-row .t .sub{display:flex;margin-top:1px;font-size:14px;line-height:20px;color:var(--grey-600);white-space:nowrap;}
   .inv-row .t .sub span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;}
-  .inv-row .t .sub span:last-child{flex-shrink:0;}
+  .inv-row .t .sub span+span{flex-shrink:0;}
+  /* Pending invites: label in the middle of the row, with a button to copy the invite link */
+  .inv-pend{flex:1;display:flex;align-items:center;gap:6px;min-width:0;font-size:14px;line-height:20px;color:var(--grey-600);white-space:nowrap;}
+  .inv-pend button{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;color:var(--grey-700);transition:background .2s ease;}
+  .inv-pend button:hover{background:var(--grey-100);}
+  .inv-pend svg{width:18px;height:18px;}
+  .inv-bar .an-plat+.an-plat{margin-left:-12px;}
   .inv-del{width:40px;height:40px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#f6f6f6;color:var(--bad);transition:background .2s ease,border-color .2s ease;}
   .inv-del:hover{background:#fdecee;border-color:#f5c2c9;}
   .inv-del svg{width:18px;height:18px;}
@@ -1031,6 +1037,9 @@
     .inv-row .t a{font-size:15px;line-height:20px;}
     .inv-row .t .sub{font-size:13px;line-height:18px;}
     .inv-del{width:36px;height:36px;}
+    .inv-pend{flex:none;gap:2px;font-size:12px;}
+    .inv-pend span{display:none;}
+    .inv-bar .an-plat-btn{padding:0 6px;}
     .dh p{font-size:14px;line-height:20px;}
     .att-list{gap:8px;margin-top:16px;}
     .att{padding:14px 16px;}
@@ -1851,7 +1860,7 @@ function egStats(id){
 /* Platform dropdown: each card keeps its own choice; PANELS says what to redraw */
 /* Analytics dropdowns: each one keeps its own choice in dash(id).plats; PANELS redraws what it filters */
 const fill=(el,html)=>{const box=document.getElementById(el);box.innerHTML=html;bindAssets(box);};
-const PANELS={inv:invRedraw,an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
+const PANELS={inv:invRedraw,invs:invRedraw,an:id=>fill('an-tiles',anTiles(id)),eg:id=>fill('eg-stats',egStats(id)),cp:id=>fill('an-chart',chartBody(id)),cm:id=>fill('an-chart',chartBody(id))};
 function platPick(id,key,opts=AN_PLATS,label='Platform'){
   const cur=opts.find(p=>p[0]===(key in FIN.plats?FIN.plats:dash(id).plats)[key]);
   return `<div class="an-plat" data-pk="${key}"><button class="an-plat-btn" type="button" data-plat-btn aria-haspopup="menu" aria-expanded="false">${cur[1]}${CARET}</button>
@@ -1933,13 +1942,16 @@ const INVITE=[
   {name:'Sahan Weerasinghe',handle:'@sahan.w',tier:'Nano',av:'avatar'}];
 /* Creators sign up with their email, so that's what the brand sees under the name */
 INVITE.forEach(c=>c.email=c.name.toLowerCase().replace(' ','.')+'@gmail.com');
+/* Some invites haven't been answered yet; the rest have been accepted */
+[2,5,7,10].forEach(i=>INVITE[i].pending=true);
+const INV_STATUS=[['all','Status'],['pending','Pending'],['approved','Approved']];
 const INV_TIERS=[['all','Tier'],['Nano','Nano'],['Micro','Micro'],['Mid','Mid']];
 const TRASHIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>';
-function invState(id){const d=dash(id);d.plats.inv??='all';return d.inv??={q:'',sel:new Set(),gone:new Set()};}
+function invState(id){const d=dash(id);d.plats.inv??='all';d.plats.invs??='all';return d.inv??={q:'',sel:new Set(),gone:new Set()};}
 /* The creators still on the list that match the tier filter and the search */
 function invShown(id){
-  const v=invState(id), t=dash(id).plats.inv, q=v.q.trim().toLowerCase();
-  return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(!q||(c.name+' '+c.email).toLowerCase().includes(q)));
+  const v=invState(id), {inv:t,invs:st}=dash(id).plats, q=v.q.trim().toLowerCase();
+  return INVITE.map((c,i)=>({...c,i})).filter(c=>!v.gone.has(c.i)&&(t==='all'||c.tier===t)&&(st==='all'||(st==='pending')===!!c.pending)&&(!q||(c.name+' '+c.email).toLowerCase().includes(q)));
 }
 function invRows(id){
   const v=invState(id), list=invShown(id);
@@ -1947,7 +1959,10 @@ function invRows(id){
   return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
     <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
-    <div class="t"><a data-act="soon">${c.name}</a><span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span></div>
+    <div class="t"><a data-act="soon">${c.name}</a>${c.pending
+      ?`<span class="sub"><span>Awaiting ${c.name.split(' ')[0]}’s response</span></span>`
+      :`<span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span>`}</div>
+    ${c.pending?`<div class="inv-pend"><span>Pending invite</span><button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button></div>`:''}
     <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
 }
 /* Select all reflects the visible rows: checked when all are picked, a dash when only some are */
@@ -1963,7 +1978,7 @@ function secInvitations(id){
   return `<section class="dcard">${dhead('Invitations','',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
     <div class="inv-list"><div class="inv-bar">
       <label class="lbl"><input class="inv-chk" type="checkbox" id="inv-all"><span id="inv-lbl">Select all</span></label>
-      ${platPick(id,'inv',INV_TIERS,'Tier')}
+      ${platPick(id,'invs',INV_STATUS,'Status')}${platPick(id,'inv',INV_TIERS,'Tier')}
       <label class="search">${MICON.search}<input id="inv-q" type="search" placeholder="Find a creator…" value="${esc(v.q)}" autocomplete="off" aria-label="Find a creator"></label></div>
     <div id="inv-rows">${invRows(id)}</div></div></section>`;
 }
@@ -2566,7 +2581,7 @@ function doAct(a,el){
     return box.querySelector('button').focus({preventScroll:true});
   }
   if(a==='share') return toast('Link copied');
-  if(a==='copy'){const v=el.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(`Copied · ${v}`),()=>toast(v));return;}
+  if(a==='copy'){const v=el.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(el.dataset.done||`Copied · ${v}`),()=>toast(v));return;}
   if(a==='statement') return downloadStatement();
   if(a==='slip') return downloadSlip(FIN.transfers[+el.dataset.tx]);
   if(a==='ff-clear'){FIN.file=null;fileChip();const f=document.getElementById('ff-file');f.value='';return f.focus();}
