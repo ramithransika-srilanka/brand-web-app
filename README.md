@@ -24,7 +24,7 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   as a creator" bar; `Esc`, the scrim or "Admin view" closes it; phones go to the creator page instead), followed by the sub menu (badges show pending submissions and unread messages):
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
-  - **Invitations** (`/admin/invitations`) — invite-only campaigns only; a blue Invite button at the top right and a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending invite label and a copy-link button. Clicking a name opens the creator profile in a drawer from the left (photo, name, email, social
+  - **Invitations** (`/admin/invitations`) — invite-only campaigns only; a blue Invite button at the top right and a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending invite label and a copy-link button. Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
     profiles with followers, About the creator, total campaigns and views, last 5 brands); `Esc` or the scrim closes it.
   - **Negotiations** (`/admin/negotiations`) — open flat-fee (slot) campaigns only; an empty section for now.
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a

@@ -440,12 +440,12 @@
   }
   @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel,.pd-panel{transition:none;}}
 
-  /* ================= Creator profile drawer (from the left) ================= */
+  /* ================= Creator profile drawer (from the right) ================= */
   .pdrawer{position:fixed;inset:0;z-index:40;}
   .pdrawer[hidden]{display:none;}
   .pdrawer.open .cd-scrim{opacity:1;}
-  .pd-panel{position:absolute;top:0;left:0;bottom:0;width:min(440px,calc(100% - 64px));background:#fff;display:flex;flex-direction:column;
-    box-shadow:8px 0 32px rgba(0,0,0,.16);transform:translateX(-100%);transition:transform .45s cubic-bezier(.16,1,.3,1);outline:none;}
+  .pd-panel{position:absolute;top:0;right:0;bottom:0;width:min(440px,calc(100% - 64px));background:#fff;display:flex;flex-direction:column;
+    box-shadow:-8px 0 32px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .45s cubic-bezier(.16,1,.3,1);outline:none;}
   .pdrawer.open .pd-panel{transform:none;}
   /* Built from the dashboard's own parts: .dh heading, .hicon close, .adm-sec sections, .adm-creator rows, .adm-follow counts, .tiles */
   .pd-head{flex-shrink:0;align-items:center;padding:20px 24px;border-bottom:1px solid var(--line);}
@@ -1175,7 +1175,7 @@
     <div class="cd-body" id="cd-body"></div>
   </aside>
 </div>
-<!-- Creator profile: slides in from the left when a name in Invitations is clicked -->
+<!-- Creator profile: slides in from the right when a name in Invitations is clicked -->
 <div class="pdrawer" id="pdrawer" hidden>
   <div class="cd-scrim" data-pdrawer-close></div>
   <aside class="pd-panel" id="pd-panel" role="dialog" aria-modal="true" aria-label="Creator profile" tabindex="-1">
@@ -2032,12 +2032,15 @@ function invSync(id){
   document.getElementById('inv-lbl').textContent=n?`${n} selected`:'Select all';
 }
 /* Creator profile drawer: who they are, where they post, and their track record */
+/* Link to the creator's account on each platform */
+const SOCIAL_URL={insta:h=>`https://www.instagram.com/${h}/`,tiktok:h=>`https://www.tiktok.com/@${h}`,youtube:h=>`https://www.youtube.com/@${h}`,facebook:h=>`https://www.facebook.com/${h}`,linkedin:h=>`https://www.linkedin.com/in/${h}/`};
+const socialURL=(k,handle)=>SOCIAL_URL[k](handle.replace(/^@/,''));
 function profileHTML(i){
   const c=INVITE[i], last=[0,1,2,3,4].map(n=>PAST_BRANDS[(i*3+n)%PAST_BRANDS.length]);
   const months=['Sep 2026','Aug 2026','Jul 2026','May 2026','Apr 2026'];
   return `<div class="adm-sec adm-creator pd-who">${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
       <div><div class="name">${c.name}</div><a class="adm-handle" href="mailto:${c.email}">${c.email}</a></div></div>
-    <div class="adm-sec"><span class="adm-eyebrow">Social profiles</span>${c.followers.map(([k,n])=>`<div class="adm-follow"><span title="${PLATNAME[k]}">${PLAT[k]}${n} <em>Followers</em></span><i aria-hidden="true"></i><em>${c.handle}</em></div>`).join('')}</div>
+    <div class="adm-sec"><span class="adm-eyebrow">Social profiles</span>${c.followers.map(([k,n])=>`<div class="adm-follow"><span title="${PLATNAME[k]}">${PLAT[k]}${n} <em>Followers</em></span><i aria-hidden="true"></i><a class="dlink" href="${socialURL(k,c.handle)}" target="_blank" rel="noopener" aria-label="${c.handle} on ${PLATNAME[k]} (opens in a new tab)">${c.handle}</a></div>`).join('')}</div>
     <div class="adm-sec"><span class="adm-eyebrow">About the creator</span><p class="adm-bio">${c.bio}</p></div>
     <div class="adm-sec"><div class="tiles"><div class="tile"><span class="n">${c.campaigns}</span><span class="l">Total campaigns</span></div><div class="tile"><span class="n">${fmtN(c.views)}</span><span class="l">Total views generated</span></div></div></div>
     <div class="adm-sec"><span class="adm-eyebrow">Last 5 brands</span><div class="pd-brands">${last.map(([logo,name],n)=>`<div class="adm-creator"><img data-a="${logo}" data-label="${name}" alt=""><div><div class="name">${name}</div><div class="adm-handle">${months[n]}</div></div></div>`).join('')}</div></div>`;
