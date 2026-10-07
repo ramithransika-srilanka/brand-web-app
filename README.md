@@ -33,8 +33,7 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     creators who join later). "What the agent will do" closes the section and updates as you type: a price range bar,
     opening / target / maximum per slot, the planned offer to each creator per round, timing, and notes (approval threshold,
     rounds that don't fit the deadline, prices out of order). Above it:
-    Price limits, Time limit (deadline, reply window, rounds, what happens at the deadline), Negotiation strategy
-    (Firm / Steady / Flexible concessions) and Guardrails (never-shared items, approval threshold, hand-over rules,
+    Price limits, Time limit (deadline, reply window, rounds, what happens at the deadline) and Guardrails (never-shared items, approval threshold, hand-over rules,
     reasons, tone, notifications).
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
