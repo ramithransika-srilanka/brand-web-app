@@ -2016,9 +2016,7 @@ function invRows(id){
   return list.map(c=>`<div class="inv-row${v.sel.has(c.i)?' sel':''}">
     <input class="inv-chk" type="checkbox" data-inv-chk="${c.i}"${v.sel.has(c.i)?' checked':''} aria-label="Select ${c.name}">
     ${c.src?`<img src="${c.src}" alt="">`:`<img data-a="${c.av}" data-label="${c.name}" alt="">`}
-    <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a>${c.pending
-      ?`<span class="sub"><span>Awaiting ${c.name.split(' ')[0]}’s response</span></span>`
-      :`<span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span>`}</div>
+    <div class="t"><a href="#" data-profile="${c.i}">${c.name}</a><span class="sub"><span>${c.email}</span><span>&nbsp;• ${c.tier} tier</span></span></div>
     ${c.pending?`<div class="inv-pend"><span>Pending invite</span><button type="button" data-act="copy" data-v="${location.href.split('#')[0]}#/invite/${id}/${c.i+1}" data-done="Invite link copied" aria-label="Copy invite link for ${c.name}" title="Copy invite link">${COPYIC}</button></div>`:''}
     <button class="inv-del" type="button" data-inv-del="${c.i}" aria-label="Remove ${c.name}" title="Remove">${TRASHIC}</button></div>`).join('');
 }
