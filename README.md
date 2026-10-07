@@ -24,9 +24,9 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   as a creator" bar; `Esc`, the scrim or "Admin view" closes it; phones go to the creator page instead), followed by the sub menu (badges show pending submissions and unread messages):
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
-  - **Invitations** (`/admin/invitations`) — invite-only campaigns only; a blue Invite button at the top right and a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending label (12px) and a copy-link button. Flat fee (slot) campaigns add an Agreed amount column after it (e.g. Rs. 65,000; the campaign’s flat fee scaled by tier). Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
+  - **Collaborators** (`/admin/collaborators`) — invite-only and flat-fee (slot) campaigns. Invite-only campaigns get a blue Invite button at the top right and a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending label (12px) and a copy-link button. Flat fee (slot) campaigns add an Agreed amount column after it (e.g. Rs. 65,000; the campaign’s flat fee scaled by tier). Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
     profiles with followers, About the creator, total campaigns and views, last 5 brands); `Esc` or the scrim closes it.
-  - **Negotiations** (`/admin/negotiations`) — open flat-fee (slot) campaigns only; an empty section for now.
+    Open flat-fee (slot) campaigns get a Coming soon placeholder for rate negotiations instead.
   - **Pending approvals** (`/admin/pending`) — the original admin review as a vertical feed: each submission is a
     full-height row with the post (reel, image or swipeable carousel) in the centre column and the creator, caption,
     bio on the right. Approve / Reject sit on the post itself, at the bottom. Scroll for the next submission (one per screen on desktop); reels play only while on screen.
