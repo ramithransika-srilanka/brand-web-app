@@ -24,8 +24,8 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   as a creator" bar; `Esc`, the scrim or "Admin view" closes it; phones go to the creator page instead), followed by the sub menu (badges show pending submissions and unread messages):
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
-  - **Collaborators** (`/admin/collaborators`) — every campaign: the brand's own team members on the campaign, one row per
-    person (initials, name, email · role: Owner / Editor / Viewer) with an Invite button; everyone but the Owner can be removed.
+  - **Collaborators** (`/admin/collaborators`) — every campaign: the brand's own team members on the campaign. Empty for now:
+    a bordered box with a team icon, "You haven’t invited any collaborators yet" and an Add people button.
   - **Negotiations** (`/admin/negotiations`) — flat-fee (slot) campaigns only: the rules the platform's negotiation agent
     follows when it agrees the flat fee with every creator on the campaign (one set of rules per campaign, also for
     creators who join later): Price limits (opening offer, target and maximum per slot) and Time limit (deadline, reply

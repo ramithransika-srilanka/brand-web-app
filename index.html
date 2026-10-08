@@ -504,7 +504,10 @@
   .dh .count{font-size:14px;font-weight:500;color:var(--grey-600);white-space:nowrap;}
   /* Invitations: creator list with select all, tier filter and search, one row per creator */
   .inv-list{margin-top:18px;border:1px solid var(--line);border-radius:12px;}
-  .collab-list{overflow:hidden;}
+  .collab-empty{margin-top:18px;padding:36px 18px;gap:12px;border:1px solid var(--line);border-radius:12px;}
+  .collab-empty .ic{width:48px;height:48px;color:var(--grey-600);}
+  .collab-empty .ic svg{width:100%;height:100%;}
+  .collab-empty .btn{margin-top:6px;}
   .inv-bar{border-radius:11px 11px 0 0;}
   #inv-rows>:last-child{border-radius:0 0 11px 11px;}
   .inv-bar{display:flex;align-items:center;gap:16px;min-height:62px;padding:10px 12px 10px 18px;background:#f6f6f6;border-bottom:1px solid var(--line);}
@@ -518,7 +521,6 @@
   .inv-row .t{flex:1;min-width:0;}
   .inv-row .t a{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .inv-row .t a:hover{text-decoration:underline;}
-  .inv-row .t .nm{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   /* Email and tier on one line: a long email shortens, the tier always shows */
   .inv-row .t .sub{display:flex;margin-top:1px;font-size:12px;line-height:16px;color:var(--grey-600);white-space:nowrap;}
   .inv-row .t .sub span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;}
@@ -2092,28 +2094,11 @@ function closeProfile(){
 function invRedraw(id){fill('inv-rows',invRows(id));}
 
 /* ---------- Collaborators: the brand's own team members who can work on this campaign ---------- */
-/* [name, email, role] per campaign; every campaign has an Owner */
-const COLLAB={
-  uber:[['Ishara Gunawardena','ishara@uber.lk','Owner'],['Ruwan Silva','ruwan@uber.lk','Editor'],['Tharushi Mendis','tharushi@uber.lk','Viewer']],
-  eats:[['Ishara Gunawardena','ishara@uber.lk','Owner'],['Amaya de Alwis','amaya@uber.lk','Editor']],
-  starbucks:[['Chamari Rajapakse','chamari@starbucks.lk','Owner'],['Nuwan Karunaratne','nuwan@starbucks.lk','Editor'],['Hasini Abeysekera','hasini@starbucks.lk','Editor'],['Kalana Herath','kalana@starbucks.lk','Viewer']],
-  burgerking:[['Malith Senanayake','malith@burgerking.lk','Owner'],['Oshadi Peiris','oshadi@burgerking.lk','Editor']],
-  dominos:[['Shehan Wijesinghe','shehan@dominos.lk','Owner'],['Yasodha Ranasinghe','yasodha@dominos.lk','Viewer']],
-  kfc:[['Dinithi Samarakoon','dinithi@kfc.lk','Owner'],['Lahiru Bandara','lahiru@kfc.lk','Editor'],['Sanduni Jayawardena','sanduni@kfc.lk','Viewer']],
-  hiru:[['Gayan Ekanayake','gayan@hirutv.lk','Owner'],['Methmi Liyanage','methmi@hirutv.lk','Editor']],
-  shakira:[['Gayan Ekanayake','gayan@hirutv.lk','Owner'],['Methmi Liyanage','methmi@hirutv.lk','Editor'],['Kasun Dissanayake','kasun@hirutv.lk','Viewer']],
-};
-const collabState=id=>dash(id).collab??=(COLLAB[id]||[['Brand admin','admin@brand.lk','Owner']]).map(([name,email,role])=>({name,email,role}));
-const initials=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-function collabRows(id){
-  return collabState(id).map((m,i)=>`<div class="inv-row">
-    <img data-a="" data-label="${initials(m.name)}" alt="">
-    <div class="t"><b class="nm">${m.name}</b><span class="sub"><span>${m.email}</span><span>&nbsp;• ${m.role}</span></span></div>
-    ${m.role==='Owner'?'':`<button class="inv-del" type="button" data-collab-del="${i}" aria-label="Remove ${m.name}" title="Remove">${TRASHIC}</button>`}</div>`).join('');
-}
+/* Person with a lock over an org tree */
+const TEAMIC='<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M39 21.5A12 12 0 1 0 31 30.6"/><circle cx="27" cy="15.5" r="4"/><path d="M19.5 27c1.6-3.4 4.4-5 7.5-5s5.9 1.6 7.5 5"/><rect x="34" y="23" width="9" height="7" rx="1.5"/><path d="M35.8 23v-2.5a2.7 2.7 0 0 1 5.4 0V23"/><path d="M32 34v6M14 46v-6h36v6M32 40v6"/><circle cx="14" cy="50" r="3.5"/><circle cx="32" cy="50" r="3.5"/><circle cx="50" cy="50" r="3.5"/></svg>';
 function secCollaborators(id){
-  return `<section class="dcard">${dhead('Collaborators','Your team members who can manage this campaign',`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`)}
-    <div class="inv-list collab-list"><div id="collab-rows">${collabRows(id)}</div></div></section>`;
+  return `<section class="dcard">${dhead('Collaborators','Your team members who can manage this campaign')}
+    <div class="dempty collab-empty"><span class="ic">${TEAMIC}</span><b>You haven’t invited any collaborators yet</b><button class="btn btn-sec" type="button" data-act="soon">Add people</button></div></section>`;
 }
 function secCreators(id){
   const v=invState(id);
@@ -2739,9 +2724,6 @@ document.addEventListener('click',e=>{
     anMenu(pm,false);PANELS[key](id);return document.querySelector(`[data-pk="${key}"] [data-plat-btn]`).focus();}
   const fm=t.closest('[data-fm]');
   if(fm){setMonth(+fm.dataset.fm);return document.querySelector(`[data-fm="${fm.dataset.fm}"]`).focus();}
-  const cdel=t.closest('[data-collab-del]');
-  if(cdel){const id=parseHash().id, [m]=collabState(id).splice(+cdel.dataset.collabDel,1);fill('collab-rows',collabRows(id));
-    return toast(`${m.name} removed`);}
   const del=t.closest('[data-inv-del]');
   if(del){const id=parseHash().id, v=invState(id), i=+del.dataset.invDel;v.gone.add(i);invRedraw(id);
     return toast(`${INVITE[i].name} removed`);}
