@@ -712,6 +712,21 @@
   .ib-form input:focus{border-color:var(--blue-300);}
   .ib-form .btn{height:40px;}
 
+  /* What's new: updates as a chat, grouped into sessions with their start time; scroll up for older ones */
+  .dsh-main>.wn{display:flex;flex-direction:column;height:min(640px,calc(100dvh - var(--header) - var(--subbar) - 48px));padding:0;overflow:hidden;}
+  .wn-head{padding:18px 24px 14px;border-bottom:1px solid var(--line);}
+  .wn-msgs{flex:1;display:flex;flex-direction:column;gap:6px;padding:18px 24px;overflow-y:auto;}
+  .wn-sess{display:flex;align-items:center;gap:12px;margin:18px 0 8px;font-size:12px;font-weight:600;line-height:16px;color:var(--grey-600);white-space:nowrap;}
+  .wn-sess:first-child{margin-top:0;}
+  .wn-sess::before,.wn-sess::after{content:"";flex:1;height:1px;background:var(--line);}
+  .bub.act{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:12px 14px;background:#fff;border:1px solid var(--line);}
+  .bub.act b{font-weight:600;color:var(--grey-800);}
+  .bub.act span{color:var(--grey-700);}
+  .wn-go{display:inline-flex;align-items:center;height:32px;margin-top:6px;padding:0 14px;border-radius:100px;background:var(--blue-500);font-size:13px;font-weight:600;color:#fff;transition:background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .wn-go:hover{background:var(--blue-600);}
+  .wn-go:active{transform:scale(.96);}
+  .wn .ib-form{padding:12px 24px 16px;}
+
   .dempty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 12px 18px;text-align:center;}
   .dempty b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
   .dempty span{max-width:320px;font-size:14px;line-height:20px;color:var(--grey-600);}
@@ -1048,8 +1063,8 @@
     .dsh-side .dsh-menu a{min-height:48px;}
     @media(prefers-reduced-motion:reduce){.dsh-side,.dsh.pend>.dsh-side,body.side-open .dsh-side,body.side-open .dsh.pend>.dsh-side{transition:none;}}
     /* Inbox fills the screen below the menu button (54px bar + 12px gap) with an 18px margin under it */
-    .dsh-main>.ib{height:calc(100dvh - var(--header) - 84px);min-height:420px;}
-    .content:has(.ib){padding-bottom:18px;}
+    .dsh-main>.ib,.dsh-main>.wn{height:calc(100dvh - var(--header) - 84px);min-height:420px;}
+    .content:has(.ib),.content:has(.wn){padding-bottom:18px;}
   }
   @media (max-width:767px){
     /* Rupee figures are longer than the other tile numbers, so they step down a size to stay on one line */
@@ -1689,7 +1704,7 @@ const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
-const SECTIONS=[['details','Campaign details'],['collaborators','Collaborators'],['negotiations','Negotiations'],['creators','Creators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+const SECTIONS=[['news','What’s new'],['details','Campaign details'],['collaborators','Collaborators'],['negotiations','Negotiations'],['creators','Creators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
 /* Creators applies to invite-only campaigns and open campaigns paid per slot; Negotiations only to slot (flat fee) campaigns */
 const SECWHEN={creators:c=>c.access==='invite'||c.fee==='flat',negotiations:c=>c.fee==='flat'};
 const secsFor=id=>SECTIONS.filter(x=>!SECWHEN[x[0]]||SECWHEN[x[0]](C[id]));
@@ -1747,6 +1762,32 @@ function sideHTML(id,sec){
 const empty=(t,m)=>`<div class="dempty"><b>${t}</b><span>${m}</span></div>`;
 const dhead=(t,p,right='')=>`<div class="dh"><div><h2>${t}</h2>${p?`<p>${p}</p>`:''}</div>${right}</div>`;
 
+/* What's new: each session opens with what changed since the last one; the latest asks for the actions waiting on the brand */
+function secNews(id){
+  const c=C[id], d=dash(id), base=`#/campaign/${id}/admin/`;
+  const views=d.approved.reduce((a,p)=>a+p.views,0), top=[...d.approved].sort((a,b)=>b.views-a.views)[0];
+  const pct=Math.min(100,Math.round(num(c.spent)/c.budgetN*100));
+  const say=t=>`<div class="bub them">${t}</div>`, me=t=>`<div class="bub me">${t}</div>`;
+  const act=(b,t,href,l)=>`<div class="bub them act"><b>${b}</b><span>${t}</span><a class="wn-go" href="${href}">${l}</a></div>`;
+  const sess=(at,body)=>`<p class="wn-sess">${at}</p>${body}`;
+  const todo=[
+    d.pending.length&&act(`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,'Creators are waiting on you.',base+'pending','Review now'),
+    unreadN(d)&&act(`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,'Quick replies keep your response time badge.',base+'inbox','Open inbox'),
+    c.status==='upcoming'&&act('Share the brief before launch','Creators can read it and save the campaign ahead of time.','#/campaign/'+id,'View as creator'),
+  ].filter(Boolean);
+  return `<section class="dcard wn"><div class="wn-head">${dhead('What’s new')}</div>
+    <div class="wn-msgs" id="wn-msgs">
+      ${sess('Mon, 5 Oct · 10:12 AM',say(`${c.joinedShort} creators have joined this campaign so far.`)+me('Nice. Any posts live yet?')
+        +say(views?`${d.approved.length} posts are live, with ${fmtN(views)} views in total.`:'Not yet. I’ll post here as soon as the first one goes live.'))}
+      ${sess('Yesterday · 4:05 PM',(top?say(`${esc(top.name)}’s ${top.kind.toLowerCase()} on ${PLATNAME[top.platform]} is your top post, with ${fmtN(top.views)} views.`):'')
+        +say(`You’ve spent ${c.spent} of your ${c.budget} budget (${pct}%).`))}
+      ${sess('Today · 9:41 AM',(todo.length?say(`${todo.length} thing${todo.length>1?'s need':' needs'} your attention.`)+todo.join(''):say('You’re all caught up. Nothing needs your attention right now.'))
+        +(d.news||[]).map(m=>`<div class="bub ${m[0]}${m[2]?' new':''}">${esc(m[1])}</div>`).join(''))}
+    </div>
+    <form class="ib-form" id="wn-form"><input id="wn-input" placeholder="Ask about this campaign…" autocomplete="off" aria-label="Message about this campaign"><button class="btn btn-pri" type="submit">Send</button></form>
+  </section>`;
+}
+
 function secDetails(id){
   const c=C[id], d=dash(id), base=`#/campaign/${id}/admin/`;
   const spent=num(c.spent), pct=Math.min(100,Math.round(spent/c.budgetN*100));
@@ -1756,13 +1797,7 @@ function secDetails(id){
   const [basePay,capPay,perfPay]=c.list.map(r=>num(String(r[1]).split('/')[0]));
   const maxPaid=d.approved.reduce((m,p)=>Math.max(m,Math.min(capPay,basePay+Math.round(p.views/1000*perfPay))),0);
   const rs=n=>'Rs. '+n.toLocaleString('en-US');
-  const att=[
-    d.pending.length&&['review',`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,`Creators are waiting on you. <a class="dlink" href="${base}pending">Review now</a>`],
-    unreadN(d)&&['inbox',`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,`Quick replies keep your response time badge. <a class="dlink" href="${base}inbox">Open inbox</a>`],
-    c.status==='upcoming'&&['brief','Share the brief before launch','Creators can read it and save the campaign ahead of time. <a class="dlink" href="#/campaign/'+id+'">View as creator</a>'],
-  ].filter(a=>a&&!d.dismissed.has(a[0]));
-  return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
-    <section class="dcard">${dhead('Track performance','How this campaign is doing across every creator')}
+  return `<section class="dcard">${dhead('Track performance','How this campaign is doing across every creator')}
       <div class="tiles">
         <div class="tile"><span class="n">${d.pending.length+d.approved.length}</span><span class="l">Content submitted</span><span class="d">${c.joinedShort} creators joined</span></div>
         <a class="tile" href="${base}pending"><span class="n">${d.pending.length}</span><span class="l">Pending approvals</span><span class="d">${d.pending.length?'Oldest '+d.pending[d.pending.length-1].submitted:'All caught up'}</span></a>
@@ -2177,7 +2212,7 @@ function viewAdmin(id,sec,post){
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
       :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
-  const body={details:secDetails,collaborators:secCollaborators,creators:secCreators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  const body={news:secNews,details:secDetails,collaborators:secCollaborators,creators:secCreators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
@@ -2595,7 +2630,7 @@ function rerender(){
   const h=parseHash(); if(!h.admin) return;
   stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
 }
-function scrollThread(){const m=document.getElementById('ib-msgs');if(m) m.scrollTop=m.scrollHeight;}
+function scrollThread(){const m=document.getElementById('ib-msgs')||document.getElementById('wn-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
   const {root,id,admin,sec,post,fsec,toTx}=parseHash();
@@ -2804,6 +2839,17 @@ document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.ta
   d.classList.remove('over');if(ev==='drop'){e.preventDefault();pickFile(e.dataTransfer.files[0]);}}));
 
 document.addEventListener('submit',e=>{
+  if(e.target.id==='wn-form'){
+    e.preventDefault();
+    const input=document.getElementById('wn-input'), text=input.value.trim(); if(!text) return;
+    const id=parseHash().id, d=dash(id), log=d.news||(d.news=[]);
+    log.forEach(m=>m.length=2);log.push(['me',text,1]);
+    rerender();document.getElementById('wn-input').focus({preventScroll:true});
+    /* Placeholder reply until the assistant is wired up */
+    return setTimeout(()=>{const h=parseHash();log.forEach(m=>m.length=2);log.push(['them','Thanks, noted. I’ll follow up here in this chat.',1]);
+      if(h.id===id&&h.sec==='news'){const f=document.activeElement&&document.activeElement.id==='wn-input', v=f&&document.activeElement.value;
+        rerender();if(f){const i=document.getElementById('wn-input');i.value=v;i.focus({preventScroll:true});}}},700);
+  }
   if(e.target.id!=='ib-form') return;
   e.preventDefault();
   const input=document.getElementById('ib-input'), text=input.value.trim(); if(!text) return;
