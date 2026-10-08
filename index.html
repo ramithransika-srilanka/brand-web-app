@@ -1679,7 +1679,7 @@ const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
-const SECTIONS=[['details','Campaign details'],['collaborators','Collaborators'],['negotiations','Negotiations'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+const SECTIONS=[['details','Campaign details'],['negotiations','Negotiations'],['collaborators','Collaborators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
 /* Collaborators applies to invite-only campaigns and open campaigns paid per slot; Negotiations only to slot (flat fee) campaigns */
 const SECWHEN={collaborators:c=>c.access==='invite'||c.fee==='flat',negotiations:c=>c.fee==='flat'};
 const secsFor=id=>SECTIONS.filter(x=>!SECWHEN[x[0]]||SECWHEN[x[0]](C[id]));
