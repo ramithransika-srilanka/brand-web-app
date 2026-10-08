@@ -1197,7 +1197,7 @@
     <div class="cd-body" id="cd-body"></div>
   </aside>
 </div>
-<!-- Creator profile: slides in from the right when a name in Collaborators is clicked -->
+<!-- Creator profile: slides in from the right when a name in Creators is clicked -->
 <div class="pdrawer" id="pdrawer" hidden>
   <div class="cd-scrim" data-pdrawer-close></div>
   <aside class="pd-panel" id="pd-panel" role="dialog" aria-modal="true" aria-label="Creator profile" tabindex="-1">
@@ -1679,9 +1679,9 @@ const BACKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHONE=matchMedia('(max-width:767px)');
 const XIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const EDITIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
-const SECTIONS=[['details','Campaign details'],['negotiations','Negotiations'],['collaborators','Collaborators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
-/* Collaborators applies to invite-only campaigns and open campaigns paid per slot; Negotiations only to slot (flat fee) campaigns */
-const SECWHEN={collaborators:c=>c.access==='invite'||c.fee==='flat',negotiations:c=>c.fee==='flat'};
+const SECTIONS=[['details','Campaign details'],['negotiations','Negotiations'],['creators','Creators'],['pending','Pending approvals'],['approved','Approved content'],['analytics','Analytics'],['inbox','Inbox']];
+/* Creators applies to invite-only campaigns and open campaigns paid per slot; Negotiations only to slot (flat fee) campaigns */
+const SECWHEN={creators:c=>c.access==='invite'||c.fee==='flat',negotiations:c=>c.fee==='flat'};
 const secsFor=id=>SECTIONS.filter(x=>!SECWHEN[x[0]]||SECWHEN[x[0]](C[id]));
 
 /* Creators who post for brands (taken from the submissions above) */
@@ -2081,9 +2081,9 @@ function closeProfile(){
   pdReturn=null;
 }
 function invRedraw(id){fill('inv-rows',invRows(id));}
-function secCollaborators(id){
+function secCreators(id){
   const v=invState(id);
-  return `<section class="dcard">${dhead('Collaborators','',C[id].access==='invite'?`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`:'')}
+  return `<section class="dcard">${dhead('Creators','',C[id].access==='invite'?`<button class="btn btn-pri" type="button" data-act="soon">Invite</button>`:'')}
     <div class="inv-list"><div class="inv-bar">
       ${platPick(id,'invs',INV_STATUS,'Status')}${platPick(id,'inv',INV_TIERS,'Tier')}
       <label class="search">${MICON.search}<input id="inv-q" type="search" placeholder="Find a creator…" value="${esc(v.q)}" autocomplete="off" aria-label="Find a creator"></label></div>
@@ -2098,7 +2098,7 @@ const NEG_END=[['final','Final offer at maximum, then close','One last offer at 
   ['none','Close with no deal','The agent thanks the creator and ends the negotiation.'],
   ['me','Hand over to me','The agent pauses and you decide what to do next.']];
 const agreedN=(id,c)=>Math.round(C[id].rate*TIER_X[c.tier]/5000)*5000;
-/* One set of rules per campaign: the platform's agent follows them with every collaborator */
+/* One set of rules per campaign: the platform's agent follows them with every creator */
 function negState(id){
   const t=C[id].rate, r5=n=>Math.round(n/5000)*5000;
   return dash(id).neg??={open:r5(t*.75),target:t,max:r5(t*1.45),
@@ -2158,7 +2158,7 @@ function viewAdmin(id,sec,post){
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
       :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
-  const body={details:secDetails,collaborators:secCollaborators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
+  const body={details:secDetails,creators:secCreators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
   return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
 }
 
