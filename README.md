@@ -25,10 +25,10 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
     budget and the campaign brief.
   - **Negotiations** (`/admin/negotiations`) — flat-fee (slot) campaigns only: the rules the platform's negotiation agent
-    follows when it agrees the flat fee with every collaborator on the campaign (one set of rules per campaign, also for
+    follows when it agrees the flat fee with every creator on the campaign (one set of rules per campaign, also for
     creators who join later): Price limits (opening offer, target and maximum per slot) and Time limit (deadline, reply
     window, rounds, what happens at the deadline).
-  - **Collaborators** (`/admin/collaborators`) — invite-only and flat-fee (slot) campaigns: a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending label (12px) and a copy-link button. Flat fee (slot) campaigns add an Agreed amount column after it (e.g. Rs. 65,000; the campaign’s flat fee scaled by tier); it stays blank for pending creators, since their price is still open. Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
+  - **Creators** (`/admin/creators`) — invite-only and flat-fee (slot) campaigns: a creator list with Select all, Status (Pending / Approved) and Tier filters, search, and one row per creator (checkbox, photo, name, email · tier, remove). Pending invites read "Awaiting …’s response" with a Pending label (12px) and a copy-link button. Flat fee (slot) campaigns add an Agreed amount column after it (e.g. Rs. 65,000; the campaign’s flat fee scaled by tier); it stays blank for pending creators, since their price is still open. Clicking a name opens the creator profile in a drawer from the right (photo, name, email, social
     profiles with followers, About the creator, total campaigns and views, last 5 brands); `Esc` or the scrim closes it.
     Invite-only campaigns add a blue Invite button at the top right and the copy-invite-link button on pending rows;
     open slot campaigns show the same list without them.
