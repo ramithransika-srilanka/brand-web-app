@@ -1412,12 +1412,12 @@ function barHTML(c){
 }
 function cardHTML(id){
   const c=C[id];
-  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/details">
+  return `<div class="cardwrap"><div class="card-img" data-go="#/campaign/${id}/admin/news">
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}${c.fee==='performance'?`<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span>`:''}</div><div class="view-btn">View</div></div>
     </div>
     <div class="card-content">
-      <div class="ctitle" data-go="#/campaign/${id}/admin/details">${c.title}</div>${timeHTML(c)}
+      <div class="ctitle" data-go="#/campaign/${id}/admin/news">${c.title}</div>${timeHTML(c)}
       <div class="progress-group">${barHTML(c)}
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.fee==='flat'?`<span>${c.filled} /</span><b>${c.slots} slots</b>`:c.money}</div></div></div>
     </div></div>`;
@@ -2324,7 +2324,7 @@ function finOverview(){
       </div></section>
     <section class="dcard">${dhead('Spend by campaign','Your last 10 campaigns, paid out from your wallet')}
       <div class="tc-wrap"><table class="tc tc-camp"><thead><tr><th>Campaign</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Used</th></tr></thead>
-      <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/details">${c.title}</a></span></td>
+      <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/news">${c.title}</a></span></td>
         <td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${RS(Math.max(0,c.budgetN-sp))}</td><td>${pct(sp,c.budgetN)}%</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
@@ -2373,7 +2373,7 @@ function finMonthSpend(){
   const i=+FIN.plats.fm, total=sumOf(SPEND[i]), rows=Object.entries(SPEND[i]).sort((a,b)=>b[1]-a[1]), top=rows.length?rows[0][1]:1;
   return dhead(`Spend by campaign`,`${mName(i,{month:'long',year:'numeric'})}${i===MONTHS.length-1?' so far':''}`,`<button class="btn btn-sec" type="button" data-act="statement">${DLIC}Statement</button>`)
     +(rows.length?`<div class="fsp">${rows.map(([id,v])=>`<div class="fsp-row">
-        <a class="who" href="#/campaign/${id}/admin/details"><img data-a="${C[id].logo}" data-label="${C[id].abbr}" alt=""><span>${C[id].title}</span></a>
+        <a class="who" href="#/campaign/${id}/admin/news"><img data-a="${C[id].logo}" data-label="${C[id].abbr}" alt=""><span>${C[id].title}</span></a>
         <span class="amt">${RS(v)}<small>${pct(v,total)}%</small></span>
         <div class="adm-bar"><i style="--p:${(v/top*100).toFixed(1)}%"></i></div></div>`).join('')}</div>`
       :empty('Nothing spent this month','Campaign payouts to creators will show up here.'));
@@ -2614,7 +2614,7 @@ const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
   if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
-  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:campaign&&secsFor(campaign).some(x=>x[0]===sec)?sec:'details',post:/^\d+$/.test(post||'')?+post:null};
+  return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:campaign&&secsFor(campaign).some(x=>x[0]===sec)?sec:'news',post:/^\d+$/.test(post||'')?+post:null};
 };
 function mountMedia(){
   const els=[...view.querySelectorAll('[data-media]')];
