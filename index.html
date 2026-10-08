@@ -732,6 +732,7 @@
   .dempty span{max-width:320px;font-size:14px;line-height:20px;color:var(--grey-600);}
 
   .dsh>*{animation:admIn .6s cubic-bezier(.16,1,.3,1) both;}
+  .dsh.stay>.dsh-side,.dsh.stay>.dsh-bar,.dsh.stay>.dsh-scrim{animation:none;}
   .dsh>:nth-child(2){animation-delay:60ms;} .dsh>:nth-child(3){animation-delay:120ms;}
   @keyframes admIn{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
 
@@ -2628,7 +2629,14 @@ function mountMedia(){
 /* Re-render the admin section in place (after approve, send, …) without the page transition */
 function rerender(){
   const h=parseHash(); if(!h.admin) return;
-  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);mountMedia();scrollThread();
+  const old=view.querySelector('.dsh-side');
+  stopMedia();setSide(false);view.innerHTML=viewAdmin(h.id,h.sec,h.post);bindAssets(view);if(old) holdSide(old);mountMedia();scrollThread();
+}
+/* Put the left column back as it was (no re-entry animation, no image reload) with the new menu: active item and badges */
+function holdSide(old){
+  const fresh=view.querySelector('.dsh-side');if(!fresh) return;
+  old.querySelector('.dsh-menu').replaceWith(fresh.querySelector('.dsh-menu'));
+  fresh.replaceWith(old);view.querySelector('.dsh').classList.add('stay');
 }
 function scrollThread(){const m=document.getElementById('ib-msgs')||document.getElementById('wn-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
@@ -2641,6 +2649,9 @@ function route(){
   else if(admin) state.tab=C[id].status;
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
+  /* Switching sections inside one campaign's dashboard keeps the left column as it is; only the menu item changes */
+  const dkey=admin?id:fin?'#fin':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
+  const keepSide=inDash&&view.querySelector('.dsh-side');
   view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
@@ -2655,12 +2666,12 @@ function route(){
     sw.href=admin?`#/campaign/${id}`:`#/campaign/${id}/admin`;
   }
   bindAssets(view);
+  if(keepSide) holdSide(keepSide);
   if(admin){mountMedia();scrollThread();}
   if(fin) fileChip();
   /* Links to the bank transfers land on that card, under the add funds form */
   if(toTx) requestAnimationFrame(()=>{const tx=document.getElementById('fin-transfers');if(tx) scrollTo({top:tx.getBoundingClientRect().top+scrollY-(document.querySelector('.dsh-bar')?.offsetHeight||0)-document.getElementById('topbar').offsetHeight-18,behavior:'instant'});});
-  /* Switching sections inside one campaign's dashboard keeps the left column still; only the section content animates in */
-  const dkey=admin?id:fin?'#fin':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
+  /* Only the section content animates in when switching sections */
   const anim=inDash?[...view.querySelectorAll('.dsh>:not(.dsh-side,.dsh-bar,.dsh-scrim)')]:[view];
   view.classList.remove('nav-in');anim.forEach(el=>{el.classList.remove('nav-in');void el.offsetWidth;el.classList.add('nav-in');});
   window.scrollTo({top:0,behavior:'instant'});
