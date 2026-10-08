@@ -1797,13 +1797,7 @@ function secDetails(id){
   const [basePay,capPay,perfPay]=c.list.map(r=>num(String(r[1]).split('/')[0]));
   const maxPaid=d.approved.reduce((m,p)=>Math.max(m,Math.min(capPay,basePay+Math.round(p.views/1000*perfPay))),0);
   const rs=n=>'Rs. '+n.toLocaleString('en-US');
-  const att=[
-    d.pending.length&&['review',`${d.pending.length} submission${d.pending.length>1?'s':''} waiting for approval`,`Creators are waiting on you. <a class="dlink" href="${base}pending">Review now</a>`],
-    unreadN(d)&&['inbox',`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,`Quick replies keep your response time badge. <a class="dlink" href="${base}inbox">Open inbox</a>`],
-    c.status==='upcoming'&&['brief','Share the brief before launch','Creators can read it and save the campaign ahead of time. <a class="dlink" href="#/campaign/'+id+'">View as creator</a>'],
-  ].filter(a=>a&&!d.dismissed.has(a[0]));
-  return `${att.length?`<section class="dcard">${dhead('Needs your attention')}<div class="att-list">${att.map(a=>`<div class="att"><div><b>${a[1]}</b><span>${a[2]}</span></div><button class="x-btn" type="button" data-act="dismiss" data-k="${a[0]}" aria-label="Dismiss">${XIC}</button></div>`).join('')}</div></section>`:''}
-    <section class="dcard">${dhead('Track performance','How this campaign is doing across every creator')}
+  return `<section class="dcard">${dhead('Track performance','How this campaign is doing across every creator')}
       <div class="tiles">
         <div class="tile"><span class="n">${d.pending.length+d.approved.length}</span><span class="l">Content submitted</span><span class="d">${c.joinedShort} creators joined</span></div>
         <a class="tile" href="${base}pending"><span class="n">${d.pending.length}</span><span class="l">Pending approvals</span><span class="d">${d.pending.length?'Oldest '+d.pending[d.pending.length-1].submitted:'All caught up'}</span></a>

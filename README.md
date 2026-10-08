@@ -26,7 +26,7 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     (scroll up for older ones). Actions that need attention (submissions to review, unread messages, brief to share) come
     as bubbles with a button in the latest session; a message box at the bottom lets the brand write back (placeholder
     reply for now).
-  - **Campaign details** (`/admin/details`, default) — dismissable "Needs your attention" items, performance tiles,
+  - **Campaign details** (`/admin/details`, default) — performance tiles,
     budget and the campaign brief.
   - **Collaborators** (`/admin/collaborators`) — every campaign: the brand's own team members on the campaign. Empty for now:
     a bordered box with a handshake icon, "You haven’t invited any collaborators yet" and an Add people button.
