@@ -263,6 +263,11 @@
   .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:8px;}
   .cp-restrict li{counter-increment:r;display:flex;gap:9px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
   .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:100px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
+  /* Call-to-action ideas and restrictions: one bordered list, a row per line with a leading icon (same frame as the spec tiles) */
+  .cp-rows{list-style:none;border:1px solid var(--grey-200);border-radius:12px;background:#fff;}
+  .cp-rows li{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .cp-rows li+li{border-top:1px solid var(--grey-200);}
+  .cp-rows svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;color:var(--grey-600);}
   .cp-meta{display:flex;gap:6px 15px;align-items:center;flex-wrap:wrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
   .cp-mi{display:flex;gap:5px;align-items:center;white-space:nowrap;}
   .cp-mi svg{width:16px;height:16px;}
@@ -1256,6 +1261,9 @@ const PLATNAME={tiktok:'TikTok',insta:'Instagram',youtube:'YouTube',facebook:'Fa
 
 /* ================= Data (same campaigns as the creator web app) ================= */
 const SPEC=[['Format','Vertical 9:16'],['Duration','30–45 seconds'],['Quality','Min 1080p'],['Language','English, Sinhala'],['Captions','Required']];
+/* Icons for the call-to-action ideas and restriction rows on the campaign page */
+const QUOTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+const BANIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>';
 const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio','Keep the post live for at least 30 days'];
 
 const C={
@@ -1541,9 +1549,9 @@ function viewCampaignDrawer(id){
             <h4>Platforms to post on</h4>
             <div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
             <h4>Call-to-action ideas</h4>
-            <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
+            <ul class="cp-rows cp-ideas">${c.ctas.map(t=>`<li>${QUOTEIC}<span>${t}</span></li>`).join('')}</ul>
             <h4>Restrictions</h4>
-            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+            <ul class="cp-rows cp-rules">${RESTRICT.map(r=>`<li>${BANIC}<span>${r}</span></li>`).join('')}</ul>
           </section></div>
       </div>
     </div>
@@ -1594,9 +1602,9 @@ function viewCampaign(id){
             <h4>Platforms to post on</h4>
             <div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
             <h4>Call-to-action ideas</h4>
-            <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
+            <ul class="cp-rows cp-ideas">${c.ctas.map(t=>`<li>${QUOTEIC}<span>${t}</span></li>`).join('')}</ul>
             <h4>Restrictions</h4>
-            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+            <ul class="cp-rows cp-rules">${RESTRICT.map(r=>`<li>${BANIC}<span>${r}</span></li>`).join('')}</ul>
           </section></div>
       </div>
       <div class="cp-createdby"><h3>Campaign created by</h3>
