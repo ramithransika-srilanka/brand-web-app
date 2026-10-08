@@ -473,6 +473,10 @@
   .dsh-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
   .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;}
   .dsh-title{font-size:18px;font-weight:600;line-height:23px;letter-spacing:-.015em;color:var(--grey-800);text-wrap:balance;}
+  /* Who can join and how creators are paid, one per line */
+  .dsh-terms{display:flex;flex-direction:column;gap:4px;margin-top:-2px;font-size:13px;font-weight:500;line-height:18px;color:var(--grey-800);}
+  .dsh-terms span{display:inline-flex;align-items:center;gap:6px;}
+  .dsh-terms svg{width:15px;height:15px;flex:none;color:var(--grey-600);}
   .dsh-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-size:13px;font-weight:500;line-height:18px;color:var(--grey-600);}
   .dsh-when{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;}
   .dsh-when i{width:3px;height:3px;border-radius:100px;background:currentColor;}
@@ -1354,6 +1358,8 @@ const FEE={performance:'Performance fee',flat:'Flat fee'};
 const FILTERS={access:ACCESS,fee:FEE};
 const UNLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="11" width="13" height="10" rx="2"/><path d="M13 11V7a4 4 0 00-8 0v2"/></svg>';
 const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
+const PERFIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
+const FIXEDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>';
 const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
@@ -1727,6 +1733,7 @@ function sideHTML(id,sec){
     <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
     <div class="dsh-id">
       <h1 class="dsh-title">${c.title}</h1>
+      <div class="dsh-terms"><span>${c.access==='invite'?LOCK:UNLOCK}${c.access==='invite'?'Invite only':'Open campaign'}</span><span>${c.fee==='flat'?FIXEDIC:PERFIC}${c.fee==='flat'?'Fixed pay':'Performance based pay'}</span></div>
       <div class="dsh-meta"><span class="dsh-status ${c.status}">${c.status}</span><span class="dsh-when">${[c.time,c.right].filter(Boolean).map(t=>`<span>${t}</span>`).join('<i aria-hidden="true"></i>')}</span></div>
       <a class="dsh-viewas" href="#/campaign/${id}" data-cdrawer="${id}">${EYEIC}View as creator</a>
     </div>
