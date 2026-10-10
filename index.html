@@ -473,18 +473,20 @@
   .dsh-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
   .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;}
   .dsh-title{font-size:18px;font-weight:600;line-height:23px;letter-spacing:-.015em;color:var(--grey-800);text-wrap:balance;}
-  /* Who can join and how creators are paid, one per line */
-  .dsh-terms{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:400;line-height:16px;color:var(--grey-800);}
+  /* Title with its timestamps tucked right under it */
+  .dsh-head{display:flex;flex-direction:column;gap:4px;}
+  /* Status, who can join and how creators are paid, one per line; markers share a 15px column so labels align */
+  .dsh-terms{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:4px;font-size:12px;font-weight:400;line-height:16px;color:var(--grey-800);}
   .dsh-terms span{display:inline-flex;align-items:center;gap:6px;}
   .dsh-terms svg{width:15px;height:15px;flex:none;color:var(--grey-600);}
-  .dsh-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:-2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .dsh-when{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;}
+  .dsh-when{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .dsh-when i{width:3px;height:3px;border-radius:100px;background:currentColor;}
   /* Status as coloured text with a matching dot, no pill */
   .dsh-status{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);text-transform:capitalize;}
   .dsh-status::before{content:"";width:8px;height:8px;border-radius:100px;background:currentColor;}
   .dsh-status.active{color:var(--good);}
   .dsh-status.completed{color:var(--grey-600);}
+  .dsh-terms .dsh-status::before{margin:0 3.5px;}
   .dsh-viewas{display:inline-flex;align-items:center;gap:7px;height:34px;margin-top:6px;padding:0 15px 0 12px;border:1px solid var(--grey-800);border-radius:100px;font-size:14px;font-weight:600;color:var(--grey-800);transition:background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .dsh-viewas svg{width:17px;height:17px;}
   .dsh-viewas:hover{background:var(--grey-100);}
@@ -1751,9 +1753,8 @@ function sideHTML(id,sec){
     <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
     <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
     <div class="dsh-id">
-      <h1 class="dsh-title">${c.title}</h1>
-      <div class="dsh-meta"><span class="dsh-when">${[c.time,c.right].filter(Boolean).map(t=>`<span>${t}</span>`).join('<i aria-hidden="true"></i>')}</span><span class="dsh-status ${c.status}">${c.status}</span></div>
-      <div class="dsh-terms"><span>${c.access==='invite'?LOCK:UNLOCK}${c.access==='invite'?'Invite only':'Open campaign'}</span><span>${c.fee==='flat'?FIXEDIC:PERFIC}${c.fee==='flat'?'Fixed pay':'Performance based pay'}</span></div>
+      <div class="dsh-head"><h1 class="dsh-title">${c.title}</h1><span class="dsh-when">${[c.time,c.right].filter(Boolean).map(t=>`<span>${t}</span>`).join('<i aria-hidden="true"></i>')}</span></div>
+      <div class="dsh-terms"><span class="dsh-status ${c.status}">${c.status}</span><span>${c.access==='invite'?LOCK:UNLOCK}${c.access==='invite'?'Invite only':'Open campaign'}</span><span>${c.fee==='flat'?FIXEDIC:PERFIC}${c.fee==='flat'?'Fixed pay':'Performance based pay'}</span></div>
       <a class="dsh-viewas" href="#/campaign/${id}" data-cdrawer="${id}">${EYEIC}View as creator</a>
     </div>
     <nav class="dsh-menu" aria-label="Campaign admin">${secsFor(id).map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
