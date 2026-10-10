@@ -736,10 +736,10 @@
     body.wide .dsh-cover{height:132px;border-radius:12px;overflow:hidden;}
     body.wide .dsh-id{padding:18px 6px 18px;}
     body.wide .dsh-title{font-size:20px;line-height:26px;}
-    body.wide .dsh-menu{padding:12px 0 0;}
-    body.wide .dsh-menu a{min-height:46px;padding:0 12px;border-left:0;border-radius:10px;}
+    /* Menu runs edge to edge so the blue marker on the current section sits on the screen edge */
+    body.wide .dsh-menu{margin:0 -12px 0 -16px;padding:12px 0 0;}
+    body.wide .dsh-menu a{min-height:46px;padding:0 24px 0 19px;}
     body.wide .dsh-menu a:hover{background:#ececec;}
-    body.wide .dsh-menu a.on{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06),0 0 0 1px var(--line);color:var(--blue-600);}
     body.wide .dsh-main{padding:12px 12px 12px 0;}
     body.wide .dsh-main>.wn{height:calc(100dvh - var(--header) - 24px);border-radius:16px;}
     body.wide .wn-msgs{padding:32px max(40px,calc((100% - 880px) / 2));gap:8px;}
