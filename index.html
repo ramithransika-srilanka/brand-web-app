@@ -714,7 +714,6 @@
 
   /* What's new: updates as a chat, grouped into sessions with their start time; scroll up for older ones */
   .dsh-main>.wn{display:flex;flex-direction:column;height:min(640px,calc(100dvh - var(--header) - var(--subbar) - 48px));padding:0;overflow:hidden;}
-  .wn-head{padding:18px 24px 14px;border-bottom:1px solid var(--line);}
   .wn-msgs{flex:1;display:flex;flex-direction:column;gap:6px;padding:18px 24px;overflow-y:auto;}
   .wn-sess{display:flex;align-items:center;gap:12px;margin:18px 0 8px;font-size:12px;font-weight:600;line-height:16px;color:var(--grey-600);white-space:nowrap;}
   .wn-sess:first-child{margin-top:0;}
@@ -1776,7 +1775,7 @@ function secNews(id){
     unreadN(d)&&act(`${unreadN(d)} unread message${unreadN(d)>1?'s':''} from creators`,'Quick replies keep your response time badge.',base+'inbox','Open inbox'),
     c.status==='upcoming'&&act('Share the brief before launch','Creators can read it and save the campaign ahead of time.','#/campaign/'+id,'View as creator'),
   ].filter(Boolean);
-  return `<section class="dcard wn"><div class="wn-head">${dhead('What’s new')}</div>
+  return `<section class="dcard wn">
     <div class="wn-msgs" id="wn-msgs">
       ${sess('Mon, 5 Oct · 10:12 AM',say(`${c.joinedShort} creators have joined this campaign so far.`)+me('Nice. Any posts live yet?')
         +say(views?`${d.approved.length} posts are live, with ${fmtN(views)} views in total.`:'Not yet. I’ll post here as soon as the first one goes live.'))}
