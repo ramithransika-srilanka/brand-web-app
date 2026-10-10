@@ -725,6 +725,38 @@
   .wn-go:hover{background:var(--blue-600);}
   .wn-go:active{transform:scale(.96);}
   .wn .ib-form{padding:12px 24px 16px;}
+  /* Admin pages, full width: the top menu and left column sit on the screen edges and the section fills the rest of the viewport */
+  @media (min-width:1024px){
+    html:has(body.wide){scrollbar-gutter:auto;}
+    html:has(body.wide):not(:has(.pfeed)){overflow:hidden;}
+    body.wide{--shell:100%;--gutter:24px;}
+    body.wide .topbar{padding:0 24px;border-bottom:1px solid var(--line);}
+    body.wide .content{max-width:none;padding:0;}
+    body.wide .dsh{grid-template-columns:288px minmax(0,1fr);gap:0;padding:0;height:calc(100dvh - var(--header));}
+    body.wide .dsh-side{top:var(--header);align-self:stretch;height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;background:transparent;border:0;border-radius:0;padding:16px 12px 24px 16px;}
+    /* Cover and campaign details read as one white card */
+    body.wide .dsh-cover{height:132px;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;overflow:hidden;}
+    body.wide .dsh-id{margin-bottom:16px;padding:16px;background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;}
+    /* Menu runs edge to edge so the blue marker on the current section sits on the screen edge */
+    body.wide .dsh-menu{margin:0 -12px 0 -16px;padding:12px 0 0;}
+    body.wide .dsh-menu a{min-height:46px;padding:0 24px 0 19px;}
+    body.wide .dsh-menu a:hover{background:#ececec;}
+    body.wide .dsh-main{padding:12px 12px 12px 0;}
+    body.wide .dsh-main>.wn,body.wide .dsh-main>.ib{height:calc(100dvh - var(--header) - 24px);border-radius:16px;}
+    body.wide .wn-msgs{padding:32px max(40px,calc((100% - 880px) / 2));gap:8px;}
+    body.wide .wn .ib-form{padding:16px max(40px,calc((100% - 880px) / 2)) 20px;}
+    body.wide .bub{max-width:min(70%,560px);font-size:15px;line-height:22px;padding:11px 15px;}
+    body.wide .bub.act{padding:16px 18px;}
+    body.wide .ib-form input,body.wide .ib-form .btn{height:46px;}
+    /* Pending approvals and the approved-post feed keep scrolling the page (reels snap to it); the left column stays pinned beside them */
+    body.wide .dsh.pend{grid-template-columns:288px minmax(0,1fr) auto minmax(0,1fr);height:auto;margin:0;}
+    body.wide .dsh.pend>.pfeed{grid-column:3/5;}
+    body.wide .dsh.pend>.dsh-side{width:auto;margin:0;}
+    /* Other sections: one white panel that scrolls inside the viewport; its sections sit in a centred column split by lines */
+    body.wide .dsh-main.dtl{height:calc(100dvh - var(--header) - 24px);margin:12px 12px 12px 0;padding:8px max(40px,calc((100% - 1040px) / 2)) 24px;gap:0;overflow-y:auto;overscroll-behavior:contain;background:#fff;border:1px solid var(--line);border-radius:16px;}
+    body.wide .dsh-main.dtl>.dcard{padding:32px 0;border:0;border-radius:0;}
+    body.wide .dsh-main.dtl>.dcard+.dcard{border-top:1px solid var(--line);}
+  }
 
   .dempty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 12px 18px;text-align:center;}
   .dempty b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
@@ -2210,10 +2242,10 @@ function viewAdmin(id,sec,post){
   if(sec==='pending'){
     const review=secPending(id);
     return review?`<div class="dsh pend">${sideHTML(id,sec)}${review}</div>`
-      :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
+      :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main dtl"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
   const body={news:secNews,details:secDetails,collaborators:secCollaborators,creators:secCreators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
-  return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
+  return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main${sec==='news'||sec==='inbox'?'':' dtl'}">${body}</div></div>`;
 }
 
 /* ================= Financials =================
@@ -2655,6 +2687,7 @@ function route(){
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin||fin);
+  document.body.classList.toggle('wide',admin);
   document.body.classList.toggle('notifs',notifs);
   document.body.classList.toggle('fin',fin);
   document.body.classList.toggle('explore',!campaign&&!notifs&&!fin);
