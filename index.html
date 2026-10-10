@@ -747,6 +747,10 @@
     body.wide .bub{max-width:min(70%,560px);font-size:15px;line-height:22px;padding:11px 15px;}
     body.wide .bub.act{padding:16px 18px;}
     body.wide .ib-form input,body.wide .ib-form .btn{height:46px;}
+    /* Campaign details: one white panel that scrolls inside the viewport; its sections sit in a centred column split by lines */
+    body.wide .dsh-main.dtl{height:calc(100dvh - var(--header) - 24px);margin:12px 12px 12px 0;padding:8px max(40px,calc((100% - 1040px) / 2)) 24px;gap:0;overflow-y:auto;overscroll-behavior:contain;background:#fff;border:1px solid var(--line);border-radius:16px;}
+    body.wide .dsh-main.dtl>.dcard{padding:32px 0;border:0;border-radius:0;}
+    body.wide .dsh-main.dtl>.dcard+.dcard{border-top:1px solid var(--line);}
   }
 
   .dempty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 12px 18px;text-align:center;}
@@ -2236,7 +2240,7 @@ function viewAdmin(id,sec,post){
       :`<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main"><section class="dcard">${dhead('Pending approvals')}${empty('You’re all caught up','New submissions from creators will show up here for review.')}</section></div></div>`;
   }
   const body={news:secNews,details:secDetails,collaborators:secCollaborators,creators:secCreators,negotiations:secNegotiations,approved:secApproved,analytics:secAnalytics,inbox:secInbox}[sec](id);
-  return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main">${body}</div></div>`;
+  return `<div class="dsh">${sideHTML(id,sec)}<div class="dsh-main${sec==='details'?' dtl':''}">${body}</div></div>`;
 }
 
 /* ================= Financials =================
@@ -2678,7 +2682,7 @@ function route(){
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
   document.body.classList.toggle('dash',admin||fin);
-  document.body.classList.toggle('wide',admin&&sec==='news');
+  document.body.classList.toggle('wide',admin&&(sec==='news'||sec==='details'));
   document.body.classList.toggle('notifs',notifs);
   document.body.classList.toggle('fin',fin);
   document.body.classList.toggle('explore',!campaign&&!notifs&&!fin);
