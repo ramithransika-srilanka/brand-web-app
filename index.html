@@ -474,10 +474,10 @@
   .dsh-id{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;}
   .dsh-title{font-size:18px;font-weight:600;line-height:23px;letter-spacing:-.015em;color:var(--grey-800);text-wrap:balance;}
   /* Who can join and how creators are paid, one per line */
-  .dsh-terms{display:flex;flex-direction:column;gap:4px;margin-top:-2px;font-size:12px;font-weight:400;line-height:16px;color:var(--grey-800);}
+  .dsh-terms{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:400;line-height:16px;color:var(--grey-800);}
   .dsh-terms span{display:inline-flex;align-items:center;gap:6px;}
   .dsh-terms svg{width:15px;height:15px;flex:none;color:var(--grey-600);}
-  .dsh-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .dsh-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:-2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .dsh-when{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;}
   .dsh-when i{width:3px;height:3px;border-radius:100px;background:currentColor;}
   /* Status as coloured text with a matching dot, no pill */
@@ -1752,8 +1752,8 @@ function sideHTML(id,sec){
     <div class="dsh-cover"><img data-a="${c.img}" data-label="${c.abbr}" alt=""></div>
     <div class="dsh-id">
       <h1 class="dsh-title">${c.title}</h1>
-      <div class="dsh-terms"><span>${c.access==='invite'?LOCK:UNLOCK}${c.access==='invite'?'Invite only':'Open campaign'}</span><span>${c.fee==='flat'?FIXEDIC:PERFIC}${c.fee==='flat'?'Fixed pay':'Performance based pay'}</span></div>
       <div class="dsh-meta"><span class="dsh-when">${[c.time,c.right].filter(Boolean).map(t=>`<span>${t}</span>`).join('<i aria-hidden="true"></i>')}</span><span class="dsh-status ${c.status}">${c.status}</span></div>
+      <div class="dsh-terms"><span>${c.access==='invite'?LOCK:UNLOCK}${c.access==='invite'?'Invite only':'Open campaign'}</span><span>${c.fee==='flat'?FIXEDIC:PERFIC}${c.fee==='flat'?'Fixed pay':'Performance based pay'}</span></div>
       <a class="dsh-viewas" href="#/campaign/${id}" data-cdrawer="${id}">${EYEIC}View as creator</a>
     </div>
     <nav class="dsh-menu" aria-label="Campaign admin">${secsFor(id).map(([k,l])=>`<a href="#/campaign/${id}/admin/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span>${badge[k]?`<span class="badge-n" aria-label="${badge[k]} new">${badge[k]}</span>`:''}</a>`).join('')}</nav>
