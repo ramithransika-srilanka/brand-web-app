@@ -733,9 +733,9 @@
     body.wide .content{max-width:none;padding:0;}
     body.wide .dsh{grid-template-columns:288px minmax(0,1fr);gap:0;padding:0;height:calc(100dvh - var(--header));}
     body.wide .dsh-side{top:var(--header);align-self:stretch;height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;background:transparent;border:0;border-radius:0;padding:16px 12px 24px 16px;}
-    body.wide .dsh-cover{height:132px;border-radius:12px;overflow:hidden;}
-    body.wide .dsh-id{padding:18px 6px 18px;}
-    body.wide .dsh-title{font-size:20px;line-height:26px;}
+    /* Cover and campaign details read as one white card */
+    body.wide .dsh-cover{height:132px;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;overflow:hidden;}
+    body.wide .dsh-id{margin-bottom:16px;padding:16px;background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;}
     /* Menu runs edge to edge so the blue marker on the current section sits on the screen edge */
     body.wide .dsh-menu{margin:0 -12px 0 -16px;padding:12px 0 0;}
     body.wide .dsh-menu a{min-height:46px;padding:0 24px 0 19px;}
