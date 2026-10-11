@@ -1003,6 +1003,9 @@
   .soc-tile{width:104px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px;text-align:center;transition:transform .2s cubic-bezier(.16,1,.3,1);}
   .soc-pic img{transition:border-color .2s ease;}
   .soc-tile:hover .soc-pic img{border-color:var(--grey-400);}
+  /* Keyboard focus rings the circle, not a box around the tile */
+  .soc-tile:focus-visible{outline:0;}
+  .soc-tile:focus-visible .soc-pic{outline:2px solid var(--blue-300);outline-offset:3px;border-radius:100px;}
   .soc-tile:active{transform:scale(.97);}
   .soc-pic{position:relative;width:56px;height:56px;margin-bottom:8px;}
   .soc-pic img{width:100%;height:100%;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--line);}
@@ -2661,11 +2664,11 @@ function profBrand(){
         <div class="ff-2">${pfField('website','Website')}${pfField('location','Location')}</div>
         <label class="fl">About<textarea name="about" maxlength="240" required>${esc(PROF.about)}</textarea></label>${pfFoot}</form>`
     : `<div class="pf-rows">${pfRow('Brand name',esc(PROF.name))}${pfRow('Category',esc(PROF.category))}${pfRow('Website',`<a class="dlink" href="https://${esc(PROF.website.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener">${esc(PROF.website)}</a>`)}${pfRow('Location',esc(PROF.location))}${pfRow('About',esc(PROF.about),'long')}</div>`;
-  return `<section class="dcard">${dhead('Brand profile','Shown to creators on every campaign page',profEdit==='brand'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="brand">Edit</button>`)}${details}</section>
-    <section class="dcard">${dhead('Social accounts','Connect your brand’s accounts. Creators see your follower counts on every campaign.')}
+  return `<section class="dcard">${dhead('Brand profile','',profEdit==='brand'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="brand">Edit</button>`)}${details}</section>
+    <section class="dcard">${dhead('Social accounts')}
       <div class="soc-tiles">${tiles}${addTile}</div>
       ${conn.length?`<p class="soc-total"><b>${fmtK(reach)}</b> followers across ${conn.length} account${conn.length>1?'s':''} · updated daily</p>`:`<p class="soc-empty">No accounts connected yet. Connect one so creators can see your reach.</p>`}</section>
-    <section class="dcard">${dhead('Track record','Across all your campaigns on PolySocial')}
+    <section class="dcard">${dhead('Track record')}
       <div class="tiles">
         <div class="tile"><span class="n">${st.campaigns}</span><span class="l">Campaigns</span><span class="d">${st.active} active now</span></div>
         <div class="tile"><span class="n">${st.creators.toLocaleString('en')}+</span><span class="l">Creators joined</span><span class="d">On every campaign</span></div>
@@ -2679,8 +2682,8 @@ function profAccount(){
         <div class="ff-2">${pfField('owner','Full name')}${pfField('role','Role')}</div>
         <div class="ff-2">${pfField('email','Email','email')}${pfField('phone','Phone','tel')}</div>${pfFoot}</form>`
     : `<div class="pf-rows">${pfRow('Full name',esc(PROF.owner))}${pfRow('Role',esc(PROF.role))}${pfRow('Email',esc(PROF.email))}${pfRow('Phone',esc(PROF.phone))}</div>`;
-  return `<section class="dcard">${dhead('Account owner','The person who signs in and gets billing emails',profEdit==='account'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="account">Edit</button>`)}${owner}</section>
-    <section class="dcard">${dhead('Email notifications','Choose what we email you about')}
+  return `<section class="dcard">${dhead('Account owner','',profEdit==='account'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="account">Edit</button>`)}${owner}</section>
+    <section class="dcard">${dhead('Email notifications')}
       <div class="pf-rows">${PROF_PREFS.map(([k,t,d])=>`<div class="pf-row tg"><span class="v">${t}<small>${d}</small></span><button class="pf-switch" type="button" role="switch" data-pref="${k}" aria-checked="${!!PROF.prefs[k]}" aria-label="${t}"></button></div>`).join('')}</div></section>
     <section class="dcard">${dhead('Security')}
       <div class="pf-rows">
@@ -2703,16 +2706,16 @@ function profTeam(){
       <label class="fl"><span class="sr">Access for ${esc(e)}</span>${roleSel(m.role,`data-tm-role="${i}"`)}</label>
       <button class="inv-del" type="button" data-act="tm-remove" data-i="${i}" aria-label="Remove ${esc(e)}" title="Remove from team"${m.you?' disabled':''}>${TRASHIC}</button>
     </div>`;}).join('');
-  return `<section class="dcard">${dhead('Invite someone','They get an email with a link to log in and a temporary password, then choose their own.')}
+  return `<section class="dcard">${dhead('Invite someone')}
       <form class="tm-form" id="tm-form" novalidate>
         <label class="fl">Email<input id="tm-email" type="email" placeholder="name@brand.com" autocomplete="off"></label>
         <label class="fl">Access${roleSel('view','id="tm-role"')}</label>
         <button class="btn btn-pri" type="submit" id="tm-send" disabled>Send invite</button>
       </form>
       <p class="tm-hint" id="tm-hint" role="status">${ROLES[2][2]}</p></section>
-    <section class="dcard">${dhead('Members',`Who can log in to ${esc(PROF.name)} on PolySocial for Brands`,`<span class="count">${n} ${n===1?'person':'people'}</span>`)}
+    <section class="dcard">${dhead('Members','',`<span class="count">${n} ${n===1?'person':'people'}</span>`)}
       <div class="inv-list tm-list">${rows}</div></section>
-    <section class="dcard">${dhead('Access levels','What each person can do')}
+    <section class="dcard">${dhead('Access levels')}
       <div class="tm-roles">${ROLES.map(([,l,d])=>`<div><b>${l}</b><span>${d}</span></div>`).join('')}</div></section>`;
 }
 const tmAdmins=()=>PROF.team.filter(m=>m.role==='admin'&&m.status==='active').length;
@@ -2740,7 +2743,7 @@ function socRender(k){if(!socDlg) return;socDlg.querySelector('.soc-list').inner
 function socOpen(){
   if(!socDlg){
     socDlg=document.createElement('dialog');socDlg.className='soc-dlg';socDlg.setAttribute('aria-labelledby','soc-title');
-    socDlg.innerHTML=`<div class="dh"><div><h2 id="soc-title">Connected accounts</h2><p>Link your brand’s accounts so creators can see your reach.</p></div><button class="x-btn" type="button" data-act="soc-close" aria-label="Close">${XIC}</button></div><div class="soc-list"></div>`;
+    socDlg.innerHTML=`<div class="dh"><div><h2 id="soc-title">Connected accounts</h2></div><button class="x-btn" type="button" data-act="soc-close" aria-label="Close">${XIC}</button></div><div class="soc-list"></div>`;
     /* A click on the backdrop lands on the dialog itself */
     socDlg.addEventListener('click',e=>{if(e.target===socDlg) socDlg.close();});
     document.body.appendChild(socDlg);
