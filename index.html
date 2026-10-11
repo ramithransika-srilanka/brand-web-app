@@ -1817,7 +1817,7 @@ function secDetails(id){
         <div class="tile"><span class="n">${engs?rs(Math.round(spent/engs)):'N/A'}</span><span class="l">Cost per engagement</span><span class="d">Avg on all platforms</span></div>
         <div class="tile"><span class="n">${maxPaid?rs(maxPaid):'N/A'}</span><span class="l">Max paid for content</span><span class="d">${maxPaid?`<a class="dlink" href="${base}approved">View content</a>`:'Nothing live yet'}</span></div>
       </div></section>
-    <section class="dcard">${dhead('Campaign brief','What creators see when they open this campaign')}
+    <section class="dcard">${dhead('Campaign brief')}
       <div class="brief">
         <p>${c.reqDesc}</p>
         <h4>Best suited for</h4><div class="cp-tags">${c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('')}</div>
