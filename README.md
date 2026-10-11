@@ -58,6 +58,15 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     drag and drop), then **Bank transfers**: every uploaded slip with its status (`/financials/funds/transfers` scrolls
     to it). A new upload lands there as Pending; only verified transfers count towards the wallet. The bank details in
     `BANK` are placeholders.
+- **Brand profile** — the brand logo at the top right of the top menu (`#/profile`). Same dashboard frame as Financials:
+  the left card has the cover, the brand logo (camera button to upload a new one, which also updates the top-menu logo),
+  name, category and "Edit profile", then the sub menu:
+  - **Brand profile** (`/profile/brand`, default) — the details creators see (name, category, website, location, about,
+    social profiles) with an Edit form, a Track record of tiles (campaigns, creators joined, paid to creators, approval
+    rate) and a preview of the "Campaign created by" card from the creator app.
+  - **Account** (`/profile/account`) — the account owner (name, role, email, phone, editable), email notification
+    switches and Security (change password, sign out — placeholders for now).
+  Edits, the new logo and the switches are kept in the browser's local storage (`brand.profile`).
 
 ## Assets
 
