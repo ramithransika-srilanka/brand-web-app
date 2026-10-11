@@ -1013,6 +1013,25 @@
   .pf-switch[aria-checked="true"]{background:var(--blue-500);}
   .pf-switch[aria-checked="true"]::after{transform:translateX(16px);}
   .pf-switch:focus-visible{outline:2px solid var(--blue-300);outline-offset:2px;}
+  /* Team: invite form and members, on the Creators list styles */
+  .tm-form{display:grid;grid-template-columns:minmax(0,1fr) 220px auto;align-items:end;gap:12px;margin-top:18px;}
+  .tm-form .btn{height:40px;}
+  .tm-form .btn:disabled{opacity:.45;cursor:default;transform:none;}
+  .tm-hint{margin-top:8px;font-size:14px;line-height:20px;color:var(--grey-600);}
+  .tm-hint.err{color:var(--bad);}
+  .tm-roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px;}
+  .tm-roles div{padding:14px 16px;border:1px solid var(--line);border-radius:12px;}
+  .tm-roles b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .tm-roles span{display:block;margin-top:2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .tm-av{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--blue-100);color:var(--blue-700);font-size:15px;font-weight:600;text-transform:uppercase;}
+  .tm-av.pend{background:var(--grey-100);color:var(--grey-600);}
+  .tm-row .t b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tm-row .t b em{font-style:normal;font-weight:500;color:var(--grey-600);}
+  .tm-row .t .sub{display:block;margin-top:1px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .tm-row .inv-pend{flex:none;}
+  .tm-row .fl{width:150px;flex-shrink:0;}
+  .tm-row .inv-del[disabled]{visibility:hidden;}
+  .tm-list{overflow:hidden;}
   .btn-bad{border:1px solid var(--grey-400);color:var(--bad);}
   .btn-bad:hover{border-color:var(--bad);background:#fdf0f2;}
   .dsh-status.verified{color:var(--good);} .dsh-status.rejected{color:var(--bad);}
@@ -2536,20 +2555,29 @@ function downloadStatement(){
 
 /* ================= Brand profile (#/profile): the brand behind the top-menu logo ================= */
 const PROF_KEY='brand.profile';
+const DAY=864e5;
 const PROF=Object.assign({
   name:'Uber Sri Lanka',category:'Mobility',website:'uber.com/lk',location:'Colombo, Sri Lanka',since:'Mar 2026',
   about:'Rides, Moto and deliveries across Colombo. We work with local creators to show how Uber fits into everyday city life.',
   owner:'Ashan Silva',email:'ashan.silva@uber.lk',phone:'+94 77 123 4567',role:'Brand manager',logo:null,
+  team:[{you:true,role:'admin',status:'active',at:Date.now()-2*DAY},
+    {email:'nadeesha.f@uber.lk',role:'edit',status:'active',at:Date.now()-19*DAY},
+    {email:'kasun.p@uber.lk',role:'view',status:'pending',at:Date.now()-DAY}],
   prefs:{submissions:true,budget:true,messages:true,weekly:false}
 },(()=>{try{return JSON.parse(localStorage.getItem(PROF_KEY))||{};}catch(e){return {};}})());
 A.brandLogo=PROF.logo||A.uberLogo;
 const saveProf=()=>{try{localStorage.setItem(PROF_KEY,JSON.stringify(PROF));}catch(e){}};
-const PSECTIONS=[['brand','Brand profile'],['account','Account']];
+const PSECTIONS=[['brand','Brand profile'],['team','Team'],['account','Account']];
+/* Access levels for people on the brand's team */
+const ROLES=[['admin','Full admin','Runs campaigns, adds funds and manages the team.'],
+  ['edit','Can edit','Runs campaigns and reviews content. Can’t add funds or manage the team.'],
+  ['view','View only','Sees everything, changes nothing.']];
 const PROF_SOCIALS=[['insta','10K'],['tiktok','2.5K'],['linkedin','546']];
 const PROF_PREFS=[['submissions','New submissions','A creator posts content for one of your campaigns'],
   ['budget','Budget alerts','A campaign has spent 80% of its budget'],
   ['messages','Creator messages','A creator sends you a question'],
   ['weekly','Weekly summary','Monday email with reach, spend and new creators']];
+const MAILIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
 const CAMIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 
 let profEdit=null, profEditNext=null;   /* 'brand' | 'account' while that card's form is open */
@@ -2625,8 +2653,45 @@ function profAccount(){
         <div class="pf-row tg"><span class="v">Sign out<small>Sign out of PolySocial for Brands on this device</small></span><button class="btn btn-bad" type="button" data-act="soon">Sign out</button></div>
       </div></section>`;
 }
+
+/* ---------- Team: who can log in to the brand on PolySocial for Brands ---------- */
+const tmEmail=m=>m.you?PROF.email:m.email;
+const ago=t=>{const d=Math.floor((Date.now()-t)/DAY);return d<1?'today':d<7?`${d} d ago`:d<60?`${Math.round(d/7)} wk ago`:`${Math.round(d/30)} mo ago`;};
+const roleSel=(v,attrs)=>`<select ${attrs}>${ROLES.map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('')}</select>`;
+function profTeam(){
+  const team=PROF.team, n=team.length;
+  const rows=team.map((m,i)=>{const e=tmEmail(m),pend=m.status==='pending';
+    return `<div class="inv-row tm-row">
+      <span class="tm-av${pend?' pend':''}" aria-hidden="true">${esc(e[0])}</span>
+      <div class="t"><b>${esc(e)}${m.you?' <em>(you)</em>':''}</b><span class="sub">${pend?`Invited ${ago(m.at)} · awaiting their first log in`:`Active · joined ${ago(m.at)}`}</span></div>
+      ${pend?`<div class="inv-pend"><span>Pending</span><button type="button" data-act="tm-resend" data-i="${i}" aria-label="Resend invite to ${esc(e)}" title="Resend invite">${MAILIC}</button></div>`:''}
+      <label class="fl"><span class="sr">Access for ${esc(e)}</span>${roleSel(m.role,`data-tm-role="${i}"`)}</label>
+      <button class="inv-del" type="button" data-act="tm-remove" data-i="${i}" aria-label="Remove ${esc(e)}" title="Remove from team"${m.you?' disabled':''}>${TRASHIC}</button>
+    </div>`;}).join('');
+  return `<section class="dcard">${dhead('Invite someone','They get an email with a link to log in and a temporary password, then choose their own.')}
+      <form class="tm-form" id="tm-form" novalidate>
+        <label class="fl">Email<input id="tm-email" type="email" placeholder="name@brand.com" autocomplete="off"></label>
+        <label class="fl">Access${roleSel('view','id="tm-role"')}</label>
+        <button class="btn btn-pri" type="submit" id="tm-send" disabled>Send invite</button>
+      </form>
+      <p class="tm-hint" id="tm-hint" role="status">${ROLES[2][2]}</p></section>
+    <section class="dcard">${dhead('Members',`Who can log in to ${esc(PROF.name)} on PolySocial for Brands`,`<span class="count">${n} ${n===1?'person':'people'}</span>`)}
+      <div class="inv-list tm-list">${rows}</div></section>
+    <section class="dcard">${dhead('Access levels','What each person can do')}
+      <div class="tm-roles">${ROLES.map(([,l,d])=>`<div><b>${l}</b><span>${d}</span></div>`).join('')}</div></section>`;
+}
+const tmAdmins=()=>PROF.team.filter(m=>m.role==='admin'&&m.status==='active').length;
+function tmInvite(){
+  const input=document.getElementById('tm-email'), hint=document.getElementById('tm-hint');
+  const e=input.value.trim().toLowerCase(), role=document.getElementById('tm-role').value;
+  const bad=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)?'Enter a valid email address.':PROF.team.some(m=>tmEmail(m).toLowerCase()===e)?`${e} is already on the team.`:null;
+  if(bad){input.setAttribute('aria-invalid','true');hint.classList.add('err');hint.textContent=bad;return input.focus();}
+  PROF.team.push({email:e,role,status:'pending',at:Date.now()});saveProf();profRedraw();
+  document.getElementById('tm-email').focus({preventScroll:true});
+  toast(`Invite sent to ${e}`);
+}
 function viewProfile(sec){
-  return `<div class="dsh">${profSide(sec)}<div class="dsh-main">${sec==='account'?profAccount():profBrand()}</div></div>`;
+  return `<div class="dsh">${profSide(sec)}<div class="dsh-main">${sec==='account'?profAccount():sec==='team'?profTeam():profBrand()}</div></div>`;
 }
 /* Redraw in place after an edit: no page transition, same scroll position */
 function profRedraw(){
@@ -2952,6 +3017,12 @@ function doAct(a,el){
     profEdit=k;profRedraw();return view.querySelector('#prof-form input').focus();
   }
   if(a==='prof-cancel'){profEdit=null;return profRedraw();}
+  if(a==='tm-resend') return toast(`Invite sent again to ${tmEmail(PROF.team[+el.dataset.i])}`);
+  if(a==='tm-remove'){
+    const m=PROF.team[+el.dataset.i];if(!m||m.you) return;
+    if(m.role==='admin'&&m.status==='active'&&tmAdmins()<2) return toast('The team needs at least one full admin');
+    PROF.team.splice(+el.dataset.i,1);saveProf();profRedraw();return toast(`${tmEmail(m)} removed from the team`);
+  }
   const h=parseHash(), d=h.admin&&dash(h.id);
   if(h.root==='financials'&&a==='dismiss'){FIN.dismissed.add(el.dataset.k);view.innerHTML=viewFinancials(h.fsec);return bindAssets(view);}
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
@@ -3006,6 +3077,23 @@ document.addEventListener('submit',e=>{
   if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
+/* Team: invite, and the access level for each person */
+document.addEventListener('submit',e=>{if(e.target.id==='tm-form'){e.preventDefault();tmInvite();}});
+document.addEventListener('input',e=>{
+  if(e.target.id!=='tm-email') return;
+  const h=document.getElementById('tm-hint');e.target.removeAttribute('aria-invalid');
+  document.getElementById('tm-send').disabled=!e.target.value.trim();
+  if(h.classList.contains('err')){h.classList.remove('err');h.textContent=ROLES.find(r=>r[0]===document.getElementById('tm-role').value)[2];}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='tm-role'){const h=document.getElementById('tm-hint');h.classList.remove('err');h.textContent=ROLES.find(r=>r[0]===e.target.value)[2];return;}
+  if(e.target.dataset.tmRole==null) return;
+  const m=PROF.team[+e.target.dataset.tmRole];
+  if(m.role==='admin'&&m.status==='active'&&tmAdmins()<2){e.target.value='admin';return toast('The team needs at least one full admin');}
+  m.role=e.target.value;saveProf();
+  toast(`${tmEmail(m)} can now ${{admin:'manage everything',edit:'edit campaigns',view:'view only'}[m.role]}`);
+});
+
 /* Brand profile: save the open form, or a new logo */
 document.addEventListener('submit',e=>{
   if(e.target.id!=='prof-form') return;

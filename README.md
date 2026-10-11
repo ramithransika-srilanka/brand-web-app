@@ -64,9 +64,13 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   - **Brand profile** (`/profile/brand`, default) — the details creators see (name, category, website, location, about,
     social profiles) with an Edit form, a Track record of tiles (campaigns, creators joined, paid to creators, approval
     rate) and a preview of the "Campaign created by" card from the creator app.
+  - **Team** (`/profile/team`) — who can log in to the brand. Invite someone by email with an access level (Full admin,
+    Can edit, View only; the line under the form says what the chosen level can do); they appear in Members as Pending,
+    with a resend button. Each member has an access dropdown and a remove button (not for you). The team always keeps at
+    least one active full admin. An Access levels card explains the three levels.
   - **Account** (`/profile/account`) — the account owner (name, role, email, phone, editable), email notification
     switches and Security (change password, sign out — placeholders for now).
-  Edits, the new logo and the switches are kept in the browser's local storage (`brand.profile`).
+  Edits, the new logo, the team and the switches are kept in the browser's local storage (`brand.profile`).
 
 ## Assets
 
