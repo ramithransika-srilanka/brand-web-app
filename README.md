@@ -62,8 +62,12 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   the left card has the cover, the brand logo (camera button to upload a new one, which also updates the top-menu logo),
   name, category and "Edit profile", then the sub menu:
   - **Brand profile** (`/profile/brand`, default) — the details creators see (name, category, website, location, about,
-    social profiles) with an Edit form, a Track record of tiles (campaigns, creators joined, paid to creators, approval
+    profiles) with an Edit form, a Social accounts card, a Track record of tiles (campaigns, creators joined, paid to creators, approval
     rate) and a preview of the "Campaign created by" card from the creator app.
+    **Social accounts** shows one tile per connected account (logo with the platform badge, follower count, handle),
+    a dashed **Add** tile and a ⊕ button, and the total followers. Any of them opens the **Connected accounts** dialog:
+    Instagram, TikTok, Facebook, YouTube and LinkedIn, each with Connect (a short stand-in for the platform's sign-in)
+    or Disconnect. The creator preview card shows the connected accounts.
   - **Team** (`/profile/team`) — who can log in to the brand. Invite someone by email with an access level (Full admin,
     Can edit, View only; the line under the form says what the chosen level can do); they appear in Members as Pending,
     with a resend button. Each member has an access dropdown and a remove button (not for you). The team always keeps at

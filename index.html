@@ -998,10 +998,52 @@
   .pf-row .v small{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .pf-row .v.long{font-weight:400;line-height:21px;}
   .pf-row.tg{grid-template-columns:minmax(0,1fr) auto;}
-  .pf-socials{display:flex;flex-wrap:wrap;gap:6px 18px;}
-  .pf-socials span{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-variant-numeric:tabular-nums;}
-  .pf-socials svg{width:16px;height:16px;}
-  .pf-socials em{font-style:normal;font-weight:500;color:var(--grey-600);}
+  /* Social accounts: one round tile per connected account, then a dashed Add tile */
+  .soc-add-btn{width:36px;height:36px;border-radius:100px;display:flex;align-items:center;justify-content:center;border:1px solid var(--grey-400);color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .soc-add-btn:hover{background:var(--grey-100);border-color:var(--grey-800);}
+  .soc-add-btn:active{transform:scale(.94);}
+  .soc-add-btn svg{width:18px;height:18px;}
+  .soc-tiles{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;}
+  .soc-tile{width:116px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:16px 8px 14px;border:1px solid var(--line);border-radius:12px;text-align:center;transition:border-color .2s ease,background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .soc-tile:hover{border-color:var(--grey-400);}
+  .soc-tile:active{transform:scale(.97);}
+  .soc-pic{position:relative;width:56px;height:56px;margin-bottom:8px;}
+  .soc-pic img{width:100%;height:100%;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--line);}
+  .soc-pic .badge{position:absolute;right:-4px;top:-2px;width:24px;height:24px;border-radius:100px;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--grey-800);filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));}
+  .soc-pic .badge svg{width:13px;height:13px;}
+  .soc-tile b{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);font-variant-numeric:tabular-nums;}
+  .soc-tile span{max-width:100%;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .soc-tile.add{border-style:dashed;border-color:var(--grey-400);}
+  .soc-tile.add:hover{border-color:var(--grey-800);background:var(--page-bg);}
+  .soc-tile.add .soc-pic{display:flex;align-items:center;justify-content:center;border:1.5px dashed var(--grey-400);border-radius:100px;color:var(--grey-600);}
+  .soc-tile.add .soc-pic svg{width:24px;height:24px;}
+  .soc-tile.add b{font-size:14px;line-height:20px;}
+  .soc-total{margin-top:14px;font-size:14px;line-height:20px;color:var(--grey-600);}
+  .soc-total b{font-weight:600;color:var(--grey-800);}
+  .soc-empty{margin-top:18px;font-size:14px;line-height:20px;color:var(--grey-600);}
+
+  /* Connected accounts dialog */
+  .soc-dlg{width:min(480px,calc(100vw - 32px));max-height:calc(100dvh - 48px);margin:auto;padding:0;border:0;border-radius:16px;background:var(--page-bg);color:var(--grey-800);box-shadow:0 24px 60px rgba(0,0,0,.25);}
+  .soc-dlg::backdrop{background:rgba(0,0,0,.4);}
+  .soc-dlg[open]{animation:dlgIn .35s cubic-bezier(.16,1,.3,1);}
+  @keyframes dlgIn{from{opacity:0;transform:translateY(12px) scale(.98);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){.soc-dlg[open]{animation:none;}}
+  .soc-dlg .dh{padding:22px 22px 0;}
+  .soc-dlg .dh h2{font-size:22px;line-height:28px;}
+  .soc-list{display:flex;flex-direction:column;gap:10px;padding:18px 22px 22px;}
+  .soc-row{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 14px 12px 16px;border-radius:16px;background:#fff;border:1px solid var(--line);}
+  .soc-row .ic{position:relative;width:42px;height:42px;flex-shrink:0;border-radius:100px;display:flex;align-items:center;justify-content:center;background:var(--grey-100);color:var(--grey-800);}
+  .soc-row .ic>svg{width:20px;height:20px;}
+  .soc-row .ic img{width:100%;height:100%;border-radius:inherit;object-fit:cover;border:1px solid var(--line);}
+  .soc-row .ic .badge{position:absolute;right:-4px;bottom:-3px;width:20px;height:20px;border-radius:100px;display:flex;align-items:center;justify-content:center;background:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25));}
+  .soc-row .ic .badge svg{width:11px;height:11px;}
+  .soc-row .t{flex:1;min-width:0;}
+  .soc-row .t b{display:block;font-size:15px;font-weight:600;line-height:20px;}
+  .soc-row .t span{display:block;margin-top:1px;font-size:13px;line-height:18px;color:var(--grey-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .soc-row .btn{min-width:112px;}
+  .btn-grey{background:var(--grey-200);color:var(--grey-800);}
+  .btn-grey:hover{background:var(--grey-400);}
+  .btn:disabled{opacity:.6;cursor:default;}
   .fl textarea{width:100%;min-height:96px;padding:10px 16px;border:1px solid var(--grey-400);border-radius:16px;outline:0;background:#fff;font:500 14px/21px var(--font);color:var(--grey-800);resize:vertical;transition:border-color .2s ease;}
   .fl textarea:focus{border-color:var(--blue-300);}
   .pf-form .ff-foot{justify-content:flex-end;gap:8px;}
@@ -2563,7 +2605,8 @@ const PROF=Object.assign({
   team:[{you:true,role:'admin',status:'active',at:Date.now()-2*DAY},
     {email:'nadeesha.f@uber.lk',role:'edit',status:'active',at:Date.now()-19*DAY},
     {email:'kasun.p@uber.lk',role:'view',status:'pending',at:Date.now()-DAY}],
-  prefs:{submissions:true,budget:true,messages:true,weekly:false}
+  prefs:{submissions:true,budget:true,messages:true,weekly:false},
+  socials:{insta:{handle:'@ubersrilanka',followers:10000},tiktok:{handle:'@uber.srilanka',followers:2500},linkedin:{handle:'Uber Sri Lanka',followers:546}}
 },(()=>{try{return JSON.parse(localStorage.getItem(PROF_KEY))||{};}catch(e){return {};}})());
 A.brandLogo=PROF.logo||A.uberLogo;
 const saveProf=()=>{try{localStorage.setItem(PROF_KEY,JSON.stringify(PROF));}catch(e){}};
@@ -2572,7 +2615,11 @@ const PSECTIONS=[['brand','Brand profile'],['team','Team'],['account','Account']
 const ROLES=[['admin','Full admin','Runs campaigns, adds funds and manages the team.'],
   ['edit','Can edit','Runs campaigns and reviews content. Can’t add funds or manage the team.'],
   ['view','View only','Sees everything, changes nothing.']];
-const PROF_SOCIALS=[['insta','10K'],['tiktok','2.5K'],['linkedin','546']];
+/* Platforms a brand can connect, and the account each one links to in this demo */
+const SOC_PLATS=['insta','tiktok','facebook','youtube','linkedin'];
+const SOC_DEMO={insta:['@ubersrilanka',10000],tiktok:['@uber.srilanka',2500],facebook:['Uber Sri Lanka',18400],youtube:['@UberSriLanka',1240],linkedin:['Uber Sri Lanka',546]};
+const fmtK=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?(n/1e3).toFixed(n<1e4?1:0).replace(/\.0$/,'')+'K':String(n);
+const socConnected=()=>SOC_PLATS.filter(k=>PROF.socials[k]);
 const PROF_PREFS=[['submissions','New submissions','A creator posts content for one of your campaigns'],
   ['budget','Budget alerts','A campaign has spent 80% of its budget'],
   ['messages','Creator messages','A creator sends you a question'],
@@ -2609,15 +2656,22 @@ const pfFoot=`<div class="ff-foot"><button class="btn btn-sec" type="button" dat
 
 function profBrand(){
   const st=profStats();
-  const socials=`<span class="pf-socials">${PROF_SOCIALS.map(([k,n])=>`<span title="${PLATNAME[k]}">${PLAT[k]}${n} <em>followers</em></span>`).join('')}</span>`;
+  const conn=socConnected(), reach=conn.reduce((a,k)=>a+PROF.socials[k].followers,0);
+  const PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  const tiles=conn.map(k=>{const a=PROF.socials[k];
+    return `<button class="soc-tile" type="button" data-act="soc-open" aria-label="${PLATNAME[k]} ${esc(a.handle)}, ${fmtK(a.followers)} followers. Manage connected accounts"><span class="soc-pic"><img data-a="brandLogo" data-label="Ub" alt=""><span class="badge">${PLAT[k]}</span></span><b>${fmtK(a.followers)}</b><span>${esc(a.handle)}</span></button>`;}).join('');
+  const addTile=conn.length<SOC_PLATS.length?`<button class="soc-tile add" type="button" data-act="soc-open"><span class="soc-pic">${PLUS}</span><b>Add</b><span>New account</span></button>`:'';
   const details=profEdit==='brand'
     ? `<form class="ff pf-form" id="prof-form" data-k="brand">
         <div class="ff-2">${pfField('name','Brand name')}${pfField('category','Category')}</div>
         <div class="ff-2">${pfField('website','Website')}${pfField('location','Location')}</div>
         <label class="fl">About<textarea name="about" maxlength="240" required>${esc(PROF.about)}</textarea></label>${pfFoot}</form>`
-    : `<div class="pf-rows">${pfRow('Brand name',esc(PROF.name))}${pfRow('Category',esc(PROF.category))}${pfRow('Website',`<a class="dlink" href="https://${esc(PROF.website.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener">${esc(PROF.website)}</a>`)}${pfRow('Location',esc(PROF.location))}${pfRow('About',esc(PROF.about),'long')}${pfRow('Social profiles',socials)}</div>`;
+    : `<div class="pf-rows">${pfRow('Brand name',esc(PROF.name))}${pfRow('Category',esc(PROF.category))}${pfRow('Website',`<a class="dlink" href="https://${esc(PROF.website.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener">${esc(PROF.website)}</a>`)}${pfRow('Location',esc(PROF.location))}${pfRow('About',esc(PROF.about),'long')}</div>`;
   const metrics=C.uber.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
   return `<section class="dcard">${dhead('Brand profile','Shown to creators on every campaign page',profEdit==='brand'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="brand">Edit</button>`)}${details}</section>
+    <section class="dcard">${dhead('Social accounts','Connect your brand’s accounts. Creators see your follower counts on every campaign.',`<button class="soc-add-btn" type="button" data-act="soc-open" aria-label="Connect an account" title="Connect an account">${PLUS}</button>`)}
+      <div class="soc-tiles">${tiles}${addTile}</div>
+      ${conn.length?`<p class="soc-total"><b>${fmtK(reach)}</b> followers across ${conn.length} account${conn.length>1?'s':''} · updated daily</p>`:`<p class="soc-empty">No accounts connected yet. Connect one so creators can see your reach.</p>`}</section>
     <section class="dcard">${dhead('Track record','Across all your campaigns on PolySocial')}
       <div class="tiles">
         <div class="tile"><span class="n">${st.campaigns}</span><span class="l">Campaigns</span><span class="d">${st.active} active now</span></div>
@@ -2634,7 +2688,7 @@ function profBrand(){
         </div>
         <div class="col">
           <div class="cp-stats"><div class="cp-stat"><span class="big">${RSM(st.paid)}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${st.campaigns}</span><span class="lbl">Campaigns</span></div></div>
-          <div class="handles">${PROF_SOCIALS.map(([k,n])=>`<div class="handle"><img class="pf" data-a="brandLogo" data-label="Ub" alt=""><div class="badge">${PLAT[k]}</div><span class="fc">${n}</span></div>`).join('')}</div>
+          ${conn.length?`<div class="handles">${conn.map(k=>`<div class="handle"><img class="pf" data-a="brandLogo" data-label="Ub" alt=""><div class="badge">${PLAT[k]}</div><span class="fc">${fmtK(PROF.socials[k].followers)}</span></div>`).join('')}</div>`:''}
           <div class="cp-questions"><div class="btn-questions">Any questions?</div></div>
         </div></div></div></section>`;
 }
@@ -2690,6 +2744,36 @@ function tmInvite(){
   document.getElementById('tm-email').focus({preventScroll:true});
   toast(`Invite sent to ${e}`);
 }
+/* ---------- Connected accounts dialog: connect or disconnect each platform ---------- */
+let socDlg=null;const socBusy=new Set();
+function socListHTML(){
+  return SOC_PLATS.map(k=>{const a=PROF.socials[k],busy=socBusy.has(k);
+    return `<div class="soc-row">
+      <span class="ic">${a?`<img data-a="brandLogo" data-label="Ub" alt=""><span class="badge">${PLAT[k]}</span>`:PLAT[k]}</span>
+      <div class="t"><b>${PLATNAME[k]}</b><span>${a?`${esc(a.handle)} · ${fmtK(a.followers)} followers`:busy?'Waiting for '+PLATNAME[k]+'…':'Not connected'}</span></div>
+      ${a?`<button class="btn btn-grey" type="button" data-act="soc-off" data-k="${k}" aria-label="Disconnect ${PLATNAME[k]}">Disconnect</button>`
+        :`<button class="btn btn-pri" type="button" data-act="soc-on" data-k="${k}" aria-label="Connect ${PLATNAME[k]}"${busy?' disabled':''}>${busy?'Connecting…':'Connect'}</button>`}
+    </div>`;}).join('');
+}
+function socRender(k){if(!socDlg) return;socDlg.querySelector('.soc-list').innerHTML=socListHTML();bindAssets(socDlg);if(k&&socDlg.open) socDlg.querySelector(`[data-k="${k}"]`)?.focus();}
+function socOpen(){
+  if(!socDlg){
+    socDlg=document.createElement('dialog');socDlg.className='soc-dlg';socDlg.setAttribute('aria-labelledby','soc-title');
+    socDlg.innerHTML=`<div class="dh"><div><h2 id="soc-title">Connected accounts</h2><p>Link your brand’s accounts so creators can see your reach.</p></div><button class="x-btn" type="button" data-act="soc-close" aria-label="Close">${XIC}</button></div><div class="soc-list"></div>`;
+    /* A click on the backdrop lands on the dialog itself */
+    socDlg.addEventListener('click',e=>{if(e.target===socDlg) socDlg.close();});
+    document.body.appendChild(socDlg);
+  }
+  socRender();socDlg.showModal();
+  socDlg.querySelector('.soc-list .btn-pri,.soc-list .btn')?.focus();
+}
+/* Stand-in for the platform's sign-in: a short wait, then the account is linked */
+function socConnect(k){
+  socBusy.add(k);socRender(k);
+  setTimeout(()=>{socBusy.delete(k);const [handle,followers]=SOC_DEMO[k];PROF.socials[k]={handle,followers};saveProf();socRender(k);profRedraw();toast(`${PLATNAME[k]} connected · ${handle}`);},900);
+}
+function socDisconnect(k){delete PROF.socials[k];saveProf();socRender(k);profRedraw();toast(`${PLATNAME[k]} disconnected`);}
+
 function viewProfile(sec){
   return `<div class="dsh">${profSide(sec)}<div class="dsh-main">${sec==='account'?profAccount():sec==='team'?profTeam():profBrand()}</div></div>`;
 }
@@ -3017,6 +3101,10 @@ function doAct(a,el){
     profEdit=k;profRedraw();return view.querySelector('#prof-form input').focus();
   }
   if(a==='prof-cancel'){profEdit=null;return profRedraw();}
+  if(a==='soc-open') return socOpen();
+  if(a==='soc-close') return socDlg.close();
+  if(a==='soc-on') return socConnect(el.dataset.k);
+  if(a==='soc-off') return socDisconnect(el.dataset.k);
   if(a==='tm-resend') return toast(`Invite sent again to ${tmEmail(PROF.team[+el.dataset.i])}`);
   if(a==='tm-remove'){
     const m=PROF.team[+el.dataset.i];if(!m||m.you) return;
