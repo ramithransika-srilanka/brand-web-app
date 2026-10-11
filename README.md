@@ -65,7 +65,7 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     profiles) with an Edit form, a Social accounts card, a Track record of tiles (campaigns, creators joined, paid to creators, approval
     rate) and a preview of the "Campaign created by" card from the creator app.
     **Social accounts** shows one tile per connected account (logo with the platform badge, follower count, handle),
-    a dashed **Add** tile and a ⊕ button, and the total followers. Any of them opens the **Connected accounts** dialog:
+    then a dashed **Add** circle, and the total followers. Any of them opens the **Connected accounts** dialog:
     Instagram, TikTok, Facebook, YouTube and LinkedIn, each with Connect (a short stand-in for the platform's sign-in)
     or Disconnect. The creator preview card shows the connected accounts.
   - **Team** (`/profile/team`) — who can log in to the brand. Invite someone by email with an access level (Full admin,
