@@ -87,6 +87,9 @@
   .hicon .dot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:100px;background:var(--pink-500);border:1.5px solid #fff;}
   .top-av{display:block;width:32px;height:32px;border-radius:100px;object-fit:cover;border:1px solid var(--grey-200);transition:transform .2s cubic-bezier(.16,1,.3,1);}
   .top-av:active{transform:scale(.94);}
+  .top-avlink{display:block;border-radius:100px;transition:box-shadow .25s ease;}
+  .top-avlink:hover .top-av{border-color:var(--grey-400);}
+  .top-avlink[aria-current]{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--grey-800);}
 
   /* ================= Secondary bar: campaign status (same height rhythm as the top menu) ================= */
   .subnav{position:sticky;top:var(--header);z-index:19;height:var(--subbar);display:flex;align-items:center;justify-content:center;gap:4px;padding:0 var(--gutter);background:var(--grey-800);}
@@ -977,6 +980,60 @@
   .ferr{font-size:14px;font-weight:500;line-height:20px;color:var(--bad);}
   .ff-foot .btn{margin-left:auto;}
   /* Bank transfers: the analytics table, status as the dashboard's dot + coloured text */
+  /* ================= Brand profile (#/profile): same dashboard frame as Financials ================= */
+  .pf-cover{position:relative;height:92px;margin-bottom:30px;background:var(--grey-200);}
+  .pf-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+  .pf-logo{position:absolute;left:18px;bottom:-30px;width:64px;height:64px;border-radius:100px;border:3px solid #fff;background:#fff;}
+  .pf-logo img{width:100%;height:100%;border-radius:inherit;object-fit:cover;}
+  .pf-logo button{position:absolute;right:-4px;bottom:-2px;width:26px;height:26px;border-radius:100px;display:flex;align-items:center;justify-content:center;background:var(--grey-800);color:#fff;border:2px solid #fff;transition:background .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .pf-logo button svg{width:14px;height:14px;}
+  .pf-logo button:hover{background:var(--grey-700);}
+  .pf-logo button:active{transform:scale(.92);}
+  .pf-sub{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .pf-rows{margin-top:18px;border:1px solid var(--line);border-radius:12px;}
+  .pf-row{display:grid;grid-template-columns:180px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:52px;padding:12px 18px;font-size:14px;line-height:20px;}
+  .pf-row+.pf-row{border-top:1px solid var(--line);}
+  .pf-row .k{font-weight:500;color:var(--grey-600);}
+  .pf-row .v{font-weight:500;color:var(--grey-800);overflow-wrap:anywhere;}
+  .pf-row .v small{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .pf-row .v.long{font-weight:400;line-height:21px;}
+  .pf-row.tg{grid-template-columns:minmax(0,1fr) auto;}
+  .pf-socials{display:flex;flex-wrap:wrap;gap:6px 18px;}
+  .pf-socials span{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .pf-socials svg{width:16px;height:16px;}
+  .pf-socials em{font-style:normal;font-weight:500;color:var(--grey-600);}
+  .fl textarea{width:100%;min-height:96px;padding:10px 16px;border:1px solid var(--grey-400);border-radius:16px;outline:0;background:#fff;font:500 14px/21px var(--font);color:var(--grey-800);resize:vertical;transition:border-color .2s ease;}
+  .fl textarea:focus{border-color:var(--blue-300);}
+  .pf-form .ff-foot{justify-content:flex-end;gap:8px;}
+  .pf-form .ff-foot .btn{margin-left:0;}
+  .pf-preview{margin-top:18px;padding:18px;border-radius:12px;background:var(--page-bg);}
+  .pf-preview .wcard{max-width:560px;margin:0 auto;}
+  .pf-switch{position:relative;flex-shrink:0;width:40px;height:24px;border-radius:100px;background:var(--grey-200);transition:background .25s ease;}
+  .pf-switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:100px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.16,1,.3,1);}
+  .pf-switch[aria-checked="true"]{background:var(--blue-500);}
+  .pf-switch[aria-checked="true"]::after{transform:translateX(16px);}
+  .pf-switch:focus-visible{outline:2px solid var(--blue-300);outline-offset:2px;}
+  /* Team: invite form and members, on the Creators list styles */
+  .tm-form{display:grid;grid-template-columns:minmax(0,1fr) 220px auto;align-items:end;gap:12px;margin-top:18px;}
+  .tm-form .btn{height:40px;}
+  .tm-form .btn:disabled{opacity:.45;cursor:default;transform:none;}
+  .tm-hint{margin-top:8px;font-size:14px;line-height:20px;color:var(--grey-600);}
+  .tm-hint.err{color:var(--bad);}
+  .tm-roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px;}
+  .tm-roles div{padding:14px 16px;border:1px solid var(--line);border-radius:12px;}
+  .tm-roles b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .tm-roles span{display:block;margin-top:2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .tm-av{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--blue-100);color:var(--blue-700);font-size:15px;font-weight:600;text-transform:uppercase;}
+  .tm-av.pend{background:var(--grey-100);color:var(--grey-600);}
+  .tm-row .t b{display:block;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tm-row .t b em{font-style:normal;font-weight:500;color:var(--grey-600);}
+  .tm-row .t .sub{display:block;margin-top:1px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .tm-row .inv-pend{flex:none;}
+  .tm-row .fl{width:150px;flex-shrink:0;}
+  .tm-row .inv-del[disabled]{visibility:hidden;}
+  .tm-list{overflow:hidden;}
+  .btn-bad{border:1px solid var(--grey-400);color:var(--bad);}
+  .btn-bad:hover{border-color:var(--bad);background:#fdf0f2;}
   .dsh-status.verified{color:var(--good);} .dsh-status.rejected{color:var(--bad);}
   .tc .dsh-status{font-size:12px;line-height:16px;}
   /* Bank transfers: slip name with a file icon, the status and a download button per row */
@@ -1201,7 +1258,7 @@
       <button class="hicon" id="tmenu-btn" data-tmenu aria-label="Menu" aria-expanded="false" aria-controls="tmenu-list"><span id="tmenu-ic"></span><i class="dot" id="tmenu-dot"></i></button>
       <nav class="tmenu-list" id="tmenu-list" aria-label="Main menu"></nav>
     </div>
-    <a data-act="soon" aria-label="Profile"><img class="top-av" data-a="uberLogo" data-label="Ub" alt="Uber"></a>
+    <a class="top-avlink" id="top-avlink" href="#/profile" aria-label="Brand profile" title="Brand profile"><img class="top-av" data-a="brandLogo" data-label="Ub" alt="Uber"></a>
   </div>
 </header>
 <nav class="subnav" id="subnav" aria-label="Campaign status">
@@ -2496,6 +2553,167 @@ function downloadStatement(){
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
+/* ================= Brand profile (#/profile): the brand behind the top-menu logo ================= */
+const PROF_KEY='brand.profile';
+const DAY=864e5;
+const PROF=Object.assign({
+  name:'Uber Sri Lanka',category:'Mobility',website:'uber.com/lk',location:'Colombo, Sri Lanka',since:'Mar 2026',
+  about:'Rides, Moto and deliveries across Colombo. We work with local creators to show how Uber fits into everyday city life.',
+  owner:'Ashan Silva',email:'ashan.silva@uber.lk',phone:'+94 77 123 4567',role:'Brand manager',logo:null,
+  team:[{you:true,role:'admin',status:'active',at:Date.now()-2*DAY},
+    {email:'nadeesha.f@uber.lk',role:'edit',status:'active',at:Date.now()-19*DAY},
+    {email:'kasun.p@uber.lk',role:'view',status:'pending',at:Date.now()-DAY}],
+  prefs:{submissions:true,budget:true,messages:true,weekly:false}
+},(()=>{try{return JSON.parse(localStorage.getItem(PROF_KEY))||{};}catch(e){return {};}})());
+A.brandLogo=PROF.logo||A.uberLogo;
+const saveProf=()=>{try{localStorage.setItem(PROF_KEY,JSON.stringify(PROF));}catch(e){}};
+const PSECTIONS=[['brand','Brand profile'],['team','Team'],['account','Account']];
+/* Access levels for people on the brand's team */
+const ROLES=[['admin','Full admin','Runs campaigns, adds funds and manages the team.'],
+  ['edit','Can edit','Runs campaigns and reviews content. Can’t add funds or manage the team.'],
+  ['view','View only','Sees everything, changes nothing.']];
+const PROF_SOCIALS=[['insta','10K'],['tiktok','2.5K'],['linkedin','546']];
+const PROF_PREFS=[['submissions','New submissions','A creator posts content for one of your campaigns'],
+  ['budget','Budget alerts','A campaign has spent 80% of its budget'],
+  ['messages','Creator messages','A creator sends you a question'],
+  ['weekly','Weekly summary','Monday email with reach, spend and new creators']];
+const MAILIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
+const CAMIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+
+let profEdit=null, profEditNext=null;   /* 'brand' | 'account' while that card's form is open */
+
+/* Short money for tiles: Rs. 1.7 M, Rs. 640 K */
+const RSM=n=>n>=1e6?`Rs. ${(n/1e6).toFixed(1).replace(/\.0$/,'')} M`:n>=1e3?`Rs. ${Math.round(n/1e3)} K`:RS(n);
+function profStats(){
+  return {campaigns:EXPLORE.length,active:EXPLORE.filter(id=>C[id].status==='active').length,
+    creators:EXPLORE.reduce((a,id)=>a+num(C[id].joinedShort),0),paid:EXPLORE.reduce((a,id)=>a+num(C[id].spent),0)};
+}
+function profSide(sec){
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${PSECTIONS.find(x=>x[0]===sec)[1]}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
+    <div class="pf-cover"><img data-a="card1" data-label="Ub" alt="">
+      <div class="pf-logo"><img data-a="brandLogo" data-label="Ub" alt="${esc(PROF.name)} logo"><button type="button" data-act="prof-logo" aria-label="Change logo" title="Change logo">${CAMIC}</button></div></div>
+    <input type="file" id="prof-file" accept="image/png,image/jpeg,image/webp" hidden>
+    <div class="dsh-id">
+      <div class="dsh-head"><h1 class="dsh-title">${esc(PROF.name)}</h1><span class="pf-sub">${esc(PROF.category)} · Since ${esc(PROF.since)}</span></div>
+      <button class="dsh-viewas" type="button" data-act="prof-edit" data-k="brand">${EDITIC}Edit profile</button>
+    </div>
+    <nav class="dsh-menu" aria-label="Profile">${PSECTIONS.map(([k,l])=>`<a href="#/profile/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span></a>`).join('')}</nav>
+  </aside>`;
+}
+const pfRow=(k,v,cls='')=>`<div class="pf-row"><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+const pfField=(k,l,t='text')=>`<label class="fl">${l}<input name="${k}" type="${t}" value="${esc(PROF[k])}" required autocomplete="off"></label>`;
+const pfFoot=`<div class="ff-foot"><button class="btn btn-sec" type="button" data-act="prof-cancel">Cancel</button><button class="btn btn-pri" type="submit">Save changes</button></div>`;
+
+function profBrand(){
+  const st=profStats();
+  const socials=`<span class="pf-socials">${PROF_SOCIALS.map(([k,n])=>`<span title="${PLATNAME[k]}">${PLAT[k]}${n} <em>followers</em></span>`).join('')}</span>`;
+  const details=profEdit==='brand'
+    ? `<form class="ff pf-form" id="prof-form" data-k="brand">
+        <div class="ff-2">${pfField('name','Brand name')}${pfField('category','Category')}</div>
+        <div class="ff-2">${pfField('website','Website')}${pfField('location','Location')}</div>
+        <label class="fl">About<textarea name="about" maxlength="240" required>${esc(PROF.about)}</textarea></label>${pfFoot}</form>`
+    : `<div class="pf-rows">${pfRow('Brand name',esc(PROF.name))}${pfRow('Category',esc(PROF.category))}${pfRow('Website',`<a class="dlink" href="https://${esc(PROF.website.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener">${esc(PROF.website)}</a>`)}${pfRow('Location',esc(PROF.location))}${pfRow('About',esc(PROF.about),'long')}${pfRow('Social profiles',socials)}</div>`;
+  const metrics=C.uber.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
+  return `<section class="dcard">${dhead('Brand profile','Shown to creators on every campaign page',profEdit==='brand'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="brand">Edit</button>`)}${details}</section>
+    <section class="dcard">${dhead('Track record','Across all your campaigns on PolySocial')}
+      <div class="tiles">
+        <div class="tile"><span class="n">${st.campaigns}</span><span class="l">Campaigns</span><span class="d">${st.active} active now</span></div>
+        <div class="tile"><span class="n">${st.creators.toLocaleString('en')}+</span><span class="l">Creators joined</span><span class="d">On every campaign</span></div>
+        <div class="tile hl"><span class="n">${RSM(st.paid)}</span><span class="l">Paid to creators</span><span class="d">${RS(st.paid)} since ${esc(PROF.since)}</span></div>
+        <div class="tile"><span class="n">${C.uber.metrics[0][1].replace(' ','')}</span><span class="l">Approval rate</span><span class="d">Approved in ${C.uber.metrics[1][1]}</span></div>
+      </div></section>
+    <section class="dcard">${dhead('Creator preview','How the “Campaign created by” card looks to creators')}
+      <div class="cd-body pf-preview"><div class="wcard cp-creatorcard">
+        <div class="col">
+          <div class="cp-identity"><img class="av" data-a="brandLogo" data-label="Ub" alt=""><div class="cp-idtext"><p class="name">${esc(PROF.name)}</p><p class="since">Since ${esc(PROF.since)}</p></div></div>
+          <p class="cp-cdesc">${esc(PROF.about)}</p>
+          <div class="cp-cmetrics">${metrics}</div>
+        </div>
+        <div class="col">
+          <div class="cp-stats"><div class="cp-stat"><span class="big">${RSM(st.paid)}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${st.campaigns}</span><span class="lbl">Campaigns</span></div></div>
+          <div class="handles">${PROF_SOCIALS.map(([k,n])=>`<div class="handle"><img class="pf" data-a="brandLogo" data-label="Ub" alt=""><div class="badge">${PLAT[k]}</div><span class="fc">${n}</span></div>`).join('')}</div>
+          <div class="cp-questions"><div class="btn-questions">Any questions?</div></div>
+        </div></div></div></section>`;
+}
+function profAccount(){
+  const owner=profEdit==='account'
+    ? `<form class="ff pf-form" id="prof-form" data-k="account">
+        <div class="ff-2">${pfField('owner','Full name')}${pfField('role','Role')}</div>
+        <div class="ff-2">${pfField('email','Email','email')}${pfField('phone','Phone','tel')}</div>${pfFoot}</form>`
+    : `<div class="pf-rows">${pfRow('Full name',esc(PROF.owner))}${pfRow('Role',esc(PROF.role))}${pfRow('Email',esc(PROF.email))}${pfRow('Phone',esc(PROF.phone))}</div>`;
+  return `<section class="dcard">${dhead('Account owner','The person who signs in and gets billing emails',profEdit==='account'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="account">Edit</button>`)}${owner}</section>
+    <section class="dcard">${dhead('Email notifications','Choose what we email you about')}
+      <div class="pf-rows">${PROF_PREFS.map(([k,t,d])=>`<div class="pf-row tg"><span class="v">${t}<small>${d}</small></span><button class="pf-switch" type="button" role="switch" data-pref="${k}" aria-checked="${!!PROF.prefs[k]}" aria-label="${t}"></button></div>`).join('')}</div></section>
+    <section class="dcard">${dhead('Security')}
+      <div class="pf-rows">
+        <div class="pf-row tg"><span class="v">Password<small>Last changed 3 months ago</small></span><button class="btn btn-sec" type="button" data-act="soon">Change</button></div>
+        <div class="pf-row tg"><span class="v">Sign out<small>Sign out of PolySocial for Brands on this device</small></span><button class="btn btn-bad" type="button" data-act="soon">Sign out</button></div>
+      </div></section>`;
+}
+
+/* ---------- Team: who can log in to the brand on PolySocial for Brands ---------- */
+const tmEmail=m=>m.you?PROF.email:m.email;
+const ago=t=>{const d=Math.floor((Date.now()-t)/DAY);return d<1?'today':d<7?`${d} d ago`:d<60?`${Math.round(d/7)} wk ago`:`${Math.round(d/30)} mo ago`;};
+const roleSel=(v,attrs)=>`<select ${attrs}>${ROLES.map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('')}</select>`;
+function profTeam(){
+  const team=PROF.team, n=team.length;
+  const rows=team.map((m,i)=>{const e=tmEmail(m),pend=m.status==='pending';
+    return `<div class="inv-row tm-row">
+      <span class="tm-av${pend?' pend':''}" aria-hidden="true">${esc(e[0])}</span>
+      <div class="t"><b>${esc(e)}${m.you?' <em>(you)</em>':''}</b><span class="sub">${pend?`Invited ${ago(m.at)} · awaiting their first log in`:`Active · joined ${ago(m.at)}`}</span></div>
+      ${pend?`<div class="inv-pend"><span>Pending</span><button type="button" data-act="tm-resend" data-i="${i}" aria-label="Resend invite to ${esc(e)}" title="Resend invite">${MAILIC}</button></div>`:''}
+      <label class="fl"><span class="sr">Access for ${esc(e)}</span>${roleSel(m.role,`data-tm-role="${i}"`)}</label>
+      <button class="inv-del" type="button" data-act="tm-remove" data-i="${i}" aria-label="Remove ${esc(e)}" title="Remove from team"${m.you?' disabled':''}>${TRASHIC}</button>
+    </div>`;}).join('');
+  return `<section class="dcard">${dhead('Invite someone','They get an email with a link to log in and a temporary password, then choose their own.')}
+      <form class="tm-form" id="tm-form" novalidate>
+        <label class="fl">Email<input id="tm-email" type="email" placeholder="name@brand.com" autocomplete="off"></label>
+        <label class="fl">Access${roleSel('view','id="tm-role"')}</label>
+        <button class="btn btn-pri" type="submit" id="tm-send" disabled>Send invite</button>
+      </form>
+      <p class="tm-hint" id="tm-hint" role="status">${ROLES[2][2]}</p></section>
+    <section class="dcard">${dhead('Members',`Who can log in to ${esc(PROF.name)} on PolySocial for Brands`,`<span class="count">${n} ${n===1?'person':'people'}</span>`)}
+      <div class="inv-list tm-list">${rows}</div></section>
+    <section class="dcard">${dhead('Access levels','What each person can do')}
+      <div class="tm-roles">${ROLES.map(([,l,d])=>`<div><b>${l}</b><span>${d}</span></div>`).join('')}</div></section>`;
+}
+const tmAdmins=()=>PROF.team.filter(m=>m.role==='admin'&&m.status==='active').length;
+function tmInvite(){
+  const input=document.getElementById('tm-email'), hint=document.getElementById('tm-hint');
+  const e=input.value.trim().toLowerCase(), role=document.getElementById('tm-role').value;
+  const bad=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)?'Enter a valid email address.':PROF.team.some(m=>tmEmail(m).toLowerCase()===e)?`${e} is already on the team.`:null;
+  if(bad){input.setAttribute('aria-invalid','true');hint.classList.add('err');hint.textContent=bad;return input.focus();}
+  PROF.team.push({email:e,role,status:'pending',at:Date.now()});saveProf();profRedraw();
+  document.getElementById('tm-email').focus({preventScroll:true});
+  toast(`Invite sent to ${e}`);
+}
+function viewProfile(sec){
+  return `<div class="dsh">${profSide(sec)}<div class="dsh-main">${sec==='account'?profAccount():sec==='team'?profTeam():profBrand()}</div></div>`;
+}
+/* Redraw in place after an edit: no page transition, same scroll position */
+function profRedraw(){
+  const y=scrollY,h=parseHash();
+  view.innerHTML=viewProfile(h.psec);bindAssets(view);view.querySelector('.dsh').classList.add('stay');
+  scrollTo({top:y,behavior:'instant'});
+  document.querySelectorAll('img[data-a="brandLogo"]').forEach(i=>{i.src=A.brandLogo;});
+}
+/* Square-crop and shrink the new logo so it fits comfortably in local storage */
+function setBrandLogo(file){
+  if(!file||!/^image\//.test(file.type)) return toast('Upload a PNG, JPG or WebP image');
+  const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{
+    const n=256,cv=document.createElement('canvas'),m=Math.min(img.width,img.height);cv.width=cv.height=n;
+    const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,n,n);
+    g.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,n,n);
+    URL.revokeObjectURL(url);PROF.logo=A.brandLogo=cv.toDataURL('image/jpeg',.88);saveProf();profRedraw();toast('Logo updated');
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);toast('Couldn’t read that image');};
+  img.src=url;
+}
+
 /* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
 let media=[];
 function stopMedia(){media.forEach(m=>m.stop());media=[];}
@@ -2614,6 +2832,7 @@ const view=document.getElementById('view');
 const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
+  if(root==='profile') return {root,id:null,admin:false,psec:PSECTIONS.some(x=>x[0]===id)?id:'brand',post:null};
   if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
   return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:campaign&&secsFor(campaign).some(x=>x[0]===sec)?sec:'news',post:/^\d+$/.test(post||'')?+post:null};
 };
@@ -2641,24 +2860,27 @@ function holdSide(old){
 function scrollThread(){const m=document.getElementById('ib-msgs')||document.getElementById('wn-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
-  const {root,id,admin,sec,post,fsec,toTx}=parseHash();
+  const {root,id,admin,sec,post,fsec,toTx,psec}=parseHash();
   const campaign=!!id;
   const notifs=!campaign&&root==='notifications';
   const fin=!campaign&&root==='financials';
-  if(!campaign&&!notifs&&!fin) state.tab=TABS[root]?root:'active';
+  const prof=!campaign&&root==='profile';
+  profEdit=prof?profEditNext:null;profEditNext=null;
+  if(!campaign&&!notifs&&!fin&&!prof) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
   /* Switching sections inside one campaign's dashboard keeps the left column as it is; only the menu item changes */
-  const dkey=admin?id:fin?'#fin':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
+  const dkey=admin?id:fin?'#fin':prof?'#prof':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
   const keepSide=inDash&&view.querySelector('.dsh-side');
-  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):viewExplore();
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):prof?viewProfile(psec):viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
-  document.body.classList.toggle('dash',admin||fin);
+  document.body.classList.toggle('dash',admin||fin||prof);
   document.body.classList.toggle('notifs',notifs);
   document.body.classList.toggle('fin',fin);
-  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin);
+  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin&&!prof);
+  const avl=document.getElementById('top-avlink');if(prof) avl.setAttribute('aria-current','page'); else avl.removeAttribute('aria-current');
   if(campaign&&!admin){
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
     const sw=document.getElementById('viewbar-switch');
@@ -2669,6 +2891,7 @@ function route(){
   if(keepSide) holdSide(keepSide);
   if(admin){mountMedia();scrollThread();}
   if(fin) fileChip();
+  if(prof&&profEdit) requestAnimationFrame(()=>view.querySelector('#prof-form input')?.focus({preventScroll:true}));
   /* Links to the bank transfers land on that card, under the add funds form */
   if(toTx) requestAnimationFrame(()=>{const tx=document.getElementById('fin-transfers');if(tx) scrollTo({top:tx.getBoundingClientRect().top+scrollY-(document.querySelector('.dsh-bar')?.offsetHeight||0)-document.getElementById('topbar').offsetHeight-18,behavior:'instant'});});
   /* Only the section content animates in when switching sections */
@@ -2680,13 +2903,13 @@ function route(){
   const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) (matchMedia('(max-width:1023px)').matches?open.closest('.pitem'):open).scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
   /* The search button only belongs on the Explore page */
-  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin;
-  if(campaign||notifs||fin) sb.classList.remove('on');
+  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin||prof;
+  if(campaign||notifs||fin||prof) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
-  document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
+  document.title=(admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':prof?PSECTIONS.find(x=>x[0]===psec)[1]:fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&!prof&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   setTopMenu(false);
-  document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=!prof&&a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   const bell=document.getElementById('bell-btn');bell.classList.toggle('on',notifs);if(notifs)bell.setAttribute('aria-current','page');else bell.removeAttribute('aria-current');
   document.querySelectorAll('#subnav a').forEach(n=>{const on=n.dataset.tab===state.tab;n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
 }
@@ -2734,6 +2957,8 @@ document.addEventListener('click',e=>{
   const t=e.target;
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
+  const pref=t.closest('[data-pref]');
+  if(pref){const on=pref.getAttribute('aria-checked')!=='true';pref.setAttribute('aria-checked',on);PROF.prefs[pref.dataset.pref]=on;saveProf();return;}
   if(t.closest('[data-tmenu]')){setTopMenu(!document.getElementById('tmenu').classList.contains('open'));return;}
   if(!t.closest('#tmenu')) setTopMenu(false);
   const prof=t.closest('[data-profile]');
@@ -2786,6 +3011,18 @@ document.addEventListener('click',e=>{
 function refreshNotifs(){updateBell();if(document.body.classList.contains('notifs')){view.innerHTML=viewNotifs();bindAssets(view);}}
 function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
+  if(a==='prof-logo') return document.getElementById('prof-file').click();
+  if(a==='prof-edit'){
+    const k=el.dataset.k;if(parseHash().psec!==(k==='brand'?'brand':'account')){profEditNext=k;location.hash='#/profile/'+k;return;}
+    profEdit=k;profRedraw();return view.querySelector('#prof-form input').focus();
+  }
+  if(a==='prof-cancel'){profEdit=null;return profRedraw();}
+  if(a==='tm-resend') return toast(`Invite sent again to ${tmEmail(PROF.team[+el.dataset.i])}`);
+  if(a==='tm-remove'){
+    const m=PROF.team[+el.dataset.i];if(!m||m.you) return;
+    if(m.role==='admin'&&m.status==='active'&&tmAdmins()<2) return toast('The team needs at least one full admin');
+    PROF.team.splice(+el.dataset.i,1);saveProf();profRedraw();return toast(`${tmEmail(m)} removed from the team`);
+  }
   const h=parseHash(), d=h.admin&&dash(h.id);
   if(h.root==='financials'&&a==='dismiss'){FIN.dismissed.add(el.dataset.k);view.innerHTML=viewFinancials(h.fsec);return bindAssets(view);}
   if(d&&a==='dismiss'){d.dismissed.add(el.dataset.k);return rerender();}
@@ -2840,6 +3077,31 @@ document.addEventListener('submit',e=>{
   if(location.hash==='#/financials/funds/transfers') route(); else location.hash='#/financials/funds/transfers';
   toast(`${RS(amount)} sent for verification · usually within 1 working day`);
 });
+/* Team: invite, and the access level for each person */
+document.addEventListener('submit',e=>{if(e.target.id==='tm-form'){e.preventDefault();tmInvite();}});
+document.addEventListener('input',e=>{
+  if(e.target.id!=='tm-email') return;
+  const h=document.getElementById('tm-hint');e.target.removeAttribute('aria-invalid');
+  document.getElementById('tm-send').disabled=!e.target.value.trim();
+  if(h.classList.contains('err')){h.classList.remove('err');h.textContent=ROLES.find(r=>r[0]===document.getElementById('tm-role').value)[2];}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='tm-role'){const h=document.getElementById('tm-hint');h.classList.remove('err');h.textContent=ROLES.find(r=>r[0]===e.target.value)[2];return;}
+  if(e.target.dataset.tmRole==null) return;
+  const m=PROF.team[+e.target.dataset.tmRole];
+  if(m.role==='admin'&&m.status==='active'&&tmAdmins()<2){e.target.value='admin';return toast('The team needs at least one full admin');}
+  m.role=e.target.value;saveProf();
+  toast(`${tmEmail(m)} can now ${{admin:'manage everything',edit:'edit campaigns',view:'view only'}[m.role]}`);
+});
+
+/* Brand profile: save the open form, or a new logo */
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='prof-form') return;
+  e.preventDefault();
+  for(const [k,v] of new FormData(e.target)) PROF[k]=String(v).trim()||PROF[k];
+  profEdit=null;saveProf();profRedraw();toast('Profile saved');
+});
+document.addEventListener('change',e=>{if(e.target.id==='prof-file'){setBrandLogo(e.target.files[0]);e.target.value='';}});
 document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
   if(e.target.dataset.neg&&(e.target.type==='radio'||e.target.tagName==='SELECT')) negInput(e.target);});
 /* A file dropped beside the drop zone shouldn't navigate away from the form */
