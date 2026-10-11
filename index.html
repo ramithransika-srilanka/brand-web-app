@@ -1044,8 +1044,6 @@
   .fl textarea:focus{border-color:var(--blue-300);}
   .pf-form .ff-foot{justify-content:flex-end;gap:8px;}
   .pf-form .ff-foot .btn{margin-left:0;}
-  .pf-preview{margin-top:18px;padding:18px;border-radius:12px;background:var(--page-bg);}
-  .pf-preview .wcard{max-width:560px;margin:0 auto;}
   .pf-switch{position:relative;flex-shrink:0;width:40px;height:24px;border-radius:100px;background:var(--grey-200);transition:background .25s ease;}
   .pf-switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:100px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.16,1,.3,1);}
   .pf-switch[aria-checked="true"]{background:var(--blue-500);}
@@ -2663,7 +2661,6 @@ function profBrand(){
         <div class="ff-2">${pfField('website','Website')}${pfField('location','Location')}</div>
         <label class="fl">About<textarea name="about" maxlength="240" required>${esc(PROF.about)}</textarea></label>${pfFoot}</form>`
     : `<div class="pf-rows">${pfRow('Brand name',esc(PROF.name))}${pfRow('Category',esc(PROF.category))}${pfRow('Website',`<a class="dlink" href="https://${esc(PROF.website.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener">${esc(PROF.website)}</a>`)}${pfRow('Location',esc(PROF.location))}${pfRow('About',esc(PROF.about),'long')}</div>`;
-  const metrics=C.uber.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
   return `<section class="dcard">${dhead('Brand profile','Shown to creators on every campaign page',profEdit==='brand'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="brand">Edit</button>`)}${details}</section>
     <section class="dcard">${dhead('Social accounts','Connect your brand’s accounts. Creators see your follower counts on every campaign.')}
       <div class="soc-tiles">${tiles}${addTile}</div>
@@ -2674,19 +2671,7 @@ function profBrand(){
         <div class="tile"><span class="n">${st.creators.toLocaleString('en')}+</span><span class="l">Creators joined</span><span class="d">On every campaign</span></div>
         <div class="tile hl"><span class="n">${RSM(st.paid)}</span><span class="l">Paid to creators</span><span class="d">${RS(st.paid)} since ${esc(PROF.since)}</span></div>
         <div class="tile"><span class="n">${C.uber.metrics[0][1].replace(' ','')}</span><span class="l">Approval rate</span><span class="d">Approved in ${C.uber.metrics[1][1]}</span></div>
-      </div></section>
-    <section class="dcard">${dhead('Creator preview','How the “Campaign created by” card looks to creators')}
-      <div class="cd-body pf-preview"><div class="wcard cp-creatorcard">
-        <div class="col">
-          <div class="cp-identity"><img class="av" data-a="brandLogo" data-label="Ub" alt=""><div class="cp-idtext"><p class="name">${esc(PROF.name)}</p><p class="since">Since ${esc(PROF.since)}</p></div></div>
-          <p class="cp-cdesc">${esc(PROF.about)}</p>
-          <div class="cp-cmetrics">${metrics}</div>
-        </div>
-        <div class="col">
-          <div class="cp-stats"><div class="cp-stat"><span class="big">${RSM(st.paid)}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${st.campaigns}</span><span class="lbl">Campaigns</span></div></div>
-          ${conn.length?`<div class="handles">${conn.map(k=>`<div class="handle"><img class="pf" data-a="brandLogo" data-label="Ub" alt=""><div class="badge">${PLAT[k]}</div><span class="fc">${fmtK(PROF.socials[k].followers)}</span></div>`).join('')}</div>`:''}
-          <div class="cp-questions"><div class="btn-questions">Any questions?</div></div>
-        </div></div></div></section>`;
+      </div></section>`;
 }
 function profAccount(){
   const owner=profEdit==='account'
