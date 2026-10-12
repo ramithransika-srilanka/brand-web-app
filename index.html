@@ -3397,7 +3397,7 @@ document.addEventListener('submit',e=>{
   if(e.target.id!=='prof-form') return;
   e.preventDefault();
   for(const [k,v] of new FormData(e.target)) PROF[k]=String(v).trim()||PROF[k];
-  profEdit=null;saveProf();profRedraw();toast('Profile saved');
+  const k=e.target.dataset.k;profEdit=null;saveProf();profRedraw();toast(k==='bank'?'Bank details saved':'Profile saved');
 });
 document.addEventListener('change',e=>{if(e.target.id==='prof-file'){setBrandLogo(e.target.files[0]);e.target.value='';}});
 document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
