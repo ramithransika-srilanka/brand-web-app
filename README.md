@@ -72,18 +72,18 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     Can edit, View only; the line under the form says what the chosen level can do); they appear in Members as Pending,
     with a resend button. Each member has an access dropdown and a remove button (not for you). The team always keeps at
     least one active full admin. An Access levels card explains the three levels.
-  - **Account** (`/profile/account`) — the account owner (name, role, email, phone, editable), email notification
+  - **Account** (`/profile/account`) — the account owner (name, role, email, phone, editable), Bank details (account
+    holder, bank, branch, account number; only the brand adds or edits these, PolySocial sees them read-only), email notification
     switches and Security (change password, sign out — placeholders for now).
   Edits, the new logo, the team and the switches are kept in the browser's local storage (`brand.profile`).
 
 - **PolySocial admin: brands** — not linked from the brand app's menus; open `#/ps/brands`. Same dashboard frame:
   - **Brands** (`#/ps/brands`, `#/ps/brands/pending`) — every brand with category, status, campaigns, paid to creators
     and profile completion.
-  - **Create brand** (`#/ps/brands/new`) — logo, brand details, business details, the refund bank account (where
-    PolySocial sends money back), the account owner who gets the invite, and settings (review campaigns first, verified badge, send the invite now).
+  - **Create brand** (`#/ps/brands/new`) — logo, brand details, business details, the account owner who gets the invite, and settings (review campaigns first, verified badge, send the invite now).
   - **Brand profile** (`#/ps/brand/<id>`) — what the brand added on their side, each field marked with when the brand
     last edited it (old value struck through): Brand profile (details, social accounts, track record, business
-    details, settings), Team & account (owner, members, email notifications), Campaigns & wallet (wallet, refund bank account, campaigns), and Activity (every
+    details, settings), Team & account (owner, members, email notifications), Campaigns & wallet (wallet, the brand's bank details read-only, campaigns), and Activity (every
     change the brand made). Uber reads the brand's own edits from `brand.profile`; the other brands are list-only.
 
 ## Assets
