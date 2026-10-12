@@ -72,7 +72,8 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     Can edit, View only; the line under the form says what the chosen level can do); they appear in Members as Pending,
     with a resend button. Each member has an access dropdown and a remove button (not for you). The team always keeps at
     least one active full admin. An Access levels card explains the three levels.
-  - **Account** (`/profile/account`) — the account owner (name, role, email, phone, editable), email notification
+  - **Account** (`/profile/account`) — the account owner (name, role, email, phone, editable), Bank details (account
+    holder, bank, branch, account number; where PolySocial sends money back; only the brand adds or edits them), email notification
     switches and Security (change password, sign out — placeholders for now).
   Edits, the new logo, the team and the switches are kept in the browser's local storage (`brand.profile`).
 

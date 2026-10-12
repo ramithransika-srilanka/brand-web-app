@@ -2599,6 +2599,7 @@ const PROF=Object.assign({
   name:'Uber Sri Lanka',category:'Mobility',website:'uber.com/lk',location:'Colombo, Sri Lanka',since:'Mar 2026',
   about:'Rides, Moto and deliveries across Colombo. We work with local creators to show how Uber fits into everyday city life.',
   owner:'Ashan Silva',email:'ashan.silva@uber.lk',phone:'+94 77 123 4567',role:'Brand manager',logo:null,
+  bankHolder:'Uber Lanka (Pvt) Ltd',bankName:'Commercial Bank',bankBranch:'Colombo 02 (Union Place)',bankAcc:'1000 2984 4821',
   team:[{you:true,role:'admin',status:'active',at:Date.now()-2*DAY},
     {email:'nadeesha.f@uber.lk',role:'edit',status:'active',at:Date.now()-19*DAY},
     {email:'kasun.p@uber.lk',role:'view',status:'pending',at:Date.now()-DAY}],
@@ -2649,6 +2650,9 @@ function profSide(sec){
 }
 const pfRow=(k,v,cls='')=>`<div class="pf-row"><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
 const pfField=(k,l,t='text')=>`<label class="fl">${l}<input name="${k}" type="${t}" value="${esc(PROF[k])}" required autocomplete="off"></label>`;
+/* Bank details: where PolySocial sends money back to the brand. Only the brand adds or changes them. */
+const BANKS=['Commercial Bank','Hatton National Bank','Bank of Ceylon','People’s Bank','Sampath Bank','NDB Bank','Seylan Bank'];
+const maskAcc=n=>{const d=String(n).replace(/\s/g,'');return d?'•••• •••• '+d.slice(-4):'';};
 const pfFoot=`<div class="ff-foot"><button class="btn btn-sec" type="button" data-act="prof-cancel">Cancel</button><button class="btn btn-pri" type="submit">Save changes</button></div>`;
 
 function profBrand(){
@@ -2683,6 +2687,14 @@ function profAccount(){
         <div class="ff-2">${pfField('email','Email','email')}${pfField('phone','Phone','tel')}</div>${pfFoot}</form>`
     : `<div class="pf-rows">${pfRow('Full name',esc(PROF.owner))}${pfRow('Role',esc(PROF.role))}${pfRow('Email',esc(PROF.email))}${pfRow('Phone',esc(PROF.phone))}</div>`;
   return `<section class="dcard">${dhead('Account owner','',profEdit==='account'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="account">Edit</button>`)}${owner}</section>
+    <section class="dcard">${dhead('Bank details','Where PolySocial sends money back to you.',profEdit==='bank'?'':`<button class="btn btn-sec" type="button" data-act="prof-edit" data-k="bank">${PROF.bankAcc?'Edit':'Add'}</button>`)}
+      ${profEdit==='bank'
+        ? `<form class="ff pf-form" id="prof-form" data-k="bank">
+            <div class="ff-2">${pfField('bankHolder','Account holder name')}<label class="fl">Bank<select name="bankName">${BANKS.map(b=>`<option${b===PROF.bankName?' selected':''}>${b}</option>`).join('')}</select></label></div>
+            <div class="ff-2">${pfField('bankBranch','Branch')}${pfField('bankAcc','Account number')}</div>
+            <p class="tm-hint">Use an account in your registered company name.</p>${pfFoot}</form>`
+        : PROF.bankAcc?`<div class="pf-rows">${pfRow('Account holder',esc(PROF.bankHolder))}${pfRow('Bank',esc(PROF.bankName))}${pfRow('Branch',esc(PROF.bankBranch))}${pfRow('Account number',maskAcc(PROF.bankAcc))}</div>`
+        :`<p class="soc-empty">No bank details yet. Add them so PolySocial can send money back to you.</p>`}</section>
     <section class="dcard">${dhead('Email notifications')}
       <div class="pf-rows">${PROF_PREFS.map(([k,t,d])=>`<div class="pf-row tg"><span class="v">${t}<small>${d}</small></span><button class="pf-switch" type="button" role="switch" data-pref="${k}" aria-checked="${!!PROF.prefs[k]}" aria-label="${t}"></button></div>`).join('')}</div></section>
     <section class="dcard">${dhead('Security')}
@@ -3081,7 +3093,7 @@ function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
   if(a==='prof-logo') return document.getElementById('prof-file').click();
   if(a==='prof-edit'){
-    const k=el.dataset.k;if(parseHash().psec!==(k==='brand'?'brand':'account')){profEditNext=k;location.hash='#/profile/'+k;return;}
+    const k=el.dataset.k,to=k==='brand'?'brand':'account';if(parseHash().psec!==to){profEditNext=k;location.hash='#/profile/'+to;return;}
     profEdit=k;profRedraw();return view.querySelector('#prof-form input').focus();
   }
   if(a==='prof-cancel'){profEdit=null;return profRedraw();}
@@ -3171,7 +3183,7 @@ document.addEventListener('submit',e=>{
   if(e.target.id!=='prof-form') return;
   e.preventDefault();
   for(const [k,v] of new FormData(e.target)) PROF[k]=String(v).trim()||PROF[k];
-  profEdit=null;saveProf();profRedraw();toast('Profile saved');
+  const k=e.target.dataset.k;profEdit=null;saveProf();profRedraw();toast(k==='bank'?'Bank details saved':'Profile saved');
 });
 document.addEventListener('change',e=>{if(e.target.id==='prof-file'){setBrandLogo(e.target.files[0]);e.target.value='';}});
 document.addEventListener('change',e=>{if(e.target.id==='ff-file') pickFile(e.target.files[0]);
