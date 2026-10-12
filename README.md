@@ -79,11 +79,11 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
 - **PolySocial admin: brands** — not linked from the brand app's menus; open `#/ps/brands`. Same dashboard frame:
   - **Brands** (`#/ps/brands`, `#/ps/brands/pending`) — every brand with category, status, campaigns, paid to creators
     and profile completion.
-  - **Create brand** (`#/ps/brands/new`) — logo and cover, brand details, business details, the account owner who gets
-    the invite, and settings (review campaigns first, verified badge, send the invite now).
+  - **Create brand** (`#/ps/brands/new`) — logo, brand details, business details, the refund bank account (where
+    PolySocial sends money back), the account owner who gets the invite, and settings (review campaigns first, verified badge, send the invite now).
   - **Brand profile** (`#/ps/brand/<id>`) — what the brand added on their side, each field marked with when the brand
     last edited it (old value struck through): Brand profile (details, social accounts, track record, business
-    details, settings), Team & account (owner, members, email notifications), Campaigns & wallet, and Activity (every
+    details, settings), Team & account (owner, members, email notifications), Campaigns & wallet (wallet, refund bank account, campaigns), and Activity (every
     change the brand made). Uber reads the brand's own edits from `brand.profile`; the other brands are list-only.
 
 ## Assets

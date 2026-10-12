@@ -1067,7 +1067,8 @@
   .ad-edited.adm{color:var(--grey-500);}
   .pf-row .v .was{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--grey-500);text-decoration:line-through;}
   .ad-media{display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;}
-  .ad-media .drop{justify-content:center;height:132px;padding:12px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .ad-media>.ff{margin-top:0;}
+  .ad-media .drop{justify-content:center;height:160px;padding:12px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .ad-media .drop b{font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);}
   .ad-media .drop svg{width:22px;height:22px;margin-bottom:4px;color:var(--grey-600);}
   .ad-media .drop.has{border-style:solid;border-color:var(--line);}
@@ -2873,9 +2874,8 @@ function viewAdCreate(){
       <div class="ff">
         <div class="ad-media">
           <div><div class="ad-lbl">Logo</div><label class="drop has"><input type="file" accept="image/*"><img data-a="pepsi" data-label="Pe" alt=""><b>Replace</b></label></div>
-          <div><div class="ad-lbl">Cover image <small style="font-weight:500;color:var(--grey-500)">optional</small></div><label class="drop"><input type="file" accept="image/*">${IMGIC}<b>Upload a cover</b>1600 × 600 px · JPG or PNG, up to 5 MB</label></div>
+          <div class="ff">${fl('Brand name',inp('e.g. Uber Sri Lanka','Pepsi Sri Lanka'))}${fl('Category',sel(['Food','Mobility','Entertainment','Lifestyle','Price'],'Food'))}</div>
         </div>
-        <div class="ff-2">${fl('Brand name',inp('e.g. Uber Sri Lanka','Pepsi Sri Lanka'))}${fl('Category',sel(['Food','Mobility','Entertainment','Lifestyle','Price'],'Food'))}</div>
         <div class="ff-2">${fl('Website',inp('brand.lk','pepsi.lk'))}${fl('Location',inp('City, country','Colombo, Sri Lanka'))}</div>
         <label class="fl">About<textarea maxlength="240" placeholder="What creators should know about the brand">Refreshing Sri Lanka since 1964. We partner with creators who bring big summer energy to music, sport and street food.</textarea></label>
       </div></section>
@@ -2883,6 +2883,12 @@ function viewAdCreate(){
       <div class="ff">
         <div class="ff-2">${fl('Registered company name',inp('As on the business registration','Varun Beverages Lanka (Pvt) Ltd'))}${fl('Business registration no.',inp('PV 00000000'))}</div>
         <div class="ff-2">${fl('VAT number',inp('Optional'))}${fl('Head office',inp('Street, city'))}</div>
+      </div></section>
+    <section class="dcard">${dhead('Refund bank account','Where PolySocial sends money back to the brand: unspent wallet balance, cancelled campaigns or a duplicate transfer.')}
+      <div class="ff">
+        <div class="ff-2">${fl('Account holder name',inp('As shown on the bank account','Varun Beverages Lanka (Pvt) Ltd'))}${fl('Bank',sel(['Commercial Bank','Hatton National Bank','Bank of Ceylon','People’s Bank','Sampath Bank','NDB Bank','Seylan Bank'],'Commercial Bank'))}</div>
+        <div class="ff-2">${fl('Branch',inp('e.g. Colombo 03','Kollupitiya'))}${fl('Account number',inp('Account number'))}</div>
+        <p class="ad-note">The account must be in the registered company name. Only PolySocial can change it, so refunds can’t be redirected.</p>
       </div></section>
     <section class="dcard">${dhead('Account owner','Gets the invite and joins the brand’s team as Full admin.')}
       <div class="ff">
@@ -2901,6 +2907,7 @@ function viewAdCreate(){
 }
 
 /* ---------- Brand profile, as PolySocial sees it: everything the brand added, with when they last changed it ---------- */
+const AD_BANK=[['Account holder','Uber Lanka (Pvt) Ltd'],['Bank','Commercial Bank'],['Branch','Colombo 02 (Union Place)'],['Account number','•••• •••• 4821']];
 const AD_BIZ=[['Registered name','Uber Lanka (Pvt) Ltd'],['Business registration no.','PV 00184420'],['VAT number','114 552 901-7000'],['Head office','42 Navam Mawatha, Colombo 02']];
 const AD_EDITS={name:'Added Mar 2026',category:'Added Mar 2026',website:'Edited 3 wk ago',location:'Added Mar 2026',about:'Edited 2 d ago'};
 const AD_ACT=[
@@ -2976,6 +2983,8 @@ function adCampaigns(){
         <div class="tile"><span class="n">${RS(t.added??0)}</span><span class="l">Total added</span><span class="d">Verified bank transfers</span></div>
         <div class="tile"><span class="n">${RS(t.spent??0)}</span><span class="l">Total spent</span><span class="d">Since ${esc(PROF.since)}</span></div>
       </div></section>
+    <section class="dcard">${dhead('Refund bank account','Where refunds and unspent balance go back to the brand',`<button class="btn btn-sec" type="button" data-act="soon">Edit</button>`)}
+      <div class="pf-rows">${AD_BANK.map(([k,v],i)=>adRow(k,v,i===3?'Added Mar 2026':'')).join('')}</div></section>
     <section class="dcard">${dhead('Campaigns','',`<span class="count">${camps.length} campaigns</span>`)}
       <div class="tc-wrap"><table class="tc tc-camp"><thead><tr><th>Campaign</th><th style="text-align:left">Status</th><th>Budget</th><th>Spent</th><th>Used</th></tr></thead>
       <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/news">${c.title}</a></span></td>
