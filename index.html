@@ -1052,6 +1052,43 @@
   .pf-switch[aria-checked="true"]{background:var(--blue-500);}
   .pf-switch[aria-checked="true"]::after{transform:translateX(16px);}
   .pf-switch:focus-visible{outline:2px solid var(--blue-300);outline-offset:2px;}
+
+  /* ================= PolySocial admin: brands list · create brand · brand profile ================= */
+  .ad-st{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;}
+  .ad-st::before{content:"";width:7px;height:7px;border-radius:100px;background:currentColor;}
+  .ad-st.ok{color:var(--good);} .ad-st.pend{color:var(--blue-500);} .ad-st.wait{color:#a35a00;} .ad-st.off{color:var(--grey-600);}
+  .tc-brands td:first-child{width:250px;white-space:normal;}
+  .tc-brands .who img{flex-shrink:0;border:1px solid var(--line);background:#fff;}
+  .tc-brands .who small{display:block;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .tc-brands .bar{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .tc-brands .bar i{display:block;width:72px;height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
+  .tc-brands .bar i b{display:block;height:100%;border-radius:inherit;background:var(--blue-500);}
+  .ad-edited{font-size:12px;font-weight:500;line-height:16px;color:var(--blue-600);white-space:nowrap;}
+  .ad-edited.adm{color:var(--grey-500);}
+  .pf-row .v .was{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--grey-500);text-decoration:line-through;}
+  .ad-media{display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;}
+  .ad-media .drop{justify-content:center;height:132px;padding:12px;font-size:12px;line-height:16px;color:var(--grey-600);}
+  .ad-media .drop b{font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);}
+  .ad-media .drop svg{width:22px;height:22px;margin-bottom:4px;color:var(--grey-600);}
+  .ad-media .drop.has{border-style:solid;border-color:var(--line);}
+  .ad-media .drop.has img{width:64px;height:64px;border-radius:100px;object-fit:cover;border:1px solid var(--line);margin-bottom:4px;}
+  .ad-lbl{margin-bottom:6px;font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);}
+  .ad-note{font-size:14px;line-height:20px;color:var(--grey-600);max-width:440px;}
+  .ad-feed{display:flex;flex-direction:column;margin-top:18px;}
+  .ad-feed li{list-style:none;position:relative;display:flex;gap:12px;padding-bottom:20px;}
+  .ad-feed li::after{content:"";position:absolute;left:17px;top:40px;bottom:4px;width:1px;background:var(--line);}
+  .ad-feed li:last-child{padding-bottom:0;}
+  .ad-feed li:last-child::after{display:none;}
+  .ad-feed .tm-av{width:36px;height:36px;flex-shrink:0;}
+  .ad-feed .t{flex:1;min-width:0;font-size:14px;line-height:20px;color:var(--grey-800);}
+  .ad-feed .t b{font-weight:600;}
+  .ad-feed .t small{display:block;margin-top:2px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .ad-feed .diff{display:flex;flex-direction:column;gap:2px;margin-top:8px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;font-size:13px;line-height:19px;}
+  .ad-feed .diff s{color:var(--grey-500);}
+  .ad-feed .diff span{color:var(--grey-800);}
+  .ad-role{font-size:14px;font-weight:500;color:var(--grey-700);white-space:nowrap;}
+  .ad-on{font-size:14px;font-weight:600;color:var(--good);} .ad-on.no{color:var(--grey-500);}
+  @media (max-width:767px){.ad-media{grid-template-columns:minmax(0,1fr);}}
   /* Team: invite form and members, on the Creators list styles */
   .tm-form{display:grid;grid-template-columns:minmax(0,1fr) 220px auto;align-items:end;gap:12px;margin-top:18px;}
   .tm-form .btn{height:40px;}
@@ -2782,6 +2819,178 @@ function setBrandLogo(file){
   img.src=url;
 }
 
+
+/* ================= PolySocial admin: brands on the platform ================= */
+/* Brands the PolySocial team manages. Uber is the brand this app is logged in as, so its profile reads the brand's own edits (PROF). */
+const ABRANDS={
+  uber:{name:()=>PROF.name,logo:'brandLogo',cover:'card1',abbr:'Ub',cat:()=>PROF.category,status:'Active',since:'Mar 2026',campaigns:8,paid:1738124,done:92,owner:()=>PROF.email},
+  starbucks:{name:'Starbucks Sri Lanka',logo:'starbucks',abbr:'St',cat:'Food',status:'Active',since:'Mar 2026',campaigns:48,paid:2600000,done:100,owner:'nadeesha.p@starbucks.lk'},
+  hiru:{name:'Hiru TV',logo:'logo3',abbr:'Hi',cat:'Entertainment',status:'Active',since:'Jan 2026',campaigns:120,paid:5200000,done:97,owner:'media@hirutv.lk'},
+  burgerking:{name:'Burger King LK',logo:'burgerking',abbr:'BK',cat:'Food',status:'Active',since:'Jun 2026',campaigns:11,paid:940000,done:85,owner:'marketing@burgerking.lk'},
+  dominos:{name:'Domino’s Pizza LK',logo:'dominos',abbr:'Do',cat:'Food',status:'Onboarding',since:'Oct 2026',campaigns:0,paid:0,done:45,owner:'brand@dominos.lk'},
+  pepsi:{name:'Pepsi Sri Lanka',logo:'pepsi',abbr:'Pe',cat:'Food',status:'Invite sent',since:'Oct 2026',campaigns:0,paid:0,done:10,owner:'dilan.j@pepsi.lk'},
+};
+const av=(o,k)=>typeof o[k]==='function'?o[k]():o[k];
+const ADSECS=[['overview','Brand profile'],['team','Team & account'],['campaigns','Campaigns & wallet'],['activity','Activity']];
+const adSt=s=>`<span class="ad-st ${s==='Active'?'ok':s==='Invite sent'?'pend':s==='Suspended'?'off':'wait'}">${s}</span>`;
+const PLUSIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+const IMGIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>';
+
+/* Left card for the brands list and the create form */
+function adListSide(sec){
+  const all=Object.keys(ABRANDS).length, inv=Object.values(ABRANDS).filter(b=>b.status!=='Active').length;
+  const items=[['all','All brands',all],['pending','Not live yet',inv]];
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${sec==='new'?'Create brand':'Brands'}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
+    <div class="dsh-id">
+      <div class="dsh-head"><h1 class="dsh-title">Brands</h1><span class="pf-sub">PolySocial admin</span></div>
+      <a class="dsh-viewas" href="#/ps/brands/new"${sec==='new'?' aria-current="page"':''}>${PLUSIC}Create brand</a>
+    </div>
+    <nav class="dsh-menu" aria-label="Brands">${items.map(([k,l,n])=>`<a href="#/ps/brands${k==='all'?'':'/'+k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span><span class="badge-n" style="background:var(--grey-100);color:var(--grey-700)">${n}</span></a>`).join('')}</nav>
+  </aside>`;
+}
+function viewAdBrands(sec){
+  const ids=Object.keys(ABRANDS).filter(id=>sec!=='pending'||ABRANDS[id].status!=='Active');
+  const rows=ids.map(id=>{const b=ABRANDS[id];
+    return `<tr><td><span class="who"><img data-a="${b.logo}" data-label="${b.abbr}" alt=""><span><a href="#/ps/brand/${id}">${esc(av(b,'name'))}</a><small>${esc(av(b,'owner'))}</small></span></span></td>
+      <td style="text-align:left">${esc(av(b,'cat'))}</td><td style="text-align:left">${adSt(b.status)}</td><td>${b.campaigns}</td><td>${b.paid?RSM(b.paid):'—'}</td>
+      <td><span class="bar"><i><b style="width:${b.done}%"></b></i>${b.done}%</span></td></tr>`;}).join('');
+  return `<div class="dsh">${adListSide(sec)}<div class="dsh-main">
+    <section class="dcard">${dhead(sec==='pending'?'Not live yet':'All brands',sec==='pending'?'Invited or still setting up their profile':'Every brand on PolySocial',`<a class="btn btn-pri" href="#/ps/brands/new">${PLUSIC}Create brand</a>`)}
+      <div class="tc-wrap"><table class="tc tc-brands"><thead><tr><th>Brand</th><th style="text-align:left">Category</th><th style="text-align:left">Status</th><th>Campaigns</th><th>Paid to creators</th><th>Profile</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+  </div></div>`;
+}
+
+function viewAdCreate(){
+  const fl=(l,inner)=>`<label class="fl">${l}${inner}</label>`;
+  const inp=(ph,v='',t='text')=>`<input type="${t}" placeholder="${ph}" value="${v}" autocomplete="off">`;
+  const sel=(opts,v)=>`<select>${opts.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select>`;
+  const sw=(k,t,d,on)=>`<div class="pf-row tg"><span class="v">${t}<small>${d}</small></span><button class="pf-switch" type="button" role="switch" data-adsw="${k}" aria-checked="${on}" aria-label="${t}"></button></div>`;
+  return `<div class="dsh">${adListSide('new')}<div class="dsh-main">
+    <section class="dcard">${dhead('Create a brand','Set up the basics. The brand adds the rest after they log in.')}
+      <div class="ff">
+        <div class="ad-media">
+          <div><div class="ad-lbl">Logo</div><label class="drop has"><input type="file" accept="image/*"><img data-a="pepsi" data-label="Pe" alt=""><b>Replace</b></label></div>
+          <div><div class="ad-lbl">Cover image <small style="font-weight:500;color:var(--grey-500)">optional</small></div><label class="drop"><input type="file" accept="image/*">${IMGIC}<b>Upload a cover</b>1600 × 600 px · JPG or PNG, up to 5 MB</label></div>
+        </div>
+        <div class="ff-2">${fl('Brand name',inp('e.g. Uber Sri Lanka','Pepsi Sri Lanka'))}${fl('Category',sel(['Food','Mobility','Entertainment','Lifestyle','Price'],'Food'))}</div>
+        <div class="ff-2">${fl('Website',inp('brand.lk','pepsi.lk'))}${fl('Location',inp('City, country','Colombo, Sri Lanka'))}</div>
+        <label class="fl">About<textarea maxlength="240" placeholder="What creators should know about the brand">Refreshing Sri Lanka since 1964. We partner with creators who bring big summer energy to music, sport and street food.</textarea></label>
+      </div></section>
+    <section class="dcard">${dhead('Business details','For contracts and payouts. Only PolySocial and the brand see these.')}
+      <div class="ff">
+        <div class="ff-2">${fl('Registered company name',inp('As on the business registration','Varun Beverages Lanka (Pvt) Ltd'))}${fl('Business registration no.',inp('PV 00000000'))}</div>
+        <div class="ff-2">${fl('VAT number',inp('Optional'))}${fl('Head office',inp('Street, city'))}</div>
+      </div></section>
+    <section class="dcard">${dhead('Account owner','Gets the invite and joins the brand’s team as Full admin.')}
+      <div class="ff">
+        <div class="ff-2">${fl('Full name',inp('First and last name','Dilan Jayasuriya'))}${fl('Role',inp('e.g. Brand manager','Brand manager'))}</div>
+        <div class="ff-2">${fl('Work email',inp('name@brand.com','dilan.j@pepsi.lk','email'))}${fl('Phone',inp('+94 77 000 0000','','tel'))}</div>
+      </div></section>
+    <section class="dcard">${dhead('Settings')}
+      <div class="pf-rows">
+        ${sw('review','Review campaigns before they go live','PolySocial approves each new campaign from this brand',true)}
+        ${sw('verified','Verified brand','Shows the verified badge to creators',false)}
+        ${sw('invite','Send the invite email now','The owner sets a password and completes the profile',true)}
+      </div></section>
+    <section class="dcard"><div class="ff-foot" style="gap:8px"><p class="ad-note">After they log in, the brand adds their social accounts, team and notification settings.</p>
+      <a class="btn btn-sec" href="#/ps/brands">Cancel</a><button class="btn btn-pri" type="button" data-act="ad-create" style="margin-left:0">Create brand</button></div></section>
+  </div></div>`;
+}
+
+/* ---------- Brand profile, as PolySocial sees it: everything the brand added, with when they last changed it ---------- */
+const AD_BIZ=[['Registered name','Uber Lanka (Pvt) Ltd'],['Business registration no.','PV 00184420'],['VAT number','114 552 901-7000'],['Head office','42 Navam Mawatha, Colombo 02']];
+const AD_EDITS={name:'Added Mar 2026',category:'Added Mar 2026',website:'Edited 3 wk ago',location:'Added Mar 2026',about:'Edited 2 d ago'};
+const AD_ACT=[
+  ['A','Ashan Silva','updated the <b>About</b> text','2 d ago',['We connect riders and drivers across Colombo.','Rides, Moto and deliveries across Colombo. We work with local creators to show how Uber fits into everyday city life.']],
+  ['A','Ashan Silva','invited <b>kasun.p@uber.lk</b> as View only','1 d ago',null],
+  ['N','nadeesha.f@uber.lk','connected <b>LinkedIn</b> · Uber Sri Lanka','5 d ago',null],
+  ['A','Ashan Silva','changed the <b>website</b>','3 wk ago',['uber.com','uber.com/lk']],
+  ['A','Ashan Silva','invited <b>nadeesha.f@uber.lk</b> as Can edit','3 wk ago',null],
+  ['A','Ashan Silva','launched <b>Uber Moto UGC campaign</b>','1 mo ago',null],
+  ['A','Ashan Silva','connected <b>Instagram</b> and <b>TikTok</b>','Mar 2026',null],
+  ['A','Ashan Silva','accepted the invite and set up the profile','Mar 2026',null],
+  ['P','PolySocial','created the brand','Mar 2026',null]];
+function adBrandSide(id,sec){
+  const b=ABRANDS[id];
+  return `<div class="dsh-bar"><button class="dsh-toggle" data-side="open" aria-expanded="false" aria-controls="dsh-side">${MENUIC}<span>${ADSECS.find(x=>x[0]===sec)[1]}</span></button></div>
+  <div class="dsh-scrim" data-side="close" aria-hidden="true"></div>
+  <aside class="dcard dsh-side" id="dsh-side">
+    <button class="dsh-close" data-side="close" aria-label="Close menu">${XIC}</button>
+    <div class="pf-cover"><img data-a="${b.cover||'card1'}" data-label="${b.abbr}" alt=""><div class="pf-logo"><img data-a="${b.logo}" data-label="${b.abbr}" alt=""></div></div>
+    <div class="dsh-id">
+      <div class="dsh-head"><h1 class="dsh-title">${esc(av(b,'name'))}</h1><span class="pf-sub">${esc(av(b,'cat'))} · Since ${b.since}</span></div>
+      ${adSt(b.status)}
+      <button class="dsh-viewas" type="button" data-act="soon">${EDITIC}Edit brand</button>
+    </div>
+    <nav class="dsh-menu" aria-label="Brand">${ADSECS.map(([k,l])=>`<a href="#/ps/brand/${id}/${k}"${k===sec?' class="on" aria-current="page"':''}><span>${l}</span></a>`).join('')}</nav>
+  </aside>`;
+}
+const adRow=(k,v,edited,cls='')=>`<div class="pf-row"><span class="k">${k}</span><span class="v ${cls}">${v}</span>${edited?`<span class="ad-edited${edited.startsWith('Edited')?'':' adm'}">${edited}</span>`:''}</div>`;
+function adOverview(){
+  const st=profStats(), conn=socConnected(), reach=conn.reduce((a,k)=>a+PROF.socials[k].followers,0);
+  const ed=k=>AD_EDITS[k];
+  return `<section class="dcard">${dhead('Brand profile','What the brand shows creators. Last edited by the brand 2 d ago.')}
+      <div class="pf-rows">${adRow('Brand name',esc(PROF.name),ed('name'))}${adRow('Category',esc(PROF.category),ed('category'))}
+        ${adRow('Website',`<a class="dlink" href="https://${esc(PROF.website.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener">${esc(PROF.website)}</a><span class="was">uber.com</span>`,ed('website'))}
+        ${adRow('Location',esc(PROF.location),ed('location'))}${adRow('About',esc(PROF.about),ed('about'),'long')}</div></section>
+    <section class="dcard">${dhead('Social accounts','',`<span class="count">Connected by the brand</span>`)}
+      <div class="soc-tiles">${conn.map(k=>{const a=PROF.socials[k];return `<div class="soc-tile"><span class="soc-pic"><img data-a="brandLogo" data-label="Ub" alt=""><span class="badge">${PLAT[k]}</span></span><b>${fmtK(a.followers)}</b><span>${esc(a.handle)}</span></div>`;}).join('')}</div>
+      <p class="soc-total"><b>${fmtK(reach)}</b> followers across ${conn.length} account${conn.length>1?'s':''} · updated daily</p></section>
+    <section class="dcard">${dhead('Track record')}
+      <div class="tiles">
+        <div class="tile"><span class="n">${st.campaigns}</span><span class="l">Campaigns</span><span class="d">${st.active} active now</span></div>
+        <div class="tile"><span class="n">${st.creators.toLocaleString('en')}+</span><span class="l">Creators joined</span><span class="d">On every campaign</span></div>
+        <div class="tile hl"><span class="n">${RSM(st.paid)}</span><span class="l">Paid to creators</span><span class="d">${RS(st.paid)} since ${esc(PROF.since)}</span></div>
+        <div class="tile"><span class="n">${C.uber.metrics[0][1].replace(' ','')}</span><span class="l">Approval rate</span><span class="d">Approved in ${C.uber.metrics[1][1]}</span></div>
+      </div></section>
+    <section class="dcard">${dhead('Business details','Set by PolySocial when the brand was created',`<button class="btn btn-sec" type="button" data-act="soon">Edit</button>`)}
+      <div class="pf-rows">${AD_BIZ.map(([k,v])=>adRow(k,v)).join('')}</div></section>
+    <section class="dcard">${dhead('Settings')}
+      <div class="pf-rows">
+        <div class="pf-row tg"><span class="v">Review campaigns before they go live<small>PolySocial approves each new campaign from this brand</small></span><button class="pf-switch" type="button" role="switch" data-adsw="review" aria-checked="true" aria-label="Review campaigns"></button></div>
+        <div class="pf-row tg"><span class="v">Verified brand<small>Shows the verified badge to creators</small></span><button class="pf-switch" type="button" role="switch" data-adsw="verified" aria-checked="true" aria-label="Verified brand"></button></div>
+        <div class="pf-row tg"><span class="v">Suspend brand<small>Pauses every live campaign and blocks log in</small></span><button class="btn btn-bad" type="button" data-act="soon">Suspend</button></div>
+      </div></section>`;
+}
+function adTeam(){
+  const rows=PROF.team.map(m=>{const e=tmEmail(m),pend=m.status==='pending';
+    return `<div class="inv-row tm-row"><span class="tm-av${pend?' pend':''}" aria-hidden="true">${esc(e[0])}</span>
+      <div class="t"><b>${esc(e)}${m.you?' <em>(owner)</em>':''}</b><span class="sub">${pend?`Invited ${ago(m.at)} · hasn’t logged in yet`:`Active · joined ${ago(m.at)}`}</span></div>
+      <span class="ad-role">${ROLES.find(r=>r[0]===m.role)[1]}</span></div>`;}).join('');
+  return `<section class="dcard">${dhead('Account owner','Added by PolySocial, kept up to date by the brand')}
+      <div class="pf-rows">${adRow('Full name',esc(PROF.owner))}${adRow('Role',esc(PROF.role))}${adRow('Email',esc(PROF.email))}${adRow('Phone',esc(PROF.phone)+'<span class="was">+94 11 234 5678</span>','Edited 3 wk ago')}</div></section>
+    <section class="dcard">${dhead('Team','',`<span class="count">${PROF.team.length} people · invited by the brand</span>`)}
+      <div class="inv-list tm-list">${rows}</div></section>
+    <section class="dcard">${dhead('Email notifications','What the brand chose to get by email')}
+      <div class="pf-rows">${PROF_PREFS.map(([k,t,d])=>`<div class="pf-row tg"><span class="v">${t}<small>${d}</small></span><span class="ad-on${PROF.prefs[k]?'':' no'}">${PROF.prefs[k]?'On':'Off'}</span></div>`).join('')}</div></section>`;
+}
+function adCampaigns(){
+  const t=finTotals();
+  const camps=EXPLORE.map(id=>({id,c:C[id],sp:num(C[id].spent)}));
+  return `<section class="dcard">${dhead('Wallet')}
+      <div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="tile hl"><span class="n">${RS(t.balance)}</span><span class="l">Wallet balance</span><span class="d">Free to spend on campaigns</span></div>
+        <div class="tile"><span class="n">${RS(t.added??0)}</span><span class="l">Total added</span><span class="d">Verified bank transfers</span></div>
+        <div class="tile"><span class="n">${RS(t.spent??0)}</span><span class="l">Total spent</span><span class="d">Since ${esc(PROF.since)}</span></div>
+      </div></section>
+    <section class="dcard">${dhead('Campaigns','',`<span class="count">${camps.length} campaigns</span>`)}
+      <div class="tc-wrap"><table class="tc tc-camp"><thead><tr><th>Campaign</th><th style="text-align:left">Status</th><th>Budget</th><th>Spent</th><th>Used</th></tr></thead>
+      <tbody>${camps.map(({id,c,sp})=>`<tr><td><span class="who"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><a href="#/campaign/${id}/admin/news">${c.title}</a></span></td>
+        <td style="text-align:left">${adSt(c.status==='active'?'Active':c.status==='upcoming'?'Upcoming':'Completed')}</td><td>${RS(c.budgetN)}</td><td>${RS(sp)}</td><td>${pct(sp,c.budgetN)}%</td></tr>`).join('')}</tbody></table></div></section>`;
+}
+function adActivity(){
+  return `<section class="dcard">${dhead('Activity','Every change the brand made to their profile, team and campaigns')}
+    <ul class="ad-feed">${AD_ACT.map(([i,who,what,when,diff])=>`<li><span class="tm-av${i==='P'?' pend':''}" aria-hidden="true">${i}</span><div class="t"><b>${esc(who)}</b> ${what}<small>${when}</small>
+      ${diff?`<div class="diff"><s>${esc(diff[0])}</s><span>${esc(diff[1])}</span></div>`:''}</div></li>`).join('')}</ul></section>`;
+}
+function viewAdBrand(id,sec){
+  if(id!=='uber') return `<div class="dsh">${adBrandSide(id,sec)}<div class="dsh-main"><section class="dcard">${dhead(esc(av(ABRANDS[id],'name')),'The full profile demo is on Uber Sri Lanka.',`<a class="btn btn-sec" href="#/ps/brand/uber">Open Uber</a>`)}</section></div></div>`;
+  return `<div class="dsh">${adBrandSide(id,sec)}<div class="dsh-main">${sec==='team'?adTeam():sec==='campaigns'?adCampaigns():sec==='activity'?adActivity():adOverview()}</div></div>`;
+}
+
 /* ---------- Reel: tap to pause/play, progress runs on a display-synced clock ---------- */
 let media=[];
 function stopMedia(){media.forEach(m=>m.stop());media=[];}
@@ -2900,6 +3109,7 @@ const view=document.getElementById('view');
 const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
+  if(root==='ps') return {root,id:null,admin:false,ps:id==='brand'&&ABRANDS[mode]?{brand:mode,sec:ADSECS.some(x=>x[0]===sec)?sec:'overview'}:{list:mode==='new'||mode==='pending'?mode:'all'},post:null};
   if(root==='profile') return {root,id:null,admin:false,psec:PSECTIONS.some(x=>x[0]===id)?id:'brand',post:null};
   if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
   return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:campaign&&secsFor(campaign).some(x=>x[0]===sec)?sec:'news',post:/^\d+$/.test(post||'')?+post:null};
@@ -2928,26 +3138,27 @@ function holdSide(old){
 function scrollThread(){const m=document.getElementById('ib-msgs')||document.getElementById('wn-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
-  const {root,id,admin,sec,post,fsec,toTx,psec}=parseHash();
+  const {root,id,admin,sec,post,fsec,toTx,psec,ps}=parseHash();
   const campaign=!!id;
+  const psa=!campaign&&root==='ps';
   const notifs=!campaign&&root==='notifications';
   const fin=!campaign&&root==='financials';
   const prof=!campaign&&root==='profile';
   profEdit=prof?profEditNext:null;profEditNext=null;
-  if(!campaign&&!notifs&&!fin&&!prof) state.tab=TABS[root]?root:'active';
+  if(!campaign&&!notifs&&!fin&&!prof&&!psa) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
   /* Switching sections inside one campaign's dashboard keeps the left column as it is; only the menu item changes */
-  const dkey=admin?id:fin?'#fin':prof?'#prof':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
+  const dkey=admin?id:fin?'#fin':prof?'#prof':psa?'#ps'+(ps.brand||''):null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
   const keepSide=inDash&&view.querySelector('.dsh-side');
-  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):prof?viewProfile(psec):viewExplore();
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):prof?viewProfile(psec):psa?(ps.brand?viewAdBrand(ps.brand,ps.sec):ps.list==='new'?viewAdCreate():viewAdBrands(ps.list)):viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
-  document.body.classList.toggle('dash',admin||fin||prof);
+  document.body.classList.toggle('dash',admin||fin||prof||psa);
   document.body.classList.toggle('notifs',notifs);
   document.body.classList.toggle('fin',fin);
-  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin&&!prof);
+  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin&&!prof&&!psa);
   const avl=document.getElementById('top-avlink');if(prof) avl.setAttribute('aria-current','page'); else avl.removeAttribute('aria-current');
   if(campaign&&!admin){
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
@@ -2971,10 +3182,10 @@ function route(){
   const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) (matchMedia('(max-width:1023px)').matches?open.closest('.pitem'):open).scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
   /* The search button only belongs on the Explore page */
-  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin||prof;
-  if(campaign||notifs||fin||prof) sb.classList.remove('on');
+  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin||prof||psa;
+  if(campaign||notifs||fin||prof||psa) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':prof?PSECTIONS.find(x=>x[0]===psec)[1]:fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.title=psa?(ps.brand?ADSECS.find(x=>x[0]===ps.sec)[1]+' · '+av(ABRANDS[ps.brand],'name'):ps.list==='new'?'Create brand':'Brands')+' — PolySocial admin':(admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':prof?PSECTIONS.find(x=>x[0]===psec)[1]:fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
   document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&!prof&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   setTopMenu(false);
   document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=!prof&&a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
@@ -3025,6 +3236,8 @@ document.addEventListener('click',e=>{
   const t=e.target;
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();heart.classList.toggle('liked');return;}
+  const adsw=t.closest('[data-adsw]');
+  if(adsw){adsw.setAttribute('aria-checked',adsw.getAttribute('aria-checked')!=='true');return;}
   const pref=t.closest('[data-pref]');
   if(pref){const on=pref.getAttribute('aria-checked')!=='true';pref.setAttribute('aria-checked',on);PROF.prefs[pref.dataset.pref]=on;saveProf();return;}
   if(t.closest('[data-tmenu]')){setTopMenu(!document.getElementById('tmenu').classList.contains('open'));return;}
@@ -3079,6 +3292,7 @@ document.addEventListener('click',e=>{
 function refreshNotifs(){updateBell();if(document.body.classList.contains('notifs')){view.innerHTML=viewNotifs();bindAssets(view);}}
 function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
+  if(a==='ad-create'){toast('Brand created · invite sent to the owner');location.hash='#/ps/brands/pending';return;}
   if(a==='prof-logo') return document.getElementById('prof-file').click();
   if(a==='prof-edit'){
     const k=el.dataset.k;if(parseHash().psec!==(k==='brand'?'brand':'account')){profEditNext=k;location.hash='#/profile/'+k;return;}

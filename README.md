@@ -76,6 +76,16 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
     switches and Security (change password, sign out — placeholders for now).
   Edits, the new logo, the team and the switches are kept in the browser's local storage (`brand.profile`).
 
+- **PolySocial admin: brands** — not linked from the brand app's menus; open `#/ps/brands`. Same dashboard frame:
+  - **Brands** (`#/ps/brands`, `#/ps/brands/pending`) — every brand with category, status, campaigns, paid to creators
+    and profile completion.
+  - **Create brand** (`#/ps/brands/new`) — logo and cover, brand details, business details, the account owner who gets
+    the invite, and settings (review campaigns first, verified badge, send the invite now).
+  - **Brand profile** (`#/ps/brand/<id>`) — what the brand added on their side, each field marked with when the brand
+    last edited it (old value struck through): Brand profile (details, social accounts, track record, business
+    details, settings), Team & account (owner, members, email notifications), Campaigns & wallet, and Activity (every
+    change the brand made). Uber reads the brand's own edits from `brand.profile`; the other brands are list-only.
+
 ## Assets
 
 `assets.js` holds the images and icons shared with the creator web app. It is generated, not edited by hand:
