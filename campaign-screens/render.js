@@ -31,8 +31,22 @@ const server = http.createServer((req, res) => {
     await p.goto(`file://${dir}/screens.html?s=${id}&map=${encodeURIComponent(MAP)}&mapH=${mapH}`, { waitUntil: 'networkidle' });
     await p.evaluate(() => document.fonts.ready);
     await p.addStyleTag({ content: '*{animation:none !important}' });
+    // Creator view: open the brand web app's own "View as creator" drawer, with this campaign's data
+    const inject = await p.evaluate(() => window.CV_INJECT || null);
+    if (inject) {
+      const f = p.frames().find(fr => fr.url().includes('/brand-web-app/index.html'));
+      await f.waitForFunction(() => typeof openCampaignDrawer === 'function');
+      await f.evaluate(({ id, data, assets }) => {
+        Object.assign(A, assets); C[id] = data;
+        const st = document.createElement('style');
+        st.textContent = 'html,body{background:transparent !important} body>*:not(#cdrawer){visibility:hidden !important} #cdrawer *{transition:none !important}';
+        document.head.appendChild(st);
+        openCampaignDrawer(id);
+      }, inject);
+    }
     // The map reveals its sections as they scroll into view, so show the whole page at once
-    const h = await p.evaluate(() => document.documentElement.scrollHeight);
+    let h = await p.evaluate(() => document.documentElement.scrollHeight);
+    if (inject) h = Math.max(h, 52 + await p.frames().find(fr => fr.url().includes('/brand-web-app/index.html')).evaluate(() => document.getElementById('cd-body').scrollHeight));
     await p.setViewportSize({ width: 1440, height: h });
     await p.waitForTimeout(id.includes('creators') ? 1500 : 150);
     await p.screenshot({ path: path.join(out, id + '.png'), fullPage: true });

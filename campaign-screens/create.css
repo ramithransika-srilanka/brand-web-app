@@ -493,3 +493,22 @@ html:has(body.shot){scrollbar-gutter:auto;}
 .stick .kv{grid-template-columns:auto minmax(0,1fr);}
 .stick .kv dd{text-align:right;}
 .cols > *{min-width:0;}
+
+/* ---------- Step 2: comment pop-ups over the design (open, or minimized to a pin) ---------- */
+.doc .dbody{position:relative;}
+.dsec{overflow:visible;}
+.cpop{position:absolute;z-index:5;right:-8px;top:34px;width:340px;background:#fff;border:1px solid var(--grey-200);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.06);display:grid;}
+.cpop .ph{display:flex;align-items:center;gap:8px;padding:10px 10px 10px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;}
+.cpop .ph .ib{margin-left:auto;display:flex;gap:2px;}
+.cpop .ph .ib span{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--grey-600);font-size:16px;line-height:1;}
+.cpop .ph .ib span:hover{background:#f0f0f0;}
+.cpop .pb{padding:12px 14px;display:grid;gap:10px;}
+.cpop .reply{margin:0 14px 14px;height:38px;border:1px solid var(--grey-200);border-radius:100px;display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 14px;font-size:13px;color:var(--grey-500);}
+.cpop .reply b{width:28px;height:28px;border-radius:50%;background:var(--blue-500);color:#fff;display:grid;place-items:center;font-size:14px;}
+.cpin{position:absolute;z-index:5;right:-8px;top:8px;display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:100px 100px 100px 4px;background:#fff;border:1px solid var(--grey-200);box-shadow:0 6px 16px rgba(0,0,0,.12);font-size:12px;font-weight:600;}
+.cpin img,.cpin .av2{width:24px;height:24px;border-radius:50%;}
+.cpin .av2{display:grid;place-items:center;color:#fff;font-size:10px;}
+.dsec.cm{background:#fff8e1;box-shadow:inset 3px 0 0 #f2b705;}
+.viewas{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:100px;border:1px solid var(--grey-800);background:#fff;font-size:14px;font-weight:600;}
+.viewas svg{width:18px;height:18px;}
+.cvframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;z-index:60;}

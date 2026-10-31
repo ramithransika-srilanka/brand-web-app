@@ -124,47 +124,47 @@ SCREENS['c1-basics'] = () => step1('c', {design: 'We’ll design it', access: 'I
 /* ---------- Step 2 · Details: campaign design with comments ---------- */
 const avIni = (t, g) => `<span class="av2" style="background:linear-gradient(135deg,${g})">${t}</span>`;
 const ME = '<img src="img/pattypop.png">', PS = avIni('PS', '#1548eb,#7391f3'), IF = avIni('IF', '#1548eb,#f433ab');
-const sec = (h, body, c) => `<div class="dsec${c ? ' cm' : ''}"><h4>${h}</h4>${body}${c ? `<span class="cbadge">${I.chat}${c}</span>` : `<span class="addc">${I.chat}</span>`}</div>`;
-const thread = (on, msgs) => `<div class="cthread"><div class="on"><b>${on}</b></div>${msgs.map(([av, who, txt]) => `<div class="cmt">${av}<div><b>${who}</b><div>${txt}</div></div></div>`).join('')}</div>`;
+const pop = (key, th) => th.open
+  ? `<div class="cpop"><div class="ph">${I.chat.replace('<svg', '<svg width="15" height="15"')}${key}<span class="ib"><span title="Resolve">✓</span><span title="Minimize">–</span></span></div>
+      <div class="pb">${th.msgs.map(([av, who, txt]) => `<div class="cmt">${av}<div><b>${who}</b><div>${txt}</div></div></div>`).join('')}</div><div class="reply">Reply<b>↑</b></div></div>`
+  : `<span class="cpin">${th.msgs[th.msgs.length - 1][0]}${th.msgs.length}</span>`;
+const sec = (h, body, th) => `<div class="dsec${th ? ' cm' : ''}"><h4>${h}</h4>${body}${th ? pop(h, th) : ''}</div>`;
 const segs = (on, done) => `<div class="seg"><span class="${on === 0 ? 'on' : ''}">${done ? '<span class="dot">✓</span>' : ''}Design</span><span class="${on === 1 ? 'on' : ''}">Creators</span></div>`;
 
 function step2design(k, o) {
-  const t = T[k];
+  const t = T[k], th = o.threads;
   return page(k, 1,
     stephead('Campaign design', segs(0)) +
-    `<div class="cols"><section class="dcard doc"><div class="dcover">${t.cover.map(c => `<div style="background-image:url(img/${c})"></div>`).join('')}</div><div class="dbody">
-      ${sec('Title', `<div class="dtitle">${t.title}</div>`, o.c.title)}
-      ${sec('Brief', `<p>${o.req}</p>`, o.c.req)}
-      ${sec('Hook', `<p>${o.hook}</p>`, o.c.hook)}
-      ${sec('Script', `<div class="beatsv">${o.beats.map(([a, b]) => `<div><em>${a}</em><span>${b}</span></div>`).join('')}</div>`, o.c.script)}
+    `<section class="dcard doc" style="overflow:visible"><div class="dcover" style="border-radius:16px 16px 0 0;overflow:hidden">${t.cover.map(c => `<div style="background-image:url(img/${c})"></div>`).join('')}</div><div class="dbody">
+      ${sec('Title', `<div class="dtitle">${t.title}</div>`, th.Title)}
+      ${sec('Brief', `<p>${o.req}</p>`, th.Brief)}
+      ${sec('Hook', `<p>${o.hook}</p>`, th.Hook)}
+      ${sec('Script', `<div class="beatsv">${o.beats.map(([a, b]) => `<div><em>${a}</em><span>${b}</span></div>`).join('')}</div>`, th.Script)}
       <div class="grid2">${sec('Deliverable', `<p>${o.deliv}</p>`)}${sec('Platforms', `<div class="chips">${o.plats.map(p => `<span class="chip" style="height:30px">${PLAT[p]}${p}</span>`).join('')}</div>`)}</div>
-      ${sec('Best suited for', tagsHTML(o.suited), o.c.suited)}
-      ${sec('Must be visible', `<p>${o.visible}</p>`)}
-      ${sec('Call to action', `<p>${o.cta}</p>`)}
-    </div></section>
-    <div class="stick"><section class="dcard tight"><h3 style="margin-bottom:12px">Comments</h3><div style="display:grid;gap:10px">${o.threads.map(([on, msgs]) => thread(on, msgs)).join('')}
-      <div class="cbox"><textarea placeholder="Add a comment"></textarea></div></div></section>${o.side || ''}</div></div>`,
-    bar([`Request edits`, 'Approve design']));
+      ${sec('Best suited for', tagsHTML(o.suited), th['Best suited for'])}
+      ${sec('Must be visible', `<p>${o.visible}</p>`, th['Must be visible'])}
+      ${sec('Call to action', `<p>${o.cta}</p>`, th['Call to action'])}
+    </div></section>`,
+    bar(['Request edits', 'Approve design']));
 }
 SCREENS['a2-design'] = () => step2design('a', {
   req: 'Show the moment you’re starving, walk into Patty Pop, and take the first big crunchy bite of the new Pop Crunch Chicken.', hook: '“POV: you found the crunchiest burger in Colombo”',
   beats: [['0–3s', 'Starving moment — late-night study, after cricket or after work'], ['3–8s', 'Walk into Patty Pop and order the Pop Crunch Chicken'], ['8–15s', 'First big bite, slow-mo crunch, burger to camera'], ['15s+', 'Happy reaction + “Pop Crunch Chicken, now at Patty Pop”']],
   deliv: '1 reel · 15–30s · 9:16', plats: ['TikTok', 'Instagram'], suited: ['18–28 age', 'Colombo', 'Galle', 'Students', 'Young professionals'],
-  visible: 'The burger up close and the Patty Pop wrapper', cta: 'Try the Pop Crunch Chicken at Patty Pop and tag @pattypoplk 🍔', c: {hook: 1, script: 1},
-  threads: [['Hook', [[ME, 'You', 'Add “the crunch you can hear” to the hook.']]], ['Script · 8–15s', [[ME, 'You', 'Show the wrapper in the bite shot.']]]]});
+  visible: 'The burger up close and the Patty Pop wrapper', cta: 'Try the Pop Crunch Chicken at Patty Pop and tag @pattypoplk 🍔',
+  threads: {Hook: {open: 1, msgs: [[ME, 'You', 'Add “the crunch you can hear” to the hook.'], [PS, 'Polysocial', 'Updated: “POV: the crunch you can hear”.']]}, 'Must be visible': {msgs: [[ME, 'You', 'Show the wrapper in the bite shot.']]}}});
 SCREENS['b2-design'] = () => step2design('b', {
   req: 'Capture the opening of the new Patty Pop in Kandy: the queue, the first bite and the free fries on opening weekend.', hook: '“I drove up to Kandy for one bite…”',
   beats: [['0–3s', 'The drive up to Peradeniya Rd'], ['3–10s', 'The queue and the store front on opening day'], ['10–20s', 'First bite + free fries with code KANDYPOP'], ['20s+', '“Patty Pop, now in Kandy”']],
   deliv: '1 reel · 20–40s · 9:16', plats: ['Instagram', 'TikTok'], suited: ['Families', 'Students', 'Kandy', 'Peradeniya'],
-  visible: 'The store front and the free-fries offer', cta: 'Free fries this weekend at Patty Pop Kandy with code KANDYPOP 🍟', c: {suited: 1},
-  threads: [['Best suited for', [[ME, 'You', 'Please add Katugastota.'], [IF, 'Ishara', 'Adding it.']]]],
-  side: `<section class="dcard tight"><div class="prow">${ini('IF', '#1548eb,#f433ab')}<div><b>Ishara Fernando</b><span>Expert · 12% commission</span></div></div></section>`});
+  visible: 'The store front and the free-fries offer', cta: 'Free fries this weekend at Patty Pop Kandy with code KANDYPOP 🍟',
+  threads: {'Best suited for': {open: 1, msgs: [[ME, 'You', 'Please add Katugastota.'], [IF, 'Ishara', 'Adding it.']]}, Hook: {msgs: [[IF, 'Ishara', 'Open to other hooks too.']]}}});
 SCREENS['c2-design'] = () => step2design('c', {
   req: 'Your family’s Saturday night sorted: open the Family Feast box at home, everyone grabs their favourite, kids react to their meal.', hook: '“Weekend dinner, sorted in one box”',
   beats: [['0–3s', 'The “what’s for dinner?” moment at home'], ['3–10s', 'Open the Family Feast box on the table'], ['10–20s', 'Everyone digs in, kids’ reactions'], ['20s+', 'Rs. 4,990 for the whole family']],
   deliv: '1 Instagram reel · 20–40s · 9:16', plats: ['Instagram'], suited: ['Families', 'Parents 25–44', 'Colombo city'],
-  visible: 'The open Family Feast box and the Rs. 4,990 price', cta: 'Order the Family Feast box on the Patty Pop app and tag @pattypoplk', c: {title: 1},
-  threads: [['Title', [[ME, 'You', 'Mention the price in the title.']]]]});
+  visible: 'The open Family Feast box and the Rs. 4,990 price', cta: 'Order the Family Feast box on the Patty Pop app and tag @pattypoplk',
+  threads: {Title: {open: 1, msgs: [[ME, 'You', 'Mention the price in the title.']]}, 'Call to action': {msgs: [[ME, 'You', 'Add the delivery apps too.']]}}});
 
 /* ---------- Step 2 · Creators: the Polysocial creator map, exactly as deployed ---------- */
 function step2creators(k, btn) {
@@ -198,36 +198,47 @@ SCREENS['c3-budget'] = () => step3('c', {fund: 'transfer',
   budgetBody: `<table class="tb"><tbody>${['ranshan15', 'radeeshaa', 'mitchie_imasha', 'she_writes_a_diary'].map(by).map(c => `<tr><td><div class="prow">${cav(c, 32)}<b style="font-size:14px">${c.name}</b></div></td><td class="r">${rs(c.cost)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${rs(217647)}</td></tr></tfoot></table>`});
 
 /* ---------- Step 4 · Go live ---------- */
-const CV = {
-  a: {meta: 'Food · Oct 19 – Nov 8 · Open', price: [['Base price per content', 'Rs. 6,000'], ['Max earning per content', 'Rs. 90,000'], ['Performance pricing', 'Rs. 1,800 / 1K views'], ['Total budget', 'Rs. 600,000']], tags: ['18–28 age', 'Colombo', 'Galle', 'Selfie', 'Reels'], req: '“POV: you found the crunchiest burger in Colombo”. Starving moment → order at Patty Pop → slow-mo crunchy first bite.'},
-  b: {meta: 'Food · Nov 20 – Dec 14 · Open', price: [['Base price per content', 'Rs. 9,000'], ['Max earning per content', 'Rs. 120,000'], ['Performance pricing', 'Rs. 1,500 / 1K views'], ['Total budget', 'Rs. 704,000']], tags: ['Families', 'Students', 'Kandy', 'Peradeniya', 'Reels'], req: '“I drove up to Kandy for one bite…”. Queue on opening day, first bite and free fries with code KANDYPOP.'},
-  c: {meta: 'Food · Nov 16 – Dec 6 · Invite only', price: [['Flat fee per content', 'Agreed per creator'], ['Slots', '4'], ['Slots filled', '0'], ['Total budget', 'Rs. 217,647']], tags: ['Families', 'Parents 25–44', 'Colombo city', 'Reels'], req: '“Weekend dinner, sorted in one box”. Open the Family Feast box at home; show the Rs. 4,990 price.'},
+/* The creator view is the brand web app's own "View as creator" drawer (../index.html, viewCampaignDrawer).
+   render.js opens it in the iframe with this campaign's data, in the brand web app's campaign format. */
+const BRAND = {brand: 'Patty Pop', logo: 'ppLogo', abbr: 'PP', cat: 'Food', since: 'Since Mar 2026', brandDesc: 'Smash burgers and crunchy chicken, made fresh in Colombo.',
+  totalPaid: 'Rs. 1.2 M', campaigns: '4', metrics: [['Content approval rate', '95 %'], ['Approval time', '1 d'], ['Responds within', '2 hrs']], handles: [['24K', 'insta'], ['8.1K', 'tiktok']], progress: 0, joined: null, joinedShort: '0'};
+const CVD = {
+  a: {img: 'ppA', title: T.a.title, time: 'Starts Oct 19', right: '3 weeks', platforms: ['tiktok', 'insta'],
+      list: [['Base price per content', 'Rs. 6,000'], ['Max earning per content', 'Rs. 90,000'], ['Performance pricing', 'Rs. 1,800 / 1K views'], ['Total budget', 'Rs. 600,000']],
+      tags: [['All genders', 'people'], ['18-28 age', 'age'], ['Colombo', 'pin'], ['Galle', 'pin'], ['Selfie', 'camera'], ['Reels', 'video']],
+      reqDesc: 'Show the moment you’re starving, walk into Patty Pop, and take the first big crunchy bite of the new Pop Crunch Chicken.', visibility: 'The burger up close and the Patty Pop wrapper',
+      ctas: ['POV: the crunch you can hear.', 'Try the Pop Crunch Chicken at Patty Pop and tag @pattypoplk.']},
+  b: {img: 'ppB', title: T.b.title, time: 'Starts Nov 20', right: 'Store opens Dec 5', platforms: ['insta', 'tiktok'],
+      list: [['Base price per content', 'Rs. 9,000'], ['Max earning per content', 'Rs. 120,000'], ['Performance pricing', 'Rs. 1,500 / 1K views'], ['Total budget', 'Rs. 704,000']],
+      tags: [['Families', 'people'], ['Students', 'people'], ['Kandy', 'pin'], ['Peradeniya', 'pin'], ['Katugastota', 'pin'], ['Reels', 'video']],
+      reqDesc: 'Capture the opening of the new Patty Pop in Kandy: the queue, the first bite and the free fries on opening weekend.', visibility: 'The store front and the free-fries offer',
+      ctas: ['I drove up to Kandy for one bite…', 'Free fries this weekend with code KANDYPOP.']},
+  c: {img: 'ppC', title: T.c.title, time: 'Starts Nov 16', right: '3 weeks', platforms: ['insta'],
+      list: [['Flat fee per content', 'Agreed per creator'], ['Slots', '4'], ['Slots filled', '0'], ['Total budget', 'Rs. 217,647']],
+      tags: [['Families', 'people'], ['25-44 age', 'age'], ['Colombo', 'pin'], ['Reels', 'video']],
+      reqDesc: 'Your family’s Saturday night sorted: open the Family Feast box at home, everyone grabs their favourite, kids react to their meal.', visibility: 'The open Family Feast box and the Rs. 4,990 price',
+      ctas: ['Weekend dinner, sorted in one box.', 'Order the Family Feast box on the Patty Pop app and tag @pattypoplk.']},
 };
-function creatorView(k) {
-  const t = T[k], o = CV[k];
-  return `<div class="phone"><div class="notch"><span>9:41</span><span>●●● ▮</span></div><div class="cvbar">You are viewing this as a creator</div>
-    <div class="cv-hero" style="background-image:url(img/${t.cover[0]})"><span class="bb"><img src="img/pattypop.png">Patty Pop</span></div>
-    <div class="cv"><div><h3>${t.title}</h3><div class="mt">${o.meta}</div></div>
-      <div class="pl">${o.price.map(([a, b]) => `<div><span>${a}</span><b>${b}</b></div>`).join('')}</div>
-      <div><h5>Best suited for</h5>${tagsHTML(o.tags)}</div>
-      <div><h5>Requirements</h5><p>${o.req}</p></div>
-      <div><h5>Campaign created by</h5><div class="prow"><img class="pav" src="img/pattypop.png" style="width:32px;height:32px"><b style="font-size:13px">Patty Pop</b></div></div>
-      <span class="join">Join now</span></div></div>`;
-}
-function step4(k, extraTerm) {
+const CV_ASSETS = {ppLogo: 'campaign-screens/img/pattypop.png', ppA: 'campaign-screens/img/' + T.a.cover[0], ppB: 'campaign-screens/img/' + T.b.cover[0], ppC: 'campaign-screens/img/' + T.c.cover[0]};
+const viewAs = `<span class="viewas">${I.eye}View as creator</span>`;
+
+function step4(k, extraTerm, creatorView) {
   const t = T[k], [mo, d, full] = t.live;
+  if (creatorView) window.CV_INJECT = {id: 'pp_' + k, data: Object.assign({}, BRAND, CVD[k]), assets: CV_ASSETS};
   return page(k, 3,
-    stephead('Go live') +
-    `<div class="cols even"><div class="main">` +
+    stephead('Go live', viewAs) +
     box('Go-live date', `<div class="dateline"><div class="big"><small>${mo}</small><b>${d}</b></div><div class="tx"><b>${full}</b><span>Ends ${t.end}</span></div><span class="link" style="margin-left:auto">Change</span></div>`) +
-    box('Terms', `<div class="terms">${checks([['I accept the <a>Polysocial Terms of Service</a> and the <a>Campaign Owner terms</a>', 1], ...(extraTerm ? [[extraTerm, 1]] : [])])}</div>`) +
-    `</div><div class="stick" style="justify-items:center">${creatorView(k)}</div></div>`,
-    bar(['Request edits', `Confirm &amp; go live`]));
+    box('Terms', `<div class="terms">${checks([['I accept the <a>Polysocial Terms of Service</a> and the <a>Campaign Owner terms</a>', 1], ...(extraTerm ? [[extraTerm, 1]] : [])])}</div>`),
+    bar(['Request edits', `Confirm &amp; go live`])) +
+    (creatorView ? `<iframe class="cvframe" src="../index.html#/active" title="Creator view"></iframe>` : '');
 }
 SCREENS['a4-golive'] = () => step4('a');
+SCREENS['a4b-creator-view'] = () => step4('a', null, true);
 SCREENS['b4-golive'] = () => step4('b', 'I hire Ishara Fernando at 12% (Rs. 96,000)');
+SCREENS['b4b-creator-view'] = () => step4('b', 'I hire Ishara Fernando at 12% (Rs. 96,000)', true);
 SCREENS['c4-golive'] = () => step4('c');
-SCREENS['a4b-request-edits'] = () => SCREENS['a4-golive']() + `<div class="scrim"><div class="modal"><h2>Request edits</h2>
+SCREENS['c4b-creator-view'] = () => step4('c', null, true);
+SCREENS['a4c-request-edits'] = () => SCREENS['a4-golive']() + `<div class="scrim"><div class="modal"><h2>Request edits</h2>
   ${field('Section', sel('Pricing'))}${field('What should change?', area('Show the max earning per content first.', 3))}
   <div class="mrow"><span class="btn btn-ghost">Cancel</span><span class="btn btn-pri">Send</span></div></div></div>`;
 

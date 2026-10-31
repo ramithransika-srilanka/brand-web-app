@@ -6,10 +6,12 @@ feature. Patty Pop is the brand; the three campaigns follow the three chats in `
 ## The 4 steps (the same for every campaign)
 
 1. **Basics** — brief (with attachments), who designs it, who can join, dates. The title is written from the brief.
-2. **Details & creators** — *Design*: the campaign design, with comments to request edits. *Creators*: the Polysocial
+2. **Details & creators** — *Design*: the campaign design; comments open as pop-ups over the section they belong to and
+   can be minimized to a pin. *Creators*: the Polysocial
    creator map, embedded exactly as deployed (Polysocial-mobile `site/creator-map/celeste`, unchanged).
 3. **Budget** — allocate from the brand budget, or send a bank transfer.
-4. **Go live** — go-live date, terms, the creator view; request edits or confirm.
+4. **Go live** — go-live date, terms; request edits or confirm. *View as creator* opens the brand web app's own creator
+   view drawer (`viewCampaignDrawer` in `../index.html`), filled with the campaign (`png/*4b-creator-view.png`).
 
 ## The three campaign types
 
@@ -24,7 +26,8 @@ feature. Patty Pop is the brand; the three campaigns follow the three chats in `
 ## Updating the images
 
 The screens are drawn by `screens.js` (styles in `create.css`) and opened with `screens.html?s=<id>`. `render.js` serves
-Polysocial-mobile's `site/` on localhost:8765 so step 2 can embed the creator map (default path: `../../Polysocial-mobile`).
+Polysocial-mobile's `site/` on localhost:8765 so step 2 can embed the creator map (default path: `../../Polysocial-mobile`),
+and for the creator view it loads `../index.html`, adds the campaign to its data and opens its drawer.
 
 ```sh
 node campaign-screens/render.js [path-to-Polysocial-mobile]   # png/<id>.png at 1440px wide, 2x
