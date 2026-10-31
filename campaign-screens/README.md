@@ -7,7 +7,7 @@ feature. Patty Pop is the brand; the three campaigns follow the three chats in `
 
 A stepper at the top shows the 4 steps on every screen:
 
-1. **Basics** — the brief (what the campaign is about), who designs it (*We’ll design it* or *Hire an expert*),
+1. **Basics** — the brief (what the campaign is about; no title, it is written from the brief in step 2), who designs it (*We’ll design it* or *Hire an expert*),
    who can join (*Open campaign* or *Invite only*) and the dates (go live on, ends on). Ends with *Send request*.
 2. **Details & creators** — two tabs:
    - *Campaign design*: the full design (title, photos, requirement, hook, script, deliverable, platforms, best suited

@@ -84,12 +84,12 @@ const T = {
       live: ['Mon', 'NOV', '16', 'Mon, Nov 16, 2026 · 9:00 am'], end: 'Sun, Dec 6, 2026', budget: 217647},
 };
 
-const topbar4 = (k) => `<header class="topbar"><a class="logo">${I.logo}<span>Create campaign</span></a><div class="top-mid">${k ? T[k].title : ''}</div>
+const topbar4 = (k, untitled) => `<header class="topbar"><a class="logo">${I.logo}<span>Create campaign</span></a><div class="top-mid">${untitled ? '<span style="color:var(--grey-600)">New campaign</span>' : k ? T[k].title : ''}</div>
   <div class="top-r">${k ? '<span class="saved">Draft saved · just now</span><span class="btn btn-ghost btn-sm">Save &amp; exit</span>' : ''}<img class="avatar" src="img/pattypop.png" alt=""></div></header>`;
 const stepbar = (k, cur) => `<div class="stepbar"><div class="in2"><div class="type"><b>${T[k].type}</b><span>${T[k].access}</span></div>
   <ol class="stepper4">${STEPS4.map(([t, s], i) => `<li class="${i < cur ? 'done' : i === cur ? 'cur' : ''}"><span class="c">${i < cur ? '✓' : i + 1}</span><span class="t"><b>${t}</b><span>${s}</span></span></li>`).join('')}</ol></div></div>`;
 const bar = (msg, btns, ok = true) => `<div class="actbar"><div class="in2"><span class="btn btn-ghost">Back</span><span class="miss${ok ? ' ok' : ''}">${msg}</span>${btns.map((b, i) => `<span class="btn ${i === btns.length - 1 ? 'btn-pri' : 'btn-sec'}">${b}</span>`).join('')}</div></div>`;
-const page = (k, cur, body, b) => `${topbar4(k)}${stepbar(k, cur)}<div class="wide nav-in">${body}${b || ''}</div>`;
+const page = (k, cur, body, b) => `${topbar4(k, cur === 0)}${stepbar(k, cur)}<div class="wide nav-in">${body}${b || ''}</div>`;
 const stephead = (n, title, sub, right) => `<section class="dcard"><div class="dhead row" style="margin-bottom:0"><div><div class="step-kick">Step ${n} of 4</div><h1>${title}</h1><p class="dsub">${sub}</p></div>${right || ''}</div></section>`;
 
 /* ---------- 00 · Entry: request a campaign from the brand page ---------- */
@@ -108,8 +108,7 @@ function step1(k, o) {
     stephead(1, 'Tell us what the campaign is about', 'Give us a brief. We turn it into a full campaign design for you to review in step 2.') +
     `<div class="cols"><div class="main">` +
     card('The campaign', '', `<div class="stack">
-      ${field('Working title', inp(o.title), {req: 1, hint: 'You can change it after you see the design.'})}
-      ${field('Brief', area(o.brief, 6), {req: 1, hint: 'What you’re promoting, the goal, who it’s for, what must be shown, the tone. As much or as little as you have.'})}
+      ${field('Brief', area(o.brief, 7), {req: 1, hint: 'What you’re promoting, the goal, who it’s for, what must be shown, the tone. We write the title from this.'})}
       ${field('Attachments', `<div style="display:flex;gap:8px;align-items:center">${o.files.map(f => `<img src="img/${f}" style="width:64px;height:64px;border-radius:12px;object-fit:cover">`).join('')}<span class="drop" style="width:64px;height:64px;padding:0;border-radius:12px"><span style="width:20px">${I.plus}</span></span></div>`, {opt: 1, hint: 'Product photos, logos, reels you like.'})}
     </div>`) +
     card('Who designs the campaign?', '', rcards([['We’ll design it', 'You give the brief; we prepare the design, and you fine-tune it with comments.', I.pen], ['Hire an expert', 'A Polysocial creative strategist designs and runs it. Their commission (usually 10–15%) comes from your budget.', I.star]], o.design), {req: 1}) +
@@ -121,13 +120,13 @@ function step1(k, o) {
     `</div></div>`,
     bar('All required fields are filled', ['Send request'], true));
 }
-SCREENS['a1-basics'] = () => step1('a', {title: 'Pop Crunch Chicken launch', design: 'We’ll design it', access: 'Open campaign', start: 'Mon, Oct 19, 2026', time: '9:00 am', end: 'Sun, Nov 8, 2026', files: ['ppBiteWide.jpg', 'ppBite.jpg'],
+SCREENS['a1-basics'] = () => step1('a', {design: 'We’ll design it', access: 'Open campaign', start: 'Mon, Oct 19, 2026', time: '9:00 am', end: 'Sun, Nov 8, 2026', files: ['ppBiteWide.jpg', 'ppBite.jpg'],
   brief: 'We’re launching the Pop Crunch Chicken burger. Goal: get people in their 20s in Colombo and Galle to try it in the first 3 weeks.\nHook idea: “POV: you found the crunchiest burger in Colombo”. Show the starving moment, ordering at Patty Pop, then a slow-mo crunchy first bite.\nMust show the burger up close and the Patty Pop wrapper. Fun and loud, not too polished. TikTok and Instagram Reels.',
   dateNote: '3 weeks. Creators can join as soon as it’s live and post until it ends.', next2: 'We prepare the design; you comment and approve the creators we suggest'});
-SCREENS['b1-basics'] = () => step1('b', {title: 'Patty Pop Kandy store opening', design: 'Hire an expert', access: 'Open campaign', start: 'Fri, Nov 20, 2026', time: '10:00 am', end: 'Mon, Dec 14, 2026', files: ['ppBite.jpg'],
+SCREENS['b1-basics'] = () => step1('b', {design: 'Hire an expert', access: 'Open campaign', start: 'Fri, Nov 20, 2026', time: '10:00 am', end: 'Mon, Dec 14, 2026', files: ['ppBite.jpg'],
   brief: 'We’re opening a new Patty Pop on Peradeniya Rd, Kandy on Sat, Dec 5, with free fries on opening weekend. We want families and students from Kandy and Peradeniya to come in.\nMy team is swamped with the holiday season, so we’d like an expert to design and run it. Budget around Rs. 800,000 all-in.',
   dateNote: 'Store opens Sat, Dec 5. Teasers before, visits on opening weekend, close a week after.', next2: 'Your expert prepares the design and a creator shortlist; you comment and approve'});
-SCREENS['c1-basics'] = () => step1('c', {title: 'Family Feast — Weekend dinner', design: 'We’ll design it', access: 'Invite only', start: 'Mon, Nov 16, 2026', time: '9:00 am', end: 'Sun, Dec 6, 2026', files: ['ppMeal.jpg'],
+SCREENS['c1-basics'] = () => step1('c', {design: 'We’ll design it', access: 'Invite only', start: 'Mon, Nov 16, 2026', time: '9:00 am', end: 'Sun, Dec 6, 2026', files: ['ppMeal.jpg'],
   brief: 'Family Feast box: 2 burgers, 2 kids’ meals, fries and 4 drinks for Rs. 4,990. We want families to make Patty Pop their weekend dinner plan.\nWe’d like momfluencers in Colombo, and we want to pick the creators ourselves. One Instagram reel each.',
   dateNote: '3 weeks, covering three weekends. Invites go out on the go-live date.', next2: 'We prepare the design; you comment and pick who to invite on the creator map'});
 
@@ -146,7 +145,7 @@ function step2design(k, o) {
     stephead(2, 'Fine-tune the campaign design', o.sub, segs(0)) +
     `<div class="cols"><section class="dcard doc"><div class="dcover">${t.cover.map(c => `<div style="background-image:url(img/${c})"></div>`).join('')}</div><div class="dbody">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span class="pill blue">${o.by} · Version ${o.v}</span><span style="font-size:13px;color:var(--grey-600)">Updated ${o.when}</span></div>
-      ${sec('Title', `<div class="dtitle">${t.title}</div>`, o.c.title)}
+      ${sec('Title <span class="pill blue" style="text-transform:none;letter-spacing:0">From your brief</span>', `<div class="dtitle">${t.title}</div>`, o.c.title)}
       ${sec('Requirement', `<p>${o.req}</p>`, o.c.req)}
       ${sec('Hook', `<p>${o.hook}</p>`, o.c.hook)}
       ${sec('Script', `<div class="beatsv">${o.beats.map(([a, b]) => `<div><em>${a}</em><span>${b}</span></div>`).join('')}</div>`, o.c.script)}
@@ -162,7 +161,7 @@ function step2design(k, o) {
       ${o.side || ''}</div></div>`,
     bar(o.msg, [`Request edits (${o.threads.filter(x => !x[2]).length})`, 'Approve design · next: creators'], true));
 }
-SCREENS['a2-design'] = () => step2design('a', {sub: 'We turned your brief into the campaign creators will see. Comment on any section to request an edit, then approve.', by: 'Prepared by Polysocial from your brief', v: 2, when: 'today 2:40 pm',
+SCREENS['a2-design'] = () => step2design('a', {sub: 'We turned your brief into the campaign creators will see, including its title. Comment on any section to request an edit, then approve.', by: 'Prepared by Polysocial from your brief', v: 2, when: 'today 2:40 pm',
   req: 'Show the moment you’re starving, walk into Patty Pop, and take the first big crunchy bite of the new Pop Crunch Chicken.', hook: '“POV: you found the crunchiest burger in Colombo”',
   beats: [['0–3s', 'Starving moment — late-night study, after cricket or after work'], ['3–8s', 'Walk into Patty Pop and order the Pop Crunch Chicken'], ['8–15s', 'First big bite, slow-mo crunch, burger to camera'], ['15s+', 'Happy reaction + “Pop Crunch Chicken, now at Patty Pop”']],
   deliv: '1 reel · 15–30s · vertical 9:16 · min 1080p · captions on', plats: ['TikTok', 'Instagram'], suited: ['All genders', '18–28 age', 'Colombo', 'Galle', 'Students', 'Young professionals', 'Selfie', 'Reels'],
