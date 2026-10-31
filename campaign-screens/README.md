@@ -23,6 +23,11 @@ feature. Patty Pop is the brand; the three campaigns follow the three chats in `
 
 `png/00-brand-page.png` is where it starts (*Create campaign*); `png/overview-*.png` show all screens of one type.
 
+## Click-through file
+
+`campaign-flow.html` is one self-contained file (screenshots embedded) to click through the flow: pick a type (A, B, C)
+at the top, then the screens in order (or use ← →). Rebuild it with `python3 campaign-screens/flow.py` after `render.js`.
+
 ## Updating the images
 
 The screens are drawn by `screens.js` (styles in `create.css`) and opened with `screens.html?s=<id>`. `render.js` serves
