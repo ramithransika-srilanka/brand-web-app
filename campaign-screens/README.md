@@ -5,9 +5,11 @@ feature. Patty Pop is the brand; the three campaigns follow the three chats in `
 
 ## The 4 steps (the same for every campaign)
 
-1. **Basics** — brief (with attachments), who designs it, who can join, dates. The title is written from the brief.
-2. **Details & creators** — *Design*: the campaign design; comments open as pop-ups over the section they belong to and
-   can be minimized to a pin. *Creators*: the Polysocial
+1. **Basics** — brief (with attachments), who designs it (*Hire an expert* is disabled for now: Coming soon), who can
+   join, dates. The title is written from the brief.
+2. **Details & creators** — open campaigns have no creator selection (anyone can join), so for them this step is
+   **Details**: the design only. *Design*: the campaign design; comments open as pop-ups over the section they belong to and
+   can be minimized to a pin. *Creators* (invite only): the Polysocial
    creator map, embedded exactly as deployed (Polysocial-mobile `site/creator-map/celeste`, unchanged).
 3. **Budget** — allocate from the brand budget, or send a bank transfer.
 4. **Go live** — go-live date, terms; request edits or confirm. *View as creator* opens the brand web app's own creator
@@ -18,7 +20,6 @@ feature. Patty Pop is the brand; the three campaigns follow the three chats in `
 | Type | Step 1 choices | Screens |
 | --- | --- | --- |
 | **A · Crunch Chicken** | We’ll design it · Open campaign | `png/a*.png` |
-| **B · Kandy opening** | Hire an expert · Open campaign | `png/b*.png` |
 | **C · Family Feast** | We’ll design it · Invite only | `png/c*.png` |
 
 `png/00-brand-page.png` is where it starts (*Create campaign*); `png/overview-*.png` show all screens of one type.

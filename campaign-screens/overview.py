@@ -6,7 +6,7 @@ FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'; BOLD = '/usr/share/fon
 def font(p, s):
     try: return ImageFont.truetype(p, s)
     except OSError: return ImageFont.load_default()
-FLOWS = {'self': ('a', 'Design it ourselves'), 'strat': ('b', 'Hire a creative strategist'), 'pick': ('c', 'Pick creators ourselves')}
+FLOWS = {'self': ('a', 'Open campaign'), 'pick': ('c', 'Invite only')}
 W, PAD, GAP, COLS = 720, 60, 40, 4
 for key, (pre, name) in FLOWS.items():
     files = sorted(glob.glob(os.path.join(P, pre + '*.png')))

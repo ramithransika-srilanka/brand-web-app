@@ -40,7 +40,7 @@ const area = (v, rows = 3, ph = '') => `<textarea rows="${rows}" placeholder="${
 const field = (label, ctl, o = {}) => `<label class="fl${o.cls ? ' ' + o.cls : ''}"><span class="lab">${label}${o.req ? ' <span class="req">Required</span>' : ''}${o.opt ? ' <span class="opt">Optional</span>' : ''}</span>${ctl}${o.hint ? `<span class="hint">${o.hint}</span>` : ''}</label>`;
 const card = (title, sub, body, o = {}) => `<section class="dcard"><div class="dhead${o.right ? ' row' : ''}"><div>${o.kick ? `<div class="step-kick">${o.kick}</div>` : ''}<${o.h1 ? 'h1' : 'h2'}>${title}${o.req ? ' <span class="req">Required</span>' : ''}</${o.h1 ? 'h1' : 'h2'}>${sub ? `<p class="dsub">${sub}</p>` : ''}</div>${o.right || ''}</div>${body}</section>`;
 const head = (kick, title, sub, right) => `<section class="dcard"><div class="dhead row" style="margin-bottom:0"><div><div class="step-kick">${kick}</div><h1>${title}</h1><p class="dsub">${sub}</p></div>${right || ''}</div></section>`;
-const rcards = (items, on, cols = 2) => `<div class="rcards cols${cols}">${items.map(([t, d, ic]) => `<div class="rcard${t === on ? ' on' : ''}"><span class="rd"></span><div><b class="ic">${ic || ''}${t}</b><span>${d}</span></div></div>`).join('')}</div>`;
+const rcards = (items, on, cols = 2) => `<div class="rcards cols${cols}">${items.map(([t, d, ic, off]) => `<div class="rcard${t === on ? ' on' : ''}${off ? ' dis' : ''}"><span class="rd"></span><div><b class="ic">${ic || ''}${t}${off ? ' <span class="pill">Coming soon</span>' : ''}</b><span>${d}</span></div></div>`).join('')}</div>`;
 const checks = (items) => `<div class="checks">${items.map(([t, on]) => `<div class="ck${on ? ' on' : ''}"><span class="bx"></span><span class="tx">${t}</span></div>`).join('')}</div>`;
 const tgl = (t, d, on) => `<div class="tgl${on ? ' on' : ''}"><div><b>${t}</b><span>${d}</span></div><span class="sw"></span></div>`;
 const note = (html, cls = '') => `<div class="note ${cls}">${I.info}<div>${html}</div></div>`;
@@ -78,7 +78,7 @@ I.bank = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
    ===================================================================== */
 const STEPS4 = ['Basics', 'Details &amp; creators', 'Budget', 'Go live'];
 const T = {
-  a: {title: 'Pop Crunch Chicken — The crunch you can hear', cover: ['ppBiteWide.jpg', 'ppBite.jpg', 'ppMeal.jpg'], live: ['OCT', '19', 'Mon, Oct 19, 2026 · 9:00 am'], end: 'Sun, Nov 8, 2026', budget: 600000},
+  a: {open: 1, title: 'Pop Crunch Chicken — The crunch you can hear', cover: ['ppBiteWide.jpg', 'ppBite.jpg', 'ppMeal.jpg'], live: ['OCT', '19', 'Mon, Oct 19, 2026 · 9:00 am'], end: 'Sun, Nov 8, 2026', budget: 600000},
   b: {title: 'Patty Pop Kandy — First bite in the hills', cover: ['ppBite.jpg', 'ppMeal.jpg', 'ppBiteWide.jpg'], live: ['NOV', '20', 'Fri, Nov 20, 2026 · 10:00 am'], end: 'Mon, Dec 14, 2026', budget: 800000},
   c: {title: 'Family Feast — Weekend dinner, sorted', cover: ['ppMeal.jpg', 'ppBiteWide.jpg', 'ppBite.jpg'], live: ['NOV', '16', 'Mon, Nov 16, 2026 · 9:00 am'], end: 'Sun, Dec 6, 2026', budget: 217647},
 };
@@ -88,9 +88,9 @@ const MAP_H = Q.get('mapH') || 3902;
 
 const topbar4 = (k, untitled) => `<header class="topbar"><a class="logo">${I.logo}<span>Create campaign</span></a><div class="top-mid">${untitled ? '' : T[k].title}</div>
   <div class="top-r"><span class="btn btn-ghost btn-sm">Save &amp; exit</span><img class="avatar" src="img/pattypop.png" alt=""></div></header>`;
-const stepbar = (cur) => `<div class="stepbar"><div class="in2"><ol class="stepper4">${STEPS4.map((t, i) => `<li class="${i < cur ? 'done' : i === cur ? 'cur' : ''}"><span class="c">${i < cur ? '✓' : i + 1}</span><span class="t"><b>${t}</b></span></li>`).join('')}</ol></div></div>`;
+const stepbar = (cur, k) => `<div class="stepbar"><div class="in2"><ol class="stepper4">${STEPS4.map(t => t.startsWith('Details') && T[k].open ? 'Details' : t).map((t, i) => `<li class="${i < cur ? 'done' : i === cur ? 'cur' : ''}"><span class="c">${i < cur ? '✓' : i + 1}</span><span class="t"><b>${t}</b></span></li>`).join('')}</ol></div></div>`;
 const bar = (btns) => `<div class="actbar"><div class="in2"><span class="btn btn-ghost">Back</span><span class="miss"></span>${btns.map((b, i) => `<span class="btn ${i === btns.length - 1 ? 'btn-pri' : 'btn-sec'}">${b}</span>`).join('')}</div></div>`;
-const page = (k, cur, body, b) => `${topbar4(k, cur === 0)}${stepbar(cur)}<div class="wide nav-in">${body}${b || ''}</div>`;
+const page = (k, cur, body, b) => `${topbar4(k, cur === 0)}${stepbar(cur, k)}<div class="wide nav-in">${body}${b || ''}</div>`;
 const stephead = (title, right) => `<section class="dcard tight"><div class="dhead row" style="margin-bottom:0;align-items:center"><h1>${title}</h1>${right || ''}</div></section>`;
 const box = (title, body, req) => card(title, '', body, req ? {req: 1} : {});
 
@@ -109,15 +109,13 @@ function step1(k, o) {
     stephead('What is the campaign about?') +
     box('Brief', `<div class="stack">${area(o.brief, 7).replace('<textarea', '<textarea class="in" style="height:auto;border-radius:16px;padding:12px 16px;line-height:22px;font-size:15px;resize:none"')}
       <div style="display:flex;gap:8px;align-items:center">${o.files.map(f => `<img src="img/${f}" style="width:64px;height:64px;border-radius:12px;object-fit:cover">`).join('')}<span class="drop" style="width:64px;height:64px;padding:0;border-radius:12px"><span style="width:20px">${I.plus}</span></span></div></div>`, 1) +
-    box('Who designs it?', rcards([['We’ll design it', 'You comment on the design we prepare.', I.pen], ['Hire an expert', 'A creative strategist designs and runs it.', I.star]], o.design), 1) +
+    box('Who designs it?', rcards([['We’ll design it', 'You comment on the design we prepare.', I.pen], ['Hire an expert', 'A creative strategist designs and runs it.', I.star, 1]], o.design), 1) +
     box('Who can join?', rcards([['Open campaign', 'Any matching creator.', I.lockOpen], ['Invite only', 'Only creators you select.', I.lock]], o.access), 1) +
     box('Dates', `<div class="grid3">${field('Go live on', inp(o.start))}${field('Time', sel(o.time))}${field('Ends on', inp(o.end))}</div>`, 1),
     bar(['Send request']));
 }
 SCREENS['a1-basics'] = () => step1('a', {design: 'We’ll design it', access: 'Open campaign', start: 'Mon, Oct 19, 2026', time: '9:00 am', end: 'Sun, Nov 8, 2026', files: ['ppBiteWide.jpg', 'ppBite.jpg'],
   brief: 'We’re launching the Pop Crunch Chicken burger. Goal: get people in their 20s in Colombo and Galle to try it in the first 3 weeks.\nHook idea: “POV: you found the crunchiest burger in Colombo”. Show the starving moment, ordering at Patty Pop, then a slow-mo crunchy first bite.\nMust show the burger up close and the Patty Pop wrapper. Fun and loud, not too polished. TikTok and Instagram Reels.'});
-SCREENS['b1-basics'] = () => step1('b', {design: 'Hire an expert', access: 'Open campaign', start: 'Fri, Nov 20, 2026', time: '10:00 am', end: 'Mon, Dec 14, 2026', files: ['ppBite.jpg'],
-  brief: 'We’re opening a new Patty Pop on Peradeniya Rd, Kandy on Sat, Dec 5, with free fries on opening weekend. We want families and students from Kandy and Peradeniya to come in.\nBudget around Rs. 800,000 all-in.'});
 SCREENS['c1-basics'] = () => step1('c', {design: 'We’ll design it', access: 'Invite only', start: 'Mon, Nov 16, 2026', time: '9:00 am', end: 'Sun, Dec 6, 2026', files: ['ppMeal.jpg'],
   brief: 'Family Feast box: 2 burgers, 2 kids’ meals, fries and 4 drinks for Rs. 4,990. We want families to make Patty Pop their weekend dinner plan.\nMomfluencers in Colombo, one Instagram reel each.'});
 
@@ -134,7 +132,7 @@ const segs = (on, done) => `<div class="seg"><span class="${on === 0 ? 'on' : ''
 function step2design(k, o) {
   const t = T[k], th = o.threads;
   return page(k, 1,
-    stephead('Campaign design', segs(0)) +
+    stephead('Campaign design', T[k].open ? '' : segs(0)) +
     `<section class="dcard doc" style="overflow:visible"><div class="dcover" style="border-radius:16px 16px 0 0;overflow:hidden">${t.cover.map(c => `<div style="background-image:url(img/${c})"></div>`).join('')}</div><div class="dbody">
       ${sec('Title', `<div class="dtitle">${t.title}</div>`, th.Title)}
       ${sec('Brief', `<p>${o.req}</p>`, th.Brief)}
@@ -145,7 +143,7 @@ function step2design(k, o) {
       ${sec('Must be visible', `<p>${o.visible}</p>`, th['Must be visible'])}
       ${sec('Call to action', `<p>${o.cta}</p>`, th['Call to action'])}
     </div></section>`,
-    bar(['Request edits', 'Approve design']));
+    bar(['Request edits', T[k].open ? 'Approve design' : 'Approve design · next: creators']));
 }
 SCREENS['a2-design'] = () => step2design('a', {
   req: 'Show the moment you’re starving, walk into Patty Pop, and take the first big crunchy bite of the new Pop Crunch Chicken.', hook: '“POV: you found the crunchiest burger in Colombo”',
@@ -153,12 +151,6 @@ SCREENS['a2-design'] = () => step2design('a', {
   deliv: '1 reel · 15–30s · 9:16', plats: ['TikTok', 'Instagram'], suited: ['18–28 age', 'Colombo', 'Galle', 'Students', 'Young professionals'],
   visible: 'The burger up close and the Patty Pop wrapper', cta: 'Try the Pop Crunch Chicken at Patty Pop and tag @pattypoplk 🍔',
   threads: {Hook: {open: 1, msgs: [[ME, 'You', 'Add “the crunch you can hear” to the hook.'], [PS, 'Polysocial', 'Updated: “POV: the crunch you can hear”.']]}, 'Must be visible': {msgs: [[ME, 'You', 'Show the wrapper in the bite shot.']]}}});
-SCREENS['b2-design'] = () => step2design('b', {
-  req: 'Capture the opening of the new Patty Pop in Kandy: the queue, the first bite and the free fries on opening weekend.', hook: '“I drove up to Kandy for one bite…”',
-  beats: [['0–3s', 'The drive up to Peradeniya Rd'], ['3–10s', 'The queue and the store front on opening day'], ['10–20s', 'First bite + free fries with code KANDYPOP'], ['20s+', '“Patty Pop, now in Kandy”']],
-  deliv: '1 reel · 20–40s · 9:16', plats: ['Instagram', 'TikTok'], suited: ['Families', 'Students', 'Kandy', 'Peradeniya'],
-  visible: 'The store front and the free-fries offer', cta: 'Free fries this weekend at Patty Pop Kandy with code KANDYPOP 🍟',
-  threads: {'Best suited for': {open: 1, msgs: [[ME, 'You', 'Please add Katugastota.'], [IF, 'Ishara', 'Adding it.']]}, Hook: {msgs: [[IF, 'Ishara', 'Open to other hooks too.']]}}});
 SCREENS['c2-design'] = () => step2design('c', {
   req: 'Your family’s Saturday night sorted: open the Family Feast box at home, everyone grabs their favourite, kids react to their meal.', hook: '“Weekend dinner, sorted in one box”',
   beats: [['0–3s', 'The “what’s for dinner?” moment at home'], ['3–10s', 'Open the Family Feast box on the table'], ['10–20s', 'Everyone digs in, kids’ reactions'], ['20s+', 'Rs. 4,990 for the whole family']],
@@ -173,8 +165,6 @@ function step2creators(k, btn) {
     `<section class="dcard" style="padding:0;overflow:hidden"><iframe src="${MAP_URL}" title="Creator map" style="display:block;width:100%;height:${MAP_H}px;border:0"></iframe></section>`,
     bar([btn]));
 }
-SCREENS['a2-creators'] = () => step2creators('a', 'Approve creators');
-SCREENS['b2-creators'] = () => step2creators('b', 'Approve creators');
 SCREENS['c2-creators'] = () => step2creators('c', 'Invite selected creators');
 
 /* ---------- Step 3 · Budget: allocate, or send a transfer ---------- */
@@ -192,8 +182,6 @@ function step3(k, o) {
 }
 SCREENS['a3-budget'] = () => step3('a', {fund: 'allocate',
   budgetBody: `<div class="grid2">${field('Total budget', money(600000))}${field('Base price per content', money(6000))}${field('Performance pricing', money(1800, '/ 1K views'))}${field('Max earning per content', money(90000))}</div>`});
-SCREENS['b3-budget'] = () => step3('b', {fund: 'allocate',
-  budgetBody: `<table class="tb"><tbody><tr><td>Creators</td><td class="r">${rs(704000)}</td></tr><tr><td>Ishara Fernando · 12%</td><td class="r">${rs(96000)}</td></tr></tbody><tfoot><tr><td>Total</td><td class="r">${rs(800000)}</td></tr></tfoot></table>`});
 SCREENS['c3-budget'] = () => step3('c', {fund: 'transfer',
   budgetBody: `<table class="tb"><tbody>${['ranshan15', 'radeeshaa', 'mitchie_imasha', 'she_writes_a_diary'].map(by).map(c => `<tr><td><div class="prow">${cav(c, 32)}<b style="font-size:14px">${c.name}</b></div></td><td class="r">${rs(c.cost)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${rs(217647)}</td></tr></tfoot></table>`});
 
@@ -234,8 +222,6 @@ function step4(k, extraTerm, creatorView) {
 }
 SCREENS['a4-golive'] = () => step4('a');
 SCREENS['a4b-creator-view'] = () => step4('a', null, true);
-SCREENS['b4-golive'] = () => step4('b', 'I hire Ishara Fernando at 12% (Rs. 96,000)');
-SCREENS['b4b-creator-view'] = () => step4('b', 'I hire Ishara Fernando at 12% (Rs. 96,000)', true);
 SCREENS['c4-golive'] = () => step4('c');
 SCREENS['c4b-creator-view'] = () => step4('c', null, true);
 SCREENS['a4c-request-edits'] = () => SCREENS['a4-golive']() + `<div class="scrim"><div class="modal"><h2>Request edits</h2>
@@ -245,12 +231,11 @@ SCREENS['a4c-request-edits'] = () => SCREENS['a4-golive']() + `<div class="scrim
 /* ---------- Scheduled ---------- */
 function scheduled(k) {
   const t = T[k], [mo, d, full] = t.live;
-  return `${topbar4(k)}${stepbar(4)}<div class="wide nav-in"><section class="dcard"><div class="success"><span class="big">${I.check}</span><h1>Scheduled to go live</h1>
+  return `${topbar4(k)}${stepbar(4, k)}<div class="wide nav-in"><section class="dcard"><div class="success"><span class="big">${I.check}</span><h1>Scheduled to go live</h1>
     <div class="dateline" style="margin:8px 0"><div class="big"><small>${mo}</small><b>${d}</b></div><div class="tx" style="text-align:left"><b>${full}</b></div></div>
     <div style="display:flex;gap:8px"><span class="btn btn-pri">Open campaign</span><span class="btn btn-sec">Request edits</span></div></div></section></div>`;
 }
 SCREENS['a5-scheduled'] = () => scheduled('a');
-SCREENS['b5-scheduled'] = () => scheduled('b');
 SCREENS['c5-scheduled'] = () => scheduled('c');
 
 /* ---------- Draw ---------- */

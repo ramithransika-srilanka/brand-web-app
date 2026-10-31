@@ -5,7 +5,6 @@ from PIL import Image
 D = os.path.dirname(os.path.abspath(__file__))
 TYPES = {
   'a': ('Crunch Chicken', 'We’ll design it · Open campaign'),
-  'b': ('Kandy opening', 'Hire an expert · Open campaign'),
   'c': ('Family Feast', 'We’ll design it · Invite only'),
 }
 STEPS = [  # (screen suffix, step number for the stepper, label)
@@ -22,6 +21,7 @@ for k in TYPES:
     flows[k] = []
     for suf, n, label in STEPS:
         name = suf if suf.startswith('00') else k + suf
+        if not os.path.exists(os.path.join(D, 'png', name + '.png')): continue  # e.g. open campaigns have no creator selection
         if name not in cache: cache[name] = img(name)
         flows[k].append({'id': name, 'n': n, 'label': label})
 html = '''<!DOCTYPE html>
