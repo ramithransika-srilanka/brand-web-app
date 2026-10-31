@@ -14,6 +14,27 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
   (closed lock) line under the image), a Performance fee / Flat fee filter (flat fee cards
   drop the per-1K price and show filled / total slots; 20 or fewer slots get a segmented bar, more get a continuous one), header search (`/` to open, `Esc` to close),
   loading skeletons, empty state and the notifications popover.
+- **Request to create a campaign** — the blue button next to the Campaigns heading (`#/create`). The same 4 steps for
+  every campaign, with a stepper at the top:
+  1. **Basics** (`/create/basics`) — the brief (and photos), who designs it (*Hire an expert* is shown but disabled: Coming
+     soon), who can join (Open campaign or Invite only) and the dates. No title: it is written from the brief.
+     *Send request* moves on.
+  2. **Details** (`/create/details`) — after a short "Preparing" moment, the campaign design written from the brief
+     (title, brief, hook, script, deliverable, platforms, best suited for, must be visible, call to action) under the
+     photos. Every section has a comment button; comments open as a pop-up over the section (reply, resolve, minimize
+     to a pin). *Request edits* sends the open comments (Polysocial answers with a new version); *Approve design*
+     moves on. Open campaigns are open to anyone, so that's all of step 2. Invite-only campaigns add a **Creators** tab
+     (`/create/creators`) with the Polysocial creator map (polysocial.cc/creator-map/celeste) to pick the creators.
+  3. **Budget** (`/create/budget`) — open campaigns: total budget, base price, performance pricing and max earning per
+     content; invite only: flat fee per content × creators. Fund it by allocating from the brand budget (free to spend
+     = wallet balance minus budgets already committed; blocked if it isn't enough) or by bank transfer (PolySocial's
+     bank details, the amount and payment reference to copy, slip upload, Pending verification).
+  4. **Go live** (`/create/golive`) — the go-live date and time (Change goes back to Basics), the terms to accept,
+     *View as creator* (the same creator view drawer as the campaign dashboard, filled with this request) and
+     *Request edits* (pick a section, say what should change). *Confirm & go live* schedules it (a transfer is added to
+     Financials as pending) and shows the scheduled date (`/create/done`).
+  The request is kept in the browser's local storage (`brand.campaignRequest`); the button starts a new one once the
+  last one is scheduled.
 - **Campaign page** — click any campaign (`#/campaign/<id>`). The status bar turns into a blue
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
   web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,

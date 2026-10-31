@@ -1278,6 +1278,143 @@
     .ib-back{display:flex;}
     .ib-head{justify-content:flex-start;padding-left:9px;}
   }
+
+  /* ================= Request to create a campaign (#/create/…): 4 steps ================= */
+  .home-head{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .home-head .btn{flex-shrink:0;}
+  .cr{display:flex;flex-direction:column;gap:16px;padding:6px 0 48px;}
+  .cr-steps{display:flex;align-items:center;list-style:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 20px;}
+  .cr-steps li{display:flex;align-items:center;gap:10px;flex:1 1 auto;}
+  .cr-steps li:last-child{flex:0 0 auto;}
+  .cr-steps li:not(:last-child)::after{content:"";flex:1;min-width:24px;height:2px;margin:0 8px;border-radius:2px;background:var(--grey-200);}
+  .cr-steps li.done:not(:last-child)::after{background:var(--good);}
+  .cr-steps a,.cr-steps span.st{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--grey-700);white-space:nowrap;}
+  .cr-steps i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13px;border:2px solid var(--grey-200);color:var(--grey-600);background:#fff;}
+  .cr-steps li.done i{background:var(--good);border-color:var(--good);color:#fff;}
+  .cr-steps li.cur i{background:var(--blue-500);border-color:var(--blue-500);color:#fff;box-shadow:0 0 0 4px var(--blue-100);}
+  .cr-steps li.cur a,.cr-steps li.cur span.st{color:var(--blue-500);}
+  .cr .dcard{padding:24px;}
+  .cr-head{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .cr-head h1{font-size:22px;font-weight:600;line-height:28px;letter-spacing:-.015em;}
+  .cr .dcard>h2{font-size:18px;font-weight:600;line-height:24px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .cr-req{font-size:11px;font-weight:600;line-height:18px;padding:0 7px;border-radius:5px;background:var(--blue-100);color:var(--blue-700);}
+  .cr textarea{width:100%;min-height:150px;padding:12px 16px;border:1px solid var(--grey-400);border-radius:16px;font:500 14px/22px var(--font);color:var(--grey-800);resize:vertical;outline:0;}
+  .cr textarea:focus{border-color:var(--blue-300);}
+  .cr textarea[aria-invalid="true"]{border-color:var(--bad);}
+  .cr-files{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .cr-file{position:relative;width:72px;height:72px;border-radius:12px;background:#eee center/cover no-repeat;}
+  .cr-file button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--grey-800);color:#fff;display:grid;place-items:center;}
+  .cr-file button svg{width:12px;height:12px;}
+  .cr-add{width:72px;height:72px;border-radius:12px;border:1px dashed var(--grey-400);display:grid;place-items:center;color:var(--grey-600);cursor:pointer;position:relative;}
+  .cr-add:hover{border-color:var(--grey-800);color:var(--grey-800);}
+  .cr-add input{position:absolute;width:1px;height:1px;opacity:0;}
+  .cr-add svg{width:22px;height:22px;}
+  .cr-rc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .cr-rc button{display:grid;grid-template-columns:20px 1fr;gap:12px;align-items:start;text-align:left;padding:16px 18px;border:1px solid var(--grey-200);border-radius:14px;background:#fff;transition:border-color .2s ease,background .2s ease;}
+  .cr-rc button:hover:not(:disabled){border-color:var(--grey-500);}
+  .cr-rc .rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--grey-400);display:grid;place-items:center;margin-top:1px;}
+  .cr-rc button[aria-checked="true"]{border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 40%,#fff);box-shadow:inset 0 0 0 1px var(--blue-500);}
+  .cr-rc button[aria-checked="true"] .rd{border-color:var(--blue-500);}
+  .cr-rc button[aria-checked="true"] .rd::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--blue-500);}
+  .cr-rc button:disabled{opacity:.5;cursor:not-allowed;background:#fafafa;}
+  .cr-rc b{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .cr-rc b svg{width:18px;height:18px;}
+  .cr-rc small{display:block;font-size:13px;line-height:18px;color:var(--grey-600);margin-top:2px;}
+  .cr-soon{font-size:11px;font-weight:600;line-height:18px;padding:0 8px;border-radius:100px;background:var(--grey-100);color:var(--grey-600);}
+  .cr-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+  .cr-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .cr .fl input[type=date],.cr .fl input[type=time]{font-variant-numeric:tabular-nums;}
+  .cr-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;position:sticky;bottom:12px;z-index:3;box-shadow:0 4px 18px rgba(0,0,0,.06);}
+  .cr-bar .sp{flex:1;font-size:13px;color:var(--bad);font-weight:500;}
+  .cr-bar .btn[disabled]{background:var(--grey-200);color:var(--grey-600);border-color:var(--grey-200);cursor:not-allowed;}
+  .cr-seg{display:inline-flex;gap:4px;padding:4px;background:#ececec;border-radius:100px;}
+  .cr-seg a,.cr-seg span{height:32px;padding:0 16px;border-radius:100px;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--grey-600);}
+  .cr-seg .on{background:#fff;color:var(--grey-800);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  /* Design document with comment pop-ups */
+  .cr-doc{padding:0 !important;overflow:visible;}
+  .cr-cover{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;height:240px;border-radius:12px 12px 0 0;overflow:hidden;}
+  .cr-cover div{background:#eee center/cover no-repeat;}
+  .cr-cover.n1{grid-template-columns:1fr;} .cr-cover.n2{grid-template-columns:2fr 1fr;}
+  .cr-db{padding:20px 24px 24px;display:grid;gap:2px;}
+  .cr-ver{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--grey-600);margin-bottom:6px;}
+  .cr-sec{position:relative;padding:12px 56px 12px 16px;margin:0 -16px;border-radius:10px;}
+  .cr-sec:hover{background:#fafafa;}
+  .cr-sec.cm{background:#fff8e1;box-shadow:inset 3px 0 0 #f2b705;}
+  .cr-sec h4{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--grey-600);margin-bottom:6px;}
+  .cr-sec p{font-size:15px;line-height:23px;color:var(--grey-800);}
+  .cr-sec .ttl{font-size:24px;font-weight:600;line-height:30px;letter-spacing:-.015em;}
+  .cr-beats{display:grid;gap:6px;font-size:14px;}
+  .cr-beats div{display:grid;grid-template-columns:64px 1fr;gap:12px;}
+  .cr-beats em{font-style:normal;font-weight:600;color:var(--blue-500);}
+  .cr-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .cr-chips span{font-size:13px;font-weight:500;padding:3px 10px;border-radius:100px;background:var(--grey-100);color:var(--grey-700);display:inline-flex;align-items:center;gap:6px;}
+  .cr-chips svg{width:14px;height:14px;}
+  .cr-cbtn{position:absolute;right:12px;top:10px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--grey-500);opacity:0;transition:opacity .15s ease,background .15s ease;}
+  .cr-sec:hover .cr-cbtn,.cr-cbtn:focus-visible{opacity:1;}
+  .cr-cbtn:hover{background:#ececec;color:var(--grey-800);}
+  .cr-cbtn svg,.cr-pin svg{width:16px;height:16px;}
+  .cr-pin{position:absolute;right:10px;top:8px;display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:100px 100px 100px 4px;background:#fff;border:1px solid var(--grey-200);box-shadow:0 6px 16px rgba(0,0,0,.12);font-size:12px;font-weight:600;color:var(--grey-800);z-index:4;}
+  .cr-pin img,.cr-av{width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+  .cr-av{display:grid;place-items:center;color:#fff;font-size:10px;font-weight:600;background:linear-gradient(135deg,#1548eb,#7391f3);}
+  .cr-pop{position:absolute;z-index:6;right:-8px;top:36px;width:340px;background:#fff;border:1px solid var(--grey-200);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.06);text-transform:none;letter-spacing:0;}
+  .cr-pop .cr-ph{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--grey-800);}
+  .cr-pop .cr-ph>span{margin-right:auto;}
+  .cr-pop .cr-ph button{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--grey-600);font-size:16px;}
+  .cr-pop .cr-ph button:hover{background:#f0f0f0;color:var(--grey-800);}
+  .cr-pop .cr-ph svg{width:15px;height:15px;}
+  .cr-msgs{padding:12px 14px;display:grid;gap:10px;max-height:240px;overflow:auto;}
+  .cr-msg{display:grid;grid-template-columns:24px 1fr;gap:8px;font-size:13px;line-height:19px;color:var(--grey-800);}
+  .cr-msg b{font-weight:600;display:block;}
+  .cr-msg img{width:24px;height:24px;border-radius:50%;object-fit:cover;}
+  .cr .ff-in em{white-space:nowrap;}
+  .cr-reply{display:flex;gap:6px;margin:0 12px 12px;padding:4px 4px 4px 14px;border:1px solid var(--grey-400);border-radius:100px;}
+  .cr-reply:focus-within{border-color:var(--blue-300);}
+  .cr-reply input{flex:1;min-width:0;border:0;outline:0;font:500 13px var(--font);}
+  .cr-reply button{width:30px;height:30px;border-radius:50%;background:var(--blue-500);color:#fff;display:grid;place-items:center;}
+  .cr-reply button svg{width:14px;height:14px;}
+  .cr-prep{display:grid;place-items:center;gap:12px;padding:64px 24px;text-align:center;color:var(--grey-600);}
+  .cr-spin{width:32px;height:32px;border-radius:50%;border:3px solid var(--blue-100);border-top-color:var(--blue-500);animation:crspin .8s linear infinite;}
+  @keyframes crspin{to{transform:rotate(360deg);}}
+  .cr-map{display:block;width:100%;height:calc(100dvh - var(--header) - 180px);min-height:640px;border:0;border-radius:12px;}
+  .cr-alloc{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:14px;}
+  .cr-alloc .op{font-size:20px;color:var(--grey-500);text-align:center;}
+  .cr-tile{border:1px solid var(--line);border-radius:12px;padding:12px 16px;}
+  .cr-tile span{display:block;font-size:13px;color:var(--grey-600);}
+  .cr-tile b{display:block;font-size:20px;font-weight:600;line-height:28px;font-variant-numeric:tabular-nums;}
+  .cr-tile.on{border-color:var(--blue-500);background:color-mix(in srgb,var(--blue-100) 40%,#fff);}
+  .cr-tile.bad b{color:var(--bad);}
+  .cr .cp-spec{margin-top:14px;}
+  .cr-slip{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;margin-top:12px;}
+  .cr-slip>svg{width:22px;height:22px;}
+  .cr-slip div{flex:1;min-width:0;}
+  .cr-slip b{display:block;font-size:14px;} .cr-slip small{font-size:12px;color:var(--grey-600);}
+  .cr-pend{font-size:12px;font-weight:600;line-height:20px;padding:0 9px;border-radius:100px;background:#fff4e0;color:#9a5b00;white-space:nowrap;}
+  .cr .drop{margin-top:12px;}
+  .cr-date{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;background:color-mix(in srgb,var(--blue-100) 40%,#fff);}
+  .cr-date .cal{width:56px;height:56px;border-radius:14px;background:#fff;border:1px solid var(--blue-100);display:grid;place-items:center;text-align:center;line-height:1;}
+  .cr-date .cal small{display:block;font-size:11px;font-weight:600;color:var(--bad);text-transform:uppercase;}
+  .cr-date .cal b{font-size:22px;}
+  .cr-date .tx{flex:1;} .cr-date .tx b{display:block;font-size:16px;} .cr-date .tx span{font-size:13px;color:var(--grey-600);}
+  .cr-ck{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--grey-200);border-radius:12px;font-size:14px;line-height:20px;color:var(--grey-700);cursor:pointer;}
+  .cr-ck input{width:18px;height:18px;margin-top:1px;accent-color:var(--blue-500);flex-shrink:0;}
+  .cr-ck a{color:var(--blue-500);font-weight:500;}
+  .cr-scrim{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.4);display:grid;place-items:center;padding:24px;}
+  .cr-modal{width:min(480px,100%);background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px;}
+  .cr-modal h2{font-size:20px;font-weight:600;}
+  .cr-modal select{height:40px;border:1px solid var(--grey-400);border-radius:100px;padding:0 14px;font:500 14px var(--font);}
+  .cr-modal textarea{min-height:96px;}
+  .cr-modal .row{display:flex;justify-content:flex-end;gap:8px;}
+  .cr-done{display:grid;justify-items:center;gap:14px;padding:48px 24px;text-align:center;}
+  .cr-done .ok{width:64px;height:64px;border-radius:50%;background:var(--good);color:#fff;display:grid;place-items:center;}
+  .cr-done .ok svg{width:30px;height:30px;}
+  .cr-done h1{font-size:26px;font-weight:600;line-height:32px;}
+  .cr-done .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+  @media (max-width:767px){
+    .cr-rc,.cr-3,.cr-2{grid-template-columns:minmax(0,1fr);}
+    .cr-steps{overflow-x:auto;}
+    .cr-alloc{grid-template-columns:1fr;}.cr-alloc .op{display:none;}
+    .cr-pop{width:min(320px,calc(100vw - 48px));}
+  }
 </style>
 </head>
 <body>
@@ -1525,7 +1662,7 @@ function cardHTML(id){
 function viewExplore(){
   const cats=['All','Price','Mobility','Food','Entertainment','Lifestyle'];
   return `<div class="home">
-    <h1 class="home-title">${TABS[state.tab]}</h1>
+    <div class="home-head"><h1 class="home-title">${TABS[state.tab]}</h1><a class="btn btn-pri" href="#/create">${PLUSIC}Request to create a campaign</a></div>
     <div class="home-search${state.searchOpen?' open':''}" id="home-search"><div>
       <label class="search">${MICON.search}<input id="q" type="search" placeholder="Search" value="${esc(state.q)}" autocomplete="off" aria-label="Search campaigns and brands"${state.searchOpen?'':' tabindex="-1"'}><kbd>Esc</kbd></label>
     </div></div>
@@ -2907,11 +3044,283 @@ function toggleSearch(){
   setSearch(!state.searchOpen);
 }
 
+/* ================= Request to create a campaign (#/create/<step>) =================
+   The same 4 steps for every campaign: 1 Basics · 2 Details (& creators for invite-only) · 3 Budget · 4 Go live.
+   Open campaigns are open to anyone, so only invite-only ones pick creators (on the Polysocial creator map).
+   Hiring an expert is shown but disabled for now. The request is kept in local storage (brand.campaignRequest). */
+const CR_KEY='brand.campaignRequest';
+const CR_MAP='https://polysocial.cc/creator-map/celeste';
+const CHATIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/></svg>';
+const PLUSIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+const PENIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>';
+const STARIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
+const SENDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>';
+const OKIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
+const crISO=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+function crNew(){
+  const s=new Date(Date.now()+7*DAY), e=new Date(s.getTime()+21*DAY);
+  return {brief:'',files:[],design:'self',access:'open',start:crISO(s),time:'09:00',end:crISO(e),
+    sent:false,ready:0,version:1,threads:{},pop:null,approved:false,creatorsOk:false,
+    base:'',per1k:'',max:'',total:'',fee:'',count:'',fund:'wallet',slip:null,terms:false,scheduled:false,txAdded:false};
+}
+let CR=Object.assign(crNew(),(()=>{try{return JSON.parse(localStorage.getItem(CR_KEY))||{};}catch(e){return {};}})());
+CR.pop=null;
+function crSave(){try{localStorage.setItem(CR_KEY,JSON.stringify(CR));}catch(e){try{localStorage.setItem(CR_KEY,JSON.stringify({...CR,files:[]}));}catch(_){}}}
+const crDate=iso=>new Date(iso+'T00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+const crTime=t=>{const [h,m]=t.split(':').map(Number);return `${h%12||12}:${String(m).padStart(2,'0')} ${h<12?'am':'pm'}`;};
+const crWeeks=()=>{const d=Math.round((new Date(CR.end)-new Date(CR.start))/DAY);return d>=7?`${Math.round(d/7)} week${Math.round(d/7)>1?'s':''}`:`${d} day${d===1?'':'s'}`;};
+const crK=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?(n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+'K':String(n);
+const crFree=()=>{const t=finTotals();return Math.max(0,t.balance-t.reserved);};
+const crTotal=()=>CR.access==='open'?num(CR.total):num(CR.fee)*num(CR.count);
+
+/* Which steps are done, and which can be opened */
+const crBasicsOk=()=>CR.brief.trim().length>=20&&CR.start&&CR.end&&CR.end>CR.start;
+const crDetailsOk=()=>CR.sent&&CR.approved&&(CR.access==='open'||CR.creatorsOk);
+const crBudgetOk=()=>crTotal()>0&&(CR.fund==='wallet'?crTotal()<=crFree():!!CR.slip);
+const CR_STEPS=[['basics','Basics'],['details','Details'],['budget','Budget'],['golive','Go live']];
+function crReach(step){
+  if(step==='basics') return true;
+  if(step==='details') return CR.sent;
+  if(step==='creators') return CR.sent&&CR.approved&&CR.access==='invite';
+  if(step==='budget') return crDetailsOk();
+  if(step==='golive') return crDetailsOk()&&crBudgetOk();
+  if(step==='done') return CR.scheduled;
+  return false;
+}
+function crStepper(step){
+  const at=step==='creators'?'details':step, idx=step==='done'?4:CR_STEPS.findIndex(s=>s[0]===at);
+  const done=[crBasicsOk()&&CR.sent,crDetailsOk(),crDetailsOk()&&crBudgetOk(),CR.scheduled];
+  return `<ol class="cr-steps" aria-label="Steps">${CR_STEPS.map(([k,l],i)=>{
+    const label=k==='details'&&CR.access==='invite'?'Details &amp; creators':l, d=done[i]&&i!==idx, cur=i===idx;
+    const inner=`<i>${d?'✓':i+1}</i>${label}`;
+    return `<li class="${d?'done':cur?'cur':''}">${crReach(k)&&!cur?`<a href="#/create/${k}">${inner}</a>`:`<span class="st"${cur?' aria-current="step"':''}>${inner}</span>`}</li>`;}).join('')}</ol>`;
+}
+const crHead=(title,right='')=>`<section class="dcard cr-head"><h1>${title}</h1>${right}</section>`;
+const crBar=(back,btns,msg='')=>`<div class="cr-bar">${back?`<a class="btn btn-sec" href="${back}">Back</a>`:''}<span class="sp" id="cr-msg">${msg}</span>${btns}</div>`;
+
+/* ---------- The design, written from the brief ---------- */
+const CR_CITIES=['Colombo','Galle','Kandy','Negombo','Jaffna','Kurunegala','Matara','Gampaha','Nuwara Eliya','Trincomalee','Batticaloa','Anuradhapura'];
+const CR_WHO=[['student','Students'],['famil','Families'],['parent','Parents'],['professional','Young professionals'],['foodie','Foodies'],['commut','Commuters'],['traveller','Travellers'],['gym','Gym-goers']];
+function crDesign(){
+  const b=CR.brief.trim().replace(/\s+/g,' '), s=b.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const clean=x=>(x||'').replace(/^(we(’|')re|we are|we want to|we want|we’d like to|we'd like to|our goal is to|goal:|hook( idea)?:)\s*/i,'').replace(/[.!?]+$/,'').trim();
+  const cap=x=>x.charAt(0).toUpperCase()+x.slice(1);
+  let title=cap(clean(s[0])||'New campaign');if(title.length>64) title=title.slice(0,64).replace(/\s+\S*$/,'')+'…';
+  const q=b.match(/[“"]([^”"]{6,90})[”"]/), hook=`“${q?q[1]:clean(s[0])}”`;
+  const vis=s.find(x=>/must (show|be)|visible|show the|make sure/i.test(x));
+  const mid=s.slice(1).find(x=>x!==vis&&!(q&&x.includes(q[1]))&&!/tik ?tok|insta|reels|youtube|facebook/i.test(x));
+  const plats=[['tiktok',/tik ?tok/i],['insta',/insta|reels?\b/i],['youtube',/youtube|shorts/i],['facebook',/facebook/i]].filter(p=>p[1].test(b)).map(p=>p[0]);
+  const ages=b.match(/\b(1[3-9]|[2-6]\d)\s*[–-]\s*([2-6]\d)\b/), decade=b.match(/\b([1-5]0)s\b/);
+  const tags=[...(ages?[[`${ages[1]}-${ages[2]} age`,'age']]:decade?[[`${decade[1]}-${+decade[1]+9} age`,'age']]:[]),
+    ...CR_CITIES.filter(c=>new RegExp('\\b'+c+'\\b','i').test(b)).map(c=>[c,'pin']),
+    ...CR_WHO.filter(w=>new RegExp(w[0],'i').test(b)).map(w=>[w[1],'people']),['Reels','video']];
+  const handle=PROF.socials?.insta?.handle||PROF.name;
+  return {title,brief:s.slice(0,2).join(' ')||b,hook,
+    beats:[['0–3s',hook],['3–10s',mid?clean(mid):'The product in everyday use'],['10–20s',vis?clean(vis):`${PROF.name} clearly in frame`],['20s+',`Tag ${handle}`]],
+    deliv:'1 reel · 15–30s · vertical 9:16',plats:plats.length?plats:['insta','tiktok'],tags,
+    visible:vis?clean(vis):`${PROF.name} logo and product clearly visible`,cta:`Tag ${handle} in your caption`};
+}
+const crCovers=()=>CR.files.length?CR.files.map(f=>f.src):[A[C.uber.img]];
+const CR_SECS=[['title','Title'],['brief','Brief'],['hook','Hook'],['script','Script'],['deliv','Deliverable'],['plats','Platforms'],['suited','Best suited for'],['visible','Must be visible'],['cta','Call to action']];
+
+/* Comments: a pop-up over the section (minimize to a pin, resolve, reply) */
+const crAv=who=>who==='you'?`<img src="${A.brandLogo}" alt="">`:'<span class="cr-av">PS</span>';
+function crSec(k,body){
+  const label=CR_SECS.find(s=>s[0]===k)[1], th=CR.threads[k], open=th&&!th.resolved;
+  const pop=CR.pop===k?`<div class="cr-pop" role="dialog" aria-label="Comments on ${label}"><div class="cr-ph">${CHATIC}<span>${label}</span>
+      ${open?`<button type="button" data-cr="resolve" data-k="${k}" aria-label="Resolve" title="Resolve">${OKIC}</button>`:''}<button type="button" data-cr="min" aria-label="Minimize" title="Minimize">–</button></div>
+      ${open?`<div class="cr-msgs">${th.msgs.map(m=>`<div class="cr-msg">${crAv(m.who)}<div><b>${m.who==='you'?'You':'Polysocial'}</b>${esc(m.text)}</div></div>`).join('')}</div>`:''}
+      <form class="cr-reply" data-cr-form="reply" data-k="${k}"><input id="cr-reply" placeholder="${open?'Reply':'Add a comment'}" autocomplete="off" aria-label="Comment"><button type="submit" aria-label="Send">${SENDIC}</button></form></div>`
+    :open?`<button class="cr-pin" type="button" data-cr="pop" data-k="${k}" aria-label="Open comments on ${label}">${crAv(th.msgs[th.msgs.length-1].who)}${th.msgs.length}</button>`
+    :`<button class="cr-cbtn" type="button" data-cr="pop" data-k="${k}" aria-label="Comment on ${label}" title="Comment">${CHATIC}</button>`;
+  return `<div class="cr-sec${open?' cm':''}"><h4>${label}</h4>${body}${pop}</div>`;
+}
+
+/* ---------- Step views ---------- */
+function crBasics(){
+  const rc=(f,v,t,d,ic,off)=>`<button type="button" role="radio" aria-checked="${CR[f]===v}" data-cr="pick" data-f="${f}" data-v="${v}"${off?' disabled':''}><span class="rd"></span><span><b>${ic}${t}${off?' <span class="cr-soon">Coming soon</span>':''}</b><small>${d}</small></span></button>`;
+  return crHead('What is the campaign about?')+
+    `<section class="dcard"><h2>Brief <span class="cr-req">Required</span></h2>
+      <textarea data-crf="brief" placeholder="What you’re promoting, the goal, who it’s for, what must be shown, the tone." aria-label="Brief">${esc(CR.brief)}</textarea>
+      <div class="cr-files">${CR.files.map((f,i)=>`<div class="cr-file" style="background-image:url('${f.src}')"><button type="button" data-cr="file-rm" data-i="${i}" aria-label="Remove ${esc(f.name)}">${XIC}</button></div>`).join('')}
+        <label class="cr-add" title="Add photos">${PLUSIC}<input id="cr-files" type="file" accept="image/*" multiple aria-label="Add photos"></label></div></section>
+    <section class="dcard"><h2>Who designs it? <span class="cr-req">Required</span></h2><div class="cr-rc" role="radiogroup">
+      ${rc('design','self','We’ll design it','You comment on the design we prepare.',PENIC)}${rc('design','expert','Hire an expert','A creative strategist designs and runs it.',STARIC,true)}</div></section>
+    <section class="dcard"><h2>Who can join? <span class="cr-req">Required</span></h2><div class="cr-rc" role="radiogroup">
+      ${rc('access','open','Open campaign','Anyone can join.',UNLOCK)}${rc('access','invite','Invite only','Only creators you select.',LOCK)}</div></section>
+    <section class="dcard"><h2>Dates <span class="cr-req">Required</span></h2><div class="cr-3">
+      <label class="fl">Go live on<input type="date" data-crf="start" value="${CR.start}"></label>
+      <label class="fl">Time<input type="time" data-crf="time" value="${CR.time}"></label>
+      <label class="fl">Ends on<input type="date" data-crf="end" value="${CR.end}"></label></div></section>`+
+    crBar('#/active',`<button class="btn btn-pri" type="button" data-cr="send" id="cr-next"${crBasicsOk()?'':' disabled'}>${CR.sent?'Update request':'Send request'}</button>`);
+}
+function crSegs(on){
+  return CR.access==='invite'?`<div class="cr-seg"><${on==='design'?'span class="on"':'a href="#/create/details"'}>Design</${on==='design'?'span':'a'}><${on==='creators'?'span class="on"':crReach('creators')?'a href="#/create/creators"':'span'}>Creators</${on==='creators'?'span':crReach('creators')?'a':'span'}></div>`:'';
+}
+function crDetails(){
+  if(Date.now()<CR.ready) return crHead('Campaign design',crSegs('design'))+`<section class="dcard"><div class="cr-prep"><span class="cr-spin"></span><b>Preparing your campaign design</b></div></section>`;
+  const d=crDesign(), cov=crCovers().slice(0,3);
+  const body=`<section class="dcard cr-doc"><div class="cr-cover n${cov.length}">${cov.map(c=>`<div style="background-image:url('${c}')"></div>`).join('')}</div><div class="cr-db">
+    <div class="cr-ver"><span>Version ${CR.version}</span>${CR.approved?'<span class="cr-pend" style="background:var(--good-bg,#e7f5ec);color:var(--good)">Approved</span>':''}</div>
+    ${crSec('title',`<div class="ttl">${esc(d.title)}</div>`)}
+    ${crSec('brief',`<p>${esc(d.brief)}</p>`)}
+    ${crSec('hook',`<p>${esc(d.hook)}</p>`)}
+    ${crSec('script',`<div class="cr-beats">${d.beats.map(([a,b])=>`<div><em>${a}</em><span>${esc(b)}</span></div>`).join('')}</div>`)}
+    ${crSec('deliv',`<p>${d.deliv}</p>`)}
+    ${crSec('plats',`<div class="cr-chips">${d.plats.map(p=>`<span>${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>`)}
+    ${crSec('suited',`<div class="cr-chips">${d.tags.map(t=>`<span>${esc(t[0])}</span>`).join('')}</div>`)}
+    ${crSec('visible',`<p>${esc(d.visible)}</p>`)}
+    ${crSec('cta',`<p>${esc(d.cta)}</p>`)}
+  </div></section>`;
+  return crHead('Campaign design',crSegs('design'))+body+
+    crBar('#/create/basics',`<button class="btn btn-sec" type="button" data-cr="edits">Request edits</button><button class="btn btn-pri" type="button" data-cr="approve">${CR.approved?'Next':'Approve design'}</button>`);
+}
+function crCreators(){
+  return crHead('Select creators',crSegs('creators'))+
+    `<section class="dcard" style="padding:0;overflow:hidden"><iframe class="cr-map" src="${CR_MAP}" title="Polysocial creator map"></iframe></section>`+
+    crBar('#/create/details',`<button class="btn btn-pri" type="button" data-cr="creators-ok">Continue with selected creators</button>`);
+}
+function crAlloc(){
+  const t=crTotal(), free=crFree(), left=free-t;
+  return CR.fund==='wallet'
+    ?`<div class="cr-alloc" id="cr-alloc"><div class="cr-tile"><span>Available</span><b>${RS(free)}</b></div><span class="op">−</span><div class="cr-tile on"><span>This campaign</span><b>${RS(t)}</b></div><span class="op">=</span><div class="cr-tile${left<0?' bad':''}"><span>Left</span><b>${RS(left)}</b></div></div>`
+    :`<div id="cr-alloc"><div class="cp-spec">${[...BANK.filter(b=>b[0]!=='SWIFT code'),['Amount',RS(t)],['Payment reference',FIN.ref]].map(([k,v])=>`<button class="cp-spectile" type="button" data-act="copy" data-v="${esc(v)}" aria-label="Copy ${k.toLowerCase()}: ${esc(v)}"><span class="k">${k}</span><span class="v">${v}</span>${COPYIC}</button>`).join('')}</div>
+      ${CR.slip?`<div class="cr-slip">${DOCIC}<div><b>${esc(CR.slip.name)}</b><small>${fmtSize(CR.slip.size)}</small></div><span class="cr-pend">Pending verification</span><button class="x-btn" type="button" data-cr="slip-rm" aria-label="Remove ${esc(CR.slip.name)}">${XIC}</button></div>`
+        :`<label class="drop">${'<input id="cr-slip" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">'}${UPIC}<b>Upload transfer slip</b><span>PDF, JPG or PNG, up to 10 MB</span></label>`}</div>`;
+}
+const crBudgetMsg=()=>crTotal()>0&&CR.fund==='wallet'&&crTotal()>crFree()?'Not enough in your wallet':'';
+function crBudget(){
+  const open=CR.access==='open', money=(f,label,suf='')=>`<label class="fl">${label}<span class="ff-in"><em>Rs.</em><input data-crf="${f}" data-money inputmode="numeric" value="${CR[f]?num(CR[f]).toLocaleString('en-US'):''}" placeholder="0">${suf?`<em>${suf}</em>`:''}</span></label>`;
+  const rc=(v,t,d,ic)=>`<button type="button" role="radio" aria-checked="${CR.fund===v}" data-cr="pick" data-f="fund" data-v="${v}"><span class="rd"></span><span><b>${ic}${t}</b><small>${d}</small></span></button>`;
+  return crHead('Budget')+
+    `<section class="dcard"><h2>Campaign budget</h2>${open
+      ?`<div class="cr-2">${money('total','Total budget')}${money('base','Base price per content')}${money('per1k','Performance pricing','/ 1K views')}${money('max','Max earning per content')}</div>`
+      :`<div class="cr-3">${money('fee','Flat fee per content')}<label class="fl">Creators<span class="ff-in"><input data-crf="count" inputmode="numeric" value="${esc(CR.count)}" placeholder="0"></span></label><div class="cr-tile" style="align-self:end"><span>Total budget</span><b id="cr-total">${RS(crTotal())}</b></div></div>`}</section>
+    <section class="dcard"><h2>Funding</h2><div class="cr-rc" role="radiogroup">${rc('wallet','Allocate from brand budget',`${RS(crFree())} available`,WALLETIC)}${rc('transfer','Send a bank transfer','Upload the transfer slip',UPIC)}</div>${crAlloc()}</section>`+
+    crBar('#/create/'+(open?'details':'creators'),`<button class="btn btn-pri" type="button" data-cr="budget-ok" id="cr-next"${crBudgetOk()?'':' disabled'}>Continue</button>`,crBudgetMsg());
+}
+function crGolive(){
+  const s=new Date(CR.start+'T00:00');
+  return crHead('Go live',`<button class="btn btn-sec" type="button" data-cr="view-as">${EYEIC}View as creator</button>`)+
+    `<section class="dcard"><h2>Go-live date</h2><div class="cr-date"><div class="cal"><small>${s.toLocaleDateString('en-US',{month:'short'})}</small><b>${s.getDate()}</b></div>
+      <div class="tx"><b>${crDate(CR.start)} · ${crTime(CR.time)}</b><span>Ends ${crDate(CR.end)}</span></div><a class="link" href="#/create/basics">Change</a></div></section>
+    <section class="dcard"><h2>Terms</h2><label class="cr-ck"><input type="checkbox" id="cr-terms"${CR.terms?' checked':''}><span>I accept the <a href="#" data-act="soon">Polysocial Terms of Service</a> and the <a href="#" data-act="soon">Campaign Owner terms</a></span></label></section>`+
+    crBar('#/create/budget',`<button class="btn btn-sec" type="button" data-cr="edits-modal">Request edits</button><button class="btn btn-pri" type="button" data-cr="confirm" id="cr-next"${CR.terms?'':' disabled'}>Confirm &amp; go live</button>`);
+}
+function crDone(){
+  const s=new Date(CR.start+'T00:00');
+  return `<section class="dcard"><div class="cr-done"><span class="ok">${OKIC}</span><h1>Scheduled to go live</h1>
+    <div class="cr-date" style="text-align:left"><div class="cal"><small>${s.toLocaleDateString('en-US',{month:'short'})}</small><b>${s.getDate()}</b></div><div class="tx"><b>${crDate(CR.start)} · ${crTime(CR.time)}</b><span>Ends ${crDate(CR.end)}</span></div></div>
+    <div class="row"><a class="btn btn-pri" href="#/active">Back to campaigns</a><button class="btn btn-sec" type="button" data-cr="view-as">${EYEIC}View as creator</button><button class="btn btn-sec" type="button" data-cr="edits-modal">Request edits</button></div></div></section>`;
+}
+let crPrepT;
+function viewCreate(step){
+  if(!step){if(CR.scheduled){CR=crNew();crSave();}step='basics';}
+  if(!crReach(step)) step=['golive','budget','details','basics'].find(crReach);
+  if(location.hash!=='#/create/'+step) history.replaceState(null,'','#/create/'+step);
+  clearTimeout(crPrepT);
+  if(step==='details'&&Date.now()<CR.ready) crPrepT=setTimeout(crRender,CR.ready-Date.now()+30);
+  const body={basics:crBasics,details:crDetails,creators:crCreators,budget:crBudget,golive:crGolive,done:crDone}[step]();
+  return `<div class="cr">${crStepper(step)}${body}</div>`;
+}
+const crStep=()=>(location.hash.split('/')[2]||'basics');
+function crRender(){const y=scrollY;view.innerHTML=viewCreate(crStep());bindAssets(view);scrollTo({top:y,behavior:'instant'});}
+
+/* View as creator: the same drawer as the campaign dashboard, filled with this request */
+function crPreview(){
+  const d=crDesign(), t=crTotal(), open=CR.access==='open', w=crWeeks();
+  A.crCover=crCovers()[0];
+  C['cr-preview']={img:'crCover',logo:'brandLogo',abbr:PROF.name.slice(0,2),cat:PROF.category,title:d.title,
+    time:'Starts '+new Date(CR.start+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}),right:w,progress:0,joined:null,joinedShort:'0',
+    list:open?[['Base price per content',RS(num(CR.base))],['Max earning per content',RS(num(CR.max))],['Performance pricing',RS(num(CR.per1k))+' / 1K views'],['Total budget',RS(t)]]
+             :[['Flat fee per content',RS(num(CR.fee))],['Slots',String(num(CR.count))],['Slots filled','0'],['Total budget',RS(t)]],
+    tags:d.tags,reqDesc:d.brief,platforms:d.plats,visibility:d.visible,ctas:[d.hook.replace(/[“”]/g,''),d.cta],
+    brand:PROF.name,since:'Since '+PROF.since,brandDesc:PROF.about,totalPaid:'Rs. '+(finTotals().spent/1e6).toFixed(1)+' M',campaigns:String(EXPLORE.length),
+    handles:Object.entries(PROF.socials||{}).filter(([p])=>PLAT[p]).map(([p,s])=>[crK(s.followers),p]),
+    access:CR.access,fee:open?'performance':'flat',status:'upcoming'};
+  openCampaignDrawer('cr-preview');
+}
+/* Request edits from the go-live step: pick the section, say what should change */
+function crEditsModal(){
+  const m=document.createElement('div');m.className='cr-scrim';m.id='cr-modal';
+  m.innerHTML=`<form class="cr-modal" data-cr-form="edits" role="dialog" aria-modal="true" aria-label="Request edits"><h2>Request edits</h2>
+    <label class="fl">Section<select id="cr-edit-sec">${CR_SECS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}<option value="budget">Budget</option><option value="dates">Dates</option></select></label>
+    <label class="fl">What should change?<textarea id="cr-edit-txt" required></textarea></label>
+    <div class="row"><button class="btn btn-sec" type="button" data-cr="modal-x">Cancel</button><button class="btn btn-pri" type="submit">Send</button></div></form>`;
+  document.body.appendChild(m);m.querySelector('textarea').focus();
+}
+function crAddMsg(k,text){
+  const th=CR.threads[k]&&!CR.threads[k].resolved?CR.threads[k]:(CR.threads[k]={msgs:[],resolved:false});
+  th.msgs.push({who:'you',text});crSave();
+}
+function crReadImg(f){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82));};im.onerror=()=>res(null);im.src=r.result;};r.onerror=()=>res(null);r.readAsDataURL(f);});}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-cr]');if(!b||!document.querySelector('.cr, #cr-modal')) return;
+  const a=b.dataset.cr, k=b.dataset.k;
+  if(a==='pick'){if(b.disabled) return;const was=CR[b.dataset.f];CR[b.dataset.f]=b.dataset.v;
+    if(b.dataset.f==='access'&&was!==CR.access){CR.creatorsOk=false;}crSave();return crRender();}
+  if(a==='file-rm'){CR.files.splice(+b.dataset.i,1);crSave();return crRender();}
+  if(a==='send'){if(!crBasicsOk()) return;
+    Object.assign(CR,{sent:true,ready:Date.now()+1800,version:1,threads:{},pop:null,approved:false,creatorsOk:false,terms:false});crSave();location.hash='#/create/details';return;}
+  if(a==='pop'){CR.pop=k;crRender();document.getElementById('cr-reply')?.focus({preventScroll:true});return;}
+  if(a==='min'){CR.pop=null;return crRender();}
+  if(a==='resolve'){if(CR.threads[k]) CR.threads[k].resolved=true;CR.pop=null;crSave();return crRender();}
+  if(a==='edits'){
+    const open=Object.entries(CR.threads).filter(([,t])=>!t.resolved&&t.msgs[t.msgs.length-1].who==='you');
+    if(!open.length) return toast('Add a comment on the section you want changed');
+    toast('Edit request sent');
+    setTimeout(()=>{CR.version++;open.forEach(([,t])=>t.msgs.push({who:'ps',text:`Updated in version ${CR.version}.`}));CR.approved=false;crSave();if(crStep()==='details') crRender();},1400);return;}
+  if(a==='approve'){if(!CR.approved){const open=Object.values(CR.threads).some(t=>!t.resolved&&t.msgs[t.msgs.length-1].who==='you');if(open) return toast('Request the edits first, or resolve the comments');CR.approved=true;CR.pop=null;crSave();}
+    location.hash=CR.access==='invite'?'#/create/creators':'#/create/budget';return;}
+  if(a==='creators-ok'){CR.creatorsOk=true;crSave();location.hash='#/create/budget';return;}
+  if(a==='slip-rm'){CR.slip=null;crSave();return crRender();}
+  if(a==='budget-ok'){if(crBudgetOk()) location.hash='#/create/golive';return;}
+  if(a==='view-as'){crPreview();return;}
+  if(a==='edits-modal'){crEditsModal();return;}
+  if(a==='modal-x'){document.getElementById('cr-modal')?.remove();return;}
+  if(a==='confirm'){if(!CR.terms) return;
+    if(CR.fund==='transfer'&&CR.slip&&!CR.txAdded){FIN.transfers.unshift({at:new Date(),amount:crTotal(),ref:FIN.ref,file:CR.slip.name,status:'pending'});CR.txAdded=true;}
+    CR.scheduled=true;crSave();location.hash='#/create/done';return;}
+});
+document.addEventListener('input',e=>{
+  const el=e.target.closest('[data-crf]');if(!el) return;
+  const f=el.dataset.crf;
+  if(el.hasAttribute('data-money')){const n=num(el.value);el.value=n?n.toLocaleString('en-US'):'';CR[f]=n?String(n):'';}
+  else CR[f]=el.value;
+  crSave();
+  const next=document.getElementById('cr-next');
+  if(crStep()==='basics'){if(next) next.disabled=!crBasicsOk();el.removeAttribute('aria-invalid');}
+  if(crStep()==='budget'){
+    const tot=document.getElementById('cr-total');if(tot) tot.textContent=RS(crTotal());
+    const al=document.getElementById('cr-alloc');if(al&&CR.fund==='wallet') al.outerHTML=crAlloc();
+    if(next) next.disabled=!crBudgetOk();document.getElementById('cr-msg').textContent=crBudgetMsg();
+  }
+});
+document.addEventListener('change',async e=>{
+  if(e.target.id==='cr-terms'){CR.terms=e.target.checked;crSave();document.getElementById('cr-next').disabled=!CR.terms;return;}
+  if(e.target.id==='cr-slip'){const f=e.target.files[0];if(!f) return;
+    if(!/\.(pdf|jpe?g|png)$/i.test(f.name)) return toast('Upload a PDF, JPG or PNG');
+    if(f.size>10*1048576) return toast('That file is over 10 MB');
+    CR.slip={name:f.name,size:f.size};crSave();return crRender();}
+  if(e.target.id==='cr-files'){const fs=[...e.target.files].filter(f=>/^image\//.test(f.type)).slice(0,6-CR.files.length);
+    for(const f of fs){const src=await crReadImg(f);if(src) CR.files.push({name:f.name,src});}
+    crSave();crRender();}
+});
+document.addEventListener('submit',e=>{
+  const f=e.target.closest('[data-cr-form]');if(!f) return;e.preventDefault();
+  if(f.dataset.crForm==='reply'){const v=f.querySelector('input').value.trim();if(!v) return;crAddMsg(f.dataset.k,v);crRender();document.getElementById('cr-reply')?.focus({preventScroll:true});return;}
+  if(f.dataset.crForm==='edits'){const v=document.getElementById('cr-edit-txt').value.trim();if(!v) return;
+    crAddMsg(document.getElementById('cr-edit-sec').value,v);document.getElementById('cr-modal').remove();toast('Edit request sent');}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('cr-modal');if(m){m.remove();return;}if(CR.pop&&document.querySelector('.cr')){CR.pop=null;crRender();}}});
+
 /* ================= Router ================= */
 const view=document.getElementById('view');
 const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
   const campaign=root==='campaign'&&C[id]?id:null;
+  if(root==='create') return {root,id:null,admin:false,cstep:id||''};
   if(root==='profile') return {root,id:null,admin:false,psec:PSECTIONS.some(x=>x[0]===id)?id:'brand',post:null};
   if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
   return {root,id:campaign,admin:!!campaign&&mode==='admin',sec:campaign&&secsFor(campaign).some(x=>x[0]===sec)?sec:'news',post:/^\d+$/.test(post||'')?+post:null};
@@ -2940,26 +3349,27 @@ function holdSide(old){
 function scrollThread(){const m=document.getElementById('ib-msgs')||document.getElementById('wn-msgs');if(m) m.scrollTop=m.scrollHeight;}
 let lastDash=null;
 function route(){
-  const {root,id,admin,sec,post,fsec,toTx,psec}=parseHash();
+  const {root,id,admin,sec,post,fsec,toTx,psec,cstep}=parseHash();
   const campaign=!!id;
   const notifs=!campaign&&root==='notifications';
   const fin=!campaign&&root==='financials';
   const prof=!campaign&&root==='profile';
+  const create=!campaign&&root==='create';
   profEdit=prof?profEditNext:null;profEditNext=null;
-  if(!campaign&&!notifs&&!fin&&!prof) state.tab=TABS[root]?root:'active';
+  if(!campaign&&!notifs&&!fin&&!prof&&!create) state.tab=TABS[root]?root:'active';
   else if(admin) state.tab=C[id].status;
   stopMedia();setSide(false);
   if(admin) dash(id).ibOpen=false;
   /* Switching sections inside one campaign's dashboard keeps the left column as it is; only the menu item changes */
   const dkey=admin?id:fin?'#fin':prof?'#prof':null, inDash=!!dkey&&lastDash===dkey;lastDash=dkey;
   const keepSide=inDash&&view.querySelector('.dsh-side');
-  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):prof?viewProfile(psec):viewExplore();
+  view.innerHTML=admin?viewAdmin(id,sec,post):campaign?viewCampaign(id):notifs?viewNotifs():fin?viewFinancials(fsec):prof?viewProfile(psec):create?viewCreate(cstep):viewExplore();
   /* Creator view keeps the blue notice; the admin dashboard keeps the status bar and the grey canvas */
   document.body.classList.toggle('viewing',campaign&&!admin);
-  document.body.classList.toggle('dash',admin||fin||prof);
+  document.body.classList.toggle('dash',admin||fin||prof||create);
   document.body.classList.toggle('notifs',notifs);
   document.body.classList.toggle('fin',fin);
-  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin&&!prof);
+  document.body.classList.toggle('explore',!campaign&&!notifs&&!fin&&!prof&&!create);
   const avl=document.getElementById('top-avlink');if(prof) avl.setAttribute('aria-current','page'); else avl.removeAttribute('aria-current');
   if(campaign&&!admin){
     document.getElementById('viewbar-msg').textContent=`You are viewing this page as ${admin?'an admin':'a creator'}`;
@@ -2983,10 +3393,10 @@ function route(){
   const open=post!=null&&view.querySelector(`.ppost[data-k="${post}"]`);if(open) (matchMedia('(max-width:1023px)').matches?open.closest('.pitem'):open).scrollIntoView({block:'start',behavior:'instant'});
   renderFeed();
   /* The search button only belongs on the Explore page */
-  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin||prof;
-  if(campaign||notifs||fin||prof) sb.classList.remove('on');
+  const sb=document.getElementById('search-btn');sb.hidden=campaign||notifs||fin||prof||create;
+  if(campaign||notifs||fin||prof||create) sb.classList.remove('on');
   else if(state.searchOpen) setSearch(true);
-  document.title=(admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':prof?PSECTIONS.find(x=>x[0]===psec)[1]:fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
+  document.title=(create?'Request to create a campaign':admin?secsFor(id).find(x=>x[0]===sec)[1]+' · '+C[id].title:campaign?C[id].title:notifs?'Notifications':prof?PSECTIONS.find(x=>x[0]===psec)[1]:fin?FSECTIONS.find(x=>x[0]===fsec)[1]+' · Financials':TABS[state.tab])+' — UGC Platform for Brands';
   document.querySelectorAll('#tnav a').forEach(n=>{const on=!notifs&&!prof&&n.dataset.root===(fin?'financials':'campaigns');n.classList.toggle('active',on);if(on)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
   setTopMenu(false);
   document.querySelectorAll('#tmenu-list a').forEach(a=>{const on=!prof&&a.dataset.root===(notifs?'notifications':fin?'financials':'campaigns');a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
