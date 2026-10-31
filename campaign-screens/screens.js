@@ -292,7 +292,8 @@ function creatorView(k, o) {
       <div class="pl">${o.price.map(([a, b]) => `<div><span>${a}</span><b>${b}</b></div>`).join('')}</div>
       <div><h5>Best suited for</h5>${tagsHTML(o.tags)}</div>
       <div><h5>Requirements</h5><p>${o.req}</p></div>
-      <span class="join">${o.cta}</span></div></div>`;
+      <div><h5>Campaign created by</h5><div class="prow"><img class="pav" src="img/pattypop.png" style="width:32px;height:32px"><div><b style="font-size:13px">Patty Pop</b><span style="font-size:11px">Since Mar 2026 · 4 campaigns</span></div></div></div>
+      <span class="join">Join now</span></div></div>`;
 }
 function step4(k, o) {
   const t = T[k], [dw, mo, d, full] = t.live;
@@ -311,9 +312,9 @@ function step4(k, o) {
     bar(`Goes live ${full}`, ['Request edits', 'Confirm &amp; go live on ' + `${dw}, ${mo.charAt(0) + mo.slice(1).toLowerCase()} ${d}`], true));
 }
 const CV = {
-  a: {meta: 'Food · Oct 19 – Nov 8 · Open', price: [['Base price per content', 'Rs. 6,000'], ['Performance pricing', 'Rs. 1,800 / 1K views'], ['Max earning per content', 'Rs. 90,000']], tags: ['18–28 age', 'Colombo', 'Galle', 'Selfie', 'Reels'], req: '“POV: you found the crunchiest burger in Colombo”. Starving moment → order at Patty Pop → slow-mo crunchy first bite.', cta: 'Join campaign'},
-  b: {meta: 'Food · Nov 20 – Dec 14 · Run by Ishara Fernando', price: [['Micro creators', 'Rs. 9,000 per reel'], ['Bonus pool', 'Rs. 1,500 / 1K views'], ['Opening day', 'Sat, Dec 5']], tags: ['Families', 'Students', 'Kandy', 'Peradeniya', 'Reels'], req: '“I drove up to Kandy for one bite…”. Queue on opening day, first bite and free fries with code KANDYPOP.', cta: 'Join campaign'},
-  c: {meta: 'Food · Nov 16 – Dec 6 · Invite only', price: [['Your fee', 'Fixed, agreed per creator'], ['Deliverable', '1 Instagram reel'], ['Paid', 'After approval']], tags: ['Families', 'Parents 25–44', 'Colombo city', 'Reels'], req: '“Weekend dinner, sorted in one box”. Open the Family Feast box at home; show the Rs. 4,990 price.', cta: 'Accept invite'},
+  a: {meta: 'Food · Oct 19 – Nov 8 · Open', price: [['Base price per content', 'Rs. 6,000'], ['Max earning per content', 'Rs. 90,000'], ['Performance pricing', 'Rs. 1,800 / 1K views'], ['Total budget', 'Rs. 600,000']], tags: ['18–28 age', 'Colombo', 'Galle', 'Selfie', 'Reels'], req: '“POV: you found the crunchiest burger in Colombo”. Starving moment → order at Patty Pop → slow-mo crunchy first bite.'},
+  b: {meta: 'Food · Nov 20 – Dec 14 · Open', price: [['Base price per content', 'Rs. 9,000'], ['Max earning per content', 'Rs. 120,000'], ['Performance pricing', 'Rs. 1,500 / 1K views'], ['Total budget', 'Rs. 704,000']], tags: ['Families', 'Students', 'Kandy', 'Peradeniya', 'Reels'], req: '“I drove up to Kandy for one bite…”. Queue on opening day, first bite and free fries with code KANDYPOP.'},
+  c: {meta: 'Food · Nov 16 – Dec 6 · Invite only', price: [['Flat fee per content', 'Agreed per creator'], ['Slots', '4'], ['Slots filled', '0'], ['Total budget', 'Rs. 217,647']], tags: ['Families', 'Parents 25–44', 'Colombo city', 'Reels'], req: '“Weekend dinner, sorted in one box”. Open the Family Feast box at home; show the Rs. 4,990 price.'},
 };
 SCREENS['a4-golive'] = () => step4('a', {who: 'open to all matching creators', hold: 600000, cv: CV.a,
   gates: [['Basics', 'brief, open, Oct 19 – Nov 8'], ['Design approved', 'version 3, after your 2 comments'], ['Creators approved', '7 suggested + open to ~1,480'], ['Budget allocated', `${rs(600000)} from your brand budget`]]});

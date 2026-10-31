@@ -42,3 +42,13 @@ python3 campaign-screens/overview.py   # png/overview-<type>.png
 ```
 
 `creators/` is the creator pool and avatars from MCP-view's creator map; `img/` is Patty Pop's logo and photos.
+
+## Sources (checked Oct 31, 2026)
+
+| Repo | Version used | Deployed |
+| --- | --- | --- |
+| brand-web-app | `main` @ `9f2e4e5` (bank details on Account) | GitHub Pages builds `main`: last deploy `9f2e4e5` |
+| MCP-view | `main` @ `e24816b` (creator map as chat UI) | GitHub Pages builds `main`: last deploy `e24816b` |
+| Polysocial-mobile | `release-1.0.0(11)` = `main` @ `2412b77` | Netlify deploys `release-*` branches; creator data identical to `site/creator-map/celeste/data.js` |
+| collaborators-web-app | `main` @ Oct 14 (invites, chats, commission ask) | Pages branch not visible from this session |
+| creator-web-app | `main` @ Oct 10 (campaign page: pricing list, best suited for, requirements, created by, *Join now*) | Pages branch not visible from this session |
