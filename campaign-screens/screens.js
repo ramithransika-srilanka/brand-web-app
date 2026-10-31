@@ -71,274 +71,177 @@ I.bell = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
 I.bank = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>';
 
 /* =====================================================================
-   The three campaign types, each created in the same 4 steps:
+
+/* =====================================================================
+   Every campaign type is created in the same 4 steps:
    1 Basics · 2 Details & creators · 3 Budget · 4 Go live
    ===================================================================== */
-const STEPS4 = [['Basics', 'Brief, designer, access, dates'], ['Details &amp; creators', 'Design, comments, creator map'], ['Budget', 'Allocate or transfer'], ['Go live', 'Terms &amp; confirmation']];
+const STEPS4 = ['Basics', 'Details &amp; creators', 'Budget', 'Go live'];
 const T = {
-  a: {title: 'Pop Crunch Chicken — The crunch you can hear', type: 'Designed by your team', access: 'Open campaign', cover: ['ppBiteWide.jpg', 'ppBite.jpg', 'ppMeal.jpg'],
-      live: ['Mon', 'OCT', '19', 'Mon, Oct 19, 2026 · 9:00 am'], end: 'Sun, Nov 8, 2026', budget: 600000},
-  b: {title: 'Patty Pop Kandy — First bite in the hills', type: 'Designed by an expert', access: 'Open campaign', cover: ['ppBite.jpg', 'ppMeal.jpg', 'ppBiteWide.jpg'],
-      live: ['Fri', 'NOV', '20', 'Fri, Nov 20, 2026 · 10:00 am'], end: 'Mon, Dec 14, 2026', budget: 800000},
-  c: {title: 'Family Feast — Weekend dinner, sorted', type: 'Designed by your team', access: 'Invite only', cover: ['ppMeal.jpg', 'ppBiteWide.jpg', 'ppBite.jpg'],
-      live: ['Mon', 'NOV', '16', 'Mon, Nov 16, 2026 · 9:00 am'], end: 'Sun, Dec 6, 2026', budget: 217647},
+  a: {title: 'Pop Crunch Chicken — The crunch you can hear', cover: ['ppBiteWide.jpg', 'ppBite.jpg', 'ppMeal.jpg'], live: ['OCT', '19', 'Mon, Oct 19, 2026 · 9:00 am'], end: 'Sun, Nov 8, 2026', budget: 600000},
+  b: {title: 'Patty Pop Kandy — First bite in the hills', cover: ['ppBite.jpg', 'ppMeal.jpg', 'ppBiteWide.jpg'], live: ['NOV', '20', 'Fri, Nov 20, 2026 · 10:00 am'], end: 'Mon, Dec 14, 2026', budget: 800000},
+  c: {title: 'Family Feast — Weekend dinner, sorted', cover: ['ppMeal.jpg', 'ppBiteWide.jpg', 'ppBite.jpg'], live: ['NOV', '16', 'Mon, Nov 16, 2026 · 9:00 am'], end: 'Sun, Dec 6, 2026', budget: 217647},
 };
+const Q = new URLSearchParams(location.search);
+const MAP_URL = Q.get('map') || 'http://localhost:8765/creator-map/celeste';
+const MAP_H = Q.get('mapH') || 3902;
 
-const topbar4 = (k, untitled) => `<header class="topbar"><a class="logo">${I.logo}<span>Create campaign</span></a><div class="top-mid">${untitled ? '<span style="color:var(--grey-600)">New campaign</span>' : k ? T[k].title : ''}</div>
-  <div class="top-r">${k ? '<span class="saved">Draft saved · just now</span><span class="btn btn-ghost btn-sm">Save &amp; exit</span>' : ''}<img class="avatar" src="img/pattypop.png" alt=""></div></header>`;
-const stepbar = (k, cur) => `<div class="stepbar"><div class="in2"><div class="type"><b>${T[k].type}</b><span>${T[k].access}</span></div>
-  <ol class="stepper4">${STEPS4.map(([t, s], i) => `<li class="${i < cur ? 'done' : i === cur ? 'cur' : ''}"><span class="c">${i < cur ? '✓' : i + 1}</span><span class="t"><b>${t}</b><span>${s}</span></span></li>`).join('')}</ol></div></div>`;
-const bar = (msg, btns, ok = true) => `<div class="actbar"><div class="in2"><span class="btn btn-ghost">Back</span><span class="miss${ok ? ' ok' : ''}">${msg}</span>${btns.map((b, i) => `<span class="btn ${i === btns.length - 1 ? 'btn-pri' : 'btn-sec'}">${b}</span>`).join('')}</div></div>`;
-const page = (k, cur, body, b) => `${topbar4(k, cur === 0)}${stepbar(k, cur)}<div class="wide nav-in">${body}${b || ''}</div>`;
-const stephead = (n, title, sub, right) => `<section class="dcard"><div class="dhead row" style="margin-bottom:0"><div><div class="step-kick">Step ${n} of 4</div><h1>${title}</h1><p class="dsub">${sub}</p></div>${right || ''}</div></section>`;
+const topbar4 = (k, untitled) => `<header class="topbar"><a class="logo">${I.logo}<span>Create campaign</span></a><div class="top-mid">${untitled ? '' : T[k].title}</div>
+  <div class="top-r"><span class="btn btn-ghost btn-sm">Save &amp; exit</span><img class="avatar" src="img/pattypop.png" alt=""></div></header>`;
+const stepbar = (cur) => `<div class="stepbar"><div class="in2"><ol class="stepper4">${STEPS4.map((t, i) => `<li class="${i < cur ? 'done' : i === cur ? 'cur' : ''}"><span class="c">${i < cur ? '✓' : i + 1}</span><span class="t"><b>${t}</b></span></li>`).join('')}</ol></div></div>`;
+const bar = (btns) => `<div class="actbar"><div class="in2"><span class="btn btn-ghost">Back</span><span class="miss"></span>${btns.map((b, i) => `<span class="btn ${i === btns.length - 1 ? 'btn-pri' : 'btn-sec'}">${b}</span>`).join('')}</div></div>`;
+const page = (k, cur, body, b) => `${topbar4(k, cur === 0)}${stepbar(cur)}<div class="wide nav-in">${body}${b || ''}</div>`;
+const stephead = (title, right) => `<section class="dcard tight"><div class="dhead row" style="margin-bottom:0;align-items:center"><h1>${title}</h1>${right || ''}</div></section>`;
+const box = (title, body, req) => card(title, '', body, req ? {req: 1} : {});
 
-/* ---------- 00 · Entry: request a campaign from the brand page ---------- */
+/* ---------- Entry: the brand's Campaigns page ---------- */
 SCREENS['00-brand-page'] = () => `<style>body{background:#fff}</style><header class="topbar"><a class="logo">${I.logo}</a><div style="display:flex;gap:28px;color:var(--grey-600)"><span style="width:22px;color:var(--grey-800)">${I.compass}</span><span style="width:22px">${I.walletI}</span></div><div class="top-r"><span style="width:22px;color:var(--grey-700)">${I.bell}</span><img class="avatar" src="img/pattypop.png" alt=""></div></header>
-  <div style="background:#121212;color:#a0a0a0;display:flex;justify-content:center;gap:26px;height:36px;align-items:center;font-size:15px;font-weight:500"><span style="color:#fff">Active</span><span>Completed</span><span>Upcoming</span><span>Drafts <span class="pill" style="background:#333;color:#fff;margin-left:2px">1</span></span></div>
+  <div style="background:#121212;color:#a0a0a0;display:flex;justify-content:center;gap:26px;height:36px;align-items:center;font-size:15px;font-weight:500"><span style="color:#fff">Active</span><span>Completed</span><span>Upcoming</span></div>
   <div class="wide" style="background:#fff;max-width:none;padding-left:max(24px,calc((100% - 1128px)/2));padding-right:max(24px,calc((100% - 1128px)/2))">
     <div class="ctahead" style="margin-top:12px"><h1 style="font-size:24px;font-weight:600">Active campaigns</h1><span class="btn btn-pri"><span style="width:16px">${I.plus}</span>Create campaign</span></div>
     ${chips(['All', 'Price', 'Mobility', 'Food', 'Entertainment', 'Lifestyle'], ['All'])}
-    <div class="reqcard"><div><h2>Request a new campaign</h2><p>4 steps: basics → details &amp; creators → budget → go live. Design it yourselves or hire an expert; open to all creators or invite only.</p></div><span class="btn">Start a request</span></div>
     <div class="grid3">${[['ppBiteWide.jpg', 'Spicy Pop Wings — Feel the heat', 'Open · 3 d ago · 12 d left', 46, '186 joined', 'Rs. 212,400 / Rs. 450,000'], ['ppMeal.jpg', 'Patty Pop Combo Tuesdays', 'Invite only · 6 d ago · 4 d left', 75, '9 / 12 slots', ''], ['ppBite.jpg', 'Double Smash launch week', 'Open · 1 d ago · 20 d left', 18, '64 joined', 'Rs. 54,000 / Rs. 300,000']].map(([img, t, m, p, j, mo]) => `<div><div style="height:200px;border-radius:16px;background:url(img/${img}) center/cover"></div><div style="padding:12px 4px;display:grid;gap:6px"><b style="font-size:16px;font-weight:500">${t}</b><span style="font-size:13px;color:var(--grey-600)">${m}</span><div style="height:6px;border-radius:6px;background:#ddd"><div style="width:${p}%;height:100%;border-radius:6px;background:var(--blue-500)"></div></div><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:500"><span>${j}</span><span>${mo}</span></div></div></div>`).join('')}</div>
   </div>`;
 
-/* ---------- Step 1 · Basics (same form for every type) ---------- */
+/* ---------- Step 1 · Basics ---------- */
 function step1(k, o) {
   return page(k, 0,
-    stephead(1, 'Tell us what the campaign is about', 'Give us a brief. We turn it into a full campaign design for you to review in step 2.') +
-    `<div class="cols"><div class="main">` +
-    card('The campaign', '', `<div class="stack">
-      ${field('Brief', area(o.brief, 7), {req: 1, hint: 'What you’re promoting, the goal, who it’s for, what must be shown, the tone. We write the title from this.'})}
-      ${field('Attachments', `<div style="display:flex;gap:8px;align-items:center">${o.files.map(f => `<img src="img/${f}" style="width:64px;height:64px;border-radius:12px;object-fit:cover">`).join('')}<span class="drop" style="width:64px;height:64px;padding:0;border-radius:12px"><span style="width:20px">${I.plus}</span></span></div>`, {opt: 1, hint: 'Product photos, logos, reels you like.'})}
-    </div>`) +
-    card('Who designs the campaign?', '', rcards([['We’ll design it', 'You give the brief; we prepare the design, and you fine-tune it with comments.', I.pen], ['Hire an expert', 'A Polysocial creative strategist designs and runs it. Their commission (usually 10–15%) comes from your budget.', I.star]], o.design), {req: 1}) +
-    (o.design === 'Hire an expert' ? note('We’ll match you with an expert after you send this request. You’ll see who it is and agree their commission before they start.') : '') +
-    card('Who can join?', '', rcards([['Open campaign', 'Every matching creator can join. You approve the creators we suggest first.', I.lockOpen], ['Invite only', 'Only the creators you pick on the creator map get an invite.', I.lock]], o.access), {req: 1}) +
-    card('Dates', '', `<div class="stack"><div class="grid3">${field('Go live on', inp(o.start), {req: 1})}${field('Time', sel(o.time))}${field('Ends on', inp(o.end), {req: 1})}</div>${note(o.dateNote)}</div>`) +
-    `</div><div class="stick">` +
-    card('What happens next', '', `<div class="gates">${[['1', 'Basics', 'You send this request'], ['2', 'Details &amp; creators', o.next2], ['3', 'Budget', 'Allocate from your brand budget or send a transfer'], ['4', 'Go live', 'Accept the terms and confirm the date']].map(([n, t, d], i) => `<div class="gate ${i ? '' : 'ok'}"><span class="gi" style="${i ? 'background:var(--grey-100);color:var(--grey-600)' : ''}">${n}</span><div><b>${t}</b><br><span>${d}</span></div></div>`).join('')}</div>`) +
-    `</div></div>`,
-    bar('All required fields are filled', ['Send request'], true));
+    stephead('What is the campaign about?') +
+    box('Brief', `<div class="stack">${area(o.brief, 7).replace('<textarea', '<textarea class="in" style="height:auto;border-radius:16px;padding:12px 16px;line-height:22px;font-size:15px;resize:none"')}
+      <div style="display:flex;gap:8px;align-items:center">${o.files.map(f => `<img src="img/${f}" style="width:64px;height:64px;border-radius:12px;object-fit:cover">`).join('')}<span class="drop" style="width:64px;height:64px;padding:0;border-radius:12px"><span style="width:20px">${I.plus}</span></span></div></div>`, 1) +
+    box('Who designs it?', rcards([['We’ll design it', 'You comment on the design we prepare.', I.pen], ['Hire an expert', 'A creative strategist designs and runs it.', I.star]], o.design), 1) +
+    box('Who can join?', rcards([['Open campaign', 'Any matching creator.', I.lockOpen], ['Invite only', 'Only creators you select.', I.lock]], o.access), 1) +
+    box('Dates', `<div class="grid3">${field('Go live on', inp(o.start))}${field('Time', sel(o.time))}${field('Ends on', inp(o.end))}</div>`, 1),
+    bar(['Send request']));
 }
 SCREENS['a1-basics'] = () => step1('a', {design: 'We’ll design it', access: 'Open campaign', start: 'Mon, Oct 19, 2026', time: '9:00 am', end: 'Sun, Nov 8, 2026', files: ['ppBiteWide.jpg', 'ppBite.jpg'],
-  brief: 'We’re launching the Pop Crunch Chicken burger. Goal: get people in their 20s in Colombo and Galle to try it in the first 3 weeks.\nHook idea: “POV: you found the crunchiest burger in Colombo”. Show the starving moment, ordering at Patty Pop, then a slow-mo crunchy first bite.\nMust show the burger up close and the Patty Pop wrapper. Fun and loud, not too polished. TikTok and Instagram Reels.',
-  dateNote: '3 weeks. Creators can join as soon as it’s live and post until it ends.', next2: 'We prepare the design; you comment and approve the creators we suggest'});
+  brief: 'We’re launching the Pop Crunch Chicken burger. Goal: get people in their 20s in Colombo and Galle to try it in the first 3 weeks.\nHook idea: “POV: you found the crunchiest burger in Colombo”. Show the starving moment, ordering at Patty Pop, then a slow-mo crunchy first bite.\nMust show the burger up close and the Patty Pop wrapper. Fun and loud, not too polished. TikTok and Instagram Reels.'});
 SCREENS['b1-basics'] = () => step1('b', {design: 'Hire an expert', access: 'Open campaign', start: 'Fri, Nov 20, 2026', time: '10:00 am', end: 'Mon, Dec 14, 2026', files: ['ppBite.jpg'],
-  brief: 'We’re opening a new Patty Pop on Peradeniya Rd, Kandy on Sat, Dec 5, with free fries on opening weekend. We want families and students from Kandy and Peradeniya to come in.\nMy team is swamped with the holiday season, so we’d like an expert to design and run it. Budget around Rs. 800,000 all-in.',
-  dateNote: 'Store opens Sat, Dec 5. Teasers before, visits on opening weekend, close a week after.', next2: 'Your expert prepares the design and a creator shortlist; you comment and approve'});
+  brief: 'We’re opening a new Patty Pop on Peradeniya Rd, Kandy on Sat, Dec 5, with free fries on opening weekend. We want families and students from Kandy and Peradeniya to come in.\nBudget around Rs. 800,000 all-in.'});
 SCREENS['c1-basics'] = () => step1('c', {design: 'We’ll design it', access: 'Invite only', start: 'Mon, Nov 16, 2026', time: '9:00 am', end: 'Sun, Dec 6, 2026', files: ['ppMeal.jpg'],
-  brief: 'Family Feast box: 2 burgers, 2 kids’ meals, fries and 4 drinks for Rs. 4,990. We want families to make Patty Pop their weekend dinner plan.\nWe’d like momfluencers in Colombo, and we want to pick the creators ourselves. One Instagram reel each.',
-  dateNote: '3 weeks, covering three weekends. Invites go out on the go-live date.', next2: 'We prepare the design; you comment and pick who to invite on the creator map'});
+  brief: 'Family Feast box: 2 burgers, 2 kids’ meals, fries and 4 drinks for Rs. 4,990. We want families to make Patty Pop their weekend dinner plan.\nMomfluencers in Colombo, one Instagram reel each.'});
 
-/* ---------- Step 2a · Campaign design with comments ---------- */
+/* ---------- Step 2 · Details: campaign design with comments ---------- */
 const avIni = (t, g) => `<span class="av2" style="background:linear-gradient(135deg,${g})">${t}</span>`;
-const ME = '<img src="img/pattypop.png">';
-const PS = avIni('PS', '#1548eb,#7391f3');
-const IF = avIni('IF', '#1548eb,#f433ab');
-const sec = (h, body, c) => `<div class="dsec${c ? ' cm' : ''}"><h4>${h}</h4>${body}${c ? `<span class="cbadge">${I.chat}${c}</span>` : `<span class="addc">${I.chat}Comment</span>`}</div>`;
-const thread = (on, msgs, res) => `<div class="cthread${res ? ' res' : ''}"><div class="on"><span>On <b>${on}</b></span><span>${res ? '✓ Resolved' : 'Open'}</span></div>${msgs.map(([av, who, when, txt]) => `<div class="cmt">${av}<div><b>${who}</b><small>${when}</small><div>${txt}</div></div></div>`).join('')}</div>`;
-const segs = (on, designDone) => `<div class="seg"><span class="${on === 0 ? 'on' : ''}">${designDone ? '<span class="dot">✓</span>' : ''}Campaign design</span><span class="${on === 1 ? 'on' : ''}">Creators</span></div>`;
+const ME = '<img src="img/pattypop.png">', PS = avIni('PS', '#1548eb,#7391f3'), IF = avIni('IF', '#1548eb,#f433ab');
+const sec = (h, body, c) => `<div class="dsec${c ? ' cm' : ''}"><h4>${h}</h4>${body}${c ? `<span class="cbadge">${I.chat}${c}</span>` : `<span class="addc">${I.chat}</span>`}</div>`;
+const thread = (on, msgs) => `<div class="cthread"><div class="on"><b>${on}</b></div>${msgs.map(([av, who, txt]) => `<div class="cmt">${av}<div><b>${who}</b><div>${txt}</div></div></div>`).join('')}</div>`;
+const segs = (on, done) => `<div class="seg"><span class="${on === 0 ? 'on' : ''}">${done ? '<span class="dot">✓</span>' : ''}Design</span><span class="${on === 1 ? 'on' : ''}">Creators</span></div>`;
 
 function step2design(k, o) {
   const t = T[k];
   return page(k, 1,
-    stephead(2, 'Fine-tune the campaign design', o.sub, segs(0)) +
+    stephead('Campaign design', segs(0)) +
     `<div class="cols"><section class="dcard doc"><div class="dcover">${t.cover.map(c => `<div style="background-image:url(img/${c})"></div>`).join('')}</div><div class="dbody">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span class="pill blue">${o.by} · Version ${o.v}</span><span style="font-size:13px;color:var(--grey-600)">Updated ${o.when}</span></div>
-      ${sec('Title <span class="pill blue" style="text-transform:none;letter-spacing:0">From your brief</span>', `<div class="dtitle">${t.title}</div>`, o.c.title)}
-      ${sec('Requirement', `<p>${o.req}</p>`, o.c.req)}
+      ${sec('Title', `<div class="dtitle">${t.title}</div>`, o.c.title)}
+      ${sec('Brief', `<p>${o.req}</p>`, o.c.req)}
       ${sec('Hook', `<p>${o.hook}</p>`, o.c.hook)}
       ${sec('Script', `<div class="beatsv">${o.beats.map(([a, b]) => `<div><em>${a}</em><span>${b}</span></div>`).join('')}</div>`, o.c.script)}
       <div class="grid2">${sec('Deliverable', `<p>${o.deliv}</p>`)}${sec('Platforms', `<div class="chips">${o.plats.map(p => `<span class="chip" style="height:30px">${PLAT[p]}${p}</span>`).join('')}</div>`)}</div>
       ${sec('Best suited for', tagsHTML(o.suited), o.c.suited)}
       ${sec('Must be visible', `<p>${o.visible}</p>`)}
-      ${sec('Caption call to action', `<p>${o.cta}</p>`)}
-      ${sec('Restrictions', `<p style="color:var(--grey-600)">${RESTRICT.join(' · ')}</p>`)}
+      ${sec('Call to action', `<p>${o.cta}</p>`)}
     </div></section>
-    <div class="stick"><section class="dcard tight"><div class="dhead row" style="margin-bottom:12px"><h3>Comments <span class="pill">${o.threads.filter(x => !x[2]).length} open</span></h3><span class="link" style="font-size:13px">Show resolved</span></div>
-      <div style="display:grid;gap:10px">${o.threads.map(([on, msgs, res]) => thread(on, msgs, res)).join('')}
-      <div class="cbox"><textarea placeholder="Comment on a section… (click Comment next to it)"></textarea><div style="display:flex;justify-content:flex-end"><span class="btn btn-sec btn-sm">Add comment</span></div></div></div></section>
-      ${o.side || ''}</div></div>`,
-    bar(o.msg, [`Request edits (${o.threads.filter(x => !x[2]).length})`, 'Approve design · next: creators'], true));
+    <div class="stick"><section class="dcard tight"><h3 style="margin-bottom:12px">Comments</h3><div style="display:grid;gap:10px">${o.threads.map(([on, msgs]) => thread(on, msgs)).join('')}
+      <div class="cbox"><textarea placeholder="Add a comment"></textarea></div></div></section>${o.side || ''}</div></div>`,
+    bar([`Request edits`, 'Approve design']));
 }
-SCREENS['a2-design'] = () => step2design('a', {sub: 'We turned your brief into the campaign creators will see, including its title. Comment on any section to request an edit, then approve.', by: 'Prepared by Polysocial from your brief', v: 2, when: 'today 2:40 pm',
+SCREENS['a2-design'] = () => step2design('a', {
   req: 'Show the moment you’re starving, walk into Patty Pop, and take the first big crunchy bite of the new Pop Crunch Chicken.', hook: '“POV: you found the crunchiest burger in Colombo”',
   beats: [['0–3s', 'Starving moment — late-night study, after cricket or after work'], ['3–8s', 'Walk into Patty Pop and order the Pop Crunch Chicken'], ['8–15s', 'First big bite, slow-mo crunch, burger to camera'], ['15s+', 'Happy reaction + “Pop Crunch Chicken, now at Patty Pop”']],
-  deliv: '1 reel · 15–30s · vertical 9:16 · min 1080p · captions on', plats: ['TikTok', 'Instagram'], suited: ['All genders', '18–28 age', 'Colombo', 'Galle', 'Students', 'Young professionals', 'Selfie', 'Reels'],
-  visible: 'The Pop Crunch Chicken up close, plus the Patty Pop wrapper or logo', cta: 'Try the Pop Crunch Chicken at your nearest Patty Pop and tag @pattypoplk 🍔',
-  c: {hook: 1, script: 1}, msg: '2 comments waiting for an edit',
-  threads: [['Cover photos', [[ME, 'You', 'Mon', 'Use the wide bite shot as the main cover.'], [PS, 'Polysocial', 'Mon', 'Done in version 2.']], 1],
-    ['Hook', [[ME, 'You', '2:52 pm', 'Can we add “the crunch you can hear” to the hook?']]],
-    ['Script · 8–15s', [[ME, 'You', '2:55 pm', 'Make sure the wrapper is in the bite shot.']]]]});
-SCREENS['b2-design'] = () => step2design('b', {sub: 'Ishara Fernando designed this from your brief. Comment on any section and she updates it; approve when it’s right.', by: 'Designed by Ishara Fernando', v: 2, when: 'today 4:15 pm',
+  deliv: '1 reel · 15–30s · 9:16', plats: ['TikTok', 'Instagram'], suited: ['18–28 age', 'Colombo', 'Galle', 'Students', 'Young professionals'],
+  visible: 'The burger up close and the Patty Pop wrapper', cta: 'Try the Pop Crunch Chicken at Patty Pop and tag @pattypoplk 🍔', c: {hook: 1, script: 1},
+  threads: [['Hook', [[ME, 'You', 'Add “the crunch you can hear” to the hook.']]], ['Script · 8–15s', [[ME, 'You', 'Show the wrapper in the bite shot.']]]]});
+SCREENS['b2-design'] = () => step2design('b', {
   req: 'Capture the opening of the new Patty Pop in Kandy: the queue, the first bite and the free fries on opening weekend.', hook: '“I drove up to Kandy for one bite…”',
-  beats: [['0–3s', 'The drive up / walk to Peradeniya Rd'], ['3–10s', 'The queue and the store front on opening day'], ['10–20s', 'First bite + free fries with code KANDYPOP'], ['20s+', '“Patty Pop, now in Kandy”']],
-  deliv: '1 reel · 20–40s · vertical 9:16 · teaser story before Dec 5', plats: ['Instagram', 'TikTok'], suited: ['Families', 'Students', '18–40 age', 'Kandy', 'Peradeniya', 'Vlog', 'Reels'],
-  visible: 'The store front on Peradeniya Rd and the free-fries offer', cta: 'Free fries this weekend at Patty Pop Kandy with code KANDYPOP 🍟',
-  c: {suited: 1}, msg: '1 comment waiting for Ishara',
-  threads: [['Creator mix', [[ME, 'You', 'Tue', 'Can we move some of the macro money to more micro creators?'], [IF, 'Ishara', 'Tue', 'Done in v2: 2 macro, 40 micro. See the Creators tab.']], 1],
-    ['Best suited for', [[ME, 'You', '4:30 pm', 'Please add Katugastota, lots of students there.'], [IF, 'Ishara', '4:41 pm', 'Good call, adding it.']]]],
-  side: card('Your expert', '', `<div class="stack"><div class="prow">${ini('IF', '#1548eb,#f433ab')}<div><b>Ishara Fernando</b><span>Senior Creative Strategist · Kandy</span></div></div>${kv([['Commission', '12% · Rs. 96,000'], ['Charged', 'When you approve the design'], ['Runs', 'Invites, approvals, weekly report']])}<span class="btn btn-sec btn-sm" style="justify-self:start">Message Ishara</span></div>`)});
-SCREENS['c2-design'] = () => step2design('c', {sub: 'We turned your idea into the brief your creators will get. Comment to request an edit, then approve.', by: 'Prepared by Polysocial from your brief', v: 1, when: 'today 11:05 am',
+  beats: [['0–3s', 'The drive up to Peradeniya Rd'], ['3–10s', 'The queue and the store front on opening day'], ['10–20s', 'First bite + free fries with code KANDYPOP'], ['20s+', '“Patty Pop, now in Kandy”']],
+  deliv: '1 reel · 20–40s · 9:16', plats: ['Instagram', 'TikTok'], suited: ['Families', 'Students', 'Kandy', 'Peradeniya'],
+  visible: 'The store front and the free-fries offer', cta: 'Free fries this weekend at Patty Pop Kandy with code KANDYPOP 🍟', c: {suited: 1},
+  threads: [['Best suited for', [[ME, 'You', 'Please add Katugastota.'], [IF, 'Ishara', 'Adding it.']]]],
+  side: `<section class="dcard tight"><div class="prow">${ini('IF', '#1548eb,#f433ab')}<div><b>Ishara Fernando</b><span>Expert · 12% commission</span></div></div></section>`});
+SCREENS['c2-design'] = () => step2design('c', {
   req: 'Your family’s Saturday night sorted: open the Family Feast box at home, everyone grabs their favourite, kids react to their meal.', hook: '“Weekend dinner, sorted in one box”',
-  beats: [['0–3s', 'The “what’s for dinner?” moment at home'], ['3–10s', 'Family Feast box arrives, open it on the table'], ['10–20s', 'Everyone digs in, kids’ reactions'], ['20s+', 'Price on screen: Rs. 4,990 for the whole family']],
-  deliv: '1 Instagram reel each · 20–40s · vertical 9:16', plats: ['Instagram'], suited: ['Families', 'Parents 25–44', 'Colombo city', 'Momfluencer', 'Dadfluencer', 'Restaurant reviewer'],
-  visible: 'The open Family Feast box and the Rs. 4,990 price', cta: 'Order the Family Feast box on the Patty Pop app and tag @pattypoplk',
-  c: {title: 1}, msg: '1 comment waiting for an edit',
-  threads: [['Title', [[ME, 'You', '11:20 am', 'Can the title mention the price? e.g. “Family Feast for Rs. 4,990”']]]]});
+  beats: [['0–3s', 'The “what’s for dinner?” moment at home'], ['3–10s', 'Open the Family Feast box on the table'], ['10–20s', 'Everyone digs in, kids’ reactions'], ['20s+', 'Rs. 4,990 for the whole family']],
+  deliv: '1 Instagram reel · 20–40s · 9:16', plats: ['Instagram'], suited: ['Families', 'Parents 25–44', 'Colombo city'],
+  visible: 'The open Family Feast box and the Rs. 4,990 price', cta: 'Order the Family Feast box on the Patty Pop app and tag @pattypoplk', c: {title: 1},
+  threads: [['Title', [[ME, 'You', 'Mention the price in the title.']]]]});
 
-/* ---------- Step 2b · Creator map ---------- */
-const AGES = ['18–24', '25–34', '35–44', '45+'];
-const ageCol = (a) => { const n = parseInt(a, 10); return n < 25 ? 0 : n < 35 ? 1 : n < 45 ? 2 : 3; };
-function cmap(rows, people) {
-  const cells = rows.map(() => AGES.map(() => []));
-  people.forEach(p => cells[p.row][p.col].push(p));
-  const heat = (n, r) => n >= 3 || r > 60000 ? 'h3' : n === 2 || r > 30000 ? 'h2' : n === 1 ? 'h1' : '';
-  return `<div class="cmap"><span></span>${AGES.map(a => `<span class="ax top">${a}</span>`).join('')}
-    ${rows.map((r, i) => `<span class="ax">${r}</span>${AGES.map((_, j) => { const ps = cells[i][j], reach = ps.filter(p => !p.off).reduce((s, p) => s + p.f, 0);
-      return `<div class="cell ${heat(ps.filter(p => !p.off).length, reach)}">${ps.map(p => p.av(p)).join('')}${reach ? `<span class="reach">${kf(reach)}</span>` : ''}</div>`; }).join('')}`).join('')}</div>`;
-}
-const realAv = (c) => (p) => `<img class="mav${p.sel ? ' sel' : ''}${p.off ? ' off' : ''}" src="creators/${c.photo}" alt="">`;
-const iniAv = (t, g) => (p) => `<span class="mav ini${p.sel ? ' sel' : ''}${p.off ? ' off' : ''}" style="background:linear-gradient(135deg,${g})">${t}</span>`;
-const crow = (p) => `<div class="crow${p.off ? ' off' : ''}"><span class="cbx${p.sel ? ' on' : ''}"></span>${p.photo ? `<img class="pav" src="creators/${p.photo}">` : `<span class="pav ini" style="background:linear-gradient(135deg,${p.g})">${p.ini}</span>`}<div><b>${p.name}</b><span>${p.sub}</span></div><div class="pr">${p.price}<span>${p.note || ''}</span></div></div>`;
-
-function step2creators(k, o) {
-  const sel = o.people.filter(p => p.sel);
+/* ---------- Step 2 · Creators: the Polysocial creator map, exactly as deployed ---------- */
+function step2creators(k, btn) {
   return page(k, 1,
-    stephead(2, o.h, o.sub, segs(1, 1)) +
-    `<section class="dcard tight"><div style="display:flex;justify-content:space-between;align-items:center;gap:16px">${chips(o.filters, o.filtersOn)}<div class="legend2"><span><i style="background:#dfe6fc"></i>1 creator</span><span><i style="background:#8ea4f5"></i>High reach</span></div></div></section>` +
-    tiles(o.tiles, 4) +
-    `<div class="cols" style="grid-template-columns:minmax(0,1fr) 400px">` +
-    card('Creator map · audience', 'Where each creator’s audience sits by age and location. A blue ring means selected.', cmap(o.rows, o.people)) +
-    `<div class="stick">` + card(o.listTitle, o.listSub, `<div class="clist">${o.people.map(crow).join('')}</div>`) + `</div></div>`,
-    bar(`${sel.length} ${o.barWord} · ${o.barTotal}`, [o.btn], true));
+    stephead('Select creators', segs(1, 1)) +
+    `<section class="dcard" style="padding:0;overflow:hidden"><iframe src="${MAP_URL}" title="Creator map" style="display:block;width:100%;height:${MAP_H}px;border:0"></iframe></section>`,
+    bar([btn]));
 }
-const POOLP = (h, o) => { const c = by(h); return Object.assign({name: c.name, photo: c.photo, f: c.followers, col: ageCol(c.age), av: realAv(c), sub: `${(c.personas || [])[0]} · ${kf(c.followers)} · ${c.age}`}, o); };
-
-SCREENS['a2-creators'] = () => {
-  const rows = ['Colombo city', 'Colombo suburbs', 'Galle'];
-  const people = [
-    POOLP('radeeshaa', {row: 0, sel: 1, price: 'Rs. 6,000', note: 'base + views'}), POOLP('viindula', {row: 1, sel: 1, price: 'Rs. 6,000', note: 'base + views'}),
-    POOLP('shewan_j', {row: 0, col: 0, sel: 1, price: 'Rs. 6,000', note: 'base + views'}), POOLP('karazz.zzz', {row: 0, col: 0, sel: 1, price: 'Rs. 6,000', note: 'base + views'}),
-    POOLP('_kyloooo_', {row: 0, col: 0, sel: 1, price: 'Rs. 6,000', note: 'base + views'}), POOLP('senodeee', {row: 0, col: 0, off: 1, price: 'Excluded', note: 'by you'}),
-    {name: 'Kavindu Bites', ini: 'KB', g: '#a8641a,#f433ab', f: 31000, row: 2, col: 0, sel: 1, sub: 'Mukbang reviewer · 31K · 18–24', price: 'Rs. 6,000', note: 'base + views'},
-    {name: 'Dilan Eats', ini: 'DE', g: '#0f2d8f,#7391f3', f: 18000, row: 2, col: 1, sel: 1, sub: 'Food critic · 18K · 25–34', price: 'Rs. 6,000', note: 'base + views'},
-  ].map(p => Object.assign({av: p.ini ? iniAv(p.ini, p.g) : p.av}, p));
-  return step2creators('a', {h: 'Approve the creators we suggest', sub: 'Open campaign: these matching creators get your invite first. Others who match can still join later. Leave out anyone you don’t want.', rows, people,
-    filters: ['Restaurant reviewer', 'Food critic', 'Mukbang reviewer', 'Lifestyle', '18–34', 'Colombo', 'Galle'], filtersOn: ['Restaurant reviewer', 'Food critic', 'Mukbang reviewer', '18–34', 'Colombo', 'Galle'],
-    tiles: [['Suggested', '8 creators'], ['Approved', '7'], ['Combined followers', '173K'], ['Also notified', '~1,480 matching']],
-    listTitle: 'Suggested creators', listSub: 'Paid Rs. 6,000 per reel + Rs. 1,800 per 1K views.', barWord: 'creators approved', barTotal: 'others can still join', btn: 'Approve creators'});
-};
-
-const KANDY = [['Sahan Wijeratne', 'SW', '#5b2bb0,#9a5fe6', 140000, 0, 1, 'Macro · travel vlogger', 'Rs. 120,000'], ['Nethmi Rajapaksha', 'NR', '#c42a8c,#f472b6', 112000, 1, 1, 'Macro · family vlogger', 'Rs. 120,000'],
-  ['Kavindu Bandara', 'KB', '#0f2d8f,#7391f3', 34000, 0, 0, 'Micro · student life', 'Rs. 9,000'], ['Tharushi Herath', 'TH', '#a8641a,#f2b705', 22000, 1, 0, 'Micro · campus food', 'Rs. 9,000'],
-  ['Ama Dissanayake', 'AD', '#0a7d3e,#5cc489', 27000, 0, 2, 'Micro · momfluencer', 'Rs. 9,000'], ['Dinuka Senanayake', 'DS', '#123bbd,#3d6bf5', 18000, 2, 1, 'Micro · food reviewer', 'Rs. 9,000'],
-  ['Pasan Ekanayake', 'PE', '#414141,#a0a0a0', 15000, 2, 0, 'Micro · cricket & food', 'Rs. 9,000'], ['Rashmi Kumari', 'RK', '#f433ab,#7391f3', 12000, 3, 1, 'Micro · lifestyle', 'Rs. 9,000']];
-SCREENS['b2-creators'] = () => {
-  const people = KANDY.map(([name, ini2, g, f, row, col, sub, price], i) => ({name, ini: ini2, g, f, row, col, sub: `${sub} · ${kf(f)}`, price, note: i < 2 ? 'per reel' : 'per reel', sel: 1, av: iniAv(ini2, g)}));
-  return step2creators('b', {h: 'Approve Ishara’s creator shortlist', sub: 'Ishara picked these for the opening: 2 macro creators to build hype and micro creators near the store. Approve, or comment to swap someone.', rows: ['Kandy city', 'Peradeniya', 'Katugastota', 'Nuwara Eliya'], people,
-    filters: ['Macro', 'Micro', 'Families', 'Students', 'Kandy', 'Peradeniya', 'Katugastota'], filtersOn: ['Macro', 'Micro', 'Kandy', 'Peradeniya', 'Katugastota'],
-    tiles: [['Shortlist', '8 named'], ['Plus open to', '~32 micro near Kandy'], ['Combined followers', '380K'], ['Creators’ budget', rs(704000)]],
-    listTitle: 'Shortlist by Ishara', listSub: 'Micro creators are paid Rs. 9,000 per reel + bonus pool.', barWord: 'creators approved', barTotal: 'Ishara invites them on go live', btn: 'Approve shortlist'});
-};
-
-SCREENS['c2-creators'] = () => {
-  const pr = (h) => rs(by(h).cost);
-  const people = [
-    POOLP('ranshan15', {row: 0, sel: 1, price: pr('ranshan15'), note: '1 reel'}), POOLP('radeeshaa', {row: 0, sel: 1, price: pr('radeeshaa'), note: '1 reel'}),
-    POOLP('mitchie_imasha', {row: 0, sel: 1, price: pr('mitchie_imasha'), note: '1 reel'}), POOLP('she_writes_a_diary', {row: 0, sel: 1, price: pr('she_writes_a_diary'), note: '1 reel'}),
-    POOLP('viindula', {row: 1, price: pr('viindula'), note: '1 reel'}), POOLP('le.lumii', {row: 1, col: 0, off: 1, price: 'Booked', note: 'until Nov 29'}),
-  ];
-  return step2creators('c', {h: 'Pick the creators to invite', sub: 'Invite only: only the creators you select get an invite with the brief. Each price is for one Instagram reel, inclusive of Polysocial fees.', rows: ['Colombo city', 'Colombo suburbs'], people,
-    filters: ['Momfluencer', 'Dadfluencer', 'Restaurant reviewer', 'Micro', 'Mid', 'Colombo'], filtersOn: ['Momfluencer', 'Dadfluencer', 'Restaurant reviewer', 'Colombo'],
-    tiles: [['Matched', '6 creators'], ['Selected', '4'], ['Combined followers', '124K'], ['Total for 1 reel each', rs(217647)]],
-    listTitle: 'Matching creators', listSub: '16 checked against your persona and dates.', barWord: 'creators selected', barTotal: rs(217647), btn: 'Invite these 4 creators'});
-};
+SCREENS['a2-creators'] = () => step2creators('a', 'Approve creators');
+SCREENS['b2-creators'] = () => step2creators('b', 'Approve creators');
+SCREENS['c2-creators'] = () => step2creators('c', 'Invite selected creators');
 
 /* ---------- Step 3 · Budget: allocate, or send a transfer ---------- */
 function step3(k, o) {
   const t = T[k], transfer = o.fund === 'transfer';
   return page(k, 2,
-    stephead(3, 'Allocate the budget', 'Fund the campaign from your brand budget, or send a bank transfer like you do in Financials.') +
-    `<div class="cols"><div class="main">` +
-    card('Campaign budget', o.budgetSub, o.budgetBody) +
-    card('How do you want to fund it?', '', `<div class="stack">${rcards([['Allocate from your brand budget', `You have ${rs(FREE)} free to spend in your wallet.`, I.walletI], ['Send a bank transfer', 'Transfer to PolySocial and upload the slip. Counts once verified.', I.bank]], transfer ? 'Send a bank transfer' : 'Allocate from your brand budget')}
-      ${transfer ? `<h3>Transfer ${rs(t.budget)} to</h3><div class="bank">${[['Account name', 'PolySocial (Pvt) Ltd'], ['Bank', 'Commercial Bank of Ceylon'], ['Branch', 'Colombo 03, Kollupitiya'], ['Account number', '1000 4821 9930'], ['SWIFT code', 'CCEYLKLX'], ['Payment reference', 'PS-PATTYPOP-1116']].map(([a, b]) => `<div><span>${a}</span><b>${b}<em>Copy</em></b></div>`).join('')}</div>
-        ${field('Transfer slip', `<div class="slip"><span class="fi">PDF</span><div><b>HNB_transfer_217647.pdf</b><span>Uploaded today 3:12 pm · 180 KB</span></div><span class="pill warn">Pending verification</span></div>`, {hint: 'PDF, JPG or PNG up to 10 MB. Use the payment reference so we can match it.'})}
-        ${note('Verification usually takes under 1 business day. If it isn’t verified by the go-live date, the campaign waits and we let you know.', 'warn')}`
-      : `<div class="alloc"><div class="tile"><span>Free to spend</span><b>${rs(FREE)}</b></div><span class="op">−</span><div class="tile" style="border-color:var(--blue-500);background:var(--blue-50)"><span>This campaign</span><b>${rs(t.budget)}</b></div><span class="op">=</span><div class="tile"><span>Left after</span><b>${rs(FREE - t.budget)}</b></div></div>
-        ${note(`Allocated now and held when the campaign goes live on ${t.live[3].split(' · ')[0]}. Anything unspent goes back to your brand budget.`, 'good')}`}
-    </div>`) +
-    `</div><div class="stick">` + card('Summary', '', `<div class="stack">${kv(o.summary)}${wallet(t.budget, transfer ? 'Pending transfer of' : 'This campaign holds')}</div>`) + `</div></div>`,
-    bar(transfer ? 'Transfer pending verification · you can continue' : 'Budget allocated', ['Continue to go live'], true));
+    stephead('Budget') +
+    box('Campaign budget', o.budgetBody) +
+    box('Funding', `<div class="stack">${rcards([['Allocate from brand budget', `${rs(FREE)} available`, I.walletI], ['Send a bank transfer', 'Upload the transfer slip', I.bank]], transfer ? 'Send a bank transfer' : 'Allocate from brand budget')}
+      ${transfer ? `<div class="bank">${[['Account name', 'PolySocial (Pvt) Ltd'], ['Bank', 'Commercial Bank of Ceylon'], ['Branch', 'Colombo 03, Kollupitiya'], ['Account number', '1000 4821 9930'], ['Amount', rs(t.budget)], ['Payment reference', 'PS-PATTYPOP-1116']].map(([a, b]) => `<div><span>${a}</span><b>${b}<em>Copy</em></b></div>`).join('')}</div>
+        <div class="slip"><span class="fi">PDF</span><div><b>HNB_transfer_217647.pdf</b><span>180 KB</span></div><span class="pill warn">Pending verification</span></div>`
+      : `<div class="alloc"><div class="tile"><span>Available</span><b>${rs(FREE)}</b></div><span class="op">−</span><div class="tile" style="border-color:var(--blue-500);background:var(--blue-50)"><span>This campaign</span><b>${rs(t.budget)}</b></div><span class="op">=</span><div class="tile"><span>Left</span><b>${rs(FREE - t.budget)}</b></div></div>`}
+    </div>`),
+    bar(['Continue']));
 }
-SCREENS['a3-budget'] = () => step3('a', {fund: 'allocate', budgetSub: 'Open campaign, paid on performance. Suggested from 4 past Patty Pop campaigns.',
-  budgetBody: `<div class="stack"><div class="grid2">${field('Total budget', money(600000), {req: 1})}${field('Base price per reel', money(6000))}${field('Performance pricing', money(1800, '/ 1K views'))}${field('Max earning per reel', money(90000))}</div>${tiles([['Expected creators', '70–90'], ['Expected views', '1.6–2.0M'], ['Cost per 1K views', '~Rs. 330']])}</div>`,
-  summary: [['Pay model', 'Performance fee'], ['Total budget', rs(600000)], ['Funding', 'Brand budget'], ['Held on', 'Mon, Oct 19']]});
-SCREENS['b3-budget'] = () => step3('b', {fund: 'allocate', budgetSub: 'All-in: creators and your expert’s commission.',
-  budgetBody: `<div class="stack">${field('Total budget', money(800000), {req: 1})}<table class="tb"><tbody><tr><td>Creators (2 macro, 40 micro + bonus pool)</td><td class="r">${rs(704000)}</td></tr><tr><td>Ishara Fernando · 12% commission <span class="pill">charged on design approval</span></td><td class="r">${rs(96000)}</td></tr></tbody><tfoot><tr><td>Total</td><td class="r">${rs(800000)}</td></tr></tfoot></table></div>`,
-  summary: [['Creators', rs(704000)], ['Expert commission', rs(96000)], ['Funding', 'Brand budget'], ['Held on', 'Fri, Nov 20']]});
-SCREENS['c3-budget'] = () => step3('c', {fund: 'transfer', budgetSub: 'Invite only: each creator’s price for one reel.',
-  budgetBody: `<table class="tb"><tbody>${['ranshan15', 'radeeshaa', 'mitchie_imasha', 'she_writes_a_diary'].map(by).map(c => `<tr><td><div class="prow">${cav(c, 32)}<div><b style="font-size:14px">${c.name}</b><span>1 Instagram reel</span></div></div></td><td class="r">${rs(c.cost)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${rs(217647)}</td></tr></tfoot></table>`,
-  summary: [['Pay model', 'Fixed per creator'], ['Total budget', rs(217647)], ['Funding', 'Bank transfer'], ['Status', '<span class="pill warn">Pending verification</span>']]});
+SCREENS['a3-budget'] = () => step3('a', {fund: 'allocate',
+  budgetBody: `<div class="grid2">${field('Total budget', money(600000))}${field('Base price per content', money(6000))}${field('Performance pricing', money(1800, '/ 1K views'))}${field('Max earning per content', money(90000))}</div>`});
+SCREENS['b3-budget'] = () => step3('b', {fund: 'allocate',
+  budgetBody: `<table class="tb"><tbody><tr><td>Creators</td><td class="r">${rs(704000)}</td></tr><tr><td>Ishara Fernando · 12%</td><td class="r">${rs(96000)}</td></tr></tbody><tfoot><tr><td>Total</td><td class="r">${rs(800000)}</td></tr></tfoot></table>`});
+SCREENS['c3-budget'] = () => step3('c', {fund: 'transfer',
+  budgetBody: `<table class="tb"><tbody>${['ranshan15', 'radeeshaa', 'mitchie_imasha', 'she_writes_a_diary'].map(by).map(c => `<tr><td><div class="prow">${cav(c, 32)}<b style="font-size:14px">${c.name}</b></div></td><td class="r">${rs(c.cost)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${rs(217647)}</td></tr></tfoot></table>`});
 
-/* ---------- Step 4 · Go live: terms, date, creator view ---------- */
-function creatorView(k, o) {
-  const t = T[k];
+/* ---------- Step 4 · Go live ---------- */
+const CV = {
+  a: {meta: 'Food · Oct 19 – Nov 8 · Open', price: [['Base price per content', 'Rs. 6,000'], ['Max earning per content', 'Rs. 90,000'], ['Performance pricing', 'Rs. 1,800 / 1K views'], ['Total budget', 'Rs. 600,000']], tags: ['18–28 age', 'Colombo', 'Galle', 'Selfie', 'Reels'], req: '“POV: you found the crunchiest burger in Colombo”. Starving moment → order at Patty Pop → slow-mo crunchy first bite.'},
+  b: {meta: 'Food · Nov 20 – Dec 14 · Open', price: [['Base price per content', 'Rs. 9,000'], ['Max earning per content', 'Rs. 120,000'], ['Performance pricing', 'Rs. 1,500 / 1K views'], ['Total budget', 'Rs. 704,000']], tags: ['Families', 'Students', 'Kandy', 'Peradeniya', 'Reels'], req: '“I drove up to Kandy for one bite…”. Queue on opening day, first bite and free fries with code KANDYPOP.'},
+  c: {meta: 'Food · Nov 16 – Dec 6 · Invite only', price: [['Flat fee per content', 'Agreed per creator'], ['Slots', '4'], ['Slots filled', '0'], ['Total budget', 'Rs. 217,647']], tags: ['Families', 'Parents 25–44', 'Colombo city', 'Reels'], req: '“Weekend dinner, sorted in one box”. Open the Family Feast box at home; show the Rs. 4,990 price.'},
+};
+function creatorView(k) {
+  const t = T[k], o = CV[k];
   return `<div class="phone"><div class="notch"><span>9:41</span><span>●●● ▮</span></div><div class="cvbar">You are viewing this as a creator</div>
     <div class="cv-hero" style="background-image:url(img/${t.cover[0]})"><span class="bb"><img src="img/pattypop.png">Patty Pop</span></div>
     <div class="cv"><div><h3>${t.title}</h3><div class="mt">${o.meta}</div></div>
       <div class="pl">${o.price.map(([a, b]) => `<div><span>${a}</span><b>${b}</b></div>`).join('')}</div>
       <div><h5>Best suited for</h5>${tagsHTML(o.tags)}</div>
       <div><h5>Requirements</h5><p>${o.req}</p></div>
-      <div><h5>Campaign created by</h5><div class="prow"><img class="pav" src="img/pattypop.png" style="width:32px;height:32px"><div><b style="font-size:13px">Patty Pop</b><span style="font-size:11px">Since Mar 2026 · 4 campaigns</span></div></div></div>
+      <div><h5>Campaign created by</h5><div class="prow"><img class="pav" src="img/pattypop.png" style="width:32px;height:32px"><b style="font-size:13px">Patty Pop</b></div></div>
       <span class="join">Join now</span></div></div>`;
 }
-function step4(k, o) {
-  const t = T[k], [dw, mo, d, full] = t.live;
+function step4(k, extraTerm) {
+  const t = T[k], [mo, d, full] = t.live;
   return page(k, 3,
-    stephead(4, 'Go live', 'Check how creators will see it, accept the terms and confirm the go-live date. You can still request edits.', `<span class="btn btn-sec btn-sm"><span style="width:16px">${I.eye}</span>Open full creator view</span>`) +
+    stephead('Go live') +
     `<div class="cols even"><div class="main">` +
-    card('Go-live date', '', `<div class="stack"><div class="dateline"><div class="big"><small>${mo}</small><b>${d}</b></div><div class="tx"><b>${full}</b><span>Ends ${t.end} · ${o.who}</span></div><span class="link" style="margin-left:auto">Change</span></div></div>`) +
-    card('Checklist', '', gates(o.gates.map(([a, b]) => [a, b, 1]))) +
-    card('Terms', '', `<div class="terms">${checks([
-      ['I accept the <a>Polysocial Terms of Service</a> and the <a>Campaign Owner terms</a>', 1],
-      [`I agree that ${rs(o.hold)} is held on ${full.split(' · ')[0]} and paid to creators only for content I approve`, 1],
-      ['Creators’ content stays theirs; Patty Pop may reshare it with credit for 30 days', 1],
-      ...(o.extraTerm ? [[o.extraTerm, 1]] : []),
-    ])}</div>`) +
-    `</div><div class="stick" style="justify-items:center">${creatorView(k, o.cv)}<span class="btn btn-sec"><span style="width:16px">${I.chat}</span>Request edits</span><span style="font-size:13px;color:var(--grey-600);text-align:center">Edits are possible right up to the go-live date.</span></div></div>`,
-    bar(`Goes live ${full}`, ['Request edits', 'Confirm &amp; go live on ' + `${dw}, ${mo.charAt(0) + mo.slice(1).toLowerCase()} ${d}`], true));
+    box('Go-live date', `<div class="dateline"><div class="big"><small>${mo}</small><b>${d}</b></div><div class="tx"><b>${full}</b><span>Ends ${t.end}</span></div><span class="link" style="margin-left:auto">Change</span></div>`) +
+    box('Terms', `<div class="terms">${checks([['I accept the <a>Polysocial Terms of Service</a> and the <a>Campaign Owner terms</a>', 1], ...(extraTerm ? [[extraTerm, 1]] : [])])}</div>`) +
+    `</div><div class="stick" style="justify-items:center">${creatorView(k)}</div></div>`,
+    bar(['Request edits', `Confirm &amp; go live`]));
 }
-const CV = {
-  a: {meta: 'Food · Oct 19 – Nov 8 · Open', price: [['Base price per content', 'Rs. 6,000'], ['Max earning per content', 'Rs. 90,000'], ['Performance pricing', 'Rs. 1,800 / 1K views'], ['Total budget', 'Rs. 600,000']], tags: ['18–28 age', 'Colombo', 'Galle', 'Selfie', 'Reels'], req: '“POV: you found the crunchiest burger in Colombo”. Starving moment → order at Patty Pop → slow-mo crunchy first bite.'},
-  b: {meta: 'Food · Nov 20 – Dec 14 · Open', price: [['Base price per content', 'Rs. 9,000'], ['Max earning per content', 'Rs. 120,000'], ['Performance pricing', 'Rs. 1,500 / 1K views'], ['Total budget', 'Rs. 704,000']], tags: ['Families', 'Students', 'Kandy', 'Peradeniya', 'Reels'], req: '“I drove up to Kandy for one bite…”. Queue on opening day, first bite and free fries with code KANDYPOP.'},
-  c: {meta: 'Food · Nov 16 – Dec 6 · Invite only', price: [['Flat fee per content', 'Agreed per creator'], ['Slots', '4'], ['Slots filled', '0'], ['Total budget', 'Rs. 217,647']], tags: ['Families', 'Parents 25–44', 'Colombo city', 'Reels'], req: '“Weekend dinner, sorted in one box”. Open the Family Feast box at home; show the Rs. 4,990 price.'},
-};
-SCREENS['a4-golive'] = () => step4('a', {who: 'open to all matching creators', hold: 600000, cv: CV.a,
-  gates: [['Basics', 'brief, open, Oct 19 – Nov 8'], ['Design approved', 'version 3, after your 2 comments'], ['Creators approved', '7 suggested + open to ~1,480'], ['Budget allocated', `${rs(600000)} from your brand budget`]]});
-SCREENS['b4-golive'] = () => step4('b', {who: 'run by Ishara Fernando', hold: 704000, cv: CV.b, extraTerm: 'I hire Ishara Fernando at 12% (Rs. 96,000), charged now that the design is approved',
-  gates: [['Basics', 'brief, expert, open, Nov 20 – Dec 14'], ['Design approved', 'version 2 by Ishara'], ['Shortlist approved', '8 named + open near Kandy'], ['Budget allocated', `${rs(800000)} incl. commission`]]});
-SCREENS['c4-golive'] = () => step4('c', {who: 'invites go to 4 creators', hold: 217647, cv: CV.c,
-  gates: [['Basics', 'brief, invite only, Nov 16 – Dec 6'], ['Design approved', 'version 2'], ['Creators picked', 'Ranshan, Radeesha, Imasha, Chathuri'], ['Budget', `${rs(217647)} transfer verified`]]});
-
-SCREENS['a4b-request-edits'] = () => SCREENS['a4-golive']() + `<div class="scrim"><div class="modal"><h2>Request edits</h2><p>Tell us what to change. We update the campaign and ask you to confirm again; the go-live date stays the same.</p>
-  ${field('Section', sel('Pricing'))}${field('What should change?', area('Show the max earning per reel first, it’s the most exciting number for creators.', 3))}
-  <div class="mrow"><span class="btn btn-ghost">Cancel</span><span class="btn btn-pri">Send request</span></div></div></div>`;
+SCREENS['a4-golive'] = () => step4('a');
+SCREENS['b4-golive'] = () => step4('b', 'I hire Ishara Fernando at 12% (Rs. 96,000)');
+SCREENS['c4-golive'] = () => step4('c');
+SCREENS['a4b-request-edits'] = () => SCREENS['a4-golive']() + `<div class="scrim"><div class="modal"><h2>Request edits</h2>
+  ${field('Section', sel('Pricing'))}${field('What should change?', area('Show the max earning per content first.', 3))}
+  <div class="mrow"><span class="btn btn-ghost">Cancel</span><span class="btn btn-pri">Send</span></div></div></div>`;
 
 /* ---------- Scheduled ---------- */
-function scheduled(k, o) {
-  const t = T[k], [, mo, d, full] = t.live;
-  return `${topbar4(k)}${stepbar(k, 4)}<div class="wide nav-in"><section class="dcard"><div class="success"><span class="big">${I.check}</span><h1>Scheduled to go live</h1>
-    <div class="dateline" style="margin:8px 0"><div class="big"><small>${mo}</small><b>${d}</b></div><div class="tx" style="text-align:left"><b>${full}</b><span>${o.line}</span></div></div>
-    <p>${o.body}</p><div class="tl">${o.tl.map(([a, b], i) => `<div class="${i === 0 ? 'on' : ''}"><b>${a}</b>${b}</div>`).join('')}</div>
-    <div style="display:flex;gap:8px"><span class="btn btn-pri">Open campaign dashboard</span><span class="btn btn-sec">View as creator</span><span class="btn btn-sec">Request edits</span></div></div></section></div>`;
+function scheduled(k) {
+  const t = T[k], [mo, d, full] = t.live;
+  return `${topbar4(k)}${stepbar(4)}<div class="wide nav-in"><section class="dcard"><div class="success"><span class="big">${I.check}</span><h1>Scheduled to go live</h1>
+    <div class="dateline" style="margin:8px 0"><div class="big"><small>${mo}</small><b>${d}</b></div><div class="tx" style="text-align:left"><b>${full}</b></div></div>
+    <div style="display:flex;gap:8px"><span class="btn btn-pri">Open campaign</span><span class="btn btn-sec">Request edits</span></div></div></section></div>`;
 }
-SCREENS['a5-scheduled'] = () => scheduled('a', {line: `${rs(600000)} allocated · open to matching creators`, body: 'On Oct 19 your 7 approved creators get the invite first and ~1,480 matching creators are notified. Content comes to you for approval.', tl: [['Today', 'Scheduled'], ['Oct 19', 'Goes live'], ['Nov 8', 'Ends'], ['Nov 15', 'Payouts &amp; report']]});
-SCREENS['b5-scheduled'] = () => scheduled('b', {line: `${rs(800000)} allocated · run by Ishara Fernando`, body: 'On Nov 20 Ishara sends the invites to your approved shortlist. She handles approvals and sends a report every Monday.', tl: [['Today', 'Scheduled'], ['Nov 20', 'Goes live'], ['Dec 5', 'Store opens'], ['Dec 14', 'Ends']]});
-SCREENS['c5-scheduled'] = () => scheduled('c', {line: `${rs(217647)} by bank transfer · 4 invites`, body: 'On Nov 16 Ranshan, Radeesha, Imasha and Chathuri get their invites with the brief. Each is paid once you approve their reel.', tl: [['Today', 'Scheduled'], ['Nov 16', 'Invites go out'], ['Dec 6', 'Ends'], ['After approval', 'Payouts']]});
+SCREENS['a5-scheduled'] = () => scheduled('a');
+SCREENS['b5-scheduled'] = () => scheduled('b');
+SCREENS['c5-scheduled'] = () => scheduled('c');
 
 /* ---------- Draw ---------- */
-const id = new URLSearchParams(location.search).get('s') || '00-brand-page';
-document.body.innerHTML = SCREENS[id]();
+document.body.innerHTML = SCREENS[Q.get('s') || '00-brand-page']();
 window.SCREEN_IDS = Object.keys(SCREENS);
