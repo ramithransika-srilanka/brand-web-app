@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" font-family="Inter,Arial,sans-serif">
+  <defs>
+    <linearGradient id="room" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a22"/><stop offset="1" stop-color="#1c1410"/></linearGradient>
+    <radialGradient id="lamp" cx=".2" cy=".2" r=".7"><stop offset="0" stop-color="#ffcf8a" stop-opacity=".45"/><stop offset="1" stop-color="#ffcf8a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#room)"/>
+  <rect width="1080" height="1920" fill="url(#lamp)"/>
+  <!-- Text overlay, reel style -->
+  <g text-anchor="middle">
+    <rect x="150" y="190" width="780" height="110" rx="20" fill="#fff"/>
+    <text x="540" y="262" font-size="52" font-weight="700" fill="#111">9:40 pm. Amma calls.</text>
+    <rect x="110" y="320" width="860" height="110" rx="20" fill="#e31b23"/>
+    <text x="540" y="392" font-size="52" font-weight="700" fill="#fff">“Putha, beheth iwarai.”</text>
+  </g>
+  <!-- Phone -->
+  <g transform="translate(240 520)">
+    <rect width="600" height="1120" rx="64" fill="#0b0f16"/>
+    <rect x="22" y="22" width="556" height="1076" rx="46" fill="#fff"/>
+    <rect x="22" y="22" width="556" height="170" rx="46" fill="#e31b23"/>
+    <rect x="22" y="140" width="556" height="52" fill="#e31b23"/>
+    <path d="M62 82h18v18h18v18H80v18H62v-18H44v-18h18z" fill="#fff"/>
+    <text x="120" y="118" font-size="34" font-weight="700" fill="#fff">FLASH HEALTH</text>
+    <text x="300" y="172" font-size="26" fill="#fff" text-anchor="middle" opacity=".9">Medicine delivery · Colombo</text>
+    <text x="60" y="262" font-size="34" font-weight="700" fill="#111">Snap your prescription</text>
+    <!-- Viewfinder with blurred Rx -->
+    <rect x="60" y="292" width="480" height="420" rx="24" fill="#f1f2f4"/>
+    <g transform="rotate(-4 300 500)">
+      <rect x="140" y="340" width="320" height="330" rx="10" fill="#fff" stroke="#d9dce1" stroke-width="3"/>
+      <text x="170" y="410" font-size="56" font-weight="700" fill="#e31b23" font-family="Georgia,serif">Rx</text>
+      <g fill="#c7cbd2"><rect x="170" y="440" width="250" height="14" rx="7"/><rect x="170" y="476" width="200" height="14" rx="7"/><rect x="170" y="512" width="230" height="14" rx="7"/><rect x="170" y="548" width="160" height="14" rx="7"/><rect x="170" y="600" width="120" height="14" rx="7"/></g>
+    </g>
+    <g stroke="#e31b23" stroke-width="8" fill="none" stroke-linecap="round"><path d="M90 352v-30h30"/><path d="M480 322h30v30"/><path d="M90 652v30h30"/><path d="M480 682h30v-30"/></g>
+    <!-- Order rows -->
+    <g font-size="26" fill="#333">
+      <rect x="60" y="740" width="480" height="84" rx="18" fill="#f6f7f8"/>
+      <text x="90" y="792">Deliver to</text><text x="510" y="792" text-anchor="end" font-weight="700" fill="#111">Amma · Colombo 06</text>
+      <rect x="60" y="836" width="480" height="84" rx="18" fill="#f6f7f8"/>
+      <text x="90" y="888">Repeat</text><text x="510" y="888" text-anchor="end" font-weight="700" fill="#111">Every month</text>
+    </g>
+    <rect x="60" y="950" width="480" height="96" rx="48" fill="#e31b23"/>
+    <text x="300" y="1010" font-size="32" font-weight="700" fill="#fff" text-anchor="middle">Send to pharmacy</text>
+  </g>
+  <!-- Bottom caption -->
+  <g text-anchor="middle">
+    <text x="540" y="1760" font-size="44" font-weight="700" fill="#fff">No queue. No trip across Colombo.</text>
+    <text x="540" y="1824" font-size="34" fill="#fff" opacity=".8">@flashhealth.sl</text>
+  </g>
+</svg>

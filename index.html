@@ -242,6 +242,10 @@
   .cp-plat svg{width:18px;height:18px;}
   .cp-ctas{background:var(--blue-100);border-left:2px solid var(--blue-500);border-radius:0 9px 9px 0;padding:12px 15px;display:flex;flex-direction:column;gap:6px;}
   .cp-ctas p{font-style:italic;color:var(--grey-800);}
+  .cp-hooks{display:flex;flex-direction:column;gap:9px;}
+  .cp-hook{background:var(--grey-100);border:1px solid var(--grey-200);border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;gap:3px;}
+  .cp-hook .line{font-size:15px;font-weight:600;line-height:21px;color:var(--grey-800);}
+  .cp-hook .why{font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:8px;}
   .cp-restrict li{counter-increment:r;display:flex;gap:9px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
   .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:75px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
@@ -585,6 +589,27 @@ const C={
     totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
     handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
     event:{date:'July 4',time:'7 pm onwards',location:'City of Dreams, Colombo',ticket:'PickMe Events'}},
+  flash:{img:'flashHero',logo:'flashLogo',abbr:'FH',cat:'Lifestyle',
+    title:'Flash Health medicine delivery: Amma’s refill, sorted in Colombo',time:'Starts Nov 15',right:'30 d run',progress:0,joined:null,joinedShort:'0',
+    money:'<span>Total budget:</span><b>Rs. 1,200,000</b>',spent:'Rs. 0',available:'Rs. 1,200,000',budget:'Rs. 1,200,000',budgetN:1200000,
+    list:[['Base price per content','Rs. 7500'],['Max earning per content','Rs. 90,000'],['Performance pricing','Rs. 1800 / 1K views'],['Total budget','Rs. 1,200,000']],
+    tags:[['Adults caring for parents','people'],['25-40 age','age'],['Colombo','pin'],['Story-led','camera'],['Reels','video']],
+    reqDesc:'Tell a real Colombo moment when medicine runs out at the worst time: Amma’s monthly refill, a 9 pm call from home, the pharmacy queue after work. Then show Flash Health fixing it. Snap the prescription in the app, and a Flash Health rider brings it to the door. Keep it warm, honest and a little funny, like the brand’s own reels. The parent is the hero, the app is the helper.',
+    platforms:['insta','tiktok','facebook'],visibility:'Flash Health app (prescription snap or order screen) and the red-and-black Flash Health delivery bag at the door',
+    spec:[['Format','Vertical 9:16'],['Duration','20–40 seconds'],['Hook','Spoken or on screen in the first 2 s'],['Quality','Min 1080p'],['Language','English, Sinhala or Singlish'],['Captions','Required, bilingual welcome'],['Story beat','Hook → run out → snap → doorstep → relief']],
+    hooks:[
+      ['“Putha, beheth iwarai.” (Son, the medicine’s finished.)','The 9:40 pm call from Amma. Same family-care story as the brand’s Kasun reel.'],
+      ['You book your car service before it breaks. When did Thaththa’s tablets run out?','Echoes the brand’s “we service things before they break” reel.'],
+      ['Your phone knows your step count. Does it know Amma has 3 tablets left?','Echoes the brand’s “Your phone knows” reel.'],
+      ['6:15 pm. Galle Road. 40 minutes to the pharmacy… or 4 taps.','Colombo traffic POV: split screen of the jam and the app.'],
+      ['I’m in Colombo 3. Amma’s in Wellawatte. Her medicine still gets there before dinner.','For creators who live away from their parents.'],
+      ['Pharmacy queue speedrun: zero minutes.','Comedy beat: dramatic timer, then the rider at the door.']],
+    shots:['The run-out moment: an empty strip, a pill organiser or the phone call (blur medicine names)','Snapping the prescription in the Flash Health app, with the screen readable','The rider arriving with the Flash Health bag at a real Colombo gate, door or apartment lobby','The relief: a parent’s reaction, a hug, or Amma saying “we’re doing fine”','End card: the app on screen with the CTA in the caption'],
+    ctas:['Snap the prescription. We’ll bring the medicine.','They cared for you. Now it’s your turn: add Amma on Flash Health.','Medicine delivery is now in Colombo. Download Flash Health.'],
+    restrict:['Never name or show the label of a prescription medicine: blur it or turn it away','Blur every prescription: patient name, doctor, NIC and phone number','No medical advice, dosages or “cure” claims. Point health questions to Flash Health’s SLMC-registered doctors','Only use delivery times, fees and offers from the brand brief. Don’t promise your own','Everyone on camera, especially parents and elders, must agree to appear. No filming in hospitals or clinics','Riders shown wearing helmets. Never film while riding','No AI generated content. Face must be visible','Tag @flashhealth.sl, mark it as a paid partnership and keep it live for at least 30 days'],
+    brand:'Flash Health',since:'Since Nov 2026',brandDesc:'Premium health-care service in Sri Lanka: medicine delivery, home lab tests and doctor consultations, all in one app.',
+    totalPaid:'Rs. 0',campaigns:'1',metrics:[['Content approval rate','New brand'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['New','insta'],['New','facebook']]},
 };
 /* Brand-side status for each campaign (Active / Completed / Upcoming tabs) */
 Object.assign(C.uber,{status:'active'});
@@ -595,11 +620,15 @@ Object.assign(C.eats,{status:'completed',time:'Ended on June 28',right:null,mone
 Object.assign(C.kfc,{status:'completed',time:'Ended on July 1',right:null,progress:100,money:'<span>Rs. 280,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 280,000',available:'Rs. 0'});
 Object.assign(C.hiru,{status:'upcoming'});
 Object.assign(C.shakira,{status:'upcoming'});
-const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
+Object.assign(C.flash,{status:'upcoming'});
+const EXPLORE=['flash','uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
 /* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
 A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
+
+/* Flash Health campaign artwork (local SVGs, not part of the creator app sync) */
+Object.assign(A,{flashLogo:'images/flash-logo.svg',flashHero:'images/flash-hero.svg'});
 
 const notifications=[
   {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
@@ -695,7 +724,7 @@ function viewCampaign(id){
       <div class="cp-details">
         <h1 class="cp-title">${c.title}</h1>
         <div class="cp-meta">
-          ${c.event?`<span class="cp-mi">${CPICON.calendar}${c.time}</span>`:`<span class="cp-mi">${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
+          ${c.event?`<span class="cp-mi">${CPICON.calendar}${c.time}</span>`:`<span class="cp-mi">${/^(Ended|Starts)/.test(c.time)?c.time:'Posted '+c.time}</span>`}
           ${c.right?`<span class="cp-mi">${CLOCK}${c.right}</span>`:''}
           <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} creators joined</span></div>
           <div class="cp-metaplat" aria-label="Platforms">${c.platforms.map(p=>`<span title="${PLATNAME[p]}">${PLAT[p]}</span>`).join('')}</div></div>
@@ -707,13 +736,17 @@ function viewCampaign(id){
         <div class="${c.event?'sheet-t ':''}cp-reqs" id="reqs">
           <section class="cp-sec"><h3>About this campaign</h3><p>${c.reqDesc}</p></section>
           <section class="cp-sec"><h3>Requirements &amp; resources</h3>
-            <div class="cp-spec">${[...SPEC,['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+            <div class="cp-spec">${[...(c.spec||SPEC),['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
             <h4>Platforms to post on</h4>
             <div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
+            ${c.hooks?`<h4>Hook ideas: say it in the first 2 seconds</h4>
+            <div class="cp-hooks">${c.hooks.map(h=>`<div class="cp-hook"><span class="line">${h[0]}</span><span class="why">${h[1]}</span></div>`).join('')}</div>`:''}
+            ${c.shots?`<h4>Must-show shots</h4>
+            <ol class="cp-restrict">${c.shots.map(r=>`<li>${r}</li>`).join('')}</ol>`:''}
             <h4>Call-to-action ideas</h4>
             <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
             <h4>Restrictions</h4>
-            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+            <ol class="cp-restrict">${(c.restrict||RESTRICT).map(r=>`<li>${r}</li>`).join('')}</ol>
           </section></div>
       </div>
       <div class="cp-createdby"><h3>Campaign created by</h3>
@@ -777,6 +810,11 @@ const SUB={
     caption:'Shakira at City of Dreams. In Colombo. I’m still not over it 💃 Who’s getting tickets? #ShakiraColombo #HiruTV',
     bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
 };
+SUB.flash={name:'Tharushi Gunawardena',handle:'@tharu.and.amma',av:'av4',posted:'Scheduled',
+  media:{type:'reel',items:['images/flash-reel.svg'],length:'0:32'},
+  followers:[['insta','16.2K'],['tiktok','11.5K'],['facebook','7.4K']],
+  caption:'9:40 pm. Amma calls: “Putha, beheth iwarai.” Old me would leave work and fight Galle Road traffic to the pharmacy. New me snapped her prescription on Flash Health and the rider got to her door in Wellawatte first 🛵❤️ They cared for us. Our turn now. #FlashHealth #MedicineDelivery #Colombo #ad',
+  bio:'Colombo creator making slice-of-life reels about living close to (and caring for) my parents. Lots of Amma cameos.'};
 const PLAYIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.1-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>';
 const PAUSEIC='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
 const MUTEIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
@@ -810,7 +848,7 @@ function viewAdmin(id){
       <div class="adm-sec">
         <h1 class="adm-title">${c.title}</h1>
         <div class="adm-meta">
-          ${c.event?`<span>${CPICON.calendar}${c.time}</span>`:`<span>${/^Ended/.test(c.time)?c.time:'Posted '+c.time}</span>`}
+          ${c.event?`<span>${CPICON.calendar}${c.time}</span>`:`<span>${/^(Ended|Starts)/.test(c.time)?c.time:'Posted '+c.time}</span>`}
           ${c.right?`<span>${CLOCK}${c.right}</span>`:''}
         </div>
         <div class="adm-joined"><div class="cp-avatars">${AVSET}</div><span><b>${c.joinedShort}</b> creators joined</span></div>
