@@ -35,6 +35,10 @@ the code, just hidden behind that screen (`.desk-only` in `index.html`), so it c
      Financials as pending) and shows the scheduled date (`/create/done`).
   The request is kept in the browser's local storage (`brand.campaignRequest`); the button starts a new one once the
   last one is scheduled.
+- **Flash Health (upcoming)** — `#/campaign/flash`: a medicine delivery campaign for Colombo. Campaigns can carry their
+  own `spec` tiles and `restrict` list, `hooks` (hook ideas with the angle behind each) and `shots` (must-show shots),
+  shown in the creator view. A campaign with a `design` (hook, script beats, deliverable, CTA) shows it in the admin
+  **Campaign details** tab in the same sections as step 2 of Request to create a campaign. Artwork: `images/flash-*.svg`.
 - **Campaign page** — click any campaign (`#/campaign/<id>`). The status bar turns into a blue
   "You are viewing this page as a creator" notice, and the page shows the middle column of the creator
   web app's campaign page (`main` branch): hero with brand badge, title and meta, pricing list,
