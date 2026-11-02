@@ -1621,7 +1621,36 @@ const C={
     ctas:['Download the Flash Health app now.'],
     restrict:['Never name or show the label of a prescription medicine: blur it or turn it away','Blur every prescription: patient name, doctor, NIC and phone number','No medical advice, dosages or “cure” claims. Point health questions to Flash Health’s SLMC-registered doctors','Only use delivery times, fees and offers from the brand brief. Don’t promise your own','Everyone on camera, especially parents and elders, must agree to appear. No filming in hospitals or clinics','Riders shown wearing helmets. Never film while riding','No AI generated content. Face must be visible','Tag @flashhealth.sl, mark it as a paid partnership and keep it live for at least 30 days'],
     brand:'Flash Health',since:'Since Nov 2026',brandDesc:'Premium health-care service in Sri Lanka: medicine delivery, home lab tests and doctor consultations, all in one app.',
-    totalPaid:'Rs. 0',campaigns:'1',metrics:[['Content approval rate','New brand'],['Approval time','1 d'],['Responds within','2 hrs']],
+    totalPaid:'Rs. 0',campaigns:'2',metrics:[['Content approval rate','New brand'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['New','insta']]},
+  flashwalk:{img:'flashHero',logo:'flashLogo',abbr:'FH',cat:'Lifestyle',
+    title:'Flash Health Credit Earnings | Get Paid To Walk',time:'Starts Nov 22',right:'30 d run',progress:0,joined:null,joinedShort:'0',
+    money:'<span>Total budget:</span><b>Rs. 1,200,000</b>',spent:'Rs. 0',available:'Rs. 1,200,000',budget:'Rs. 1,200,000',budgetN:1200000,
+    list:[['Base price per content','Rs. 7500'],['Max earning per content','Rs. 90,000'],['Performance pricing','Rs. 1800 / 1K views'],['Total budget','Rs. 1,200,000']],
+    tags:[['Walkers & runners','people'],['20-40 age','age'],['Colombo','pin'],['Fitness routine','camera'],['Reels','video']],
+    reqDesc:'Move. Burn. Earn. Earn points on the Flash Health app just by walking or running.',
+    about:[['The message we want to deliver','Move. Burn. Earn.'],
+           ['The action','Earn points on the Flash Health app just by walking or running. Then use those credits to buy pharmacy medicine and lab tests.']],
+    brief:'Show a real moment from your life: your daily morning or afternoon walk or run to stay fit. That same routine now earns you credits you can spend on any medicine through Flash Health.',
+    after:'After the run, show the Flash Health app home screen: it remembers your medicine routine and your family’s, and reminds you to refill without any hiccups. You can get any medicine from the network of pharmacies connected to Flash Health, with no pharmacy queues, delivered to your doorstep.',
+    platforms:['insta'],visibility:'Flash Health app (step counter and points screen) and the Flash Health medicine delivery package',
+    spec:[['Format','Vertical 9:16'],['Duration','40–60 seconds'],['Hook','Spoken or on screen in the first 3 s'],['Quality','Min 1080p'],['Language','English, Sinhala or Singlish'],['Captions','Required, bilingual welcome']],
+    design:{
+      hook:'Be creative.',
+      beats:[['0–3s','Your hook. Be creative.'],
+             ['3–15s','Your real routine: the morning or afternoon walk or run. Show the steps adding up.'],
+             ['15–25s','The Flash Health app turning your steps into points: Move. Burn. Earn.'],
+             ['25–35s','Spend the points on pharmacy medicine or a lab test.'],
+             ['35–50s','The Flash Health delivery package at your door, and the home screen that remembers your and your family’s medicine routine.'],
+             ['50s+','End on the Flash Health home page: download the Flash Health app now.']],
+      deliv:'1 reel · 40–60s · vertical 9:16',
+      cta:'Download the Flash Health app now.'},
+    hooks:'Be creative.',
+    shots:['Running or walking: your step-counting fitness activity','Steps counted and points earned in the app (the app screen)','The Flash Health medicine delivery package','Finally, the Flash Health home page asking viewers to download the app'],
+    ctas:['Download the Flash Health app now.'],
+    restrict:['Show real step counts and points from your own app. Don’t fake or edit the numbers','Don’t promise a points rate or rewards beyond what the app shows','No weight-loss, medical or “cure” claims. Keep it about your routine','Walk or run somewhere safe: pavements, parks or tracks. Never film while crossing a road','Never name or show the label of a prescription medicine in the delivery package','Everyone on camera must agree to appear','No AI generated content. Face must be visible','Tag @flashhealth.sl, mark it as a paid partnership and keep it live for at least 30 days'],
+    brand:'Flash Health',since:'Since Nov 2026',brandDesc:'Premium health-care service in Sri Lanka: medicine delivery, home lab tests and doctor consultations, all in one app.',
+    totalPaid:'Rs. 0',campaigns:'2',metrics:[['Content approval rate','New brand'],['Approval time','1 d'],['Responds within','2 hrs']],
     handles:[['New','insta']]},
 };
 /* Brand-side status for each campaign (Active / Completed / Upcoming tabs) */
@@ -1634,6 +1663,7 @@ Object.assign(C.kfc,{status:'completed',time:'Ended on July 1',right:null,progre
 Object.assign(C.hiru,{status:'upcoming'});
 Object.assign(C.shakira,{status:'upcoming'});
 Object.assign(C.flash,{status:'upcoming'});
+Object.assign(C.flashwalk,{status:'upcoming'});
 /* Who can join: open to every creator, or invite only */
 Object.keys(C).forEach(id=>C[id].access='open');
 ['starbucks','dominos','kfc','shakira'].forEach(id=>C[id].access='invite');
@@ -1655,7 +1685,7 @@ const UNLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 const PERFIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
 const FIXEDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>';
-const EXPLORE=['flash','uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
+const EXPLORE=['flashwalk','flash','uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
 /* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
@@ -1766,7 +1796,8 @@ function renderFeed(){
 const hooksHTML=h=>`<div class="cp-hooks">${typeof h==='string'?`<div class="cp-hook ph"><span class="line">${h}</span></div>`
   :h.map(x=>`<div class="cp-hook"><span class="line">${x[0]}</span><span class="why">${x[1]}</span></div>`).join('')}</div>`;
 const aboutHTML=c=>`<section class="cp-sec cp-about"><h3>About this campaign</h3>${c.about?c.about.map(([k,v])=>`<h4>${k}</h4><p>${v}</p>`).join(''):`<p>${c.reqDesc}</p>`}</section>`
-  +(c.brief?`<section class="cp-sec"><h3>Brief</h3><p>${c.brief}</p></section>`:'');
+  +(c.brief?`<section class="cp-sec"><h3>Brief</h3><p>${c.brief}</p></section>`:'')
+  +(c.after?`<section class="cp-sec"><h3>After action additions</h3><p>${c.after}</p></section>`:'');
 const extrasHTML=c=>(c.hooks?`<h4>Hook ideas</h4>${hooksHTML(c.hooks)}`:'')
   +(c.shots?`<h4>Must show shots</h4><ol class="cp-restrict">${c.shots.map(r=>`<li>${r}</li>`).join('')}</ol>`:'');
 /* The campaign design (same sections as step 2 of Request to create a campaign), read-only */
@@ -1776,6 +1807,7 @@ function designHTML(c){
     ${sec('title',`<div class="ttl">${c.title}</div>`)}
     ${c.about?`<div class="cr-sec"><h4>About this campaign</h4>${c.about.map(([k,v])=>`<div class="cr-sub">${k}</div><p>${v}</p>`).join('')}</div>`:''}
     ${sec('brief',`<p>${c.brief||c.reqDesc}</p>`)}
+    ${c.after?`<div class="cr-sec"><h4>After action additions</h4><p>${c.after}</p></div>`:''}
     ${sec('hook',typeof c.hooks==='string'?hooksHTML(c.hooks):`<p>${d.hook}</p>${c.hooks?`<div class="cr-sub">More hooks to test</div>${hooksHTML(c.hooks.slice(1))}`:''}`)}
     ${sec('script',`<div class="cr-beats">${d.beats.map(([a,b])=>`<div><em>${a}</em><span>${b}</span></div>`).join('')}</div>`)}
     ${sec('deliv',`<p>${d.deliv}</p>`)}
@@ -1968,6 +2000,11 @@ const SUB={
     followers:[['insta','16.2K']],
     caption:'9:40 pm. Amma calls: “Putha, beheth iwarai.” Old me would leave work and fight Galle Road traffic to the pharmacy. New me ordered it on Flash Health and the rider got to her door before I got home 🛵❤️ And now the app reminds me before her medicine runs out. One tap, reordered. #FlashHealth #MedicineDelivery #Colombo #ad',
     bio:'Colombo creator making slice-of-life reels about living close to (and caring for) my parents. Lots of Amma cameos.'},
+  flashwalk:{name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',posted:'Scheduled',
+    media:{type:'image',items:['images/flash-hero.jpg']},
+    followers:[['insta','18.7K']],
+    caption:'6 am at Galle Face, same as every day 🏃‍♂️ Except now my steps pay me back: today’s walk turned into Flash Health points, and they went straight into my monthly medicine. Move. Burn. Earn. #FlashHealth #MoveBurnEarn #ad',
+    bio:'Coffee, cafés and slow mornings, after a long walk by the sea.'},
 };
 /* Every other post uploaded to the campaign; the admin view scrolls through SUB[id] first, then these */
 const N={name:'Nethmi Perera',handle:'@nethmi.eats',av:'av1',followers:[['insta','31K'],['tiktok','14.2K']],bio:'Food writer turned creator. Reviews Colombo’s delivery spots so you don’t have to gamble on dinner.'};
