@@ -1627,7 +1627,9 @@ const UNLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 const PERFIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
 const FIXEDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>';
-const EXPLORE=['pickme','uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
+/* Only PickMe is shown. The other campaigns stay in C; add their ids back here to show them again:
+   'uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira' */
+const EXPLORE=['pickme'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
 /* PickMe ride review campaign: the same photos and logo as polysocial.cc/campaigns/pickme */
@@ -1731,6 +1733,7 @@ function renderFeed(){
     return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
   if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
   f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
+    :!q&&state.cat==='All'&&!state.access&&!state.fee?`<div class="ph"><div class="tag2">No campaigns</div><h2>No ${state.tab} campaigns yet</h2><p>${{active:'Campaigns that are live right now show up here.',completed:'Campaigns move here once they end.',upcoming:'Scheduled campaigns show up here before they go live.'}[state.tab]}</p></div>`
     :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||[state.access&&ACCESS[state.access],state.fee&&FEE[state.fee]].filter(Boolean).join(' · ')||state.cat)}”</h2><p>Try another brand name or clear the search to see every ${state.tab} campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
   bindAssets(f);
 }
@@ -3343,7 +3346,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.ge
 const view=document.getElementById('view');
 const parseHash=()=>{
   const [root,id,mode,sec,post]=location.hash.replace(/^#\/?/,'').split('/');
-  const campaign=root==='campaign'&&C[id]?id:null;
+  const campaign=root==='campaign'&&EXPLORE.includes(id)?id:null;
   if(root==='create') return {root,id:null,admin:false,cstep:id||''};
   if(root==='profile') return {root,id:null,admin:false,psec:PSECTIONS.some(x=>x[0]===id)?id:'brand',post:null};
   if(root==='financials') return {root,id:null,admin:false,fsec:FSECTIONS.some(x=>x[0]===id)?id:'overview',toTx:mode==='transfers',post:null};
