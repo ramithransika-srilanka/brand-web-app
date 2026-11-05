@@ -107,3 +107,4 @@ node scripts/sync-assets.js <path-to-creator-web-app>
 ```
 
 `images/hotzy-reel.jpg` is a demo reel frame taken from the admin-view mockup.
+`images/pickme/` holds the PickMe ride review campaign's photos and logo, copied from the Polysocial site (`site/campaigns/pickme/campaign/`).
