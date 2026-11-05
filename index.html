@@ -1493,6 +1493,18 @@ const SPEC=[['Format','Vertical 9:16'],['Duration','30–45 seconds'],['Quality'
 const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio','Keep the post live for at least 30 days'];
 
 const C={
+  pickme:{img:'pickmeRider',logo:'pickmeBadge',abbr:'PM',cat:'Mobility',
+    title:'PickMe ride review campaign',time:'5 hrs ago',right:'10 d left',progress:28,joined:'400+ joined',joinedShort:'400+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 1,000,000</b>',spent:'Rs. 284,536',available:'Rs. 715,464',budget:'Rs. 1,000,000',budgetN:1000000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,000,000']],
+    tags:[['Females','people'],['25-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
+    reqDesc:'Show a real ride from your day: getting to work, heading to class or meeting friends for dinner, booked on the PickMe app. Keep it natural and unscripted, and talk about how easy it was to book and how quickly your driver arrived.',
+    platforms:['insta','tiktok'],visibility:'PickMe app booking screen must be clearly visible',
+    ctas:['Need a ride? Book a PickMe and get going in minutes.','Book your next trip on PickMe and see how fast your driver arrives.','Try PickMe for your next ride across town, any time of the day or night.'],
+    restrict:['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio'],
+    brand:'PickMe',since:'Since Nov 2026',brandDesc:'Wherever you’re headed, PickMe gets you there: tuks, cars and bikes, booked in minutes on the PickMe app.',
+    totalPaid:'Rs. 285 K',campaigns:'1',metrics:[['Content approval rate','95 %'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['10K','insta'],['2.5K','tiktok']]},
   uber:{img:'card1',logo:'logo1',abbr:'Ub',cat:'Mobility',
     title:'Uber Moto UGC campaign in Colombo Book festival',time:'5 hrs ago',right:'10 d left',progress:40,joined:'412 joined',joinedShort:'400+',
     money:'<span>Rs. 284,536 /</span><b>Rs. 1,000,000</b>',spent:'Rs. 284,536',available:'Rs. 715,464',budget:'Rs. 1,000,000',budgetN:1000000,
@@ -1585,6 +1597,7 @@ const C={
     event:{date:'July 4',time:'7 pm onwards',location:'City of Dreams, Colombo',ticket:'PickMe Events'}},
 };
 /* Brand-side status for each campaign (Active / Completed / Upcoming tabs) */
+Object.assign(C.pickme,{status:'active'});
 Object.assign(C.uber,{status:'active'});
 Object.assign(C.starbucks,{status:'active'});
 Object.assign(C.burgerking,{status:'active'});
@@ -1614,8 +1627,11 @@ const UNLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 const PERFIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
 const FIXEDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>';
-const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
+const EXPLORE=['pickme','uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
+
+/* PickMe ride review campaign: the same photos and logo as polysocial.cc/campaigns/pickme */
+Object.assign(A,{pickmeRider:'images/pickme/rider-main.jpg',pickmeRider2:'images/pickme/rider-2.jpg',pickmeRider3:'images/pickme/rider-3.jpg',pickmeBadge:'images/pickme/pickme-logo.png'});
 
 /* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
 A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
@@ -1777,7 +1793,7 @@ function viewCampaignDrawer(id){
             <h4>Call-to-action ideas</h4>
             <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
             <h4>Restrictions</h4>
-            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+            <ol class="cp-restrict">${(c.restrict||RESTRICT).map(r=>`<li>${r}</li>`).join('')}</ol>
           </section></div>
       </div>
     </div>
@@ -1830,7 +1846,7 @@ function viewCampaign(id){
             <h4>Call-to-action ideas</h4>
             <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
             <h4>Restrictions</h4>
-            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+            <ol class="cp-restrict">${(c.restrict||RESTRICT).map(r=>`<li>${r}</li>`).join('')}</ol>
           </section></div>
       </div>
       <div class="cp-createdby"><h3>Campaign created by</h3>
@@ -1853,6 +1869,11 @@ function viewCampaign(id){
 /* ---------- Admin view: the creator's post for this campaign ---------- */
 /* media.type: reel | image | carousel. Followers per platform; caption as posted. */
 const SUB={
+  pickme:{name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',posted:'1 hr ago',
+    media:{type:'reel',items:['pickmeRider'],length:'0:32'},
+    followers:[['insta','26.5K'],['tiktok','9.2K']],
+    caption:'Booked a PickMe bike from the office and my rider was outside in 4 minutes 🏍️ Dinner with the girls, sorted. #PickMe #ad',
+    bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
   uber:{name:'Ramith Hewavithan',handle:'@ramith_h',av:'pfAvatar',posted:'2 hrs ago',
     media:{type:'reel',items:['images/hotzy-reel.jpg'],length:'0:15'},
     followers:[['insta','12.4K'],['tiktok','8.1K']],
@@ -1900,6 +1921,9 @@ const K={name:'Kavindu Jayasuriya',handle:'@kavindu.sips',av:'av2',followers:[['
 const D={name:'Dilan Fernando',handle:'@dilan.bites',av:'av3',followers:[['tiktok','41K'],['insta','9.8K']],bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'};
 const S={name:'Sachini Wickramasinghe',handle:'@sachini.w',av:'av4',followers:[['insta','26.5K'],['facebook','12K']],bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'};
 const MORE={
+  pickme:[
+    {...N,posted:'3 hrs ago',media:{type:'carousel',items:['pickmeRider2','pickmeRider3']},caption:'Class at 8, PickMe at 7:45. Swipe for the fare and the ride 🛺 #PickMe #ad'},
+    {...K,posted:'Yesterday',media:{type:'reel',items:['pickmeRider3'],length:'0:38'},caption:'Rating my ride across Colombo at rush hour: booking, pickup, drop-off ⏱️ #PickMe #ad'}],
   uber:[
     {...N,posted:'4 hrs ago',media:{type:'carousel',items:['card1','card2']},caption:'Book festival day out, sorted by Uber Moto 🏍️📚 Swipe for the haul. #UberMoto #ColomboBookFestival #ad'},
     {...D,posted:'Yesterday',media:{type:'reel',items:['card1'],length:'0:18'},caption:'Galle Face to the Book Festival in under 15 minutes. Uber Moto, you legend 🏍️ #UberMoto #ad'}],
