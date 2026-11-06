@@ -1595,17 +1595,6 @@ const C={
     totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
     handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
     event:{date:'July 4',time:'7 pm onwards',location:'City of Dreams, Colombo',ticket:'PickMe Events'}},
-  pattypop:{img:'pattyPop',logo:'pattyPopLogo',abbr:'PP',cat:'Food',
-    title:'Patty Pop spicy chicken patty taste test',time:'2 d ago',right:'12 d left',progress:24,joined:'96 joined',joinedShort:'90+',
-    money:'<span>Rs. 182,400 /</span><b>Rs. 750,000</b>',spent:'Rs. 182,400',available:'Rs. 567,600',budget:'Rs. 750,000',budgetN:750000,
-    list:[['Base price per content','Rs. 3500'],['Max earning per content','Rs. 50,000'],['Performance pricing','Rs. 1000 / 1K views'],['Total budget','Rs. 750,000']],
-    tags:[['Snack lovers','people'],['16-30 age','age'],['Colombo','pin'],['Reels','video'],['Selfie','camera']],
-    reqDesc:'Pick up a Patty Pop spicy chicken patty, film the first flaky bite and give your honest take in under 30 seconds.',
-    platforms:['tiktok','insta','youtube'],visibility:'Patty Pop paper bag and the patty’s golden crust clearly visible',
-    ctas:['Pop in for a Patty Pop.','Flaky, spicy, two bites gone.','Show us your first bite and tag us.'],
-    brand:'Patty Pop',since:'Since Sep 2026',brandDesc:'Freshly baked patties and short eats from kiosks across Colombo.',
-    totalPaid:'Rs. 210 K',campaigns:'3',metrics:[['Content approval rate','95 %'],['Approval time','1 d'],['Responds within','3 hrs']],
-    handles:[['6.8K','insta'],['4.2K','tiktok'],['310','linkedin']]},
 };
 /* Brand-side status for each campaign (Active / Completed / Upcoming tabs) */
 Object.assign(C.pickme,{status:'active'});
@@ -1613,7 +1602,6 @@ Object.assign(C.uber,{status:'active'});
 Object.assign(C.starbucks,{status:'active'});
 Object.assign(C.burgerking,{status:'active'});
 Object.assign(C.dominos,{status:'active'});
-Object.assign(C.pattypop,{status:'active'});
 Object.assign(C.eats,{status:'completed',time:'Ended on June 28',right:null,money:'<span>Rs. 350,000 /</span><b>Rs. 500,000</b>'});
 Object.assign(C.kfc,{status:'completed',time:'Ended on July 1',right:null,progress:100,money:'<span>Rs. 280,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 280,000',available:'Rs. 0'});
 Object.assign(C.hiru,{status:'upcoming'});
@@ -1639,17 +1627,13 @@ const UNLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 const PERFIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
 const FIXEDIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>';
-/* Only PickMe and Patty Pop are shown. The other campaigns stay in C; add their ids back here to show them again:
+/* Only PickMe is shown. The other campaigns stay in C; add their ids back here to show them again:
    'uber','eats','hiru','starbucks','burgerking','dominos','kfc','shakira' */
-const EXPLORE=['pickme','pattypop'];
+const EXPLORE=['pickme'];
 const TABS={active:'Active campaigns',completed:'Completed campaigns',upcoming:'Upcoming campaigns'};
 
 /* PickMe ride review campaign: the same photos and logo as polysocial.cc/campaigns/pickme */
 Object.assign(A,{pickmeRider:'images/pickme/rider-main.jpg',pickmeRider2:'images/pickme/rider-2.jpg',pickmeRider3:'images/pickme/rider-3.jpg',pickmeBadge:'images/pickme/pickme-logo.png'});
-
-/* Patty Pop (example creator campaign): simple drawn cover and brand badge */
-A.pattyPopLogo=A.pattyPopLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#ffb703'/><path d='M22 74a38 38 0 0 1 76 0z' fill='#e85d04'/><path d='M22 74h76' stroke='#9d0208' stroke-width='6' stroke-linecap='round'/><text x='50%' y='98' font-family='Inter,Arial,sans-serif' font-size='18' font-weight='700' fill='#9d0208' text-anchor='middle'>PP</text></svg>`);
-A.pattyPop=A.pattyPop||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#ffb703'/><stop offset='1' stop-color='#fb5607'/></linearGradient><linearGradient id='crust' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#ffd166'/><stop offset='1' stop-color='#e09f3e'/></linearGradient></defs><rect width='800' height='600' fill='url(#bg)'/><g fill='#fff' opacity='.18'><circle cx='120' cy='110' r='60'/><circle cx='690' cy='480' r='90'/><circle cx='660' cy='120' r='24'/><circle cx='150' cy='500' r='30'/></g><g fill='none' stroke='#fff' stroke-width='10' stroke-linecap='round' opacity='.85'><path d='M330 170c-20-30 20-50 0-80'/><path d='M400 160c-20-30 20-50 0-80'/><path d='M470 170c-20-30 20-50 0-80'/></g><ellipse cx='400' cy='450' rx='250' ry='34' fill='#9d0208' opacity='.25'/><path d='M160 420a240 220 0 0 1 480 0z' fill='url(#crust)'/><path d='M160 420h480' stroke='#c26a10' stroke-width='22' stroke-linecap='round' stroke-dasharray='2 34'/><g stroke='#c26a10' stroke-width='6' stroke-linecap='round' opacity='.55'><path d='M270 330l30 30'/><path d='M370 290l30 30'/><path d='M470 320l30 30'/></g><text x='400' y='545' font-family='Inter,Arial,sans-serif' font-size='56' font-weight='800' fill='#fff' text-anchor='middle' letter-spacing='4'>PATTY POP</text></svg>`);
 
 /* The creator app references kfcLogo without defining it; give it the same simple brand badge. */
 A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
@@ -1893,11 +1877,6 @@ const SUB={
     followers:[['insta','26.5K'],['tiktok','9.2K']],
     caption:'Booked a PickMe bike from the office and my rider was outside in 4 minutes 🏍️ Dinner with the girls, sorted. #PickMe #ad',
     bio:'Lifestyle creator sharing friends-and-food moments, unboxings and weekend plans.'},
-  pattypop:{name:'Dilan Fernando',handle:'@dilan.bites',av:'av3',posted:'3 hrs ago',
-    media:{type:'reel',items:['pattyPop'],length:'0:24'},
-    followers:[['tiktok','41K'],['insta','9.8K']],
-    caption:'Rating the new Patty Pop spicy chicken patty 🌶️ Flaky crust, proper heat, gone in two bites. 9/10, would queue again. #PattyPop #ShortEats #ad',
-    bio:'Fast-food reviewer with zero chill. Big bites, honest scores, Colombo and suburbs.'},
   uber:{name:'Ramith Hewavithan',handle:'@ramith_h',av:'pfAvatar',posted:'2 hrs ago',
     media:{type:'reel',items:['images/hotzy-reel.jpg'],length:'0:15'},
     followers:[['insta','12.4K'],['tiktok','8.1K']],
@@ -1948,9 +1927,6 @@ const MORE={
   pickme:[
     {...N,posted:'3 hrs ago',media:{type:'carousel',items:['pickmeRider2','pickmeRider3']},caption:'Class at 8, PickMe at 7:45. Swipe for the fare and the ride 🛺 #PickMe #ad'},
     {...K,posted:'Yesterday',media:{type:'reel',items:['pickmeRider3'],length:'0:38'},caption:'Rating my ride across Colombo at rush hour: booking, pickup, drop-off ⏱️ #PickMe #ad'}],
-  pattypop:[
-    {...S,posted:'6 hrs ago',media:{type:'reel',items:['pattyPop'],length:'0:18'},caption:'Patty Pop spice test: how many bites before the water? 🥵 #PattyPop #ad'},
-    {...N,posted:'Yesterday',media:{type:'image',items:['pattyPop']},caption:'Tea-time sorted: Patty Pop and a plain tea ☕ #PattyPop #ShortEats'}],
   uber:[
     {...N,posted:'4 hrs ago',media:{type:'carousel',items:['card1','card2']},caption:'Book festival day out, sorted by Uber Moto 🏍️📚 Swipe for the haul. #UberMoto #ColomboBookFestival #ad'},
     {...D,posted:'Yesterday',media:{type:'reel',items:['card1'],length:'0:18'},caption:'Galle Face to the Book Festival in under 15 minutes. Uber Moto, you legend 🏍️ #UberMoto #ad'}],
