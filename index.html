@@ -1796,7 +1796,7 @@ const hooksHTML=h=>`<div class="cp-hooks">${typeof h==='string'?`<div class="cp-
   :h.map(x=>`<div class="cp-hook"><span class="line">${x[0]}</span><span class="why">${x[1]}</span></div>`).join('')}</div>`;
 const aboutHTML=c=>`<section class="cp-sec cp-about"><h3>About this campaign</h3>${c.about?c.about.map(([k,v])=>`<h4>${k}</h4><p>${v}</p>`).join(''):`<p>${c.reqDesc}</p>`}</section>`
   +(c.brief?`<section class="cp-sec"><h3>Brief</h3><p>${c.brief}</p></section>`:'')
-  +(c.after?`<section class="cp-sec"><h3>After action additions</h3><p>${c.after}</p></section>`:'');
+  +(c.after?`<section class="cp-sec"><h3>Actions</h3><p>${c.after}</p></section>`:'');
 const extrasHTML=c=>(c.hooks?`<h4>Hook ideas</h4>${hooksHTML(c.hooks)}`:'')
   +(c.shots?`<h4>Must show shots</h4><ol class="cp-restrict">${c.shots.map(r=>`<li>${r}</li>`).join('')}</ol>`:'');
 /* The campaign design (same sections as step 2 of Request to create a campaign), read-only */
@@ -1806,7 +1806,7 @@ function designHTML(c){
     ${sec('title',`<div class="ttl">${c.title}</div>`)}
     ${c.about?`<div class="cr-sec"><h4>About this campaign</h4>${c.about.map(([k,v])=>`<div class="cr-sub">${k}</div><p>${v}</p>`).join('')}</div>`:''}
     ${sec('brief',`<p>${c.brief||c.reqDesc}</p>`)}
-    ${c.after?`<div class="cr-sec"><h4>After action additions</h4><p>${c.after}</p></div>`:''}
+    ${c.after?`<div class="cr-sec"><h4>Actions</h4><p>${c.after}</p></div>`:''}
     ${sec('hook',typeof c.hooks==='string'?hooksHTML(c.hooks):`<p>${d.hook}</p>${c.hooks?`<div class="cr-sub">More hooks to test</div>${hooksHTML(c.hooks.slice(1))}`:''}`)}
     ${sec('script',`<div class="cr-beats">${d.beats.map(([a,b])=>`<div><em>${a}</em><span>${b}</span></div>`).join('')}</div>`)}
     ${sec('deliv',`<p>${d.deliv}</p>`)}
